@@ -9,6 +9,9 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/filters)](https://CRAN.R-project.org/package=filters)
+[![R-CMD-check](https://github.com/franceslinyc/filters/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/franceslinyc/filters/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/franceslinyc/filters/graph/badge.svg)](https://app.codecov.io/gh/franceslinyc/filters)
 <!-- badges: end -->
 
 The goal of filters is to …

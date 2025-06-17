@@ -9,7 +9,7 @@ filter_aov <- function(
     case_weights = case_weights,
     range = range,
     inclusive = c(TRUE, TRUE),
-    fallback_values = Inf,
+    fallback_value = Inf,
     score_type = score_type,
     trans = trans,
     sorts = sorts,
@@ -21,7 +21,7 @@ filter_aov <- function(
   )
 }
 
-get_f_stats <- function(x, y) {
+get_f_stat <- function(x, y) {
   # Helper function to check if a vector is a factor with 2+ levels
   is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
 
@@ -48,6 +48,6 @@ get_f_stats <- function(x, y) {
 }
 
 # To do:
-# get_p_vals <- function() {
+# get_p_val <- function() {
 #   ...
 # }

@@ -5,7 +5,7 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
     case_weights = case_weights,
     range = range,
     inclusive = c(TRUE, TRUE),
-    fallback_values = 1,
+    fallback_value = 1,
     score_type = score_type,
     trans = trans,
     sorts = sorts,

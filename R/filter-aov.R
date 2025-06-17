@@ -21,7 +21,7 @@ filter_aov <- function(
   )
 }
 
-calc_roc_auc <- function(x, y) {
+get_f_stats <- function(x, y) {
   # Helper function to check if a vector is a factor with 2+ levels
   is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
 
@@ -46,3 +46,8 @@ calc_roc_auc <- function(x, y) {
   }
   res
 }
+
+# To do:
+# get_p_vals <- function() {
+#   ...
+# }

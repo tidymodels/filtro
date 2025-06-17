@@ -17,7 +17,7 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
   )
 }
 
-calc_roc_auc <- function(x, y) {
+get_roc_auc <- function(x, y) {
   # Helper function to check if a vector is a factor with 2+ levels
   is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
 

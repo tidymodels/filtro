@@ -48,7 +48,7 @@ get_f_stat <- function(x, y) {
 }
 
 # To do:
-# I need a for loop or map here to handle all predictor-outcome pairs
+# Need a for loop or map here to handle all predictor-outcome pairs
 
 # To do:
 # get_p_val <- function() {

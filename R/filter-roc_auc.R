@@ -44,4 +44,4 @@ get_roc_auc <- function(x, y) {
 }
 
 # To do:
-# I need a for loop or map here to handle all predictor-outcome pairs
+# Need a for loop or map here to handle all predictor-outcome pairs

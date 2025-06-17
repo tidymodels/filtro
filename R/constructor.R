@@ -1,6 +1,6 @@
-new_num_cat_score <- function(
-  outcome_type = c("double", "integer", "character", "logical"),
-  predictor_type = c("double", "integer", "character", "logical"),
+new_cat_num_score <- function(
+  outcome_type = c("numeric", "factor"),
+  predictor_type = c("numeric", "factor"),
   case_weights = NULL,
   range = NULL,
   inclusive = NULL,
@@ -33,7 +33,7 @@ new_num_cat_score <- function(
     ties = ties,
     label = label
   )
-  class(res) <- c("num_cat_score", "score")
+  class(res) <- c("cat_num_score", "score")
 
   res
 }

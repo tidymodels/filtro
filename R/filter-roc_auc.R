@@ -20,9 +20,7 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
 }
 
 flip_if_needed <- function(x, y) {
-  is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
-
-  if (is_factor(y) && is.numeric(x)) {
+  if (is.factor(y) && is.numeric(x)) {
     list(predictor = x, outcome = y)
   } else {
     list(predictor = y, outcome = x)
@@ -74,12 +72,12 @@ get_score <- function(filter_obj, data, outcome) {
       get_roc_auc(predictor_col, outcome_col)
     }
   )
-
+  names <- names(score)
   res <- dplyr::tibble(
     name = filter_obj$score_type,
-    score = score,
+    score = unname(score),
     outcome = outcome,
-    predictor = names(score)
+    predictor = names
   )
 }
 

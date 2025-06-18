@@ -1,4 +1,5 @@
-new_cat_num_score <- function(
+new_filters_score <- function(
+  subclass = c("cat_num", "cat_cat", "num_num", "any"),
   outcome_type = c("numeric", "factor"),
   predictor_type = c("numeric", "factor"),
   case_weights = NULL,
@@ -12,10 +13,12 @@ new_cat_num_score <- function(
   deterministic = NULL,
   tuning = NULL,
   ties = NULL,
+  calculating_fn = NULL,
   label = NULL,
   ...
 ) {
   # To do: Include validators here
+  # To do: Add a validator to make sure subclass has to be in num_num, cat_num, cat_cat, any
 
   res <- list(
     outcome_type = outcome_type,
@@ -31,9 +34,10 @@ new_cat_num_score <- function(
     deterministic = deterministic,
     tuning = tuning,
     ties = ties,
+    calculating_fn = calculating_fn,
     label = label
   )
-  class(res) <- c("cat_num_score", "score")
+  class(res) <- c(subclass, "score")
 
   res
 }

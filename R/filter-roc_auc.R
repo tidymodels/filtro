@@ -19,23 +19,21 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
   )
 }
 
-# To do: Helper function to check if a vector is a factor with 2+ levels
-# flip x, y if needed, e.g., pROC::roc(x, y) and pROC::roc(y, x). Pass to get_roc_auc.
-# is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
+flip_if_needed <- function(x, y) {
+  is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
 
-# if (is_factor(y) && is.numeric(x)) {
-#   outcome <- y
-#   predictor <- x
-# } else if (is.numeric(y) && is_factor(x)) {
-#   outcome <- x
-#   predictor <- y
-# } else {
-#   stop(
-#     "One argument must be a factor with 2+ levels and the other numeric."
-#   )
-# }
+  if (is_factor(y) && is.numeric(x)) {
+    list(predictor = x, outcome = y)
+  } else {
+    list(predictor = y, outcome = x)
+  }
+}
 
 get_roc_auc <- function(predictor, outcome) {
+  flipped <- flip_if_needed(x = predictor, y = outcome)
+  outcome <- flipped$outcome
+  predictor <- flipped$predictor
+
   if (length(levels(outcome)) == 2) {
     roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE)
     res <- pROC::auc(roc) |> as.numeric()
@@ -63,28 +61,19 @@ get_score <- function(filter_obj, data, outcome) {
     purrr::set_names(predictors),
     ~ {
       predictor_col <- data[[.x]]
+      outcome_col <- data[[outcome]]
 
-      if (!is.numeric(predictor_col)) {
+      if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
         return(NA_real_)
       }
 
-      get_roc_auc(predictor_col, data[[outcome]])
+      if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
+        return(NA_real_)
+      }
+
+      get_roc_auc(predictor_col, outcome_col)
     }
   )
-
-  # score <- vapply(
-  #   predictors,
-  #   function(predictor) {
-  #     predictor_col <- data[[predictor]]
-
-  #     if (!is.numeric(predictor_col)) {
-  #       return(NA_real_)
-  #     }
-
-  #     filter_obj$calculating_fn(predictor_col, data[[outcome]])
-  #   },
-  #   FUN.VALUE = numeric(1)
-  # )
 
   res <- dplyr::tibble(
     name = filter_obj$score_type,

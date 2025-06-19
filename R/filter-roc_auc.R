@@ -3,7 +3,7 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
     subclass = c("any"),
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
+    case_weights = FALSE, # To do
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,

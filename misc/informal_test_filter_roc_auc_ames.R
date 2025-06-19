@@ -28,10 +28,9 @@ get_roc_auc(predictor, outcome)
 get_roc_auc(ames$Central_Air, outcome)
 
 # Test get_all_roc_auc
+data(ames, package = "modeldata")
 data <- ames
 outcome <- "Sale_Price"
 filter_obj = filter_roc_auc()
 tbl <- get_score(filter_obj, data, outcome)
 tbl
-
-# Test calc_score

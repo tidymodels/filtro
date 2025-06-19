@@ -81,12 +81,6 @@ get_score <- function(filter_obj, data, outcome) {
   )
 }
 
-calc_score <- function(filter_obj, data, outcome) {
-  res <- get_score(filter_obj, data, outcome)
-  filter_obj$res <- res
-  filter_obj
-}
-
 #' @noRd
 #' @export
 print.score <- function(x, ...) {
@@ -101,7 +95,62 @@ print_score_label <- function(x) {
   cli::cli_text("{x$label}")
 }
 
-# May want fit_score. (or calc_score.)
-# calc_score <- function(x, ...) {
-#   UseMethod("calc_score")
+# #' @noRd
+# #' @export
+# fit_score <- function(filter_obj, data, outcome, ...) {
+#   UseMethod("fit_score")
 # }
+
+fit_score <- function(filter_obj, data, outcome, ...) {
+  res <- get_score(filter_obj, data, outcome)
+  filter_obj$res <- res
+  filter_obj
+}
+
+fit_score_res <- function(filter_obj) {
+  filter_obj$res
+}
+
+fit_score_scaling <- function(filter_obj) {
+  if (is.null(filter_obj$trans)) {
+    trans <- scales::transform_identity()
+  } else {
+    trans <- filter_obj$trans
+  }
+  filter_obj$res |>
+    mutate(score = trans$transform(score))
+}
+
+fit_score_arranging <- function(filter_obj, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> arrange(desc(score))
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> arrange(score)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target))
+  }
+}
+
+fit_score_filtering <- function(filter_obj, p = 2, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> arrange(desc(score)) |> slice_head(n = p)
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> arrange(score) |> slice_head(n = p)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+  }
+}
+
+fit_score_filtering_v2 <- function(filter_obj, p = 2, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> slice_max(score, n = p)
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> slice_min(score, n = p)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+  }
+}
+
+# To do:
+# Right now the fit_score_* are independent of one another.
+# Use an S3 generic

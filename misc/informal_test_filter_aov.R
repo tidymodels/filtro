@@ -1,3 +1,4 @@
+# iris
 data(iris)
 iris |> str()
 
@@ -53,15 +54,65 @@ filter_obj <- filter_aov()
 tbl_iris <- get_score_aov(filter_obj, data, outcome)
 tbl_iris
 
-# Test get_score_aov_p_val Note: Can probably write this inside get_f_stat
+# Test get_score Add score_type = "fstat"
 data(iris)
 data <- iris
 outcome <- "Sepal.Length"
 filter_obj <- filter_aov()
-tbl_iris <- get_score_aov_p_val(filter_obj, data, outcome)
+filter_obj$score_type <- "fstat" # Or else Error
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
 tbl_iris
 
 outcome <- "Species"
 filter_obj <- filter_aov()
-tbl_iris <- get_score_aov_p_val(filter_obj, data, outcome)
+filter_obj$score_type <- "fstat" # Or else Error
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
 tbl_iris
+
+# Test get_score Add score_type = "pval"
+data(iris)
+data <- iris
+outcome <- "Sepal.Length"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "pval" # Or else Error
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
+tbl_iris
+
+outcome <- "Species"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "pval" # Or else Error
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
+tbl_iris
+
+# cells
+data(cells, package = "modeldata")
+data <- cells
+
+# Test get_score Add score_type = "fstat"
+data <- cells
+outcome <- "class"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "fstat" # Or else Error
+tbl_cells <- get_score_aov(filter_obj, data, outcome)
+tbl_cells
+
+outcome <- "angle_ch_1"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "fstat" # Or else Error
+tbl_cells <- get_score_aov(filter_obj, data, outcome)
+tbl_cells
+
+# Test get_score Add score_type = "pval"
+data(iris)
+data <- cells
+outcome <- "class"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "pval" # Or else Error
+tbl_cells <- get_score_aov(filter_obj, data, outcome)
+tbl_cells
+
+outcome <- "angle_ch_1"
+filter_obj <- filter_aov()
+filter_obj$score_type <- "pval" # Or else Error
+tbl_cells <- get_score_aov(filter_obj, data, outcome)
+tbl_cells

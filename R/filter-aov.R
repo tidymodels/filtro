@@ -1,6 +1,7 @@
 filter_aov <- function(
   range = c(0, Inf),
   trans = NULL,
+  score_type = "fstat",
   direction = "maximize"
 ) {
   new_filters_score(
@@ -11,10 +12,10 @@ filter_aov <- function(
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = Inf,
-    score_type = c("fstat", "pval"), # Add "pval"
+    score_type = score_type, #c("fstat", "pval"),
     trans = NULL, # To do
     sorts = NULL, # To do
-    direction = "maximize",
+    direction = c("maximize", "minimize", "target"),
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,

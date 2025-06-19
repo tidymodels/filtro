@@ -32,15 +32,6 @@ outcome <- iris$Species
 predictor <- iris$Sepal.Length
 get_f_stat(predictor, outcome)
 
-# Test get_p_val Note: Can probably write this inside get_f_stat
-outcome <- iris$Sepal.Length
-predictor <- iris$Species
-get_p_val(predictor, outcome)
-
-outcome <- iris$Species
-predictor <- iris$Sepal.Length
-get_p_val(predictor, outcome)
-
 # Test get_score
 data(iris)
 data <- iris
@@ -59,13 +50,13 @@ data(iris)
 data <- iris
 outcome <- "Sepal.Length"
 filter_obj <- filter_aov()
-filter_obj$score_type <- "fstat" # Or else Error
+#filter_obj$score_type <- "fstat" # Or else Error
 tbl_iris <- get_score_aov(filter_obj, data, outcome)
 tbl_iris
 
 outcome <- "Species"
 filter_obj <- filter_aov()
-filter_obj$score_type <- "fstat" # Or else Error
+#filter_obj$score_type <- "fstat" # Or else Error
 tbl_iris <- get_score_aov(filter_obj, data, outcome)
 tbl_iris
 

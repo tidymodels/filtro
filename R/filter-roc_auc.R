@@ -20,9 +20,7 @@ filter_roc_auc <- function(range = c(0, 1), trans = NULL) {
 }
 
 flip_if_needed <- function(x, y) {
-  is_factor <- function(v) is.factor(v) && length(levels(v)) >= 2
-
-  if (is_factor(y) && is.numeric(x)) {
+  if (is.factor(y) && is.numeric(x)) {
     list(predictor = x, outcome = y)
   } else {
     list(predictor = y, outcome = x)
@@ -74,19 +72,13 @@ get_score <- function(filter_obj, data, outcome) {
       get_roc_auc(predictor_col, outcome_col)
     }
   )
-
+  names <- names(score)
   res <- dplyr::tibble(
     name = filter_obj$score_type,
-    score = score,
+    score = unname(score),
     outcome = outcome,
-    predictor = names(score)
+    predictor = names
   )
-}
-
-calc_score <- function(filter_obj, data, outcome) {
-  res <- get_score(filter_obj, data, outcome)
-  filter_obj$res <- res
-  filter_obj
 }
 
 #' @noRd
@@ -103,7 +95,62 @@ print_score_label <- function(x) {
   cli::cli_text("{x$label}")
 }
 
-# May want fit_score. (or calc_score.)
-# calc_score <- function(x, ...) {
-#   UseMethod("calc_score")
+# #' @noRd
+# #' @export
+# fit_score <- function(filter_obj, data, outcome, ...) {
+#   UseMethod("fit_score")
 # }
+
+fit_score <- function(filter_obj, data, outcome, ...) {
+  res <- get_score(filter_obj, data, outcome)
+  filter_obj$res <- res
+  filter_obj
+}
+
+fit_score_res <- function(filter_obj) {
+  filter_obj$res
+}
+
+fit_score_scaling <- function(filter_obj) {
+  if (is.null(filter_obj$trans)) {
+    trans <- scales::transform_identity()
+  } else {
+    trans <- filter_obj$trans
+  }
+  filter_obj$res |>
+    mutate(score = trans$transform(score))
+}
+
+fit_score_arranging <- function(filter_obj, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> arrange(desc(score))
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> arrange(score)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target))
+  }
+}
+
+fit_score_filtering <- function(filter_obj, p = 2, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> arrange(desc(score)) |> slice_head(n = p)
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> arrange(score) |> slice_head(n = p)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+  }
+}
+
+fit_score_filtering_v2 <- function(filter_obj, p = 2, target = 0.993) {
+  if (filter_obj$direction == "maximize") {
+    filter_obj$res |> slice_max(score, n = p)
+  } else if (filter_obj$direction == "minimize") {
+    filter_obj$res |> slice_min(score, n = p)
+  } else if (filter_obj$direction == "target") {
+    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+  }
+}
+
+# To do:
+# Right now the fit_score_* are independent of one another.
+# Use an S3 generic

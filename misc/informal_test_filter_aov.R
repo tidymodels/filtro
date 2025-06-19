@@ -1,0 +1,67 @@
+data(iris)
+iris |> str()
+
+# Test lm
+outcome <- iris$Sepal.Length
+predictor <- iris$Species
+fit <- lm(outcome ~ predictor)
+#res <- summary(fit)$fstatistic[1] |> as.numeric()
+res <- anova(fit)$`F value`[1]
+res <- anova(fit)$`Pr(>F)`[1]
+
+# Test flip_if_needed_aov
+outcome <- iris$Sepal.Length
+predictor <- iris$Species
+flipped <- flip_if_needed_aov(x = predictor, y = outcome)
+flipped$outcome |> class()
+flipped$predictor |> class()
+
+outcome <- iris$Species
+predictor <- iris$Sepal.Length
+flipped <- flip_if_needed_aov(x = predictor, y = outcome)
+flipped$outcome |> class()
+flipped$predictor |> class()
+
+# Test get_f_stat
+outcome <- iris$Sepal.Length
+predictor <- iris$Species
+get_f_stat(predictor, outcome)
+
+outcome <- iris$Species
+predictor <- iris$Sepal.Length
+get_f_stat(predictor, outcome)
+
+# Test get_p_val Note: Can probably write this inside get_f_stat
+outcome <- iris$Sepal.Length
+predictor <- iris$Species
+get_p_val(predictor, outcome)
+
+outcome <- iris$Species
+predictor <- iris$Sepal.Length
+get_p_val(predictor, outcome)
+
+# Test get_score
+data(iris)
+data <- iris
+outcome <- "Sepal.Length"
+filter_obj <- filter_aov()
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
+tbl_iris
+
+outcome <- "Species"
+filter_obj <- filter_aov()
+tbl_iris <- get_score_aov(filter_obj, data, outcome)
+tbl_iris
+
+# Test get_score_aov_p_val Note: Can probably write this inside get_f_stat
+data(iris)
+data <- iris
+outcome <- "Sepal.Length"
+filter_obj <- filter_aov()
+tbl_iris <- get_score_aov_p_val(filter_obj, data, outcome)
+tbl_iris
+
+outcome <- "Species"
+filter_obj <- filter_aov()
+tbl_iris <- get_score_aov_p_val(filter_obj, data, outcome)
+tbl_iris

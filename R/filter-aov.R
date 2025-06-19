@@ -97,5 +97,6 @@ get_score_aov <- function(filter_obj, data, outcome) {
   )
 }
 
+# To do: Confirm the structure, i.e., score_type =
 # To do: Add methods
 # To do: Add test

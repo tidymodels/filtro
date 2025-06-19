@@ -15,7 +15,7 @@ filter_cor <- function(
     score_type = score_type, # c("pearson", "spearman"),
     trans = NULL, # To do
     sorts = NULL, # To do
-    direction = "maximize",
+    direction = c("maximize", "minimize", "target"),
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
@@ -64,5 +64,6 @@ get_score_cor <- function(filter_obj, data, outcome) {
   )
 }
 
+# To do: Confirm the structure, i.e., score_type =
 # To do: Add methods
 # To do: Add test

@@ -151,6 +151,5 @@ fit_score_filtering_v2 <- function(filter_obj, p = 2, target = 0.993) {
   }
 }
 
-# To do:
+# To do: Use an S3 generic
 # Right now the fit_score_* are independent of one another.
-# Use an S3 generic

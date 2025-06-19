@@ -1,6 +1,7 @@
 filter_aov <- function(
   range = c(0, Inf),
   trans = NULL,
+  score_type = "fstat",
   direction = "maximize"
 ) {
   new_filters_score(
@@ -11,10 +12,10 @@ filter_aov <- function(
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = Inf,
-    score_type = c("fstat"), # Add "pval"
+    score_type = score_type, #c("fstat", "pval"),
     trans = NULL, # To do
     sorts = NULL, # To do
-    direction = "maximize",
+    direction = c("maximize", "minimize", "target"),
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
@@ -46,40 +47,6 @@ get_f_stat <- function(predictor, outcome) {
   res
 }
 
-get_score_aov <- function(filter_obj, data, outcome) {
-  predictors <- setdiff(names(data), outcome)
-
-  score <- purrr::map_dbl(
-    purrr::set_names(predictors),
-    ~ {
-      predictor_col <- data[[.x]]
-      outcome_col <- data[[outcome]]
-
-      if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
-        return(NA_real_)
-      }
-
-      if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
-        return(NA_real_)
-      }
-
-      get_f_stat(predictor_col, outcome_col)
-    }
-  )
-  names <- names(score)
-  res <- dplyr::tibble(
-    name = filter_obj$score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = names
-  )
-}
-
-# To do:
-# get_p_val <- function() {
-#   ...
-# }
-
 get_p_val <- function(predictor, outcome) {
   flipped <- flip_if_needed_aov(x = predictor, y = outcome)
   outcome <- flipped$outcome
@@ -95,7 +62,13 @@ get_p_val <- function(predictor, outcome) {
   res
 }
 
-get_score_aov_p_val <- function(filter_obj, data, outcome) {
+get_score_aov <- function(filter_obj, data, outcome) {
+  if (filter_obj$score_type == "fstat") {
+    filter_obj$calculating_fn <- get_f_stat
+  } else if (filter_obj$score_type == "pval") {
+    filter_obj$calculating_fn <- get_p_val
+  }
+
   predictors <- setdiff(names(data), outcome)
 
   score <- purrr::map_dbl(
@@ -112,7 +85,7 @@ get_score_aov_p_val <- function(filter_obj, data, outcome) {
         return(NA_real_)
       }
 
-      get_p_val(predictor_col, outcome_col)
+      filter_obj$calculating_fn(predictor_col, outcome_col) #get_f_stat(predictor_col, outcome_col)
     }
   )
   names <- names(score)
@@ -123,3 +96,7 @@ get_score_aov_p_val <- function(filter_obj, data, outcome) {
     predictor = names
   )
 }
+
+# To do: Confirm the structure, i.e., score_type =
+# To do: Add methods
+# To do: Add test

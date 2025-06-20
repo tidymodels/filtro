@@ -5,7 +5,7 @@ filter_cor <- function(
   direction = "maximize"
 ) {
   new_filters_score(
-    subclass = c("any"),
+    subclass = c("num_num"),
     outcome_type = "numeric",
     predictor_type = "numeric",
     case_weights = FALSE, # To do

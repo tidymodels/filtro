@@ -37,14 +37,9 @@ get_f_stat <- function(predictor, outcome) {
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
-  if (length(levels(predictor)) == 2) {
-    fit <- lm(outcome ~ predictor)
-    res <- anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
-  } else {
-    fit <- lm(outcome ~ predictor)
-    res <- anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
-  }
-  res
+  fit <- lm(outcome ~ predictor)
+  res <- anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
+  return(res)
 }
 
 get_p_val <- function(predictor, outcome) {
@@ -52,14 +47,9 @@ get_p_val <- function(predictor, outcome) {
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
-  if (length(levels(predictor)) == 2) {
-    fit <- lm(outcome ~ predictor)
-    res <- anova(fit)$`Pr(>F)`[1]
-  } else {
-    fit <- lm(outcome ~ predictor)
-    res <- anova(fit)$`Pr(>F)`[1]
-  }
-  res
+  fit <- lm(outcome ~ predictor)
+  res <- anova(fit)$`Pr(>F)`[1]
+  return(res)
 }
 
 get_score_aov <- function(filter_obj, data, outcome) {

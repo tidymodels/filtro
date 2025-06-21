@@ -1,8 +1,8 @@
-test_that("get_score() is working", {
+test_that("get_score_roc_auc() is working", {
   data <- iris
   outcome <- "Species"
-  filter_obj = filter_roc_auc()
-  res <- get_score(filter_obj, data, outcome)
+  score_obj = score_roc_auc()
+  res <- get_score_roc_auc(score_obj, data, outcome)
 
   roc <- pROC::multiclass.roc(
     iris$Species,

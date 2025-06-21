@@ -1,26 +1,26 @@
-filter_cor <- function(
+score_cor <- function(
   range = c(-1, 1),
   trans = NULL,
   score_type = "pearson",
   direction = "maximize"
 ) {
-  new_filters_score(
+  new_score_obj(
     subclass = c("num_num"),
     outcome_type = "numeric",
     predictor_type = "numeric",
-    case_weights = FALSE, # To do
+    case_weights = FALSE, # TODO
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = score_type, # c("pearson", "spearman"),
-    trans = NULL, # To do
-    sorts = NULL, # To do
+    trans = NULL, # TODO
+    sorts = NULL, # TODO
     direction = c("maximize", "minimize", "target"),
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_cor,
-    label = c(filter_aov = "Filter method based on correlation scores")
+    label = c(score_aov = "Correlation scores")
   )
 }
 
@@ -34,11 +34,11 @@ get_spearman <- function(predictor, outcome) {
   return(res)
 }
 
-get_score_cor <- function(filter_obj, data, outcome) {
-  if (filter_obj$score_type == "pearson") {
-    filter_obj$calculating_fn <- get_pearson
-  } else if (filter_obj$score_type == "spearman") {
-    filter_obj$calculating_fn <- get_spearman
+get_score_cor <- function(score_obj, data, outcome) {
+  if (score_obj$score_type == "pearson") {
+    score_obj$calculating_fn <- get_pearson
+  } else if (score_obj$score_type == "spearman") {
+    score_obj$calculating_fn <- get_spearman
   }
   predictors <- setdiff(names(data), outcome)
 
@@ -52,18 +52,18 @@ get_score_cor <- function(filter_obj, data, outcome) {
         return(NA_real_)
       }
 
-      filter_obj$calculating_fn(predictor_col, outcome_col)
+      score_obj$calculating_fn(predictor_col, outcome_col)
     }
   )
   names <- names(score)
   res <- dplyr::tibble(
-    name = filter_obj$score_type,
+    name = score_obj$score_type,
     score = unname(score),
     outcome = outcome,
     predictor = names
   )
 }
 
-# To do: Confirm the structure, i.e., score_type =
-# To do: Add methods
-# To do: Add test
+# TODO Confirm the structure, i.e., score_type =
+# TODO Add methods
+# TODO Add test

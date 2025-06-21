@@ -1,26 +1,27 @@
-filter_cross_tab <- function(
+score_cross_tab <- function(
+  # TODO Change to score_*
   range = c(0, 1),
   trans = NULL,
   score_type = "chisq",
   direction = "minimize"
 ) {
-  new_filters_score(
+  new_score_obj(
     subclass = c("cat_cat"),
     outcome_type = "factor",
     predictor_type = "factor",
-    case_weights = FALSE, # To do
+    case_weights = FALSE, # TODO
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = score_type, # c("chisq", "fisher"),
-    trans = NULL, # To do
-    sorts = NULL, # To do
+    trans = NULL, # TODO
+    sorts = NULL, # TODO
     direction = c("maximize", "minimize", "target"),
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_cor,
-    label = c(filter_aov = "Filter method based on cross tabulation p-values")
+    label = c(score_aov = "Cross tabulation p-values")
   )
 }
 
@@ -36,11 +37,11 @@ get_fisher <- function(predictor, outcome) {
   return(res)
 }
 
-get_score_cross_tab <- function(filter_obj, data, outcome) {
-  if (filter_obj$score_type == "chisq") {
-    filter_obj$calculating_fn <- get_chisq
-  } else if (filter_obj$score_type == "fisher") {
-    filter_obj$calculating_fn <- get_fisher
+get_score_cross_tab <- function(score_obj, data, outcome) {
+  if (score_obj$score_type == "chisq") {
+    score_obj$calculating_fn <- get_chisq
+  } else if (score_obj$score_type == "fisher") {
+    score_obj$calculating_fn <- get_fisher
   }
   predictors <- setdiff(names(data), outcome)
 
@@ -59,12 +60,12 @@ get_score_cross_tab <- function(filter_obj, data, outcome) {
         return(NA_real_)
       }
 
-      filter_obj$calculating_fn(predictor_col, outcome_col)
+      score_obj$calculating_fn(predictor_col, outcome_col)
     }
   )
   names <- names(score)
   res <- dplyr::tibble(
-    name = filter_obj$score_type,
+    name = score_obj$score_type,
     score = unname(score),
     outcome = outcome,
     predictor = names

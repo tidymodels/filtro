@@ -1,4 +1,4 @@
-new_filters_score <- function(
+new_score_obj <- function(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
   outcome_type = c("numeric", "factor"),
   predictor_type = c("numeric", "factor"),
@@ -17,8 +17,8 @@ new_filters_score <- function(
   label = NULL,
   ...
 ) {
-  # To do: Include validators here
-  # To do: Add a validator to make sure subclass has to be in num_num, cat_num, cat_cat, any
+  # TODO Include validators here
+  # TODO Add a validator to make sure subclass has to be in num_num, cat_num, cat_cat, any
 
   res <- list(
     outcome_type = outcome_type,
@@ -37,7 +37,7 @@ new_filters_score <- function(
     calculating_fn = calculating_fn,
     label = label
   )
-  class(res) <- c(subclass, "score")
+  class(res) <- c(subclass, "score_obj") # TODO Rename subclass
 
   res
 }

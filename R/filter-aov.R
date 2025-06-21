@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_aov <- function(
   range = c(0, Inf),
   trans = NULL,

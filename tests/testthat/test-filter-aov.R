@@ -29,3 +29,6 @@ test_that("get_score_roc_auc() is working", {
   # Test name is auc
   # Test outcome
 })
+
+# TODO Test pval
+# TODO Test more after we add validators

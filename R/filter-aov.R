@@ -31,7 +31,7 @@ score_aov <- function(
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_f_stat,
-    label = c(score_aov = "ANOVA F-statistics")
+    label = c(score_aov = "ANOVA F-statistics and p-values")
   )
 }
 

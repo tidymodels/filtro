@@ -43,6 +43,8 @@ flip_if_needed_aov <- function(x, y) {
   }
 }
 
+# TODO stat::p.adjust()
+
 get_f_stat <- function(predictor, outcome) {
   flipped <- flip_if_needed_aov(x = predictor, y = outcome)
   outcome <- flipped$outcome

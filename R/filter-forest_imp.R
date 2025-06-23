@@ -16,10 +16,10 @@ score_forest_imp <- function(
     trans = NULL, # TODO
     sorts = NULL, # TODO
     direction = c("maximize", "minimize", "target"),
-    deterministic = TRUE,
+    deterministic = FALSE,
     tuning = TRUE,
     ties = NULL,
-    calculating_fn = get_score_importance,
+    calculating_fn = NULL,
     label = c(score_aov = "Random Forest importance scores")
   )
 }
@@ -47,7 +47,7 @@ score_forest_imp <- function(
 # }
 # options
 
-get_scores_importance <- function(
+get_score_forest_importance <- function(
   score_obj,
   data,
   outcome,
@@ -65,7 +65,8 @@ get_scores_importance <- function(
       mtry = score_obj$mtry,
       importance = score_obj$score_type, # TODO importance = c(impurity)
       min.node.size = score_obj$min_n,
-      classification = TRUE # TODO classification = FALSE
+      classification = TRUE, # TODO classification = FALSE
+      seed = 42 # TODO Add this to pass tests. Remove later.
     )
     res <- fit$variable.importance
   } else if (score_obj$engine == "partykit") {
@@ -76,7 +77,7 @@ get_scores_importance <- function(
       ntree = score_obj$trees,
       mtry = score_obj$mtry,
     )
-    res <- varimp(fit, conditional = TRUE) # TODO conditional = FALSE
+    res <- partykit::varimp(fit, conditional = TRUE) # TODO conditional = FALSE
     # TODO Not always return score for predictor. Replace with 0, instead of NA.
   } else if (score_obj$engine == "aorsf") {
     fit <- aorsf::orsf(

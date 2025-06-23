@@ -7,8 +7,13 @@
 score_roc_auc(range = c(0, 1), trans = NULL)
 }
 \arguments{
-\item{trans}{}
+\item{range}{NULL}
+
+\item{trans}{NULL}
 }
 \description{
 Title
+}
+\examples{
+NULL
 }

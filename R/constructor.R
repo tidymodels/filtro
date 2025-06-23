@@ -1,27 +1,27 @@
 #' Title
 #'
-#' @param subclass
-#' @param outcome_type
-#' @param predictor_type
-#' @param case_weights
-#' @param range
-#' @param inclusive
-#' @param fallback_value
-#' @param score_type
-#' @param trans
-#' @param sorts
-#' @param direction
-#' @param deterministic
-#' @param tuning
-#' @param ties
-#' @param calculating_fn
-#' @param label
+#' @param subclass NULL
+#' @param outcome_type NULL
+#' @param predictor_type NULL
+#' @param case_weights NULL
+#' @param range NULL
+#' @param inclusive NULL
+#' @param fallback_value NULL
+#' @param score_type NULL
+#' @param trans NULL
+#' @param sorts NULL
+#' @param direction NULL
+#' @param deterministic NULL
+#' @param tuning NULL
+#' @param ties NULL
+#' @param calculating_fn NULL
+#' @param label NULL
 #' @param ...
 #'
-#' @returns
+#' @returns NULL
 #' @export
 #'
-#' @examples
+#' @examples NULL
 new_score_obj <- function(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
   outcome_type = c("numeric", "factor"),

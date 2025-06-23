@@ -1,12 +1,12 @@
 #' Title
 #'
-#' @param range
-#' @param trans
+#' @param range NULL
+#' @param trans NULL
 #'
-#' @returns
+#' @returns NULL
 #' @export
 #'
-#' @examples
+#' @examples NULL
 score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   new_score_obj(
     subclass = c("any"),

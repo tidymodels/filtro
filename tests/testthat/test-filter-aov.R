@@ -32,3 +32,4 @@ test_that("get_score_roc_auc() is working", {
 
 # TODO Test pval
 # TODO Test more after we add validators
+# TODO Replace with other data other than iris

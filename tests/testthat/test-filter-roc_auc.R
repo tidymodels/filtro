@@ -1,4 +1,5 @@
 test_that("get_scores_roc_auc() is working", {
+  skip_if_not_installed("modeldata")
   data(cells, package = "modeldata")
   data <- tibble::tibble(
     case = cells$case,

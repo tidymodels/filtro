@@ -1,4 +1,5 @@
 test_that("get_scores_aov() is working", {
+  skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
   data <- tibble::tibble(
     Sale_Price = ames$Sale_Price,

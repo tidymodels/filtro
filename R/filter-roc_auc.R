@@ -140,23 +140,23 @@ fit_score_arranging <- function(score_obj, target = 0.993) {
   }
 }
 
-fit_score_filtering <- function(score_obj, p = 2, target = 0.993) {
+fit_score_filtering <- function(score_obj, num_terms = 2, target = 0.993) {
   if (score_obj$direction == "maximize") {
-    score_obj$res |> arrange(desc(score)) |> slice_head(n = p)
+    score_obj$res |> arrange(desc(score)) |> slice_head(n = num_terms)
   } else if (score_obj$direction == "minimize") {
-    score_obj$res |> arrange(score) |> slice_head(n = p)
+    score_obj$res |> arrange(score) |> slice_head(n = num_terms)
   } else if (score_obj$direction == "target") {
-    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
   }
 }
 
-fit_score_filtering_v2 <- function(score_obj, p = 2, target = 0.993) {
+fit_score_filtering_v2 <- function(score_obj, num_terms = 2, target = 0.993) {
   if (score_obj$direction == "maximize") {
-    score_obj$res |> slice_max(score, n = p)
+    score_obj$res |> slice_max(score, n = num_terms)
   } else if (score_obj$direction == "minimize") {
-    score_obj$res |> slice_min(score, n = p)
+    score_obj$res |> slice_min(score, n = num_terms)
   } else if (score_obj$direction == "target") {
-    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
   }
 }
 

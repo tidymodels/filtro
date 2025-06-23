@@ -1,4 +1,4 @@
-test_that("get_score_cross_tab is working for chisq", {
+test_that("get_scores_cross_tab is working for chisq", {
   library(titanic)
   titanic_train$Survived <- titanic_train$Survived |> as.factor()
   titanic_train$Pclass <- titanic_train$Pclass |> as.factor()
@@ -14,15 +14,15 @@ test_that("get_score_cross_tab is working for chisq", {
   )
   outcome <- "Survived"
   score_obj <- score_cross_tab()
-  filter_obj$score_type <- "chisq"
-  filter_obj$fdr <- FALSE
-  res <- get_score_cross_tab(filter_obj, data, outcome)
+  score_obj$score_type <- "chisq"
+  score_obj$fdr <- FALSE
+  res <- get_scores_cross_tab(score_obj, data, outcome)
 
-  exp.Pclass <- get_chisq(data$Pclass, data$Survived)
-  exp.Sex <- get_chisq(data$Sex, data$Survived)
+  exp.Pclass <- get_single_chisq(data$Pclass, data$Survived)
+  exp.Sex <- get_single_chisq(data$Sex, data$Survived)
   exp.Age <- NA
   exp.Fare <- NA
-  exp.Embarked <- get_chisq(data$Embarked, data$Survived)
+  exp.Embarked <- get_single_chisq(data$Embarked, data$Survived)
 
   expect_true(tibble::is_tibble(res))
 
@@ -57,15 +57,15 @@ test_that("get_score_cross_tab is working for fisher", {
   )
   outcome <- "Survived"
   score_obj <- score_cross_tab()
-  filter_obj$score_type <- "fisher"
-  filter_obj$fdr <- FALSE
-  res <- get_score_cross_tab(filter_obj, data, outcome)
+  score_obj$score_type <- "fisher"
+  score_obj$fdr <- FALSE
+  res <- get_scores_cross_tab(score_obj, data, outcome)
 
-  exp.Pclass <- get_fisher(data$Pclass, data$Survived)
-  exp.Sex <- get_fisher(data$Sex, data$Survived)
+  exp.Pclass <- get_single_fisher(data$Pclass, data$Survived)
+  exp.Sex <- get_single_fisher(data$Sex, data$Survived)
   exp.Age <- NA
   exp.Fare <- NA
-  exp.Embarked <- get_fisher(data$Embarked, data$Survived)
+  exp.Embarked <- get_single_fisher(data$Embarked, data$Survived)
 
   expect_true(tibble::is_tibble(res))
 

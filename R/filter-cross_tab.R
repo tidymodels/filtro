@@ -19,33 +19,33 @@ score_cross_tab <- function(
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_chisq,
+    calculating_fn = get_single_chisq,
     label = c(score_aov = "Cross tabulation p-values")
   )
 }
 
-get_chisq <- function(predictor, outcome) {
+get_single_chisq <- function(predictor, outcome) {
   tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
   res <- suppressWarnings(stats::chisq.test(tab)$p.value)
   return(res)
 }
 
-get_fisher <- function(predictor, outcome) {
+get_single_fisher <- function(predictor, outcome) {
   tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
   res <- suppressWarnings(stats::fisher.test(tab)$p.value)
   return(res)
 }
 
-get_score_cross_tab <- function(
+get_scores_cross_tab <- function(
   score_obj,
   data,
   outcome,
   ... # i.e., score_obj$fdr
 ) {
   if (score_obj$score_type == "chisq") {
-    score_obj$calculating_fn <- get_chisq
+    score_obj$calculating_fn <- get_single_chisq
   } else if (score_obj$score_type == "fisher") {
-    score_obj$calculating_fn <- get_fisher
+    score_obj$calculating_fn <- get_single_fisher
   }
   predictors <- setdiff(names(data), outcome)
 

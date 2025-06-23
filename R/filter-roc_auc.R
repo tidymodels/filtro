@@ -19,6 +19,8 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   )
 }
 
+# COMMENT Would love some comments on get_roc_auc, get_score_roc_auc
+
 flip_if_needed <- function(x, y) {
   if (is.factor(y) && is.numeric(x)) {
     list(predictor = x, outcome = y)
@@ -80,6 +82,7 @@ get_score_roc_auc <- function(score_obj, data, outcome) {
     predictor = names
   )
 }
+
 
 #' @noRd
 #' @export

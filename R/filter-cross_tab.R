@@ -25,13 +25,13 @@ score_cross_tab <- function(
 }
 
 get_chisq <- function(predictor, outcome) {
-  tab <- table(predictor, outcome)
+  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
   res <- suppressWarnings(stats::chisq.test(tab)$p.value)
   return(res)
 }
 
 get_fisher <- function(predictor, outcome) {
-  tab <- table(predictor, outcome)
+  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
   res <- suppressWarnings(stats::fisher.test(tab)$p.value)
   return(res)
 }

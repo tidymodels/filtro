@@ -30,7 +30,7 @@ score_aov <- function(
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_f_stat,
+    calculating_fn = get_single_f_stat,
     label = c(score_aov = "ANOVA F-statistics and p-values")
   )
 }
@@ -43,9 +43,7 @@ flip_if_needed_aov <- function(x, y) {
   }
 }
 
-# TODO stat::p.adjust()
-
-get_f_stat <- function(predictor, outcome) {
+get_single_f_stat <- function(predictor, outcome) {
   flipped <- flip_if_needed_aov(x = predictor, y = outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
@@ -55,7 +53,7 @@ get_f_stat <- function(predictor, outcome) {
   return(res)
 }
 
-get_p_val <- function(predictor, outcome) {
+get_single_p_val <- function(predictor, outcome) {
   flipped <- flip_if_needed_aov(x = predictor, y = outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
@@ -65,11 +63,11 @@ get_p_val <- function(predictor, outcome) {
   return(res)
 }
 
-get_score_aov <- function(score_obj, data, outcome) {
+get_scores_aov <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "fstat") {
-    score_obj$calculating_fn <- get_f_stat
+    score_obj$calculating_fn <- get_single_f_stat
   } else if (score_obj$score_type == "pval") {
-    score_obj$calculating_fn <- get_p_val
+    score_obj$calculating_fn <- get_single_p_val
   }
 
   predictors <- setdiff(names(data), outcome)
@@ -88,7 +86,7 @@ get_score_aov <- function(score_obj, data, outcome) {
         return(NA_real_)
       }
 
-      score_obj$calculating_fn(predictor_col, outcome_col) #get_f_stat(predictor_col, outcome_col)
+      score_obj$calculating_fn(predictor_col, outcome_col) #get_single_f_stat(predictor_col, outcome_col)
     }
   )
   names <- names(score)
@@ -99,7 +97,3 @@ get_score_aov <- function(score_obj, data, outcome) {
     predictor = names
   )
 }
-
-# TODO Confirm the structure, i.e., score_type =
-# TODO Add methods
-# TODO Add test

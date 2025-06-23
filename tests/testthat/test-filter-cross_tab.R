@@ -4,7 +4,7 @@ test_that("get_scores_cross_tab is working for chisq", {
   titanic_train$Pclass <- titanic_train$Pclass |> as.factor()
   titanic_train$Sex <- titanic_train$Sex |> as.factor()
   titanic_train$Embarked <- titanic_train$Embarked |> as.factor()
-  data <- tibble(
+  data <- tibble::tibble(
     Survived = titanic_train$Survived,
     Pclass = titanic_train$Pclass,
     Sex = titanic_train$Sex,
@@ -47,7 +47,7 @@ test_that("get_score_cross_tab is working for fisher", {
   titanic_train$Pclass <- titanic_train$Pclass |> as.factor()
   titanic_train$Sex <- titanic_train$Sex |> as.factor()
   titanic_train$Embarked <- titanic_train$Embarked |> as.factor()
-  data <- tibble(
+  data <- tibble::tibble(
     Survived = titanic_train$Survived,
     Pclass = titanic_train$Pclass,
     Sex = titanic_train$Sex,

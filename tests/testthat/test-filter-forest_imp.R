@@ -1,6 +1,6 @@
 test_that("get_score_forest_importance() is working", {
   data(cells, package = "modeldata")
-  data <- tibble(
+  data <- tibble::tibble(
     case = cells$case,
     class = cells$class,
     angle_ch_1 = cells$angle_ch_1,

@@ -1,6 +1,6 @@
 test_that("get_scores_cor() is working", {
   data(ames, package = "modeldata")
-  data <- tibble(
+  data <- tibble::tibble(
     Sale_Price = ames$Sale_Price,
     MS_SubClass = ames$MS_SubClass,
     MS_Zoning = ames$MS_Zoning,

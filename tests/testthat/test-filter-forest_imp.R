@@ -41,7 +41,7 @@ test_that("get_score_forest_importance() is working", {
   expect_equal(unique(res$outcome), "class")
 })
 
-# TODO Test regression
 # TODO Test partykit::cforest
 # TODO Test aorsf::orsf
+# TODO Test regression for ranger::ranger, set classification = FALSE
 # TODO Test more after we add validators

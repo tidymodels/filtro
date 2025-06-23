@@ -1,4 +1,4 @@
-test_that("get_score_cross_tab is working", {
+test_that("get_score_cross_tab is working for chisq", {
   library(titanic)
   titanic_train$Survived <- titanic_train$Survived |> as.factor()
   titanic_train$Pclass <- titanic_train$Pclass |> as.factor()

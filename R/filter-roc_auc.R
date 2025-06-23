@@ -23,7 +23,7 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_roc_auc,
+    calculating_fn = get_single_roc_auc,
     label = c(score_aov = "ROC AUC scores")
   )
 }
@@ -36,14 +36,14 @@ flip_if_needed <- function(x, y) {
   }
 }
 
-get_roc_auc <- function(predictor, outcome) {
+get_single_roc_auc <- function(predictor, outcome) {
   flipped <- flip_if_needed(x = predictor, y = outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
   if (length(levels(outcome)) == 2) {
+    # TODO if else will change once we pass case_weights = in later on
     roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE)
-    res <- pROC::auc(roc) |> as.numeric()
   } else {
     roc <- pROC::multiclass.roc(
       outcome,
@@ -51,17 +51,17 @@ get_roc_auc <- function(predictor, outcome) {
       direction = "auto",
       quiet = TRUE
     )
-    res <- pROC::auc(roc) |> as.numeric()
   }
+  res <- pROC::auc(roc) |> as.numeric()
   res
 }
 
-get_score_roc_auc <- function(score_obj, data, outcome) {
+get_scores_roc_auc <- function(score_obj, data, outcome) {
   predictors <- setdiff(names(data), outcome)
 
   # score <- purrr::map_dbl(
   #   predictors,
-  #   ~ get_roc_auc(data[[.x]], data[[outcome]])
+  #   ~ get_single_roc_auc(data[[.x]], data[[outcome]])
   # )
 
   score <- purrr::map_dbl(
@@ -78,7 +78,7 @@ get_score_roc_auc <- function(score_obj, data, outcome) {
         return(NA_real_)
       }
 
-      get_roc_auc(predictor_col, outcome_col)
+      get_single_roc_auc(predictor_col, outcome_col)
     }
   )
   names <- names(score)
@@ -89,7 +89,6 @@ get_score_roc_auc <- function(score_obj, data, outcome) {
     predictor = names
   )
 }
-
 
 #' @noRd
 #' @export
@@ -112,7 +111,7 @@ print_score_label <- function(x) {
 # }
 
 fit_score <- function(score_obj, data, outcome, ...) {
-  res <- get_score_roc_auc(score_obj, data, outcome)
+  res <- get_scores_roc_auc(score_obj, data, outcome)
   score_obj$res <- res
   score_obj
 }

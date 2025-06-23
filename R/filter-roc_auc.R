@@ -16,7 +16,7 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
-    score_type = "auc",
+    score_type = "roc_auc",
     trans = NULL, # TODO
     sorts = NULL, # TODO
     direction = "maximize",

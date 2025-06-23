@@ -97,7 +97,7 @@ print_score_label <- function(x) {
 
 # #' @noRd
 # #' @export
-# fit_score <- function(score_obj, data, outcome, ...) {
+# fit.score_obj <- function(score_obj, data, outcome, ...) {
 #   UseMethod("fit_score")
 # }
 

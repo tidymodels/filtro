@@ -19,26 +19,26 @@ score_cor <- function(
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_cor,
+    calculating_fn = get_single_pearson,
     label = c(score_aov = "Correlation scores")
   )
 }
 
-get_pearson <- function(predictor, outcome) {
+get_single_pearson <- function(predictor, outcome) {
   res <- cor(predictor, outcome, method = "pearson")
   return(res)
 }
 
-get_spearman <- function(predictor, outcome) {
+get_single_spearman <- function(predictor, outcome) {
   res <- cor(predictor, outcome, method = "spearman")
   return(res)
 }
 
-get_score_cor <- function(score_obj, data, outcome) {
+get_scores_cor <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "pearson") {
-    score_obj$calculating_fn <- get_pearson
+    score_obj$calculating_fn <- get_single_pearson
   } else if (score_obj$score_type == "spearman") {
-    score_obj$calculating_fn <- get_spearman
+    score_obj$calculating_fn <- get_single_spearman
   }
   predictors <- setdiff(names(data), outcome)
 

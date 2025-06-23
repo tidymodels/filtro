@@ -1,4 +1,4 @@
-score_forest <- function(
+score_forest_imp <- function(
   range = c(0, Inf),
   trans = NULL,
   score_type = "permutation", # c("permutation", "impurity", ...)
@@ -47,7 +47,7 @@ score_forest <- function(
 # }
 # options
 
-get_score_importance <- function(
+get_scores_importance <- function(
   score_obj,
   data,
   outcome,

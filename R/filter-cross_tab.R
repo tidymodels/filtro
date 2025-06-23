@@ -1,5 +1,4 @@
 score_cross_tab <- function(
-  # TODO Change to score_*
   range = c(0, 1),
   trans = NULL,
   score_type = "chisq",
@@ -41,7 +40,7 @@ get_score_cross_tab <- function(
   score_obj,
   data,
   outcome,
-  ... # score_obj$fdr
+  ... # i.e., score_obj$fdr
 ) {
   if (score_obj$score_type == "chisq") {
     score_obj$calculating_fn <- get_chisq

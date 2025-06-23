@@ -1,3 +1,12 @@
+#' Title
+#'
+#' @param range
+#' @param trans
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   new_score_obj(
     subclass = c("any"),
@@ -18,8 +27,6 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
     label = c(score_aov = "ROC AUC scores")
   )
 }
-
-# COMMENT Would love some comments on get_roc_auc, get_score_roc_auc
 
 flip_if_needed <- function(x, y) {
   if (is.factor(y) && is.numeric(x)) {

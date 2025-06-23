@@ -62,7 +62,7 @@ res <- varimp(fit, conditional = TRUE) # conditional permutation
 res
 
 # test orsf classfication
-fit <- orsf(
+fit <- aorsf::orsf(
   formula = Species ~ .,
   data = iris,
   n_tree = 10,
@@ -105,5 +105,44 @@ data <- iris
 outcome <- "Species"
 score_obj <- score_forest()
 score_obj$engine <- "partykit"
+tbl_iris <- get_score_importance(score_obj, data, outcome)
+tbl_iris
+
+# Test get_score_importance on partykit
+data(iris)
+data <- iris
+outcome <- "Species"
+score_obj <- score_forest()
+score_obj$engine <- "aorsf"
+tbl_iris <- get_score_importance(score_obj, data, outcome)
+tbl_iris
+
+# Test
+data(iris)
+data <- iris
+outcome <- "Species"
+score_obj <- score_forest()
+score_obj$engine <- "ranger"
+score_obj$trees <- 10
+score_obj$mtry <- 2
+score_obj$min_n <- 1
+tbl_iris <- get_score_importance(score_obj, data, outcome)
+tbl_iris
+
+outcome <- "Species"
+score_obj <- score_forest()
+score_obj$engine <- "partykit"
+score_obj$trees <- 10
+score_obj$mtry <- 2
+score_obj$min_n <- 1
+tbl_iris <- get_score_importance(score_obj, data, outcome)
+tbl_iris
+
+outcome <- "Species"
+score_obj <- score_forest()
+score_obj$engine <- "aorsf"
+score_obj$trees <- 10
+score_obj$mtry <- 2
+score_obj$min_n <- 1
 tbl_iris <- get_score_importance(score_obj, data, outcome)
 tbl_iris

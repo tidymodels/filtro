@@ -83,4 +83,5 @@ test_that("get_score_cross_tab is working for fisher", {
   expect_equal(unique(res$outcome), "Survived")
 })
 
+# TODO Test fdr
 # TODO Test more after we add validators

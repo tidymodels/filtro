@@ -29,6 +29,7 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
 }
 
 flip_if_needed <- function(x, y) {
+  # TODO Move to utilities.R
   if (is.factor(y) && is.numeric(x)) {
     list(predictor = x, outcome = y)
   } else {
@@ -36,20 +37,21 @@ flip_if_needed <- function(x, y) {
   }
 }
 
-get_single_roc_auc <- function(predictor, outcome) {
+get_single_roc_auc <- function(predictor, outcome, ...) {
   flipped <- flip_if_needed(x = predictor, y = outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
   if (length(levels(outcome)) == 2) {
     # TODO if else will change once we pass case_weights = in later
-    roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE)
+    roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE, ...)
   } else {
     roc <- pROC::multiclass.roc(
       outcome,
       predictor,
       direction = "auto",
-      quiet = TRUE
+      quiet = TRUE,
+      ...
     )
   }
   res <- pROC::auc(roc) |> as.numeric()
@@ -88,10 +90,12 @@ get_scores_roc_auc <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ map_score_roc_auc(data, .x, outcome)
+    #~ map_score_roc_auc(data, .x, outcome)
+    \(x) map_score_roc_auc(data, x, outcome)
   )
 
   res <- make_scores_roc_auc(score_obj$score_type, score, outcome, predictors)
+  res
 }
 
 #' @noRd

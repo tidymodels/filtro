@@ -15,8 +15,10 @@ test_that("get_score_forest_importance() is working", {
   score_obj$trees <- 10
   score_obj$mtry <- 2
   score_obj$min_n <- 1
+  set.seed(42)
   res <- get_scores_forest_importance(score_obj, data, outcome)
 
+  set.seed(42)
   fit <- ranger::ranger(
     formula = class ~ .,
     data = data,
@@ -63,6 +65,7 @@ test_that("get_score_forest_importance() is working for partykit", {
   score_obj$trees <- 10
   score_obj$mtry <- 2
   score_obj$min_n <- 1
+  set.seed(42)
   res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)

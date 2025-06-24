@@ -90,7 +90,6 @@ get_scores_forest_importance <- function(
     )
     imp <- fit$variable.importance
   } else if (score_obj$engine == "partykit") {
-    set.seed(42) # TODO Add this to pass tests. Remove later.
     fit <- partykit::cforest(
       formula = formula,
       data = data,

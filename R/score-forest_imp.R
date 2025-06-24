@@ -94,7 +94,7 @@ get_scores_forest_importance <- function(
     fit <- partykit::cforest(
       formula = formula,
       data = data,
-      control = ctree_control(minsplit = score_obj$min_n), # TODO Eventually have user pass in ctree_control()
+      control = partykit::ctree_control(minsplit = score_obj$min_n), # TODO Eventually have user pass in ctree_control()
       ntree = score_obj$trees,
       mtry = score_obj$mtry,
     )

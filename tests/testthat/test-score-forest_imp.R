@@ -69,9 +69,9 @@ test_that("get_score_forest_importance() is working for partykit", {
   fit <- partykit::cforest(
     formula = class ~ .,
     data = data,
-    control = ctree_control(minsplit = score_obj$min_n), # TODO Eventually have user pass in ctree_control()
-    ntree = score_obj$trees,
-    mtry = score_obj$mtry,
+    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
+    ntree = 10,
+    mtry = 2,
   )
   imp <- partykit::varimp(fit, conditional = TRUE)
   predictors <- setdiff(names(data), outcome)

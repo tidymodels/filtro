@@ -89,7 +89,6 @@ get_scores_roc_auc <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    #~ map_score_roc_auc(data, .x, outcome)
     \(x) map_score_roc_auc(data, x, outcome)
   )
 

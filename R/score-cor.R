@@ -67,7 +67,7 @@ get_scores_cor <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ map_score_cor(data, .x, outcome, score_obj$calculating_fn)
+    \(x) map_score_cor(data, x, outcome, score_obj$calculating_fn)
   )
 
   res <- make_scores_cor(score_obj$score_type, score, outcome, predictors)

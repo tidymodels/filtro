@@ -102,7 +102,7 @@ get_scores_aov <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ map_score_aov(data, .x, outcome, score_obj$calculating_fn)
+    \(x) map_score_aov(data, x, outcome, score_obj$calculating_fn)
   )
 
   res <- make_scores_aov(score_obj$score_type, score, outcome, predictors)

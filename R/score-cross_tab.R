@@ -79,7 +79,7 @@ get_scores_cross_tab <- function(
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ map_score_cross_tab(data, .x, outcome, score_obj$calculating_fn)
+    \(x) map_score_cross_tab(data, x, outcome, score_obj$calculating_fn)
   )
 
   if (score_obj$fdr == TRUE) {

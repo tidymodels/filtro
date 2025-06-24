@@ -16,7 +16,7 @@
 #' @param ties NULL
 #' @param calculating_fn NULL
 #' @param label NULL
-#' @param ...
+#' @param ... NULL
 #'
 #' @returns NULL
 #' @export

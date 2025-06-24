@@ -105,4 +105,5 @@ get_scores_aov <- function(score_obj, data, outcome) {
   )
 
   res <- make_scores_aov(score_obj$score_type, score, outcome, predictors)
+  res
 }

@@ -87,5 +87,6 @@ get_scores_cross_tab <- function(
     score <- stats::p.adjust(score)
   }
 
-  res <- make_scores_cor(score_obj$score_type, score, outcome, predictors)
+  res <- make_scores_cross_tab(score_obj$score_type, score, outcome, predictors)
+  res
 }

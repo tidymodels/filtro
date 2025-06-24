@@ -71,4 +71,5 @@ get_scores_cor <- function(score_obj, data, outcome) {
   )
 
   res <- make_scores_cor(score_obj$score_type, score, outcome, predictors)
+  res
 }

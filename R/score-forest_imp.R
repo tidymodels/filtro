@@ -47,13 +47,33 @@ score_forest_imp <- function(
 # }
 # options
 
-get_score_forest_importance <- function(
+make_scores_forest_importance <- function(
+  score_type,
+  imp,
+  outcome,
+  predictors
+) {
+  score <- as.numeric(imp[predictors]) # TODO There is probably a better way to to do this?
+  score[is.na(score)] <- 0
+
+  res <- dplyr::tibble(
+    name = rep(score_type, length(predictors)),
+    score = score,
+    outcome = rep(outcome, length(predictors)),
+    predictor = predictors
+  )
+  res
+}
+
+get_scores_forest_importance <- function(
   score_obj,
   data,
   outcome,
   ... # i.e., score_obj$engine, score_obj$trees, score_obj$mtry, score_obj$min_n
 ) {
   outcome_name <- outcome |> as.name()
+  predictors <- setdiff(names(data), outcome)
+
   formula <- as.formula(paste(outcome_name, "~ .")) # TODO Avoid formula method if possible because of slowness caused by design matrix
 
   if (score_obj$engine == "ranger") {
@@ -68,8 +88,9 @@ get_score_forest_importance <- function(
       classification = TRUE, # TODO classification = FALSE
       seed = 42 # TODO Add this to pass tests. Remove later.
     )
-    res <- fit$variable.importance
+    imp <- fit$variable.importance
   } else if (score_obj$engine == "partykit") {
+    set.seed(42) # TODO Add this to pass tests. Remove later.
     fit <- partykit::cforest(
       formula = formula,
       data = data,
@@ -77,8 +98,7 @@ get_score_forest_importance <- function(
       ntree = score_obj$trees,
       mtry = score_obj$mtry,
     )
-    res <- partykit::varimp(fit, conditional = TRUE) # TODO conditional = FALSE
-    # TODO Not always return score for predictor. Replace with 0, instead of NA.
+    imp <- partykit::varimp(fit, conditional = TRUE) # TODO conditional = FALSE
   } else if (score_obj$engine == "aorsf") {
     fit <- aorsf::orsf(
       formula = formula,
@@ -87,14 +107,13 @@ get_score_forest_importance <- function(
       n_retry = score_obj$mtry,
       importance = "permute" # TODO = c("none", "anova", "negate")
     )
-    res <- fit$importance # orsf_vi_permute(fit)
+    imp <- fit$importance # orsf_vi_permute(fit)
   }
-  score <- unname(res)
-  names <- names(res)
-  res <- dplyr::tibble(
-    name = rep(score_obj$score_type, length(score)),
-    score = score,
-    outcome = rep(outcome, length(score)),
-    predictor = names
+  res <- make_scores_forest_importance(
+    score_obj$score_type,
+    imp,
+    outcome,
+    predictors
   )
+  res
 }

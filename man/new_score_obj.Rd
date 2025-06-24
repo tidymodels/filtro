@@ -57,7 +57,7 @@ new_score_obj(
 
 \item{label}{NULL}
 
-\item{...}{}
+\item{...}{NULL}
 }
 \description{
 Title

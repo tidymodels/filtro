@@ -53,6 +53,6 @@ test_that("get_scores_cor() is working", {
   expect_equal(unique(res$outcome), "Sale_Price")
 })
 
-# TODO Test Reversed lm(x ~ y)
+# TODO Test Reversed stats::lm(x ~ y)
 # TODO Test spearman
 # TODO Test more after we add validators

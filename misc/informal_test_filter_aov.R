@@ -5,10 +5,10 @@ iris |> str()
 # Test lm
 outcome <- iris$Sepal.Length
 predictor <- iris$Species
-fit <- lm(outcome ~ predictor)
+fit <- stats::lm(outcome ~ predictor)
 #res <- summary(fit)$fstatistic[1] |> as.numeric()
-res <- anova(fit)$`F value`[1]
-res <- anova(fit)$`Pr(>F)`[1]
+res <- stats::anova(fit)$`F value`[1]
+res <- stats::anova(fit)$`Pr(>F)`[1]
 
 # Test flip_if_needed_aov
 outcome <- iris$Sepal.Length

@@ -13,18 +13,18 @@ test_that("get_scores_aov() is working", {
   score_obj = score_aov()
   res <- get_scores_aov(score_obj, data, outcome)
 
-  fit <- lm(ames$Sale_Price ~ ames$MS_SubClass)
-  exp.MS_SubClass <- anova(fit)$`F value`[1]
+  fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
+  exp.MS_SubClass <- stats::anova(fit)$`F value`[1]
 
-  fit <- lm(ames$Sale_Price ~ ames$MS_Zoning)
-  exp.MS_Zoning <- anova(fit)$`F value`[1]
+  fit <- stats::lm(ames$Sale_Price ~ ames$MS_Zoning)
+  exp.MS_Zoning <- stats::anova(fit)$`F value`[1]
 
   exp.Lot_Frontage <- NA
 
   exp.Lot_Area <- NA
 
-  fit <- lm(ames$Sale_Price ~ ames$Street)
-  exp.Street <- anova(fit)$`F value`[1]
+  fit <- stats::lm(ames$Sale_Price ~ ames$Street)
+  exp.Street <- stats::anova(fit)$`F value`[1]
 
   expect_true(tibble::is_tibble(res))
 
@@ -48,6 +48,6 @@ test_that("get_scores_aov() is working", {
   expect_equal(unique(res$outcome), "Sale_Price")
 })
 
-# TODO Test Reversed lm(x ~ y)
+# TODO Test Reversed stats::lm(x ~ y)
 # TODO Test pval
 # TODO Test more after we add validators

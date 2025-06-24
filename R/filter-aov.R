@@ -48,8 +48,8 @@ get_single_f_stat <- function(predictor, outcome) {
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
-  fit <- lm(outcome ~ predictor)
-  res <- anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
+  fit <- stats::lm(outcome ~ predictor)
+  res <- stats::anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
   return(res)
 }
 
@@ -58,8 +58,8 @@ get_single_p_val <- function(predictor, outcome) {
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
-  fit <- lm(outcome ~ predictor)
-  res <- anova(fit)$`Pr(>F)`[1]
+  fit <- stats::lm(outcome ~ predictor)
+  res <- stats::anova(fit)$`Pr(>F)`[1]
   return(res)
 }
 

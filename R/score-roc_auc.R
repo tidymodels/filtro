@@ -114,55 +114,55 @@ print_score_label <- function(x) {
 #   UseMethod("fit_score")
 # }
 
-fit_score <- function(score_obj, data, outcome, ...) {
-  res <- get_scores_roc_auc(score_obj, data, outcome)
-  score_obj$res <- res
-  score_obj
-}
+# fit_score <- function(score_obj, data, outcome, ...) {
+#   res <- get_scores_roc_auc(score_obj, data, outcome)
+#   score_obj$res <- res
+#   score_obj
+# }
 
-fit_score_res <- function(score_obj) {
-  score_obj$res
-}
+# fit_score_res <- function(score_obj) {
+#   score_obj$res
+# }
 
-fit_score_scaling <- function(score_obj) {
-  if (is.null(score_obj$trans)) {
-    trans <- scales::transform_identity()
-  } else {
-    trans <- score_obj$trans
-  }
-  score_obj$res |>
-    mutate(score = trans$transform(score))
-}
+# fit_score_scaling <- function(score_obj) {
+#   if (is.null(score_obj$trans)) {
+#     trans <- scales::transform_identity()
+#   } else {
+#     trans <- score_obj$trans
+#   }
+#   score_obj$res |>
+#     mutate(score = trans$transform(score))
+# }
 
-fit_score_arranging <- function(score_obj, target = 0.993) {
-  if (score_obj$direction == "maximize") {
-    score_obj$res |> arrange(desc(score))
-  } else if (score_obj$direction == "minimize") {
-    score_obj$res |> arrange(score)
-  } else if (score_obj$direction == "target") {
-    score_obj$res |> arrange(abs(score - target))
-  }
-}
+# fit_score_arranging <- function(score_obj, target = 0.993) {
+#   if (score_obj$direction == "maximize") {
+#     score_obj$res |> arrange(desc(score))
+#   } else if (score_obj$direction == "minimize") {
+#     score_obj$res |> arrange(score)
+#   } else if (score_obj$direction == "target") {
+#     score_obj$res |> arrange(abs(score - target))
+#   }
+# }
 
-fit_score_filtering <- function(score_obj, num_terms = 2, target = 0.993) {
-  if (score_obj$direction == "maximize") {
-    score_obj$res |> arrange(desc(score)) |> slice_head(n = num_terms)
-  } else if (score_obj$direction == "minimize") {
-    score_obj$res |> arrange(score) |> slice_head(n = num_terms)
-  } else if (score_obj$direction == "target") {
-    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
-  }
-}
+# fit_score_filtering <- function(score_obj, num_terms = 2, target = 0.993) {
+#   if (score_obj$direction == "maximize") {
+#     score_obj$res |> arrange(desc(score)) |> slice_head(n = num_terms)
+#   } else if (score_obj$direction == "minimize") {
+#     score_obj$res |> arrange(score) |> slice_head(n = num_terms)
+#   } else if (score_obj$direction == "target") {
+#     score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
+#   }
+# }
 
-fit_score_filtering_v2 <- function(score_obj, num_terms = 2, target = 0.993) {
-  if (score_obj$direction == "maximize") {
-    score_obj$res |> slice_max(score, n = num_terms)
-  } else if (score_obj$direction == "minimize") {
-    score_obj$res |> slice_min(score, n = num_terms)
-  } else if (score_obj$direction == "target") {
-    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
-  }
-}
+# fit_score_filtering_v2 <- function(score_obj, num_terms = 2, target = 0.993) {
+#   if (score_obj$direction == "maximize") {
+#     score_obj$res |> slice_max(score, n = num_terms)
+#   } else if (score_obj$direction == "minimize") {
+#     score_obj$res |> slice_min(score, n = num_terms)
+#   } else if (score_obj$direction == "target") {
+#     score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
+#   }
+# }
 
-# TODO Use an S3 generic
-# Right now the fit_score_* are independent of one another.
+# # TODO Use an S3 generic
+# # Right now the fit_score_* are independent of one another.

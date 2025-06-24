@@ -1,8 +1,8 @@
 test_that("get_score_forest_importance() is working", {
   skip_if_not_installed("modeldata")
-  data(cells, package = "modeldata")
+  data(cells, package = "modeldata") # FYI modeldata::cells() works too
   data <- tibble::tibble(
-    case = cells$case,
+    case = cells$case, # FYI Is not a predictor. Designate whether the row was in the training or test set in the original reference.
     class = cells$class,
     angle_ch_1 = cells$angle_ch_1,
     area_ch_1 = cells$area_ch_1,

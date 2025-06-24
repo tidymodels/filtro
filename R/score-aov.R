@@ -63,8 +63,35 @@ get_single_p_val <- function(predictor, outcome) {
   return(res)
 }
 
+map_score_aov <- function(data, predictor, outcome, calculating_fn) {
+  predictor_col <- data[[predictor]]
+  outcome_col <- data[[outcome]]
+
+  if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
+    return(NA_real_)
+  }
+
+  if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
+    return(NA_real_)
+  }
+
+  res <- calculating_fn(predictor_col, outcome_col)
+  res
+}
+
+make_scores_aov <- function(score_type, score, outcome, predictors) {
+  res <- dplyr::tibble(
+    name = score_type,
+    score = unname(score),
+    outcome = outcome,
+    predictor = predictors
+  )
+  res
+}
+
 get_scores_aov <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "fstat") {
+    # TODO Should I move this elsewhere?
     score_obj$calculating_fn <- get_single_f_stat
   } else if (score_obj$score_type == "pval") {
     score_obj$calculating_fn <- get_single_p_val
@@ -74,26 +101,8 @@ get_scores_aov <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ {
-      predictor_col <- data[[.x]]
-      outcome_col <- data[[outcome]]
-
-      if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
-        return(NA_real_)
-      }
-
-      if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
-        return(NA_real_)
-      }
-
-      score_obj$calculating_fn(predictor_col, outcome_col) #get_single_f_stat(predictor_col, outcome_col)
-    }
+    ~ map_score_aov(data, .x, outcome, score_obj$calculating_fn)
   )
-  names <- names(score)
-  res <- dplyr::tibble(
-    name = score_obj$score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = names
-  )
+
+  res <- make_scores_aov(score_obj$score_type, score, outcome, predictors)
 }

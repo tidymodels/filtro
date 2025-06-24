@@ -34,8 +34,31 @@ get_single_spearman <- function(predictor, outcome) {
   return(res)
 }
 
+map_score_cor <- function(data, predictor, outcome, calculating_fn) {
+  predictor_col <- data[[predictor]]
+  outcome_col <- data[[outcome]]
+
+  if (is.factor(outcome_col) || is.factor(predictor_col)) {
+    return(NA_real_)
+  }
+
+  res <- calculating_fn(predictor_col, outcome_col)
+  res
+}
+
+make_scores_cor <- function(score_type, score, outcome, predictors) {
+  res <- dplyr::tibble(
+    name = score_type,
+    score = unname(score),
+    outcome = outcome,
+    predictor = predictors
+  )
+  res
+}
+
 get_scores_cor <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "pearson") {
+    # TODO Should I move this elsewhere?
     score_obj$calculating_fn <- get_single_pearson
   } else if (score_obj$score_type == "spearman") {
     score_obj$calculating_fn <- get_single_spearman
@@ -44,26 +67,8 @@ get_scores_cor <- function(score_obj, data, outcome) {
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ {
-      predictor_col <- data[[.x]]
-      outcome_col <- data[[outcome]]
-
-      if (is.factor(outcome_col) || is.factor(predictor_col)) {
-        return(NA_real_)
-      }
-
-      score_obj$calculating_fn(predictor_col, outcome_col)
-    }
+    ~ map_score_cor(data, .x, outcome, score_obj$calculating_fn)
   )
-  names <- names(score)
-  res <- dplyr::tibble(
-    name = score_obj$score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = names
-  )
+
+  res <- make_scores_cor(score_obj$score_type, score, outcome, predictors)
 }
-
-# TODO Confirm the structure, i.e., score_type =
-# TODO Add methods
-# TODO Add test

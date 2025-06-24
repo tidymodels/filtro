@@ -42,7 +42,7 @@ get_single_roc_auc <- function(predictor, outcome) {
   predictor <- flipped$predictor
 
   if (length(levels(outcome)) == 2) {
-    # TODO if else will change once we pass case_weights = in later on
+    # TODO if else will change once we pass case_weights = in later
     roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE)
   } else {
     roc <- pROC::multiclass.roc(
@@ -56,38 +56,42 @@ get_single_roc_auc <- function(predictor, outcome) {
   res
 }
 
+map_score_roc_auc <- function(data, predictor, outcome) {
+  predictor_col <- data[[predictor]]
+  outcome_col <- data[[outcome]]
+
+  if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
+    return(NA_real_)
+  }
+
+  if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
+    return(NA_real_)
+  }
+
+  res <- get_single_roc_auc(predictor_col, outcome_col)
+  res
+}
+
+make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
+  #predictor_names <- names(score) # TODO Need to handle predictors that have no score
+  res <- dplyr::tibble(
+    name = score_type,
+    score = unname(score),
+    outcome = outcome,
+    predictor = predictors #predictor_names
+  )
+  res
+}
+
 get_scores_roc_auc <- function(score_obj, data, outcome) {
   predictors <- setdiff(names(data), outcome)
 
-  # score <- purrr::map_dbl(
-  #   predictors,
-  #   ~ get_single_roc_auc(data[[.x]], data[[outcome]])
-  # )
-
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ {
-      predictor_col <- data[[.x]]
-      outcome_col <- data[[outcome]]
-
-      if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
-        return(NA_real_)
-      }
-
-      if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
-        return(NA_real_)
-      }
-
-      get_single_roc_auc(predictor_col, outcome_col)
-    }
+    ~ map_score_roc_auc(data, .x, outcome)
   )
-  names <- names(score)
-  res <- dplyr::tibble(
-    name = score_obj$score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = names
-  )
+
+  res <- make_scores_roc_auc(score_obj$score_type, score, outcome, predictors)
 }
 
 #' @noRd

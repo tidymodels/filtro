@@ -9,7 +9,7 @@
 #' @examples NULL
 score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   new_score_obj(
-    subclass = c("any"),
+    subclass = c("any"), # TODO
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
     case_weights = FALSE, # TODO

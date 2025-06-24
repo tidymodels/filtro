@@ -1,4 +1,4 @@
-test_that("get_scores_aov() is working", {
+test_that("get_scores_cor() is working", {
   skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
   data <- tibble::tibble(
@@ -10,21 +10,26 @@ test_that("get_scores_aov() is working", {
     Street = ames$Street,
   )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_obj = score_cor()
+  res <- get_scores_cor(score_obj, data, outcome)
 
-  fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
-  exp.MS_SubClass <- stats::anova(fit)$`F value`[1]
+  exp.MS_SubClass <- NA
 
-  fit <- stats::lm(ames$Sale_Price ~ ames$MS_Zoning)
-  exp.MS_Zoning <- stats::anova(fit)$`F value`[1]
+  exp.MS_Zoning <- NA
 
-  exp.Lot_Frontage <- NA
+  exp.Lot_Frontage <- stats::cor(
+    ames$Lot_Frontage,
+    ames$Sale_Price,
+    method = "pearson"
+  )
 
-  exp.Lot_Area <- NA
+  exp.Lot_Area <- stats::cor(
+    ames$Lot_Area,
+    ames$Sale_Price,
+    method = "pearson"
+  )
 
-  fit <- stats::lm(ames$Sale_Price ~ ames$Street)
-  exp.Street <- stats::anova(fit)$`F value`[1]
+  exp.Street <- NA
 
   expect_true(tibble::is_tibble(res))
 
@@ -43,11 +48,11 @@ test_that("get_scores_aov() is working", {
     )
   )
 
-  expect_equal(unique(res$name), "fstat")
+  expect_equal(unique(res$name), "pearson")
 
   expect_equal(unique(res$outcome), "Sale_Price")
 })
 
 # TODO Test Reversed stats::lm(x ~ y)
-# TODO Test pval
+# TODO Test spearman
 # TODO Test more after we add validators

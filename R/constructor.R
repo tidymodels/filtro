@@ -1,3 +1,27 @@
+#' Title
+#'
+#' @param subclass NULL
+#' @param outcome_type NULL
+#' @param predictor_type NULL
+#' @param case_weights NULL
+#' @param range NULL
+#' @param inclusive NULL
+#' @param fallback_value NULL
+#' @param score_type NULL
+#' @param trans NULL
+#' @param sorts NULL
+#' @param direction NULL
+#' @param deterministic NULL
+#' @param tuning NULL
+#' @param ties NULL
+#' @param calculating_fn NULL
+#' @param label NULL
+#' @param ... NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 new_score_obj <- function(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
   outcome_type = c("numeric", "factor"),

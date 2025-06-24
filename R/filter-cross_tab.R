@@ -1,5 +1,4 @@
 score_cross_tab <- function(
-  # TODO Change to score_*
   range = c(0, 1),
   trans = NULL,
   score_type = "chisq",
@@ -20,28 +19,33 @@ score_cross_tab <- function(
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_cor,
+    calculating_fn = get_single_chisq,
     label = c(score_aov = "Cross tabulation p-values")
   )
 }
 
-get_chisq <- function(predictor, outcome) {
-  tab <- table(predictor, outcome)
-  res <- stats::chisq.test(tab)$p.value
+get_single_chisq <- function(predictor, outcome) {
+  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
+  res <- suppressWarnings(stats::chisq.test(tab)$p.value)
   return(res)
 }
 
-get_fisher <- function(predictor, outcome) {
-  tab <- table(predictor, outcome)
-  res <- stats::fisher.test(tab)$p.value
+get_single_fisher <- function(predictor, outcome) {
+  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
+  res <- suppressWarnings(stats::fisher.test(tab)$p.value)
   return(res)
 }
 
-get_score_cross_tab <- function(score_obj, data, outcome) {
+get_scores_cross_tab <- function(
+  score_obj,
+  data,
+  outcome,
+  ... # i.e., score_obj$fdr
+) {
   if (score_obj$score_type == "chisq") {
-    score_obj$calculating_fn <- get_chisq
+    score_obj$calculating_fn <- get_single_chisq
   } else if (score_obj$score_type == "fisher") {
-    score_obj$calculating_fn <- get_fisher
+    score_obj$calculating_fn <- get_single_fisher
   }
   predictors <- setdiff(names(data), outcome)
 
@@ -54,15 +58,20 @@ get_score_cross_tab <- function(score_obj, data, outcome) {
       if (is.numeric(outcome_col) || is.numeric(predictor_col)) {
         return(NA_real_)
       }
-      if (
-        length(levels(outcome_col)) > 2 || length(levels(predictor_col)) > 2
-      ) {
-        return(NA_real_)
-      }
+      # if (
+      #   length(levels(outcome_col)) > 2 || length(levels(predictor_col)) > 2
+      # ) {
+      #   return(NA_real_)
+      # }
 
       score_obj$calculating_fn(predictor_col, outcome_col)
     }
   )
+
+  if (score_obj$fdr == TRUE) {
+    score <- stats::p.adjust(score)
+  }
+
   names <- names(score)
   res <- dplyr::tibble(
     name = score_obj$score_type,

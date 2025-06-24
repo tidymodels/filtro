@@ -1,3 +1,12 @@
+#' Title
+#'
+#' @param range NULL
+#' @param trans NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   new_score_obj(
     subclass = c("any"),
@@ -7,19 +16,17 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
-    score_type = "auc",
+    score_type = "roc_auc",
     trans = NULL, # TODO
     sorts = NULL, # TODO
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_roc_auc,
+    calculating_fn = get_single_roc_auc,
     label = c(score_aov = "ROC AUC scores")
   )
 }
-
-# COMMENT Would love some comments on get_roc_auc, get_score_roc_auc
 
 flip_if_needed <- function(x, y) {
   if (is.factor(y) && is.numeric(x)) {
@@ -29,14 +36,14 @@ flip_if_needed <- function(x, y) {
   }
 }
 
-get_roc_auc <- function(predictor, outcome) {
+get_single_roc_auc <- function(predictor, outcome) {
   flipped <- flip_if_needed(x = predictor, y = outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 
   if (length(levels(outcome)) == 2) {
+    # TODO if else will change once we pass case_weights = in later on
     roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE)
-    res <- pROC::auc(roc) |> as.numeric()
   } else {
     roc <- pROC::multiclass.roc(
       outcome,
@@ -44,17 +51,17 @@ get_roc_auc <- function(predictor, outcome) {
       direction = "auto",
       quiet = TRUE
     )
-    res <- pROC::auc(roc) |> as.numeric()
   }
+  res <- pROC::auc(roc) |> as.numeric()
   res
 }
 
-get_score_roc_auc <- function(score_obj, data, outcome) {
+get_scores_roc_auc <- function(score_obj, data, outcome) {
   predictors <- setdiff(names(data), outcome)
 
   # score <- purrr::map_dbl(
   #   predictors,
-  #   ~ get_roc_auc(data[[.x]], data[[outcome]])
+  #   ~ get_single_roc_auc(data[[.x]], data[[outcome]])
   # )
 
   score <- purrr::map_dbl(
@@ -71,7 +78,7 @@ get_score_roc_auc <- function(score_obj, data, outcome) {
         return(NA_real_)
       }
 
-      get_roc_auc(predictor_col, outcome_col)
+      get_single_roc_auc(predictor_col, outcome_col)
     }
   )
   names <- names(score)
@@ -82,7 +89,6 @@ get_score_roc_auc <- function(score_obj, data, outcome) {
     predictor = names
   )
 }
-
 
 #' @noRd
 #' @export
@@ -105,7 +111,7 @@ print_score_label <- function(x) {
 # }
 
 fit_score <- function(score_obj, data, outcome, ...) {
-  res <- get_score_roc_auc(score_obj, data, outcome)
+  res <- get_scores_roc_auc(score_obj, data, outcome)
   score_obj$res <- res
   score_obj
 }
@@ -134,23 +140,23 @@ fit_score_arranging <- function(score_obj, target = 0.993) {
   }
 }
 
-fit_score_filtering <- function(score_obj, p = 2, target = 0.993) {
+fit_score_filtering <- function(score_obj, num_terms = 2, target = 0.993) {
   if (score_obj$direction == "maximize") {
-    score_obj$res |> arrange(desc(score)) |> slice_head(n = p)
+    score_obj$res |> arrange(desc(score)) |> slice_head(n = num_terms)
   } else if (score_obj$direction == "minimize") {
-    score_obj$res |> arrange(score) |> slice_head(n = p)
+    score_obj$res |> arrange(score) |> slice_head(n = num_terms)
   } else if (score_obj$direction == "target") {
-    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
   }
 }
 
-fit_score_filtering_v2 <- function(score_obj, p = 2, target = 0.993) {
+fit_score_filtering_v2 <- function(score_obj, num_terms = 2, target = 0.993) {
   if (score_obj$direction == "maximize") {
-    score_obj$res |> slice_max(score, n = p)
+    score_obj$res |> slice_max(score, n = num_terms)
   } else if (score_obj$direction == "minimize") {
-    score_obj$res |> slice_min(score, n = p)
+    score_obj$res |> slice_min(score, n = num_terms)
   } else if (score_obj$direction == "target") {
-    filter_obj$res |> arrange(abs(score - target)) |> slice_head(n = p)
+    score_obj$res |> arrange(abs(score - target)) |> slice_head(n = num_terms)
   }
 }
 

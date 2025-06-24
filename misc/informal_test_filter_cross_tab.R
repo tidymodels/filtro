@@ -42,12 +42,43 @@ data <- tibble(
   Embarked = titanic_train$Embarked
 )
 outcome <- "Survived"
-filter_obj <- filter_cross_tab()
+filter_obj <- score_cross_tab()
 tbl_titanic <- get_score_cross_tab(filter_obj, data, outcome)
 tbl_titanic
 
 outcome <- "Survived"
-filter_obj <- filter_cross_tab()
+filter_obj <- score_cross_tab()
 filter_obj$score_type <- "fisher"
 tbl_titanic <- get_score_cross_tab(filter_obj, data, outcome)
 tbl_titanic
+
+# Test stats::p.adjust()
+data <- tibble(
+  Survived = titanic_train$Survived,
+  Pclass = titanic_train$Pclass,
+  Sex = titanic_train$Sex,
+  Age = titanic_train$Age,
+  Fare = titanic_train$Fare,
+  Embarked = titanic_train$Embarked
+)
+outcome <- "Survived"
+filter_obj <- score_cross_tab()
+filter_obj$fdr <- FALSE
+tbl_titanic <- get_score_cross_tab(filter_obj, data, outcome)
+tbl_titanic
+
+stats::p.adjust(tbl_titanic$score)
+
+data <- tibble(
+  Survived = titanic_train$Survived,
+  Pclass = titanic_train$Pclass,
+  Sex = titanic_train$Sex,
+  Age = titanic_train$Age,
+  Fare = titanic_train$Fare,
+  Embarked = titanic_train$Embarked
+)
+outcome <- "Survived"
+filter_obj <- score_cross_tab()
+filter_obj$fdr <- TRUE
+tbl_titanic <- get_score_cross_tab(filter_obj, data, outcome)
+tbl_titanic$score

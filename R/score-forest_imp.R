@@ -57,9 +57,9 @@ make_scores_forest_importance <- function(
   score[is.na(score)] <- 0
 
   res <- dplyr::tibble(
-    name = rep(score_type, length(predictors)),
+    name = score_type,
     score = score,
-    outcome = rep(outcome, length(predictors)),
+    outcome = outcome,
     predictor = predictors
   )
   res

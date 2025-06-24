@@ -25,12 +25,12 @@ score_cor <- function(
 }
 
 get_single_pearson <- function(predictor, outcome) {
-  res <- cor(predictor, outcome, method = "pearson")
+  res <- stats::cor(predictor, outcome, method = "pearson")
   return(res)
 }
 
 get_single_spearman <- function(predictor, outcome) {
-  res <- cor(predictor, outcome, method = "spearman")
+  res <- stats::cor(predictor, outcome, method = "spearman")
   return(res)
 }
 

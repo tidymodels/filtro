@@ -17,13 +17,13 @@ test_that("get_scores_cor() is working", {
 
   exp.MS_Zoning <- NA
 
-  exp.Lot_Frontage <- cor(
+  exp.Lot_Frontage <- stats::cor(
     ames$Lot_Frontage,
     ames$Sale_Price,
     method = "pearson"
   )
 
-  exp.Lot_Area <- cor(
+  exp.Lot_Area <- stats::cor(
     ames$Lot_Area,
     ames$Sale_Price,
     method = "pearson"

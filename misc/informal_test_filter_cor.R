@@ -6,8 +6,8 @@ data <- iris
 # Test cor
 outcome <- data$Sepal.Length
 predictor <- data$Sepal.Width
-cor(outcome, predictor, method = "pearson")
-cor(outcome, predictor, method = "spearman")
+stats::cor(outcome, predictor, method = "pearson")
+stats::cor(outcome, predictor, method = "spearman")
 
 # Test get_cor
 outcome <- data$Sepal.Length

@@ -55,7 +55,7 @@ get_single_f_stat <- function(predictor, outcome) {
 }
 
 get_single_p_val <- function(predictor, outcome) {
-  flipped <- flip_if_needed_aov(x = predictor, y = outcome)
+  flipped <- flip_if_needed_aov(predictor, outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 

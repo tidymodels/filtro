@@ -74,7 +74,7 @@ get_scores_forest_importance <- function(
   outcome_name <- outcome |> as.name()
   predictors <- setdiff(names(data), outcome)
 
-  formula <- as.formula(paste(outcome_name, "~ .")) # TODO Avoid formula method if possible because of slowness caused by design matrix
+  formula <- stats::as.formula(paste(outcome_name, "~ .")) # TODO Avoid formula method if possible because of slowness caused by design matrix
 
   if (score_obj$engine == "ranger") {
     fit <- ranger::ranger(

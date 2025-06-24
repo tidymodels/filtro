@@ -35,16 +35,17 @@ score_aov <- function(
   )
 }
 
-flip_if_needed_aov <- function(x, y) {
-  if (is.factor(y) && is.numeric(x)) {
-    list(predictor = y, outcome = x)
+flip_if_needed_aov <- function(predictor, outcome) {
+  # TODO Move to utilities.R
+  if (is.factor(outcome) && is.numeric(predictor)) {
+    list(predictor = outcome, outcome = predictor)
   } else {
-    list(predictor = x, outcome = y)
+    list(predictor = predictor, outcome = outcome)
   }
 }
 
 get_single_f_stat <- function(predictor, outcome) {
-  flipped <- flip_if_needed_aov(x = predictor, y = outcome)
+  flipped <- flip_if_needed_aov(predictor, outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 

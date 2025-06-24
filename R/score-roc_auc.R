@@ -28,17 +28,17 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
   )
 }
 
-flip_if_needed <- function(x, y) {
+flip_if_needed <- function(predictor, outcome) {
   # TODO Move to utilities.R
-  if (is.factor(y) && is.numeric(x)) {
-    list(predictor = x, outcome = y)
+  if (is.factor(outcome) && is.numeric(predictor)) {
+    list(predictor = predictor, outcome = outcome)
   } else {
-    list(predictor = y, outcome = x)
+    list(predictor = outcome, outcome = predictor)
   }
 }
 
 get_single_roc_auc <- function(predictor, outcome, ...) {
-  flipped <- flip_if_needed(x = predictor, y = outcome)
+  flipped <- flip_if_needed(predictor, outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
 

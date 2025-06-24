@@ -75,12 +75,11 @@ map_score_roc_auc <- function(data, predictor, outcome) {
 }
 
 make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
-  #predictor_names <- names(score) # TODO Need to handle predictors that have no score
   res <- dplyr::tibble(
     name = score_type,
     score = unname(score),
     outcome = outcome,
-    predictor = predictors #predictor_names
+    predictor = predictors
   )
   res
 }

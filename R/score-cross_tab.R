@@ -36,6 +36,33 @@ get_single_fisher <- function(predictor, outcome) {
   return(res)
 }
 
+map_score_cross_tab <- function(data, predictor, outcome, calculating_fn) {
+  predictor_col <- data[[predictor]]
+  outcome_col <- data[[outcome]]
+
+  if (is.numeric(outcome_col) || is.numeric(predictor_col)) {
+    return(NA_real_)
+  }
+  # if (
+  #   length(levels(outcome_col)) > 2 || length(levels(predictor_col)) > 2
+  # ) {
+  #   return(NA_real_)
+  # }
+
+  res <- calculating_fn(predictor_col, outcome_col)
+  res
+}
+
+make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
+  res <- dplyr::tibble(
+    name = score_type,
+    score = unname(score),
+    outcome = outcome,
+    predictor = predictors
+  )
+  res
+}
+
 get_scores_cross_tab <- function(
   score_obj,
   data,
@@ -43,6 +70,7 @@ get_scores_cross_tab <- function(
   ... # i.e., score_obj$fdr
 ) {
   if (score_obj$score_type == "chisq") {
+    # TODO Should I move this elsewhere?
     score_obj$calculating_fn <- get_single_chisq
   } else if (score_obj$score_type == "fisher") {
     score_obj$calculating_fn <- get_single_fisher
@@ -51,32 +79,14 @@ get_scores_cross_tab <- function(
 
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    ~ {
-      predictor_col <- data[[.x]]
-      outcome_col <- data[[outcome]]
-
-      if (is.numeric(outcome_col) || is.numeric(predictor_col)) {
-        return(NA_real_)
-      }
-      # if (
-      #   length(levels(outcome_col)) > 2 || length(levels(predictor_col)) > 2
-      # ) {
-      #   return(NA_real_)
-      # }
-
-      score_obj$calculating_fn(predictor_col, outcome_col)
-    }
+    \(x) map_score_cross_tab(data, x, outcome, score_obj$calculating_fn)
   )
 
   if (score_obj$fdr == TRUE) {
+    # TODO Should I move this elsewhere?
     score <- stats::p.adjust(score)
   }
 
-  names <- names(score)
-  res <- dplyr::tibble(
-    name = score_obj$score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = names
-  )
+  res <- make_scores_cross_tab(score_obj$score_type, score, outcome, predictors)
+  res
 }

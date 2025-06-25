@@ -47,3 +47,26 @@ arrange_score.score_obj <- function(score_obj, ..., target = NULL) {
     score_obj$res |> dplyr::arrange(abs(score - target))
   }
 }
+
+#' Transform score to filter object
+#'
+#' @param score_obj NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+trans_score <- function(score_obj, ...) {
+  UseMethod("trans_score")
+}
+
+#' @noRd
+#' @export
+trans_score.score_obj <- function(score_obj, ...) {
+  if (is.null(score_obj$trans)) {
+    trans <- scales::transform_identity()
+  } else {
+    trans <- score_obj$trans
+  }
+  score_obj$res |>
+    dplyr::mutate(score = trans$transform(score))
+}

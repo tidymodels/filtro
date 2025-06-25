@@ -1,4 +1,4 @@
-#' Attach score to filter object
+#' Attach score to score object
 #'
 #' @param x NULL
 #'
@@ -24,7 +24,7 @@ attach_score.score_obj <- function(x, res, ...) {
   x
 }
 
-#' Arrange score to filter object
+#' Arrange score to score object
 #'
 #' @param score_obj NULL
 #'
@@ -48,7 +48,7 @@ arrange_score.score_obj <- function(score_obj, ..., target = NULL) {
   }
 }
 
-#' Transform score to filter object
+#' Transform score to score object
 #'
 #' @param score_obj NULL
 #'

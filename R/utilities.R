@@ -1,19 +1,31 @@
+#' Attach score to filter object
+#'
 #' @param score_obj NULL
 #'
 #' @param ... NULL
 #'
 #' @export
-attach_score <- function(score_obj, ...) {
+attach_score <- function(x, ...) {
   UseMethod("attach_score")
 }
 
 #' @noRd
 #' @export
-attach_score.any <- function(score_obj, res, ...) {
-  score_obj$res <- res
-  score_obj
+attach_score.default <- function(x, res, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
 }
 
+#' @noRd
+#' @export
+attach_score.score_obj <- function(x, res, ...) {
+  x$res <- res
+  x
+}
+
+#' Arrange score to filter object
+#'
 #' @param score_obj NULL
 #'
 #' @param ... NULL
@@ -25,7 +37,8 @@ arrange_score <- function(score_obj, ...) {
 
 #' @noRd
 #' @export
-arrange_score.any <- function(score_obj, target = target, ...) {
+arrange_score.score_obj <- function(score_obj, ..., target = NULL) {
+  # TODO Check if direction == target, add "need a target"
   if (score_obj$direction == "maximize") {
     score_obj$res |> dplyr::arrange(desc(score))
   } else if (score_obj$direction == "minimize") {

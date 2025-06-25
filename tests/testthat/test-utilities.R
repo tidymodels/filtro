@@ -46,6 +46,7 @@ test_that("arrange_score() is working for roc auc", {
   skip_if_not_installed("modeldata")
   data(cells, package = "modeldata")
   data <- tibble::tibble(
+    # modeldata::cells |> select()
     case = cells$case,
     class = cells$class,
     angle_ch_1 = cells$angle_ch_1,
@@ -57,7 +58,7 @@ test_that("arrange_score() is working for roc auc", {
   score_obj = score_roc_auc()
   res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res) # TO DO User have to run this for arrange_score() to work
+  score_obj <- score_obj |> attach_score(res) # TODO User have to run this for arrange_score() to work
 
   score_obj$direction <- "maximize"
   ex.max <- score_obj |> arrange_score()

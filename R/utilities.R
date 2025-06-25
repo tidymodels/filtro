@@ -70,3 +70,28 @@ trans_score.score_obj <- function(score_obj, ...) {
   score_obj$res |>
     dplyr::mutate(score = trans$transform(score))
 }
+
+#' Filter score to score object
+#'
+#' @param score_obj NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+filter_score <- function(score_obj, ...) {
+  UseMethod("filter_score")
+}
+
+#' @noRd
+#' @export
+filter_score.score_obj <- function(score_obj, ..., num_terms, target = NULL) {
+  if (score_obj$direction == "maximize") {
+    score_obj$res |> dplyr::slice_max(score, n = num_terms)
+  } else if (score_obj$direction == "minimize") {
+    score_obj$res |> dplyr::slice_min(score, n = num_terms)
+  } else if (score_obj$direction == "target") {
+    score_obj$res |>
+      dplyr::arrange(abs(score - target)) |>
+      dplyr::slice_head(n = num_terms)
+  }
+}

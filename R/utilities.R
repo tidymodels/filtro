@@ -1,6 +1,6 @@
 #' Attach score to filter object
 #'
-#' @param score_obj NULL
+#' @param x NULL
 #'
 #' @param ... NULL
 #'
@@ -40,7 +40,7 @@ arrange_score <- function(score_obj, ...) {
 arrange_score.score_obj <- function(score_obj, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
   if (score_obj$direction == "maximize") {
-    score_obj$res |> dplyr::arrange(desc(score))
+    score_obj$res |> dplyr::arrange(dplyr::desc(score))
   } else if (score_obj$direction == "minimize") {
     score_obj$res |> dplyr::arrange(score)
   } else if (score_obj$direction == "target") {

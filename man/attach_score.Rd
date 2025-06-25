@@ -7,9 +7,9 @@
 attach_score(x, ...)
 }
 \arguments{
-\item{...}{NULL}
+\item{x}{NULL}
 
-\item{score_obj}{NULL}
+\item{...}{NULL}
 }
 \description{
 Attach score to filter object

@@ -13,11 +13,9 @@ test_that("attach_score() is working for roc auc", {
   score_obj = score_roc_auc()
   res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  ex.score_obj <- attach_score(score_obj, res)
-  ex2.score_obj <- score_obj |> attach_score(res)
+  ex.score_obj <- score_obj |> attach_score(res)
 
   expect_equal(ex.score_obj$res, res)
-  expect_equal(ex2.score_obj$res, res)
 })
 
 test_that("attach_score() is working for aov", {
@@ -35,11 +33,9 @@ test_that("attach_score() is working for aov", {
   score_obj = score_aov()
   res <- get_scores_aov(score_obj, data, outcome)
 
-  ex.score_obj <- attach_score(score_obj, res)
-  ex2.score_obj <- score_obj |> attach_score(res)
+  ex.score_obj <- score_obj |> attach_score(res)
 
   expect_equal(ex.score_obj$res, res)
-  expect_equal(ex2.score_obj$res, res)
 })
 
 test_that("arrange_score() is working for roc auc", {

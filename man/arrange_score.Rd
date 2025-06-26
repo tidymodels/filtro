@@ -4,10 +4,10 @@
 \alias{arrange_score}
 \title{Arrange score to score object}
 \usage{
-arrange_score(score_obj, ...)
+arrange_score(x, ...)
 }
 \arguments{
-\item{score_obj}{NULL}
+\item{x}{NULL}
 
 \item{...}{NULL}
 }

@@ -4,10 +4,10 @@
 \alias{trans_score}
 \title{Transform score to score object}
 \usage{
-trans_score(score_obj, ...)
+trans_score(x, ...)
 }
 \arguments{
-\item{score_obj}{NULL}
+\item{x}{NULL}
 
 \item{...}{NULL}
 }

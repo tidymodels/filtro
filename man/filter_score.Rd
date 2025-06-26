@@ -4,10 +4,10 @@
 \alias{filter_score}
 \title{Filter score to score object}
 \usage{
-filter_score(score_obj, ...)
+filter_score(x, ...)
 }
 \arguments{
-\item{score_obj}{NULL}
+\item{x}{NULL}
 
 \item{...}{NULL}
 }

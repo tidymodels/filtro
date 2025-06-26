@@ -58,31 +58,25 @@ test_that("arrange_score() is working for roc auc", {
 
   score_obj <- score_obj |> attach_score(res) # TODO User have to run this for arrange_score() to work
 
-  score_obj$direction <- "maximize"
+  score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> arrange_score()
 
   score_obj$direction <- "minimize"
   ex.min <- score_obj |> arrange_score()
 
   score_obj$direction <- "target"
-  ex.target <- arrange_score(score_obj, target = 0.760)
-  score_obj$direction <- "target"
-  ex2.target <- score_obj |> arrange_score(target = 0.760)
+  ex.target <- score_obj |> arrange_score(target = 0.760)
 
   score_obj$direction <- "target"
-  ex.target2 <- arrange_score(score_obj, target = 0.502)
-  score_obj$direction <- "target"
-  ex2.target2 <- score_obj |> arrange_score(target = 0.502)
+  ex.target2 <- score_obj |> arrange_score(target = 0.502)
 
   expect_equal(ex.max, res |> dplyr::arrange(desc(score)))
 
   expect_equal(ex.min, res |> dplyr::arrange(score))
 
   expect_equal(ex.target, res |> dplyr::arrange(abs(score - 0.760)))
-  expect_equal(ex2.target, res |> dplyr::arrange(abs(score - 0.760)))
 
   expect_equal(ex.target2, res |> dplyr::arrange(abs(score - 0.502)))
-  expect_equal(ex2.target2, res |> dplyr::arrange(abs(score - 0.502)))
 })
 
 test_that("arrange_score() is working for aov", {
@@ -101,33 +95,27 @@ test_that("arrange_score() is working for aov", {
   score_obj = score_aov()
   res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res) # TO DO User have to run this for arrange_score() to work
+  score_obj <- score_obj |> attach_score(res)
 
-  score_obj$direction <- "maximize"
+  score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> arrange_score()
 
   score_obj$direction <- "minimize"
   ex.min <- score_obj |> arrange_score()
 
   score_obj$direction <- "target"
-  ex.target <- arrange_score(score_obj, target = 63.8)
-  score_obj$direction <- "target"
-  ex2.target <- score_obj |> arrange_score(target = 63.8)
+  ex.target <- score_obj |> arrange_score(target = 63.8)
 
   score_obj$direction <- "target"
-  ex.target2 <- arrange_score(score_obj, target = 10.4)
-  score_obj$direction <- "target"
-  ex2.target2 <- score_obj |> arrange_score(target = 10.4)
+  ex.target2 <- score_obj |> arrange_score(target = 10.4)
 
   expect_equal(ex.max, res |> dplyr::arrange(desc(score)))
 
   expect_equal(ex.min, res |> dplyr::arrange(score))
 
   expect_equal(ex.target, res |> dplyr::arrange(abs(score - 63.8)))
-  expect_equal(ex2.target, res |> dplyr::arrange(abs(score - 63.8)))
 
   expect_equal(ex.target2, res |> dplyr::arrange(abs(score - 10.4)))
-  expect_equal(ex2.target2, res |> dplyr::arrange(abs(score - 10.4)))
 })
 
 test_that("trans_score() is working for roc auc", {
@@ -161,7 +149,36 @@ test_that("trans_score() is working for roc auc", {
   expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
 })
 
-# TODO Test for aov
+test_that("trans_score() is working for aov", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata")
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+  outcome <- "Sale_Price"
+  score_obj = score_aov()
+  res <- get_scores_aov(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(res)
+
+  score_obj$trans <- NULL # Default
+  ex.identity <- score_obj |> trans_score()
+
+  score_obj$trans <- scales::transform_log()
+  ex.log <- score_obj |> trans_score()
+
+  # TODO Add a couple more scales::transform_*()
+
+  expect_equal(ex.identity, res)
+
+  expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
+})
 
 test_that("filter_score() is working for roc auc", {
   skip_if_not_installed("modeldata")

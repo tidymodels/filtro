@@ -336,3 +336,58 @@ test_that("filter_score_prop() is working for aov", {
 })
 
 # TODO Test for roc auc
+
+test_that("filter_score_cutoff() is working for aov", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata")
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+  outcome <- "Sale_Price"
+  score_obj = score_aov()
+  res <- get_scores_aov(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(res)
+
+  score_obj$direction <- "maximize" # Default
+  ex.max <- score_obj |> filter_score_cutoff(cutoff = 63.8)
+
+  score_obj$direction <- "minimize"
+  ex.min <- score_obj |> filter_score_cutoff(cutoff = 63.8)
+
+  score_obj$direction <- "target"
+  ex.target <- score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4)
+
+  score_obj$direction <- "target"
+  ex.target2 <- score_obj |> filter_score_cutoff(target = 10.4, cutoff = 1)
+
+  expect_equal(
+    ex.max,
+    res |> dplyr::arrange(desc(score)) |> dplyr::filter(score >= 63.8)
+  ) # TODO Can return more # of predictors due to floating-point precision
+
+  expect_equal(
+    ex.min,
+    res |> dplyr::arrange(score) |> dplyr::filter(score <= 63.8)
+  ) # TODO Can return less # of predictors due to floating-point precision
+
+  expect_equal(
+    ex.target,
+    res |>
+      dplyr::arrange(abs(score - 63.8)) |>
+      dplyr::filter(abs(score - 63.8) <= 4)
+  )
+
+  expect_equal(
+    ex.target2,
+    res |>
+      dplyr::arrange(abs(score - 10.4)) |>
+      dplyr::filter(abs(score - 10.4) <= 1)
+  )
+})

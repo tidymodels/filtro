@@ -63,3 +63,11 @@ score_obj |>
   filter_score_num(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
 # Filter score based on cutoff value
+score_obj$direction <- "maximize"
+score_obj |> filter_score_cutoff(cutoff = 63.8)
+
+score_obj$direction <- "minimize"
+score_obj |> filter_score_cutoff(cutoff = 63.8)
+
+score_obj$direction <- "target"
+score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4)

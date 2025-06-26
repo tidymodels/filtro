@@ -123,8 +123,43 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   }
 }
 
-# TODO Filter score based on cutoff value
-# filter_score_cutoff
+#' Filter score based on cutoff value
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+filter_score_cutoff <- function(x, ...) {
+  # TODO Rename to filter_num_terms?
+  UseMethod("filter_score_cutoff")
+}
+
+#' @noRd
+#' @export
+filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
+  if (x$direction == "maximize") {
+    # TODO Can return more # of predictors due to floating-point precision
+    # TODO >= or >
+    x$res |>
+      dplyr::arrange(dplyr::desc(score)) |>
+      dplyr::filter(score >= cutoff)
+  } else if (x$direction == "minimize") {
+    # TODO Can return less # of predictors due to floating-point precision
+    # TODO <= or <
+    x$res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
+  } else if (x$direction == "target") {
+    x$res |>
+      dplyr::arrange(abs(score - target)) |>
+      dplyr::filter(abs(score - target) <= cutoff)
+  }
+}
+
+# TODO Filter score based on user input
+# filter_score_<>
 
 # TODO Rank score
 # rank_score
+
+# TODO Bind scores
+# bind_score

@@ -34,4 +34,13 @@ score_obj |> trans_score()
 score_obj$trans <- scales::transform_log()
 score_obj |> trans_score()
 
-# Filter score
+# Filter score based on number of predictors
+score_obj$direction <- "maximize" # Default
+score_obj |> filter_score_num(num_terms = 2)
+
+score_obj$direction <- "minimize"
+score_obj |> filter_score_num(num_terms = 2)
+
+score_obj$direction <- "target"
+score_obj |>
+  filter_score_num(score_obj, num_terms = 2, target = 63.8)

@@ -66,6 +66,9 @@ make_scores_forest_importance <- function(
   res
 }
 
+# TODO Break get_scores_forest_importance() into 3 calls?
+# ranger::ranger() supports x = , y = but partykit::cforest() and aorsf::orsf() do not.
+
 get_scores_forest_importance <- function(
   score_obj,
   data,

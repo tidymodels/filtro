@@ -44,3 +44,16 @@ score_obj |> filter_score_num(num_terms = 2)
 score_obj$direction <- "target"
 score_obj |>
   filter_score_num(score_obj, num_terms = 2, target = 63.8)
+
+# Filter score based on proportion of predictors
+score_obj$direction <- "maximize" # Default
+score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Return NULL for prop = 0.1
+
+score_obj$direction <- "minimize"
+score_obj |> filter_score_num(prop_terms = 0.2) # TODO Return NULL for prop = 0.1
+
+score_obj$direction <- "target"
+score_obj |>
+  filter_score_num(score_obj, prop_terms = 0.2, target = 63.8)
+
+# Filter score based on cutoff value

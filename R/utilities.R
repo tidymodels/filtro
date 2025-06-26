@@ -97,11 +97,31 @@ filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   }
 }
 
-# TODO Filter score based on number of predictors
-# filter_score_num Rename?
+#' Filter score based on proportion of predictors
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+filter_score_prop <- function(x, ...) {
+  # TODO Rename to filter_num_terms?
+  UseMethod("filter_score_prop")
+}
 
-# TODO Filter score based on proportion of predictors
-# filter_score_prop
+#' @noRd
+#' @export
+filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
+  if (x$direction == "maximize") {
+    x$res |> dplyr::slice_max(score, prop = prop_terms)
+  } else if (x$direction == "minimize") {
+    x$res |> dplyr::slice_min(score, prop = prop_terms)
+  } else if (x$direction == "target") {
+    x$res |>
+      dplyr::arrange(abs(score - target)) |>
+      dplyr::slice_head(prop = prop_terms)
+  }
+}
 
 # TODO Filter score based on cutoff value
 # filter_score_cutoff

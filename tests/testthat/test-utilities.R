@@ -180,21 +180,21 @@ test_that("trans_score() is working for aov", {
   expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
 })
 
-test_that("filter_score() is working for roc auc", {
+test_that("filter_score_num() is working for roc auc", {
   skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
+  data(cells, package = "modeldata")
+  data <- modeldata::cells |>
     dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
+      case,
+      class,
+      angle_ch_1,
+      area_ch_1,
+      avg_inten_ch_1,
+      avg_inten_ch_2
     )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  outcome <- "class"
+  score_obj = score_roc_auc()
+  res <- get_scores_roc_auc(score_obj, data, outcome)
 
   score_obj <- score_obj |> attach_score(res)
 
@@ -231,21 +231,21 @@ test_that("filter_score() is working for roc auc", {
   )
 })
 
-test_that("filter_score() is working for aov", {
+test_that("filter_score_num() is working for aov", {
   skip_if_not_installed("modeldata")
-  data(cells, package = "modeldata")
-  data <- modeldata::cells |>
+  data(ames, package = "modeldata")
+  data <- modeldata::ames |>
     dplyr::select(
-      case,
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
     )
-  outcome <- "class"
-  score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  outcome <- "Sale_Price"
+  score_obj = score_aov()
+  res <- get_scores_aov(score_obj, data, outcome)
 
   score_obj <- score_obj |> attach_score(res)
 
@@ -279,5 +279,58 @@ test_that("filter_score() is working for aov", {
     res |>
       dplyr::arrange(abs(score - 10.4)) |>
       dplyr::slice_head(n = 2)
+  )
+})
+
+# TODO Test for roc auc
+
+test_that("filter_score_prop() is working for aov", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata")
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+  outcome <- "Sale_Price"
+  score_obj = score_aov()
+  res <- get_scores_aov(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(res)
+
+  score_obj$direction <- "maximize" # Default
+  ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2)
+
+  score_obj$direction <- "minimize"
+  ex.min <- score_obj |> filter_score_num(prop_terms = 0.2)
+
+  score_obj$direction <- "target"
+  ex.target <- score_obj |>
+    filter_score_num(score_obj, prop_terms = 0.2, target = 63.8)
+
+  score_obj$direction <- "target"
+  ex.target2 <- score_obj |>
+    filter_score_num(score_obj, prop_terms = 0.2, target = 10.4)
+
+  expect_equal(ex.max, res |> dplyr::slice_max(score, prop = 0.2)) # TODO Return NULL for prop = 0.1
+
+  expect_equal(ex.min, res |> dplyr::slice_min(score, prop = 0.2)) # TODO Return NULL for prop = 0.1
+
+  expect_equal(
+    ex.target,
+    res |>
+      dplyr::arrange(abs(score - 63.8)) |>
+      dplyr::slice_head(prop = 0.2)
+  )
+
+  expect_equal(
+    ex.target2,
+    res |>
+      dplyr::arrange(abs(score - 10.4)) |>
+      dplyr::slice_head(prop = 0.2)
   )
 })

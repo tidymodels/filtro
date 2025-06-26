@@ -24,7 +24,7 @@ attach_score.score_obj <- function(x, res, ...) {
   x
 }
 
-#' Arrange score to score object
+#' Arrange score
 #'
 #' @param x NULL
 #'
@@ -48,7 +48,7 @@ arrange_score.score_obj <- function(x, ..., target = NULL) {
   }
 }
 
-#' Transform score to score object
+#' Transform score
 #'
 #' @param x NULL
 #'
@@ -71,7 +71,7 @@ trans_score.score_obj <- function(x, ...) {
     dplyr::mutate(score = trans$transform(score))
 }
 
-#' Filter score to score object
+#' Filter score based on number of predictors
 #'
 #' @param x NULL
 #'
@@ -79,6 +79,7 @@ trans_score.score_obj <- function(x, ...) {
 #'
 #' @export
 filter_score <- function(x, ...) {
+  # TODO Rename to filter_num_terms?
   UseMethod("filter_score")
 }
 
@@ -95,3 +96,15 @@ filter_score.score_obj <- function(x, ..., num_terms, target = NULL) {
       dplyr::slice_head(n = num_terms)
   }
 }
+
+# TODO Filter score based on number of predictors
+# filter_score_number Rename?
+
+# TODO Filter score based on fraction of predictors
+# filter_score_fraction
+
+# TODO Filter score based on cutoff value
+# filter_score_cutoff
+
+# TODO Rank score
+# rank_score

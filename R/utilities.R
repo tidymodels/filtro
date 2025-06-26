@@ -149,6 +149,7 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
     # TODO <= or <
     x$res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
   } else if (x$direction == "target") {
+    # TODO This cutoff value is based on abs(score - target). Not ideal?
     x$res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::filter(abs(score - target) <= cutoff)

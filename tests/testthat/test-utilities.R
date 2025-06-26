@@ -199,18 +199,18 @@ test_that("filter_score() is working for roc auc", {
   score_obj <- score_obj |> attach_score(res)
 
   score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score(num_terms = 2)
+  ex.max <- score_obj |> filter_score_num(num_terms = 2)
 
   score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score(num_terms = 2)
+  ex.min <- score_obj |> filter_score_num(num_terms = 2)
 
   score_obj$direction <- "target"
   ex.target <- score_obj |>
-    filter_score(score_obj, num_terms = 2, target = 0.760)
+    filter_score_num(score_obj, num_terms = 2, target = 0.760)
 
   score_obj$direction <- "target"
   ex.target2 <- score_obj |>
-    filter_score(score_obj, num_terms = 2, target = 0.591)
+    filter_score_num(score_obj, num_terms = 2, target = 0.591)
 
   expect_equal(ex.max, res |> dplyr::slice_max(score, n = 2))
 

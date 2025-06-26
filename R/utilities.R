@@ -78,14 +78,14 @@ trans_score.score_obj <- function(x, ...) {
 #' @param ... NULL
 #'
 #' @export
-filter_score <- function(x, ...) {
+filter_score_num <- function(x, ...) {
   # TODO Rename to filter_num_terms?
-  UseMethod("filter_score")
+  UseMethod("filter_score_num")
 }
 
 #' @noRd
 #' @export
-filter_score.score_obj <- function(x, ..., num_terms, target = NULL) {
+filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   if (x$direction == "maximize") {
     x$res |> dplyr::slice_max(score, n = num_terms)
   } else if (x$direction == "minimize") {
@@ -98,10 +98,10 @@ filter_score.score_obj <- function(x, ..., num_terms, target = NULL) {
 }
 
 # TODO Filter score based on number of predictors
-# filter_score_number Rename?
+# filter_score_num Rename?
 
-# TODO Filter score based on fraction of predictors
-# filter_score_fraction
+# TODO Filter score based on proportion of predictors
+# filter_score_prop
 
 # TODO Filter score based on cutoff value
 # filter_score_cutoff

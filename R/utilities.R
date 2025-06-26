@@ -1,4 +1,4 @@
-#' Attach score to filter object
+#' Attach score to score object
 #'
 #' @param x NULL
 #'
@@ -24,26 +24,74 @@ attach_score.score_obj <- function(x, res, ...) {
   x
 }
 
-#' Arrange score to filter object
+#' Arrange score to score object
 #'
-#' @param score_obj NULL
+#' @param x NULL
 #'
 #' @param ... NULL
 #'
 #' @export
-arrange_score <- function(score_obj, ...) {
+arrange_score <- function(x, ...) {
   UseMethod("arrange_score")
 }
 
 #' @noRd
 #' @export
-arrange_score.score_obj <- function(score_obj, ..., target = NULL) {
+arrange_score.score_obj <- function(x, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
-  if (score_obj$direction == "maximize") {
-    score_obj$res |> dplyr::arrange(dplyr::desc(score))
-  } else if (score_obj$direction == "minimize") {
-    score_obj$res |> dplyr::arrange(score)
-  } else if (score_obj$direction == "target") {
-    score_obj$res |> dplyr::arrange(abs(score - target))
+  if (x$direction == "maximize") {
+    x$res |> dplyr::arrange(dplyr::desc(score))
+  } else if (x$direction == "minimize") {
+    x$res |> dplyr::arrange(score)
+  } else if (x$direction == "target") {
+    x$res |> dplyr::arrange(abs(score - target))
+  }
+}
+
+#' Transform score to score object
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+trans_score <- function(x, ...) {
+  UseMethod("trans_score")
+}
+
+#' @noRd
+#' @export
+trans_score.score_obj <- function(x, ...) {
+  if (is.null(x$trans)) {
+    trans <- scales::transform_identity()
+  } else {
+    trans <- x$trans
+  }
+  x$res |>
+    dplyr::mutate(score = trans$transform(score))
+}
+
+#' Filter score to score object
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+filter_score <- function(x, ...) {
+  UseMethod("filter_score")
+}
+
+#' @noRd
+#' @export
+filter_score.score_obj <- function(x, ..., num_terms, target = NULL) {
+  if (x$direction == "maximize") {
+    x$res |> dplyr::slice_max(score, n = num_terms)
+  } else if (x$direction == "minimize") {
+    x$res |> dplyr::slice_min(score, n = num_terms)
+  } else if (x$direction == "target") {
+    x$res |>
+      dplyr::arrange(abs(score - target)) |>
+      dplyr::slice_head(n = num_terms)
   }
 }

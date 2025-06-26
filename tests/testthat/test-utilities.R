@@ -1,14 +1,15 @@
 test_that("attach_score() is working for roc auc", {
   skip_if_not_installed("modeldata")
   data(cells, package = "modeldata")
-  data <- tibble::tibble(
-    case = cells$case,
-    class = cells$class,
-    angle_ch_1 = cells$angle_ch_1,
-    area_ch_1 = cells$area_ch_1,
-    avg_inten_ch_1 = cells$avg_inten_ch_1,
-    avg_inten_ch_2 = cells$avg_inten_ch_2,
-  )
+  data <- modeldata::cells |>
+    dplyr::select(
+      case,
+      class,
+      angle_ch_1,
+      area_ch_1,
+      avg_inten_ch_1,
+      avg_inten_ch_2
+    )
   outcome <- "class"
   score_obj = score_roc_auc()
   res <- get_scores_roc_auc(score_obj, data, outcome)
@@ -21,14 +22,15 @@ test_that("attach_score() is working for roc auc", {
 test_that("attach_score() is working for aov", {
   skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
-  data <- tibble::tibble(
-    Sale_Price = ames$Sale_Price,
-    MS_SubClass = ames$MS_SubClass,
-    MS_Zoning = ames$MS_Zoning,
-    Lot_Frontage = ames$Lot_Frontage,
-    Lot_Area = ames$Lot_Area,
-    Street = ames$Street,
-  )
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
   outcome <- "Sale_Price"
   score_obj = score_aov()
   res <- get_scores_aov(score_obj, data, outcome)
@@ -41,15 +43,15 @@ test_that("attach_score() is working for aov", {
 test_that("arrange_score() is working for roc auc", {
   skip_if_not_installed("modeldata")
   data(cells, package = "modeldata")
-  data <- tibble::tibble(
-    # modeldata::cells |> select()
-    case = cells$case,
-    class = cells$class,
-    angle_ch_1 = cells$angle_ch_1,
-    area_ch_1 = cells$area_ch_1,
-    avg_inten_ch_1 = cells$avg_inten_ch_1,
-    avg_inten_ch_2 = cells$avg_inten_ch_2,
-  )
+  data <- modeldata::cells |>
+    dplyr::select(
+      case,
+      class,
+      angle_ch_1,
+      area_ch_1,
+      avg_inten_ch_1,
+      avg_inten_ch_2
+    )
   outcome <- "class"
   score_obj = score_roc_auc()
   res <- get_scores_roc_auc(score_obj, data, outcome)
@@ -86,14 +88,15 @@ test_that("arrange_score() is working for roc auc", {
 test_that("arrange_score() is working for aov", {
   skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
-  data <- tibble::tibble(
-    Sale_Price = ames$Sale_Price,
-    MS_SubClass = ames$MS_SubClass,
-    MS_Zoning = ames$MS_Zoning,
-    Lot_Frontage = ames$Lot_Frontage,
-    Lot_Area = ames$Lot_Area,
-    Street = ames$Street,
-  )
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
   outcome <- "Sale_Price"
   score_obj = score_aov()
   res <- get_scores_aov(score_obj, data, outcome)
@@ -126,3 +129,89 @@ test_that("arrange_score() is working for aov", {
   expect_equal(ex.target2, res |> dplyr::arrange(abs(score - 10.4)))
   expect_equal(ex2.target2, res |> dplyr::arrange(abs(score - 10.4)))
 })
+
+test_that("trans_score() is working for roc auc", {
+  skip_if_not_installed("modeldata")
+  data(cells, package = "modeldata")
+  data <- modeldata::cells |>
+    dplyr::select(
+      case,
+      class,
+      angle_ch_1,
+      area_ch_1,
+      avg_inten_ch_1,
+      avg_inten_ch_2
+    )
+  outcome <- "class"
+  score_obj = score_roc_auc()
+  res <- get_scores_roc_auc(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(res)
+
+  score_obj$trans <- NULL # Default
+  ex.identity <- score_obj |> trans_score()
+
+  score_obj$trans <- scales::transform_log()
+  ex.log <- score_obj |> trans_score()
+
+  # TODO Add a couple more scales::transform_*()
+
+  expect_equal(ex.identity, res)
+
+  expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
+})
+
+# TODO Test for aov
+
+test_that("filter_score() is working for roc auc", {
+  skip_if_not_installed("modeldata")
+  data(cells, package = "modeldata")
+  data <- modeldata::cells |>
+    dplyr::select(
+      case,
+      class,
+      angle_ch_1,
+      area_ch_1,
+      avg_inten_ch_1,
+      avg_inten_ch_2
+    )
+  outcome <- "class"
+  score_obj = score_roc_auc()
+  res <- get_scores_roc_auc(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(res)
+
+  score_obj$direction <- "maximize" # Default
+  ex.max <- score_obj |> filter_score(num_terms = 2)
+
+  score_obj$direction <- "minimize"
+  ex.min <- score_obj |> filter_score(num_terms = 2)
+
+  score_obj$direction <- "target"
+  ex.target <- score_obj |>
+    filter_score(score_obj, num_terms = 2, target = 0.760)
+
+  score_obj$direction <- "target"
+  ex.target2 <- score_obj |>
+    filter_score(score_obj, num_terms = 2, target = 0.591)
+
+  expect_equal(ex.max, res |> dplyr::slice_max(score, n = 2))
+
+  expect_equal(ex.min, res |> dplyr::slice_min(score, n = 2))
+
+  expect_equal(
+    ex.target,
+    res |>
+      dplyr::arrange(abs(score - 0.760)) |>
+      dplyr::slice_head(n = 2)
+  )
+
+  expect_equal(
+    ex.target2,
+    res |>
+      dplyr::arrange(abs(score - 0.591)) |>
+      dplyr::slice_head(n = 2)
+  )
+})
+
+# TODO Test for aov

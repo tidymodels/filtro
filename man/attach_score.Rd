@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{attach_score}
 \alias{attach_score}
-\title{Attach score to filter object}
+\title{Attach score to score object}
 \usage{
 attach_score(x, ...)
 }
@@ -12,5 +12,5 @@ attach_score(x, ...)
 \item{...}{NULL}
 }
 \description{
-Attach score to filter object
+Attach score to score object
 }

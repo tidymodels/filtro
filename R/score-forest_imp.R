@@ -85,7 +85,7 @@ get_scores_forest_importance <- function(
       mtry = score_obj$mtry,
       importance = score_obj$score_type, # TODO importance = c(impurity)
       min.node.size = score_obj$min_n,
-      classification = TRUE, # TODO classification = FALSE
+      classification = score_obj$class, # TODO There is probably a better way to to do this?
       seed = 42 # TODO Add this to pass tests. Remove later.
     )
     imp <- fit$variable.importance

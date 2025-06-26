@@ -1,0 +1,37 @@
+skip_if_not_installed("modeldata")
+data(ames, package = "modeldata")
+data <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+outcome <- "Sale_Price"
+score_obj = score_aov()
+res <- get_scores_aov(score_obj, data, outcome)
+
+# Attach score
+score_obj <- score_obj |> attach_score(res)
+score_obj$res
+
+# Arrange score
+score_obj$direction <- "maximize" # Default
+score_obj |> arrange_score()
+
+score_obj$direction <- "minimize"
+score_obj |> arrange_score()
+
+score_obj$direction <- "target"
+score_obj |> arrange_score(target = 63.8)
+
+# Transform score
+score_obj$trans <- NULL # Default
+score_obj |> trans_score()
+
+score_obj$trans <- scales::transform_log()
+score_obj |> trans_score()
+
+# Filter score

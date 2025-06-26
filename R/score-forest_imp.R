@@ -53,7 +53,8 @@ make_scores_forest_importance <- function(
   outcome,
   predictors
 ) {
-  score <- as.numeric(imp[predictors]) # TODO There is probably a better way to to do this?
+  #score <- imp[predictors] |> as.numeric()
+  score <- imp[predictors] |> unname()
   score[is.na(score)] <- 0
 
   res <- dplyr::tibble(

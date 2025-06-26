@@ -7,7 +7,13 @@ data <- modeldata::ames |>
     MS_Zoning,
     Lot_Frontage,
     Lot_Area,
-    Street
+    Street,
+    Alley, # ADD MORE
+    Lot_Shape,
+    Land_Contour,
+    Utilities,
+    Lot_Config,
+    Land_Slope
   )
 outcome <- "Sale_Price"
 score_obj = score_aov()
@@ -47,13 +53,13 @@ score_obj |>
 
 # Filter score based on proportion of predictors
 score_obj$direction <- "maximize" # Default
-score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Return NULL for prop = 0.1
+score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
 score_obj$direction <- "minimize"
-score_obj |> filter_score_num(prop_terms = 0.2) # TODO Return NULL for prop = 0.1
+score_obj |> filter_score_num(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
 score_obj$direction <- "target"
 score_obj |>
-  filter_score_num(score_obj, prop_terms = 0.2, target = 63.8)
+  filter_score_num(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
 # Filter score based on cutoff value

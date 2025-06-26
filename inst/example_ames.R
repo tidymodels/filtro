@@ -7,13 +7,13 @@ data <- modeldata::ames |>
     MS_Zoning,
     Lot_Frontage,
     Lot_Area,
-    Street,
-    Alley, # ADD MORE
-    Lot_Shape,
-    Land_Contour,
-    Utilities,
-    Lot_Config,
-    Land_Slope
+    Street #,
+    # Alley, # ADD MORE
+    # Lot_Shape,
+    # Land_Contour,
+    # Utilities,
+    # Lot_Config,
+    # Land_Slope
   )
 outcome <- "Sale_Price"
 score_obj = score_aov()
@@ -53,10 +53,10 @@ score_obj |>
 
 # Filter score based on proportion of predictors
 score_obj$direction <- "maximize" # Default
-score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
 
 score_obj$direction <- "minimize"
-score_obj |> filter_score_num(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+score_obj |> filter_score_num(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
 
 score_obj$direction <- "target"
 score_obj |>
@@ -71,3 +71,19 @@ score_obj |> filter_score_cutoff(cutoff = 63.8)
 
 score_obj$direction <- "target"
 score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4)
+
+# Experiment with scores
+score_obj = score_aov()
+res <- get_scores_aov(score_obj, data, outcome)
+
+score_obj_cor = score_cor()
+res_cor <- get_scores_cor(score_obj_cor, data, outcome)
+
+score_obj_imp <- score_forest_imp()
+score_obj_imp$engine <- "ranger"
+score_obj_imp$trees <- 10
+score_obj_imp$mtry <- 2
+score_obj_imp$min_n <- 1
+score_obj_imp$class <- FALSE # TODO
+set.seed(42)
+res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)

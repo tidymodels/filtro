@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{arrange_score}
 \alias{arrange_score}
-\title{Arrange score to score object}
+\title{Arrange score}
 \usage{
 arrange_score(x, ...)
 }
@@ -12,5 +12,5 @@ arrange_score(x, ...)
 \item{...}{NULL}
 }
 \description{
-Arrange score to score object
+Arrange score
 }

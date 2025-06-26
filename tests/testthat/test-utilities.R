@@ -303,22 +303,22 @@ test_that("filter_score_prop() is working for aov", {
   score_obj <- score_obj |> attach_score(res)
 
   score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2)
+  ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
   score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score_num(prop_terms = 0.2)
+  ex.min <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
   score_obj$direction <- "target"
   ex.target <- score_obj |>
-    filter_score_num(score_obj, prop_terms = 0.2, target = 63.8)
+    filter_score_prop(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
   score_obj$direction <- "target"
   ex.target2 <- score_obj |>
-    filter_score_num(score_obj, prop_terms = 0.2, target = 10.4)
+    filter_score_prop(score_obj, prop_terms = 0.2, target = 10.4)
 
-  expect_equal(ex.max, res |> dplyr::slice_max(score, prop = 0.2)) # TODO Return NULL for prop = 0.1
+  expect_equal(ex.max, res |> dplyr::slice_max(score, prop = 0.2))
 
-  expect_equal(ex.min, res |> dplyr::slice_min(score, prop = 0.2)) # TODO Return NULL for prop = 0.1
+  expect_equal(ex.min, res |> dplyr::slice_min(score, prop = 0.2))
 
   expect_equal(
     ex.target,
@@ -334,3 +334,5 @@ test_that("filter_score_prop() is working for aov", {
       dplyr::slice_head(prop = 0.2)
   )
 })
+
+# TODO Test for roc auc

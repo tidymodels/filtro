@@ -155,6 +155,9 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   }
 }
 
+# TODO
+# Involve filter_score_cutoff() with num_terms nor prop_terms?
+
 # TODO Filter score based on user input
 # filter_score_<>
 

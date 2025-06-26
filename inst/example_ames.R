@@ -56,11 +56,11 @@ score_obj$direction <- "maximize" # Default
 score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
 
 score_obj$direction <- "minimize"
-score_obj |> filter_score_num(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
+score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
 
 score_obj$direction <- "target"
 score_obj |>
-  filter_score_num(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+  filter_score_prop(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
 
 # Filter score based on cutoff value
 score_obj$direction <- "maximize"
@@ -70,7 +70,7 @@ score_obj$direction <- "minimize"
 score_obj |> filter_score_cutoff(cutoff = 63.8)
 
 score_obj$direction <- "target"
-score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4)
+score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4) # TODO This cutoff value is based on abs(score - target). Not ideal?
 
 # Experiment with scores
 score_obj = score_aov()

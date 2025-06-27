@@ -62,6 +62,7 @@ trans_score <- function(x, ...) {
 #' @noRd
 #' @export
 trans_score.score_obj <- function(x, ...) {
+  # TODO Figure out the basic structure first then come back for this. Have user supply direction =, if they use trans.
   if (is.null(x$trans)) {
     trans <- scales::transform_identity()
   } else {
@@ -86,6 +87,7 @@ filter_score_num <- function(x, ...) {
 #' @noRd
 #' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
+  # TODO Handle ties here?
   if (x$direction == "maximize") {
     x$res |> dplyr::slice_max(score, n = num_terms)
   } else if (x$direction == "minimize") {
@@ -112,6 +114,7 @@ filter_score_prop <- function(x, ...) {
 #' @noRd
 #' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
+  # TODO Handle ties here?
   if (x$direction == "maximize") {
     x$res |> dplyr::slice_max(score, prop = prop_terms)
   } else if (x$direction == "minimize") {
@@ -122,8 +125,6 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
       dplyr::slice_head(prop = prop_terms)
   }
 }
-
-# COMMENT colino uses stats::quantile()
 
 #' Filter score based on cutoff value
 #'
@@ -155,11 +156,6 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
       dplyr::filter(abs(score - target) <= cutoff)
   }
 }
-
-# COMMENT colino uses >= cutoff, <= cutoff
-
-# TODO
-# Involve filter_score_cutoff() with num_terms nor prop_terms?
 
 # TODO Filter score based on user input
 # filter_score_<>

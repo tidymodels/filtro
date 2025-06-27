@@ -123,6 +123,8 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   }
 }
 
+# COMMENT colino uses stats::quantile()
+
 #' Filter score based on cutoff value
 #'
 #' @param x NULL
@@ -140,13 +142,11 @@ filter_score_cutoff <- function(x, ...) {
 filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   if (x$direction == "maximize") {
     # TODO Can return more # of predictors due to floating-point precision
-    # TODO >= or >
     x$res |>
       dplyr::arrange(dplyr::desc(score)) |>
       dplyr::filter(score >= cutoff)
   } else if (x$direction == "minimize") {
     # TODO Can return less # of predictors due to floating-point precision
-    # TODO <= or <
     x$res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
   } else if (x$direction == "target") {
     # TODO This cutoff value is based on abs(score - target). Not ideal?
@@ -155,6 +155,8 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
       dplyr::filter(abs(score - target) <= cutoff)
   }
 }
+
+# COMMENT colino uses >= cutoff, <= cutoff
 
 # TODO
 # Involve filter_score_cutoff() with num_terms nor prop_terms?

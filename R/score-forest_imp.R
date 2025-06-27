@@ -24,28 +24,46 @@ score_forest_imp <- function(
   )
 }
 
-# if (score_obj$engine == "ranger") {
-#   options <- list(
-#     mtry = score_obj$mtry,
-#     num.trees = score_obj$trees,
-#     min.node.size = score_obj$min_n,
-#     classification = TRUE
-#   )
-# } else if (score_obj$engine == "partykit") {
-#   options <- list(
-#     mtry = score_obj$mtry,
-#     ntree = score_obj$trees,
-#     control = partykit::ctree_control(minsplit = score_obj$min_n)
-#   )
-# } else if (score_obj$engine == "aorsf") {
-#   options <- list(
-#     mtry = score_obj$mtry,
-#     n_tree = score_obj$trees,
-#     min_events = score_obj$min_n,
-#     importance = "permute"
-#   )
-# }
-# options
+get_forest_imp_ranger <- function(score_obj, data, outcome) {
+  y <- data[[outcome]]
+  X <- data[setdiff(names(data), outcome)]
+  fit <- ranger::ranger(
+    x = X,
+    y = y,
+    data = data,
+    num.trees = score_obj$trees,
+    mtry = score_obj$mtry,
+    importance = score_obj$score_type, # TODO importance = c(impurity)
+    min.node.size = score_obj$min_n,
+    classification = score_obj$class, # TODO There is probably a better way to to do this?
+    seed = 42 # TODO Add this to pass tests. Remove later.
+  )
+  imp <- fit$variable.importance
+  imp
+}
+
+get_forest_imp_partykit <- function(score_obj, data, formula) {
+  fit <- partykit::cforest(
+    formula = formula,
+    data = data,
+    control = partykit::ctree_control(minsplit = score_obj$min_n), # TODO Eventually have user pass in ctree_control()
+    ntree = score_obj$trees,
+    mtry = score_obj$mtry,
+  )
+  imp <- partykit::varimp(fit, conditional = TRUE) # TODO Allow option for conditional = FALSE
+}
+
+get_forest_imp_aorsf <- function(score_obj, data, formula) {
+  fit <- aorsf::orsf(
+    formula = formula,
+    data = data,
+    n_tree = score_obj$trees,
+    n_retry = score_obj$mtry,
+    importance = "permute" # TODO Allow option for importance = c("none", "anova", "negate")
+  )
+  imp <- fit$importance # orsf_vi_permute(fit)
+  imp
+}
 
 make_scores_forest_importance <- function(
   score_type,
@@ -53,7 +71,7 @@ make_scores_forest_importance <- function(
   outcome,
   predictors
 ) {
-  score <- as.numeric(imp[predictors]) # TODO There is probably a better way to to do this?
+  score <- imp[predictors] |> unname()
   score[is.na(score)] <- 0
 
   res <- dplyr::tibble(
@@ -72,44 +90,18 @@ get_scores_forest_importance <- function(
   ... # i.e., score_obj$engine, score_obj$trees, score_obj$mtry, score_obj$min_n
 ) {
   outcome_name <- outcome |> as.name()
+  formula <- stats::as.formula(paste(outcome_name, "~ ."))
   predictors <- setdiff(names(data), outcome)
 
-  formula <- stats::as.formula(paste(outcome_name, "~ .")) # TODO Avoid formula method if possible because of slowness caused by design matrix
-
   if (score_obj$engine == "ranger") {
-    fit <- ranger::ranger(
-      # TODO Pass in expression
-      formula = formula,
-      data = data,
-      num.trees = score_obj$trees,
-      mtry = score_obj$mtry,
-      importance = score_obj$score_type, # TODO importance = c(impurity)
-      min.node.size = score_obj$min_n,
-      classification = TRUE, # TODO classification = FALSE
-      seed = 42 # TODO Add this to pass tests. Remove later.
-    )
-    imp <- fit$variable.importance
+    imp <- get_forest_imp_ranger(score_obj, data, outcome)
   } else if (score_obj$engine == "partykit") {
-    fit <- partykit::cforest(
-      formula = formula,
-      data = data,
-      control = partykit::ctree_control(minsplit = score_obj$min_n), # TODO Eventually have user pass in ctree_control()
-      ntree = score_obj$trees,
-      mtry = score_obj$mtry,
-    )
-    imp <- partykit::varimp(fit, conditional = TRUE) # TODO conditional = FALSE
+    imp <- get_forest_imp_partykit(score_obj, data, formula)
   } else if (score_obj$engine == "aorsf") {
-    fit <- aorsf::orsf(
-      formula = formula,
-      data = data,
-      n_tree = score_obj$trees,
-      n_retry = score_obj$mtry,
-      importance = "permute" # TODO = c("none", "anova", "negate")
-    )
-    imp <- fit$importance # orsf_vi_permute(fit)
+    imp <- get_forest_imp_aorsf(score_obj, data, formula)
   }
   res <- make_scores_forest_importance(
-    score_obj$score_type,
+    score_obj$score_type, # TODO Have score_type = c(perm_ranger, perm_partykit, perm_aorsf).
     imp,
     outcome,
     predictors

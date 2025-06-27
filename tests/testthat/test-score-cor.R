@@ -1,14 +1,15 @@
 test_that("get_scores_cor() is working", {
   skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
-  data <- tibble::tibble(
-    Sale_Price = ames$Sale_Price,
-    MS_SubClass = ames$MS_SubClass,
-    MS_Zoning = ames$MS_Zoning,
-    Lot_Frontage = ames$Lot_Frontage,
-    Lot_Area = ames$Lot_Area,
-    Street = ames$Street,
-  )
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
   outcome <- "Sale_Price"
   score_obj = score_cor()
   res <- get_scores_cor(score_obj, data, outcome)

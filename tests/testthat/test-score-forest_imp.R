@@ -20,10 +20,12 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
   set.seed(42)
   score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
+  y <- data[[outcome]]
+  X <- data[setdiff(names(data), outcome)]
   set.seed(42)
   fit <- ranger::ranger(
-    formula = class ~ .,
-    data = data,
+    y = y,
+    x = X,
     num.trees = 10,
     mtry = 2,
     importance = "permutation",
@@ -72,9 +74,8 @@ test_that("get_score_forest_importance() is working for ranger regression", {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
   fit <- ranger::ranger(
-    x = X, # Remove formula = Sale_Price ~ .,
+    x = X,
     y = y,
-    data = data,
     num.trees = 10,
     mtry = 2,
     importance = "permutation",

@@ -20,7 +20,7 @@ score_cor <- function(
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_single_pearson,
-    label = c(score_aov = "Correlation scores")
+    label = c(score_cor = "Correlation scores")
   )
 }
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{filter_score_cutoff}
 \alias{filter_score_cutoff}
-\title{Filter score \code{res} based on cutoff value}
+\title{Filter score result \code{score_res} based on cutoff value}
 \usage{
 filter_score_cutoff(x, ...)
 }
@@ -12,5 +12,5 @@ filter_score_cutoff(x, ...)
 \item{...}{NULL}
 }
 \description{
-Filter score \code{res} based on cutoff value
+Filter score result \code{score_res} based on cutoff value
 }

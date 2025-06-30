@@ -17,11 +17,11 @@ data <- modeldata::ames |>
   )
 outcome <- "Sale_Price"
 score_obj = score_aov()
-res <- get_scores_aov(score_obj, data, outcome)
+score_res <- get_scores_aov(score_obj, data, outcome)
 
 # Attach score
-score_obj <- score_obj |> attach_score(res)
-score_obj$res
+score_obj <- score_obj |> attach_score(score_res)
+score_obj$score_res
 
 # Arrange score
 score_obj$direction <- "maximize" # Default
@@ -87,18 +87,18 @@ score_obj$direction <- "minimize"
 score_obj |> rank_score_dense()
 
 # # Assign class result_obj to score object score_obj
-# res |> class()
-# tmp <- score_obj |> as_result_obj(res)
-# tmp$res |> class()
+# score |> class()
+# tmp <- score_obj |> as_result_obj(score)
+# tmp$score |> class()
 
 # Bind scores and assign class
 score_obj <- score_aov()
-res <- get_scores_aov(score_obj, data, outcome)
-score_obj <- score_obj |> attach_score(res)
+score_res <- get_scores_aov(score_obj, data, outcome)
+score_obj <- score_obj |> attach_score(score_res)
 
 score_obj_cor <- score_cor()
-res_cor <- get_scores_cor(score_obj_cor, data, outcome)
-score_obj_cor <- score_obj_cor |> attach_score(res_cor)
+score_res_cor <- get_scores_cor(score_obj_cor, data, outcome)
+score_obj_cor <- score_obj_cor |> attach_score(score_res_cor)
 
 score_obj_imp <- score_forest_imp()
 score_obj_imp$engine <- "ranger"
@@ -107,8 +107,8 @@ score_obj_imp$mtry <- 2
 score_obj_imp$min_n <- 1
 score_obj_imp$class <- FALSE # TODO
 set.seed(42)
-res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)
-score_obj_imp <- score_obj_imp |> attach_score(res_imp)
+score_res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)
+score_obj_imp <- score_obj_imp |> attach_score(score_res_imp)
 
 score_obj_list <- list(score_obj, score_obj_cor, score_obj_imp)
 

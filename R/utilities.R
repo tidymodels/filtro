@@ -111,6 +111,7 @@ filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
 #' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   # TODO Handle ties here?
+  # TODO Check if direction == target, add "need a target"
   if (rlang::is_missing(num_terms)) {
     cli::cli_abort("{.arg num_terms} must be specified")
   }
@@ -149,6 +150,7 @@ filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
 #' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   # TODO Handle ties here?
+  # TODO Check if direction == target, add "need a target"
   if (rlang::is_missing(prop_terms)) {
     cli::cli_abort("{.arg prop_terms} must be specified")
   }
@@ -189,7 +191,7 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   if (rlang::is_missing(cutoff)) {
     cli::cli_abort("{.arg cutoff} must be specified")
   }
-
+  # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
     # TODO Can return more # of predictors due to floating-point precision.
     x$score_res |>
@@ -231,6 +233,7 @@ rank_score_min.default <- function(x, ...) {
 #' @noRd
 #' @export
 rank_score_min.score_obj <- function(x, ..., target = NULL) {
+  # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
     x$score_res |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
   } else if (x$direction == "minimize") {
@@ -262,6 +265,7 @@ rank_score_dense.default <- function(x, ...) {
 #' @noRd
 #' @export
 rank_score_dense.score_obj <- function(x, ..., target = NULL) {
+  # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
     x$score_res |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
   } else if (x$direction == "minimize") {
@@ -290,7 +294,7 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
 #   x
 # }
 
-#' Bind all metadata `score_obj` and score result `score_res`, and assign class `score_set` to scores.
+#' Bind all metadata `score_obj` and score result `score_res`, and assign class `score_set` to combined scores.
 #'
 #' @param x NULL
 #'

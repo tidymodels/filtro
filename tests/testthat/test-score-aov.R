@@ -11,7 +11,7 @@ test_that("get_scores_aov() is working", {
   )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
   fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
   exp.MS_SubClass <- stats::anova(fit)$`F value`[1]
@@ -26,14 +26,14 @@ test_that("get_scores_aov() is working", {
   fit <- stats::lm(ames$Sale_Price ~ ames$Street)
   exp.Street <- stats::anova(fit)$`F value`[1]
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
   expect_identical(
-    res$score,
+    score_res$score,
     c(
       exp.MS_SubClass,
       exp.MS_Zoning,
@@ -43,9 +43,9 @@ test_that("get_scores_aov() is working", {
     )
   )
 
-  expect_equal(unique(res$name), "fstat")
+  expect_equal(unique(score_res$name), "fstat")
 
-  expect_equal(unique(res$outcome), "Sale_Price")
+  expect_equal(unique(score_res$outcome), "Sale_Price")
 })
 
 # TODO Test Reversed stats::lm(x ~ y)

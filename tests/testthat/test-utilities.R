@@ -12,11 +12,11 @@ test_that("attach_score() is working for roc auc", {
     )
   outcome <- "class"
   score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  score_res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  ex.score_obj <- score_obj |> attach_score(res)
+  ex.score_obj <- score_obj |> attach_score(score_res)
 
-  expect_equal(ex.score_obj$res, res)
+  expect_equal(ex.score_obj$score_res, score_res)
 })
 
 test_that("attach_score() is working for aov", {
@@ -33,11 +33,11 @@ test_that("attach_score() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  ex.score_obj <- score_obj |> attach_score(res)
+  ex.score_obj <- score_obj |> attach_score(score_res)
 
-  expect_equal(ex.score_obj$res, res)
+  expect_equal(ex.score_obj$score_res, score_res)
 })
 
 test_that("arrange_score() is working for roc auc", {
@@ -54,9 +54,9 @@ test_that("arrange_score() is working for roc auc", {
     )
   outcome <- "class"
   score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  score_res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res) # TODO User have to run this for arrange_score() to work
+  score_obj <- score_obj |> attach_score(score_res) # TODO User have to run this for arrange_score() to work
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> arrange_score()
@@ -70,13 +70,13 @@ test_that("arrange_score() is working for roc auc", {
   score_obj$direction <- "target"
   ex.target2 <- score_obj |> arrange_score(target = 0.502)
 
-  expect_equal(ex.max, res |> dplyr::arrange(desc(score)))
+  expect_equal(ex.max, score_res |> dplyr::arrange(desc(score)))
 
-  expect_equal(ex.min, res |> dplyr::arrange(score))
+  expect_equal(ex.min, score_res |> dplyr::arrange(score))
 
-  expect_equal(ex.target, res |> dplyr::arrange(abs(score - 0.760)))
+  expect_equal(ex.target, score_res |> dplyr::arrange(abs(score - 0.760)))
 
-  expect_equal(ex.target2, res |> dplyr::arrange(abs(score - 0.502)))
+  expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 0.502)))
 })
 
 test_that("arrange_score() is working for aov", {
@@ -93,9 +93,9 @@ test_that("arrange_score() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> arrange_score()
@@ -109,13 +109,13 @@ test_that("arrange_score() is working for aov", {
   score_obj$direction <- "target"
   ex.target2 <- score_obj |> arrange_score(target = 10.4)
 
-  expect_equal(ex.max, res |> dplyr::arrange(desc(score)))
+  expect_equal(ex.max, score_res |> dplyr::arrange(desc(score)))
 
-  expect_equal(ex.min, res |> dplyr::arrange(score))
+  expect_equal(ex.min, score_res |> dplyr::arrange(score))
 
-  expect_equal(ex.target, res |> dplyr::arrange(abs(score - 63.8)))
+  expect_equal(ex.target, score_res |> dplyr::arrange(abs(score - 63.8)))
 
-  expect_equal(ex.target2, res |> dplyr::arrange(abs(score - 10.4)))
+  expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 10.4)))
 })
 
 test_that("trans_score() is working for roc auc", {
@@ -132,9 +132,9 @@ test_that("trans_score() is working for roc auc", {
     )
   outcome <- "class"
   score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  score_res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$trans <- NULL # Default
   ex.identity <- score_obj |> trans_score()
@@ -144,9 +144,9 @@ test_that("trans_score() is working for roc auc", {
 
   # TODO Add a couple more scales::transform_*()
 
-  expect_equal(ex.identity, res)
+  expect_equal(ex.identity, score_res)
 
-  expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
+  expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
 })
 
 test_that("trans_score() is working for aov", {
@@ -163,9 +163,9 @@ test_that("trans_score() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$trans <- NULL # Default
   ex.identity <- score_obj |> trans_score()
@@ -175,9 +175,9 @@ test_that("trans_score() is working for aov", {
 
   # TODO Add a couple more scales::transform_*()
 
-  expect_equal(ex.identity, res)
+  expect_equal(ex.identity, score_res)
 
-  expect_equal(ex.log, res |> dplyr::mutate(score = log(score)))
+  expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
 })
 
 test_that("filter_score_num() is working for roc auc", {
@@ -194,9 +194,9 @@ test_that("filter_score_num() is working for roc auc", {
     )
   outcome <- "class"
   score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  score_res <- get_scores_roc_auc(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_num(num_terms = 2)
@@ -212,20 +212,20 @@ test_that("filter_score_num() is working for roc auc", {
   ex.target2 <- score_obj |>
     filter_score_num(score_obj, num_terms = 2, target = 0.591)
 
-  expect_equal(ex.max, res |> dplyr::slice_max(score, n = 2))
+  expect_equal(ex.max, score_res |> dplyr::slice_max(score, n = 2))
 
-  expect_equal(ex.min, res |> dplyr::slice_min(score, n = 2))
+  expect_equal(ex.min, score_res |> dplyr::slice_min(score, n = 2))
 
   expect_equal(
     ex.target,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 0.760)) |>
       dplyr::slice_head(n = 2)
   )
 
   expect_equal(
     ex.target2,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 0.591)) |>
       dplyr::slice_head(n = 2)
   )
@@ -245,9 +245,9 @@ test_that("filter_score_num() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_num(num_terms = 2)
@@ -263,20 +263,20 @@ test_that("filter_score_num() is working for aov", {
   ex.target2 <- score_obj |>
     filter_score_num(score_obj, num_terms = 2, target = 10.4)
 
-  expect_equal(ex.max, res |> dplyr::slice_max(score, n = 2))
+  expect_equal(ex.max, score_res |> dplyr::slice_max(score, n = 2))
 
-  expect_equal(ex.min, res |> dplyr::slice_min(score, n = 2))
+  expect_equal(ex.min, score_res |> dplyr::slice_min(score, n = 2))
 
   expect_equal(
     ex.target,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 63.8)) |>
       dplyr::slice_head(n = 2)
   )
 
   expect_equal(
     ex.target2,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 10.4)) |>
       dplyr::slice_head(n = 2)
   )
@@ -298,9 +298,9 @@ test_that("filter_score_prop() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
@@ -316,20 +316,20 @@ test_that("filter_score_prop() is working for aov", {
   ex.target2 <- score_obj |>
     filter_score_prop(score_obj, prop_terms = 0.2, target = 10.4)
 
-  expect_equal(ex.max, res |> dplyr::slice_max(score, prop = 0.2))
+  expect_equal(ex.max, score_res |> dplyr::slice_max(score, prop = 0.2))
 
-  expect_equal(ex.min, res |> dplyr::slice_min(score, prop = 0.2))
+  expect_equal(ex.min, score_res |> dplyr::slice_min(score, prop = 0.2))
 
   expect_equal(
     ex.target,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 63.8)) |>
       dplyr::slice_head(prop = 0.2)
   )
 
   expect_equal(
     ex.target2,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 10.4)) |>
       dplyr::slice_head(prop = 0.2)
   )
@@ -351,9 +351,9 @@ test_that("filter_score_cutoff() is working for aov", {
     )
   outcome <- "Sale_Price"
   score_obj = score_aov()
-  res <- get_scores_aov(score_obj, data, outcome)
+  score_res <- get_scores_aov(score_obj, data, outcome)
 
-  score_obj <- score_obj |> attach_score(res)
+  score_obj <- score_obj |> attach_score(score_res)
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_cutoff(cutoff = 63.8)
@@ -369,24 +369,24 @@ test_that("filter_score_cutoff() is working for aov", {
 
   expect_equal(
     ex.max,
-    res |> dplyr::arrange(desc(score)) |> dplyr::filter(score >= 63.8)
+    score_res |> dplyr::arrange(desc(score)) |> dplyr::filter(score >= 63.8)
   ) # TODO Can return more # of predictors due to floating-point precision
 
   expect_equal(
     ex.min,
-    res |> dplyr::arrange(score) |> dplyr::filter(score <= 63.8)
+    score_res |> dplyr::arrange(score) |> dplyr::filter(score <= 63.8)
   ) # TODO Can return less # of predictors due to floating-point precision
 
   expect_equal(
     ex.target,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 63.8)) |>
       dplyr::filter(abs(score - 63.8) <= 4)
   )
 
   expect_equal(
     ex.target2,
-    res |>
+    score_res |>
       dplyr::arrange(abs(score - 10.4)) |>
       dplyr::filter(abs(score - 10.4) <= 1)
   )
@@ -396,16 +396,16 @@ test_that("filter_score_cutoff() is working for aov", {
 
 # TODO Test rank_score_dense()
 
-# res %>%
+# score_res %>%
 #   dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
 
-# res %>%
+# score_res %>%
 #   dplyr::mutate(rank = dplyr::min_rank((score)))
 
-# res %>%
+# score_res %>%
 #   dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
 
-# res %>%
+# score_res %>%
 #   dplyr::mutate(rank = dplyr::dense_rank((score)))
 
 # TODO Test as_result_obj()

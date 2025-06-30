@@ -1,4 +1,4 @@
-#' Attach score to score object
+#' Attach score `res` to score object `score_obj`
 #'
 #' @param x NULL
 #'
@@ -157,9 +157,6 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
 # TODO Filter score based on user input
 # filter_score_<>
 
-# COMMENT rank_score_*() below creates an additional column named rank, but can perhaps futher
-# |> filter(rank = )?
-
 #' Rank score based on min_rank (Need a better title)
 #'
 #' @param x NULL
@@ -206,24 +203,43 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
   # }
 }
 
-#' Assign class result_obj to score object score_obj
+# #' Assign class result_obj to score object score_obj
+# #'
+# #' @param x NULL
+# #'
+# #' @param ... NULL
+# #'
+# #' @export
+# as_result_obj <- function(x, ...) {
+#   UseMethod("as_result_obj")
+# }
+
+# #' @noRd
+# #' @export
+# as_result_obj.score_obj <- function(x, res, ...) {
+#   class(res) <- c("result_obj", class(res))
+#   x$res <- res # COMMENT This overlaps with attach_score()
+#   x
+# }
+
+#' Bind all metadata `score_obj` and score `res`, and assign class `score_set` to scores.
 #'
 #' @param x NULL
 #'
-#' @param ... NULL
-#'
 #' @export
-as_result_obj <- function(x, ...) {
-  UseMethod("as_result_obj")
+bind_scores <- function(x) {
+  UseMethod("bind_scores")
 }
 
 #' @noRd
 #' @export
-as_result_obj.score_obj <- function(x, res, ...) {
-  class(res) <- c("result_obj", class(res))
-  x$res <- res # COMMENT This overlaps with attach_score()
-  x
+bind_scores.list <- function(x) {
+  score_set <- x[[1]]$res
+  for (i in 2:length(x)) {
+    score_set <- dplyr::full_join(score_set, x[[i]]$res)
+  }
+  score_set <- score_set |>
+    tidyr::pivot_wider(names_from = name, values_from = score)
+  class(score_set) <- c("score_set", class(score_set))
+  score_set
 }
-
-# TODO Bind scores
-# bind_score

@@ -86,17 +86,19 @@ score_obj |> rank_score_dense()
 score_obj$direction <- "minimize"
 score_obj |> rank_score_dense()
 
-# Assign class result_obj to score object score_obj
-res |> class()
-tmp <- score_obj |> as_result_obj(res)
-tmp$res |> class()
+# # Assign class result_obj to score object score_obj
+# res |> class()
+# tmp <- score_obj |> as_result_obj(res)
+# tmp$res |> class()
 
-# Experiment with scores
-score_obj = score_aov()
+# Bind scores and assign class
+score_obj <- score_aov()
 res <- get_scores_aov(score_obj, data, outcome)
+score_obj <- score_obj |> attach_score(res)
 
-score_obj_cor = score_cor()
+score_obj_cor <- score_cor()
 res_cor <- get_scores_cor(score_obj_cor, data, outcome)
+score_obj_cor <- score_obj_cor |> attach_score(res_cor)
 
 score_obj_imp <- score_forest_imp()
 score_obj_imp$engine <- "ranger"
@@ -106,3 +108,14 @@ score_obj_imp$min_n <- 1
 score_obj_imp$class <- FALSE # TODO
 set.seed(42)
 res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)
+score_obj_imp <- score_obj_imp |> attach_score(res_imp)
+
+score_obj_list <- list(score_obj, score_obj_cor, score_obj_imp)
+
+score_obj_list |> bind_scores()
+
+# Fill in safe values
+
+# Filter
+
+# TODO Drop outcome

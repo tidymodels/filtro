@@ -44,8 +44,6 @@ get_scores_info_gain <- function(
   outcome,
   ...
 ) {
-  predictors <- setdiff(names(data), outcome)
-
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
 

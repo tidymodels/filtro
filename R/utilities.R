@@ -24,7 +24,7 @@ attach_score.score_obj <- function(x, res, ...) {
   x
 }
 
-#' Arrange score
+#' Arrange score `res`
 #'
 #' @param x NULL
 #'
@@ -48,7 +48,7 @@ arrange_score.score_obj <- function(x, ..., target = NULL) {
   }
 }
 
-#' Transform score
+#' Transform score `res`
 #'
 #' @param x NULL
 #'
@@ -72,7 +72,7 @@ trans_score.score_obj <- function(x, ...) {
     dplyr::mutate(score = trans$transform(score))
 }
 
-#' Filter score based on number of predictors
+#' Filter score `res` based on number of predictors
 #'
 #' @param x NULL
 #'
@@ -98,7 +98,7 @@ filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   }
 }
 
-#' Filter score based on proportion of predictors
+#' Filter score `res` based on proportion of predictors
 #'
 #' @param x NULL
 #'
@@ -124,7 +124,7 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   }
 }
 
-#' Filter score based on cutoff value
+#' Filter score `res` based on cutoff value
 #'
 #' @param x NULL
 #'
@@ -154,10 +154,10 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   }
 }
 
-# TODO Filter score based on user input
+# TODO Filter score `res` based on user input
 # filter_score_<>
 
-#' Rank score based on min_rank (Need a better title)
+#' Rank score `res` based on min_rank (Need a better title)
 #'
 #' @param x NULL
 #'
@@ -180,7 +180,7 @@ rank_score_min.score_obj <- function(x, ..., target = NULL) {
   # }
 }
 
-#' Rank score based on dense_rank (Need a better title)
+#' Rank score `res` based on dense_rank (Need a better title)
 #'
 #' @param x NULL
 #'

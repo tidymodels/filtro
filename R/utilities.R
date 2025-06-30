@@ -37,6 +37,14 @@ arrange_score <- function(x, ...) {
 
 #' @noRd
 #' @export
+arrange_score.default <- function(x, ..., target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 arrange_score.score_obj <- function(x, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
@@ -57,6 +65,14 @@ arrange_score.score_obj <- function(x, ..., target = NULL) {
 #' @export
 trans_score <- function(x, ...) {
   UseMethod("trans_score")
+}
+
+#' @noRd
+#' @export
+trans_score.default <- function(x, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
 }
 
 #' @noRd
@@ -85,8 +101,20 @@ filter_score_num <- function(x, ...) {
 
 #' @noRd
 #' @export
+filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   # TODO Handle ties here?
+  if (rlang::is_missing(num_terms)) {
+    cli::cli_abort("{.arg num_terms} must be specified")
+  }
+
   if (x$direction == "maximize") {
     x$res |> dplyr::slice_max(score, n = num_terms)
   } else if (x$direction == "minimize") {
@@ -111,8 +139,20 @@ filter_score_prop <- function(x, ...) {
 
 #' @noRd
 #' @export
+filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   # TODO Handle ties here?
+  if (rlang::is_missing(prop_terms)) {
+    cli::cli_abort("{.arg prop_terms} must be specified")
+  }
+
   if (x$direction == "maximize") {
     x$res |> dplyr::slice_max(score, prop = prop_terms)
   } else if (x$direction == "minimize") {
@@ -137,7 +177,19 @@ filter_score_cutoff <- function(x, ...) {
 
 #' @noRd
 #' @export
+filter_score_cutoff.default <- function(x, ..., cutoff, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
+  if (rlang::is_missing(cutoff)) {
+    cli::cli_abort("{.arg cutoff} must be specified")
+  }
+
   if (x$direction == "maximize") {
     # TODO Can return more # of predictors due to floating-point precision.
     x$res |>
@@ -170,6 +222,14 @@ rank_score_min <- function(x, ...) {
 
 #' @noRd
 #' @export
+rank_score_min.default <- function(x) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 rank_score_min.score_obj <- function(x, ..., target = NULL) {
   if (x$direction == "maximize") {
     x$res |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
@@ -193,6 +253,14 @@ rank_score_dense <- function(x, ...) {
 
 #' @noRd
 #' @export
+rank_score_dense.default <- function(x) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 rank_score_dense.score_obj <- function(x, ..., target = NULL) {
   if (x$direction == "maximize") {
     x$res |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
@@ -203,7 +271,7 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
   # }
 }
 
-# #' Assign class result_obj to score object score_obj
+# #' Assign class `result_obj` to score object `score_obj`
 # #'
 # #' @param x NULL
 # #'
@@ -229,6 +297,14 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
 #' @export
 bind_scores <- function(x) {
   UseMethod("bind_scores")
+}
+
+#' @noRd
+#' @export
+bind_scores.default <- function(x) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls list}, not {.obj_type_friendly {x}}."
+  )
 }
 
 #' @noRd

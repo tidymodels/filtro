@@ -29,7 +29,9 @@ Imports:
     pROC,
     purrr,
     ranger,
+    rlang,
     stats,
-    tibble
+    tibble,
+    tidyr
 Depends: 
     scales

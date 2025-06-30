@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{rank_score_dense}
 \alias{rank_score_dense}
-\title{Rank score based on dense_rank (Need a better title)}
+\title{Rank score \code{res} based on dense_rank (Need a better title)}
 \usage{
 rank_score_dense(x, ...)
 }
@@ -12,5 +12,5 @@ rank_score_dense(x, ...)
 \item{...}{NULL}
 }
 \description{
-Rank score based on dense_rank (Need a better title)
+Rank score \code{res} based on dense_rank (Need a better title)
 }

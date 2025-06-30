@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{filter_score_num}
 \alias{filter_score_num}
-\title{Filter score based on number of predictors}
+\title{Filter score \code{res} based on number of predictors}
 \usage{
 filter_score_num(x, ...)
 }
@@ -12,5 +12,5 @@ filter_score_num(x, ...)
 \item{...}{NULL}
 }
 \description{
-Filter score based on number of predictors
+Filter score \code{res} based on number of predictors
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{bind_scores}
 \alias{bind_scores}
-\title{Bind scores with metadata \code{score_obj} and results \code{res}, and assign class \code{score_set}.}
+\title{Bind all metadata \code{score_obj} and score \code{res}, and assign class \code{score_set} to scores.}
 \usage{
 bind_scores(x)
 }
@@ -10,5 +10,5 @@ bind_scores(x)
 \item{x}{NULL}
 }
 \description{
-Bind scores with metadata \code{score_obj} and results \code{res}, and assign class \code{score_set}.
+Bind all metadata \code{score_obj} and score \code{res}, and assign class \code{score_set} to scores.
 }

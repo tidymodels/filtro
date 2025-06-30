@@ -1,4 +1,4 @@
-#' Attach score to score object
+#' Attach score result `score_res` to score object `score_obj` containig metadata
 #'
 #' @param x NULL
 #'
@@ -11,7 +11,7 @@ attach_score <- function(x, ...) {
 
 #' @noRd
 #' @export
-attach_score.default <- function(x, res, ...) {
+attach_score.default <- function(x, score_res, ...) {
   cli::cli_abort(
     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
   )
@@ -19,12 +19,12 @@ attach_score.default <- function(x, res, ...) {
 
 #' @noRd
 #' @export
-attach_score.score_obj <- function(x, res, ...) {
-  x$res <- res
+attach_score.score_obj <- function(x, score_res, ...) {
+  x$score_res <- score_res
   x
 }
 
-#' Arrange score
+#' Arrange score result `score_res`
 #'
 #' @param x NULL
 #'
@@ -37,18 +37,26 @@ arrange_score <- function(x, ...) {
 
 #' @noRd
 #' @export
+arrange_score.default <- function(x, ..., target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 arrange_score.score_obj <- function(x, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
-    x$res |> dplyr::arrange(dplyr::desc(score))
+    x$score_res |> dplyr::arrange(dplyr::desc(score))
   } else if (x$direction == "minimize") {
-    x$res |> dplyr::arrange(score)
+    x$score_res |> dplyr::arrange(score)
   } else if (x$direction == "target") {
-    x$res |> dplyr::arrange(abs(score - target))
+    x$score_res |> dplyr::arrange(abs(score - target))
   }
 }
 
-#' Transform score
+#' Transform score result `score_res`
 #'
 #' @param x NULL
 #'
@@ -61,6 +69,14 @@ trans_score <- function(x, ...) {
 
 #' @noRd
 #' @export
+trans_score.default <- function(x, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 trans_score.score_obj <- function(x, ...) {
   # TODO Figure out the basic structure first then come back for this. Have user supply direction =, if they use trans.
   if (is.null(x$trans)) {
@@ -68,11 +84,11 @@ trans_score.score_obj <- function(x, ...) {
   } else {
     trans <- x$trans
   }
-  x$res |>
+  x$score_res |>
     dplyr::mutate(score = trans$transform(score))
 }
 
-#' Filter score based on number of predictors
+#' Filter score result `score_res` based on number of predictors
 #'
 #' @param x NULL
 #'
@@ -80,26 +96,38 @@ trans_score.score_obj <- function(x, ...) {
 #'
 #' @export
 filter_score_num <- function(x, ...) {
-  # TODO Rename to filter_num_terms?
   UseMethod("filter_score_num")
+}
+
+#' @noRd
+#' @export
+filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
 }
 
 #' @noRd
 #' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   # TODO Handle ties here?
+  # TODO Check if direction == target, add "need a target"
+  if (rlang::is_missing(num_terms)) {
+    cli::cli_abort("{.arg num_terms} must be specified")
+  }
+
   if (x$direction == "maximize") {
-    x$res |> dplyr::slice_max(score, n = num_terms)
+    x$score_res |> dplyr::slice_max(score, n = num_terms)
   } else if (x$direction == "minimize") {
-    x$res |> dplyr::slice_min(score, n = num_terms)
+    x$score_res |> dplyr::slice_min(score, n = num_terms)
   } else if (x$direction == "target") {
-    x$res |>
+    x$score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(n = num_terms)
   }
 }
 
-#' Filter score based on proportion of predictors
+#' Filter score result `score_res` based on proportion of predictors
 #'
 #' @param x NULL
 #'
@@ -107,26 +135,38 @@ filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
 #'
 #' @export
 filter_score_prop <- function(x, ...) {
-  # TODO Rename to filter_num_terms?
   UseMethod("filter_score_prop")
+}
+
+#' @noRd
+#' @export
+filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
 }
 
 #' @noRd
 #' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   # TODO Handle ties here?
+  # TODO Check if direction == target, add "need a target"
+  if (rlang::is_missing(prop_terms)) {
+    cli::cli_abort("{.arg prop_terms} must be specified")
+  }
+
   if (x$direction == "maximize") {
-    x$res |> dplyr::slice_max(score, prop = prop_terms)
+    x$score_res |> dplyr::slice_max(score, prop = prop_terms)
   } else if (x$direction == "minimize") {
-    x$res |> dplyr::slice_min(score, prop = prop_terms)
+    x$score_res |> dplyr::slice_min(score, prop = prop_terms)
   } else if (x$direction == "target") {
-    x$res |>
+    x$score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(prop = prop_terms)
   }
 }
 
-#' Filter score based on cutoff value
+#' Filter score result `score_res` based on cutoff value
 #'
 #' @param x NULL
 #'
@@ -134,34 +174,152 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
 #'
 #' @export
 filter_score_cutoff <- function(x, ...) {
-  # TODO Rename to filter_num_terms?
   UseMethod("filter_score_cutoff")
 }
 
 #' @noRd
 #' @export
+filter_score_cutoff.default <- function(x, ..., cutoff, target = NULL) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
 filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
+  if (rlang::is_missing(cutoff)) {
+    cli::cli_abort("{.arg cutoff} must be specified")
+  }
+  # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
-    # TODO Can return more # of predictors due to floating-point precision
-    x$res |>
+    # TODO Can return more # of predictors due to floating-point precision.
+    x$score_res |>
       dplyr::arrange(dplyr::desc(score)) |>
       dplyr::filter(score >= cutoff)
   } else if (x$direction == "minimize") {
-    # TODO Can return less # of predictors due to floating-point precision
-    x$res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
+    # TODO Can return less # of predictors due to floating-point precision.
+    x$score_res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
   } else if (x$direction == "target") {
     # TODO This cutoff value is based on abs(score - target). Not ideal?
-    x$res |>
+    x$score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::filter(abs(score - target) <= cutoff)
   }
 }
 
-# TODO Filter score based on user input
+# TODO Filter score result `score_res` based on user input
 # filter_score_<>
 
-# TODO Rank score
-# rank_score
+#' Rank score result `score_res` based on min_rank (Need a better title)
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_score_min <- function(x, ...) {
+  UseMethod("rank_score_min")
+}
 
-# TODO Bind scores
-# bind_score
+#' @noRd
+#' @export
+rank_score_min.default <- function(x, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
+rank_score_min.score_obj <- function(x, ..., target = NULL) {
+  # TODO Check if direction == target, add "need a target"
+  if (x$direction == "maximize") {
+    x$score_res |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+  } else if (x$direction == "minimize") {
+    x$score_res |> dplyr::mutate(rank = dplyr::min_rank((score)))
+  } # else if (x$direction == "target") { # TODO
+  #   x$score_res |> dplyr::arrange(abs(score - target))
+  # }
+}
+
+#' Rank score result `score_res` based on dense_rank (Need a better title)
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_score_dense <- function(x, ...) {
+  UseMethod("rank_score_dense")
+}
+
+#' @noRd
+#' @export
+rank_score_dense.default <- function(x, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
+rank_score_dense.score_obj <- function(x, ..., target = NULL) {
+  # TODO Check if direction == target, add "need a target"
+  if (x$direction == "maximize") {
+    x$score_res |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+  } else if (x$direction == "minimize") {
+    x$score_res |> dplyr::mutate(rank = dplyr::dense_rank((score)))
+  } # else if (x$direction == "target") { # TODO
+  #   x$score_res |> dplyr::arrange(abs(score - target))
+  # }
+}
+
+# #' Assign class `result_obj` to score object `score_obj`
+# #'
+# #' @param x NULL
+# #'
+# #' @param ... NULL
+# #'
+# #' @export
+# as_result_obj <- function(x, ...) {
+#   UseMethod("as_result_obj")
+# }
+
+# #' @noRd
+# #' @export
+# as_result_obj.score_obj <- function(x, res, ...) {
+#   class(res) <- c("result_obj", class(res))
+#   x$res <- res # COMMENT This overlaps with attach_score()
+#   x
+# }
+
+#' Bind all metadata `score_obj` and score result `score_res`, and assign class `score_set` to combined scores.
+#'
+#' @param x NULL
+#'
+#' @export
+bind_scores <- function(x) {
+  UseMethod("bind_scores")
+}
+
+#' @noRd
+#' @export
+bind_scores.default <- function(x) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls list}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
+bind_scores.list <- function(x) {
+  score_set <- x[[1]]$score_res
+  for (i in 2:length(x)) {
+    score_set <- dplyr::full_join(score_set, x[[i]]$score_res)
+  }
+  score_set <- score_set |>
+    tidyr::pivot_wider(names_from = name, values_from = score)
+  class(score_set) <- c("score_set", class(score_set))
+  score_set
+}

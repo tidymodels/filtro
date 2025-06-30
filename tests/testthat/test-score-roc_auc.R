@@ -11,7 +11,7 @@ test_that("get_scores_roc_auc() is working", {
   )
   outcome <- "class"
   score_obj = score_roc_auc()
-  res <- get_scores_roc_auc(score_obj, data, outcome)
+  score_res <- get_scores_roc_auc(score_obj, data, outcome)
 
   exp.case <- NA
 
@@ -47,14 +47,14 @@ test_that("get_scores_roc_auc() is working", {
   )
   exp.avg_inten_ch_2 <- pROC::auc(roc) |> as.numeric()
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
   expect_identical(
-    res$score,
+    score_res$score,
     c(
       exp.case,
       exp.angle_ch_1,
@@ -64,9 +64,9 @@ test_that("get_scores_roc_auc() is working", {
     )
   )
 
-  expect_equal(unique(res$name), "roc_auc")
+  expect_equal(unique(score_res$name), "roc_auc")
 
-  expect_equal(unique(res$outcome), "class")
+  expect_equal(unique(score_res$outcome), "class")
 })
 
 # TODO Test pROC::multiclass.roc

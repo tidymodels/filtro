@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{attach_score}
 \alias{attach_score}
-\title{Attach score to score object}
+\title{Attach score result \code{score_res} to score object \code{score_obj} containig metadata}
 \usage{
 attach_score(x, ...)
 }
@@ -12,5 +12,5 @@ attach_score(x, ...)
 \item{...}{NULL}
 }
 \description{
-Attach score to score object
+Attach score result \code{score_res} to score object \code{score_obj} containig metadata
 }

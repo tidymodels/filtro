@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{filter_score_prop}
 \alias{filter_score_prop}
-\title{Filter score based on proportion of predictors}
+\title{Filter score result \code{score_res} based on proportion of predictors}
 \usage{
 filter_score_prop(x, ...)
 }
@@ -12,5 +12,5 @@ filter_score_prop(x, ...)
 \item{...}{NULL}
 }
 \description{
-Filter score based on proportion of predictors
+Filter score result \code{score_res} based on proportion of predictors
 }

@@ -16,7 +16,7 @@ test_that("get_scores_cross_tab is working for chisq", {
   score_obj <- score_cross_tab()
   score_obj$score_type <- "chisq"
   score_obj$fdr <- FALSE
-  res <- get_scores_cross_tab(score_obj, data, outcome)
+  score_res <- get_scores_cross_tab(score_obj, data, outcome)
 
   exp.Pclass <- get_single_chisq(data$Pclass, data$Survived)
   exp.Sex <- get_single_chisq(data$Sex, data$Survived)
@@ -24,20 +24,20 @@ test_that("get_scores_cross_tab is working for chisq", {
   exp.Fare <- NA
   exp.Embarked <- get_single_chisq(data$Embarked, data$Survived)
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
   expect_identical(
-    res$score,
+    score_res$score,
     c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
   )
 
-  expect_equal(unique(res$name), "chisq")
+  expect_equal(unique(score_res$name), "chisq")
 
-  expect_equal(unique(res$outcome), "Survived")
+  expect_equal(unique(score_res$outcome), "Survived")
 })
 
 
@@ -59,7 +59,7 @@ test_that("get_score_cross_tab is working for fisher", {
   score_obj <- score_cross_tab()
   score_obj$score_type <- "fisher"
   score_obj$fdr <- FALSE
-  res <- get_scores_cross_tab(score_obj, data, outcome)
+  score_res <- get_scores_cross_tab(score_obj, data, outcome)
 
   exp.Pclass <- get_single_fisher(data$Pclass, data$Survived)
   exp.Sex <- get_single_fisher(data$Sex, data$Survived)
@@ -67,20 +67,20 @@ test_that("get_score_cross_tab is working for fisher", {
   exp.Fare <- NA
   exp.Embarked <- get_single_fisher(data$Embarked, data$Survived)
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
   expect_identical(
-    res$score,
+    score_res$score,
     c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
   )
 
-  expect_equal(unique(res$name), "fisher")
+  expect_equal(unique(score_res$name), "fisher")
 
-  expect_equal(unique(res$outcome), "Survived")
+  expect_equal(unique(score_res$outcome), "Survived")
 })
 
 # TODO Test fdr

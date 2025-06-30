@@ -18,7 +18,7 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
   score_obj$min_n <- 1
   score_obj$class <- TRUE # TODO
   set.seed(42)
-  res <- get_scores_forest_importance(score_obj, data, outcome)
+  score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)
   fit <- ranger::ranger(
@@ -33,17 +33,17 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
   )
   exp.res <- unname(fit$variable.importance)
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
-  expect_identical(res$score, exp.res)
+  expect_identical(score_res$score, exp.res)
 
-  expect_equal(unique(res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf")
 
-  expect_equal(unique(res$outcome), "class")
+  expect_equal(unique(score_res$outcome), "class")
 })
 
 test_that("get_score_forest_importance() is working for ranger regression", {
@@ -66,7 +66,7 @@ test_that("get_score_forest_importance() is working for ranger regression", {
   score_obj$min_n <- 1
   score_obj$class <- FALSE # TODO
   set.seed(42)
-  res <- get_scores_forest_importance(score_obj, data, outcome)
+  score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)
   y <- data[[outcome]]
@@ -84,17 +84,17 @@ test_that("get_score_forest_importance() is working for ranger regression", {
   )
   exp.res <- unname(fit$variable.importance)
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
-  expect_identical(res$score, exp.res)
+  expect_identical(score_res$score, exp.res)
 
-  expect_equal(unique(res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf")
 
-  expect_equal(unique(res$outcome), "Sale_Price")
+  expect_equal(unique(score_res$outcome), "Sale_Price")
 })
 
 test_that("get_score_forest_importance() is working for partykit classification", {
@@ -116,7 +116,7 @@ test_that("get_score_forest_importance() is working for partykit classification"
   score_obj$mtry <- 2
   score_obj$min_n <- 1
   set.seed(42)
-  res <- get_scores_forest_importance(score_obj, data, outcome)
+  score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)
   fit <- partykit::cforest(
@@ -131,17 +131,17 @@ test_that("get_score_forest_importance() is working for partykit classification"
   exp.imp <- as.numeric(imp[predictors])
   exp.imp[is.na(exp.imp)] <- 0
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
-  expect_identical(res$score, exp.imp)
+  expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_conditional")
 
-  expect_equal(unique(res$outcome), "class")
+  expect_equal(unique(score_res$outcome), "class")
 })
 
 test_that("get_score_forest_importance() is working for partykit regression", {
@@ -163,7 +163,7 @@ test_that("get_score_forest_importance() is working for partykit regression", {
   score_obj$mtry <- 2
   score_obj$min_n <- 1
   set.seed(42)
-  res <- get_scores_forest_importance(score_obj, data, outcome)
+  score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)
   fit <- partykit::cforest(
@@ -178,17 +178,17 @@ test_that("get_score_forest_importance() is working for partykit regression", {
   exp.imp <- as.numeric(imp[predictors])
   exp.imp[is.na(exp.imp)] <- 0
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
-  expect_identical(res$score, exp.imp)
+  expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_conditional")
 
-  expect_equal(unique(res$outcome), "Sale_Price")
+  expect_equal(unique(score_res$outcome), "Sale_Price")
 })
 
 # TODO Test aorsf::orsf classification
@@ -211,7 +211,7 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
   score_obj$trees <- 10
   score_obj$mtry <- 2
   set.seed(42)
-  res <- get_scores_forest_importance(score_obj, data, outcome)
+  score_res <- get_scores_forest_importance(score_obj, data, outcome)
 
   set.seed(42)
   fit <- aorsf::orsf(
@@ -226,17 +226,17 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
   exp.imp <- as.numeric(imp[predictors])
   exp.imp[is.na(exp.imp)] <- 0
 
-  expect_true(tibble::is_tibble(res))
+  expect_true(tibble::is_tibble(score_res))
 
-  expect_identical(nrow(res), ncol(data) - 1L)
+  expect_identical(nrow(score_res), ncol(data) - 1L)
 
-  expect_named(res, c("name", "score", "outcome", "predictor"))
+  expect_named(score_res, c("name", "score", "outcome", "predictor"))
 
-  expect_identical(res$score, exp.imp)
+  expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_oblique")
 
-  expect_equal(unique(res$outcome), "Sale_Price")
+  expect_equal(unique(score_res$outcome), "Sale_Price")
 })
 
 # TODO Test more after we add validators

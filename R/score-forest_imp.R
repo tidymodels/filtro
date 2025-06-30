@@ -24,7 +24,7 @@ score_forest_imp <- function(
   )
 }
 
-get_forest_imp_ranger <- function(score_obj, data, outcome) {
+get_imp_rf_ranger <- function(score_obj, data, outcome) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
   fit <- ranger::ranger(
@@ -42,7 +42,7 @@ get_forest_imp_ranger <- function(score_obj, data, outcome) {
   imp
 }
 
-get_forest_imp_partykit <- function(score_obj, data, formula) {
+get_imp_rf_partykit <- function(score_obj, data, formula) {
   fit <- partykit::cforest(
     formula = formula,
     data = data,
@@ -50,16 +50,21 @@ get_forest_imp_partykit <- function(score_obj, data, formula) {
     ntree = score_obj$trees,
     mtry = score_obj$mtry,
   )
-  imp <- partykit::varimp(fit, conditional = TRUE) # TODO Allow option for conditional = FALSE
+  imp <- partykit::varimp(fit, conditional = TRUE)
+  imp
 }
 
-get_forest_imp_aorsf <- function(score_obj, data, formula) {
+get_imp_rf_aorsf <- function(score_obj, data, formula) {
+  if (score_obj$score_type == "permutation") {
+    importance_type = "permute"
+  } # TODO Allow option for importance = c("none", "anova", "negate")
+
   fit <- aorsf::orsf(
     formula = formula,
     data = data,
     n_tree = score_obj$trees,
     n_retry = score_obj$mtry,
-    importance = "permute" # TODO Allow option for importance = c("none", "anova", "negate")
+    importance = importance_type
   )
   imp <- fit$importance # orsf_vi_permute(fit)
   imp
@@ -73,6 +78,8 @@ make_scores_forest_importance <- function(
 ) {
   score <- imp[predictors] |> unname()
   score[is.na(score)] <- 0
+
+  # TODO Have name = c(imp_rf, imp_rf_conditional, imp_rf_oblique) based on score_obj$engine.
 
   res <- dplyr::tibble(
     name = score_type,
@@ -94,14 +101,17 @@ get_scores_forest_importance <- function(
   predictors <- setdiff(names(data), outcome)
 
   if (score_obj$engine == "ranger") {
-    imp <- get_forest_imp_ranger(score_obj, data, outcome)
+    imp <- get_imp_rf_ranger(score_obj, data, outcome)
+    score_obj$score_type <- "imp_rf"
   } else if (score_obj$engine == "partykit") {
-    imp <- get_forest_imp_partykit(score_obj, data, formula)
+    imp <- get_imp_rf_partykit(score_obj, data, formula)
+    score_obj$score_type <- "imp_rf_conditional"
   } else if (score_obj$engine == "aorsf") {
-    imp <- get_forest_imp_aorsf(score_obj, data, formula)
+    imp <- get_imp_rf_aorsf(score_obj, data, formula)
+    score_obj$score_type <- "imp_rf_oblique"
   }
   res <- make_scores_forest_importance(
-    score_obj$score_type, # TODO Have score_type = c(perm_ranger, perm_partykit, perm_aorsf).
+    score_obj$score_type,
     imp,
     outcome,
     predictors

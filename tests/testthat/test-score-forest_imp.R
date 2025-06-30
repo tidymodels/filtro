@@ -41,7 +41,7 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
 
   expect_identical(score_res$score, exp.res)
 
-  expect_equal(unique(score_res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf")
 
   expect_equal(unique(score_res$outcome), "class")
 })
@@ -92,7 +92,7 @@ test_that("get_score_forest_importance() is working for ranger regression", {
 
   expect_identical(score_res$score, exp.res)
 
-  expect_equal(unique(score_res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf")
 
   expect_equal(unique(score_res$outcome), "Sale_Price")
 })
@@ -139,7 +139,7 @@ test_that("get_score_forest_importance() is working for partykit classification"
 
   expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(score_res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_conditional")
 
   expect_equal(unique(score_res$outcome), "class")
 })
@@ -186,7 +186,7 @@ test_that("get_score_forest_importance() is working for partykit regression", {
 
   expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(score_res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_conditional")
 
   expect_equal(unique(score_res$outcome), "Sale_Price")
 })
@@ -234,7 +234,7 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
 
   expect_identical(score_res$score, exp.imp)
 
-  expect_equal(unique(score_res$name), "permutation")
+  expect_equal(unique(score_res$name), "imp_rf_oblique")
 
   expect_equal(unique(score_res$outcome), "Sale_Price")
 })

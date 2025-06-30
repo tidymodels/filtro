@@ -33,8 +33,7 @@ get_imp_rf_ranger <- function(score_obj, data, outcome) {
     data = data,
     num.trees = score_obj$trees,
     mtry = score_obj$mtry,
-    importance = score_obj$score_type,
-    # TODO importance = c(impurity)
+    importance = score_obj$score_type, # TODO importance = c(impurity)
     min.node.size = score_obj$min_n,
     classification = score_obj$class, # TODO There is probably a better way to to do this?
     seed = 42 # TODO Add this to pass tests. Remove later.
@@ -51,7 +50,7 @@ get_imp_rf_partykit <- function(score_obj, data, formula) {
     ntree = score_obj$trees,
     mtry = score_obj$mtry,
   )
-  imp <- partykit::varimp(fit, conditional = TRUE) # TODO Allow option for conditional = FALSE
+  imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }
 
@@ -102,11 +101,14 @@ get_scores_forest_importance <- function(
   predictors <- setdiff(names(data), outcome)
 
   if (score_obj$engine == "ranger") {
-    imp <- get_forest_imp_ranger(score_obj, data, outcome)
+    imp <- get_imp_rf_ranger(score_obj, data, outcome)
+    score_obj$score_type <- "imp_rf"
   } else if (score_obj$engine == "partykit") {
-    imp <- get_forest_imp_partykit(score_obj, data, formula)
+    imp <- get_imp_rf_partykit(score_obj, data, formula)
+    score_obj$score_type <- "imp_rf_conditional"
   } else if (score_obj$engine == "aorsf") {
-    imp <- get_forest_imp_aorsf(score_obj, data, formula)
+    imp <- get_imp_rf_aorsf(score_obj, data, formula)
+    score_obj$score_type <- "imp_rf_oblique"
   }
   res <- make_scores_forest_importance(
     score_obj$score_type,

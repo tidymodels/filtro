@@ -20,7 +20,7 @@ score_forest_imp <- function(
     tuning = TRUE,
     ties = NULL,
     calculating_fn = NULL,
-    label = c(score_aov = "Random Forest importance scores")
+    label = c(score_rfimp = "Random Forest importance scores")
   )
 }
 
@@ -30,7 +30,7 @@ get_imp_rf_ranger <- function(score_obj, data, outcome) {
   fit <- ranger::ranger(
     x = X,
     y = y,
-    data = data,
+    #data = data,
     num.trees = score_obj$trees,
     mtry = score_obj$mtry,
     importance = score_obj$score_type, # TODO importance = c(impurity)

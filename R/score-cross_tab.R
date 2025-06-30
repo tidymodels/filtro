@@ -20,7 +20,7 @@ score_cross_tab <- function(
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_single_chisq,
-    label = c(score_aov = "Cross tabulation p-values")
+    label = c(score_crosstab = "Cross tabulation p-values")
   )
 }
 

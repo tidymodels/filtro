@@ -24,7 +24,7 @@ score_roc_auc <- function(range = c(0, 1), trans = NULL) {
     tuning = FALSE,
     ties = NULL,
     calculating_fn = get_single_roc_auc,
-    label = c(score_aov = "ROC AUC scores")
+    label = c(score_rocauc = "ROC AUC scores")
   )
 }
 

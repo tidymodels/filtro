@@ -208,9 +208,10 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   }
 }
 
-# TODO Filter score result `score_res` based on
-# Call filter_score_num OR filter_score_prop
-# or filter_score_cutoff
+# TODO Filter score result `score_res` where user can
+# based on number of predictors with option to use cutoff value
+# OR proportion of predictors with option to use cutoff value.
+# Mimic colino's `dual_filter`.
 
 # TODO Filter score result `score_res` based on user input
 # filter_score_<>
@@ -317,6 +318,13 @@ bind_scores.default <- function(x) {
 
 #' @noRd
 #' @export
+#'
+#' @examples
+#' # Create a list of `score_obj`
+#' # Bind scores
+#' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
+#' score_obj_list |> bind_scores()
+#'
 bind_scores.list <- function(x) {
   score_set <- x[[1]]$score_res
   for (i in 2:length(x)) {
@@ -334,7 +342,7 @@ bind_scores.list <- function(x) {
 
 #' Fill in safe values.
 #'
-#' @param x NULL
+#' @param x A list where each element is a score object of class `score_obj`.
 #'
 #' @export
 fill_safe_values <- function(x) {
@@ -351,6 +359,13 @@ fill_safe_values.default <- function(x) {
 
 #' @noRd
 #' @export
+#'
+#' @examples
+#' # Create a list of `score_obj`
+#' # Fill in safe values
+#' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
+#' score_obj_list |> fill_safe_values()
+#'
 fill_safe_values.list <- function(x) {
   score_set <- x[[1]]$score_res
   for (i in 2:length(x)) {
@@ -384,4 +399,4 @@ fill_safe_values.list <- function(x) {
 
 # TODO Filter *
 
-# TODO Drop outcome
+# TODO Drop outcome column

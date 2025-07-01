@@ -25,31 +25,51 @@ new_score_obj(
 )
 }
 \arguments{
-\item{subclass}{NULL}
+\item{subclass}{A character string.}
 
-\item{outcome_type}{NULL}
+\item{outcome_type}{A character string. One of:
+\itemize{
+\item \code{"numeric"}
+\item \code{"factor"}
+}}
 
-\item{predictor_type}{NULL}
+\item{predictor_type}{A character string. One of:
+\itemize{
+\item \code{"numeric"}
+\item \code{"factor"}
+}}
 
 \item{case_weights}{NULL}
 
-\item{range}{NULL}
+\item{range}{A numeric vector of length two, specifying the minimum and maximum
+possible values, respectively.}
 
-\item{inclusive}{NULL}
+\item{inclusive}{A logical vector of length two, indicating whether the lower and
+upper bounds of the range are inclusive (\code{TRUE}) or exclusive (\code{FALSE}), respectively.}
 
 \item{fallback_value}{NULL}
 
-\item{score_type}{NULL}
+\item{score_type}{A character string.}
 
-\item{trans}{NULL}
+\item{trans}{A \code{trans} object from the \pkg{scales} package, such as
+\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. You can also use
+built-in functions like \code{\link[=transform_abs]{transform_abs()}} or \code{\link[=transform_neg_log10]{transform_neg_log10()}}.
+Custom transformations can be created with \code{\link[scales:new_transform]{scales::trans_new()}}.}
 
 \item{sorts}{NULL}
 
-\item{direction}{NULL}
+\item{direction}{A character string. One of:
+\itemize{
+\item \code{"maximize"}
+\item \code{"minimize"}
+\item \code{"target"}
+}}
 
-\item{deterministic}{NULL}
+\item{deterministic}{A logical value, indicating whether the resulting score is
+deterministic (\code{TRUE}) or random (\code{FALSE}).}
 
-\item{tuning}{NULL}
+\item{tuning}{A logical value, indicating whether the model should be tuned
+(\code{TRUE}) or not (\code{FALSE}).}
 
 \item{ties}{NULL}
 

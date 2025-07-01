@@ -1,18 +1,35 @@
 #' Title
 #'
-#' @param subclass NULL
-#' @param outcome_type NULL
-#' @param predictor_type NULL
+#' @param subclass A character string.
+#' @param outcome_type A character string. One of:
+#'  - `"numeric"`
+#'  - `"factor"`
+#'
+#' @param predictor_type A character string. One of:
+#'  - `"numeric"`
+#'  - `"factor"`
+#'
 #' @param case_weights NULL
-#' @param range NULL
-#' @param inclusive NULL
+#' @param range A numeric vector of length two, specifying the minimum and maximum
+#' possible values, respectively.
+#' @param inclusive A logical vector of length two, indicating whether the lower and
+#' upper bounds of the range are inclusive (`TRUE`) or exclusive (`FALSE`), respectively.
 #' @param fallback_value NULL
-#' @param score_type NULL
-#' @param trans NULL
+#' @param score_type A character string.
+#' @param trans A `trans` object from the \pkg{scales} package, such as
+#' [scales::transform_log10()] or [scales::transform_reciprocal()]. You can also use
+#' built-in functions like [filters::transform_abs()] or [filters::transform_neg_log10()].
+#' Custom transformations can be created with [scales::trans_new()].
 #' @param sorts NULL
-#' @param direction NULL
-#' @param deterministic NULL
-#' @param tuning NULL
+#' @param direction A character string. One of:
+#'  - `"maximize"`
+#'  - `"minimize"`
+#'  - `"target"`
+#'
+#' @param deterministic A logical value, indicating whether the resulting score is
+#' deterministic (`TRUE`) or random (`FALSE`).
+#' @param tuning A logical value, indicating whether the model should be tuned
+#' (`TRUE`) or not (`FALSE`).
 #' @param ties NULL
 #' @param calculating_fn NULL
 #' @param label NULL

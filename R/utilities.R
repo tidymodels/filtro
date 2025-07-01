@@ -208,6 +208,10 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
   }
 }
 
+# TODO Filter score result `score_res` based on
+# Call filter_score_num OR filter_score_prop
+# or filter_score_cutoff
+
 # TODO Filter score result `score_res` based on user input
 # filter_score_<>
 

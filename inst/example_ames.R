@@ -86,7 +86,7 @@ score_obj |> rank_score_dense()
 score_obj$direction <- "minimize"
 score_obj |> rank_score_dense()
 
-# # Assign class result_obj to score object score_obj
+# # Assign class result_obj to score object score_obj TODO
 # score |> class()
 # tmp <- score_obj |> as_result_obj(score)
 # tmp$score |> class()
@@ -110,12 +110,14 @@ set.seed(42)
 score_res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)
 score_obj_imp <- score_obj_imp |> attach_score(score_res_imp)
 
-score_obj_list <- list(score_obj, score_obj_cor, score_obj_imp)
+score_obj_list <- list(score_obj, score_obj_cor, score_obj_imp) # TODO Right now user has to supply the list.
 
 score_obj_list |> bind_scores()
 
 # Fill in safe values
 
-# Filter
+score_obj_list |> fill_safe_values()
+
+# TODO Filter *
 
 # TODO Drop outcome

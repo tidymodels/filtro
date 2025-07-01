@@ -279,7 +279,7 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
   # }
 }
 
-# #' Assign class `result_obj` to score object `score_obj`
+# #' Assign class `result_obj` to score object `score_obj` TODO
 # #'
 # #' @param x NULL
 # #'
@@ -300,7 +300,7 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
 
 #' Bind all metadata `score_obj` and score result `score_res`, and assign class `score_set` to combined scores.
 #'
-#' @param x NULL
+#' @param x A list where each element is a score object of class `score_obj`.
 #'
 #' @export
 bind_scores <- function(x) {
@@ -320,10 +320,68 @@ bind_scores.default <- function(x) {
 bind_scores.list <- function(x) {
   score_set <- x[[1]]$score_res
   for (i in 2:length(x)) {
-    score_set <- dplyr::full_join(score_set, x[[i]]$score_res)
+    score_set <- dplyr::full_join(
+      score_set,
+      x[[i]]$score_res,
+      by = c("name", "score", "outcome", "predictor") # OR suppressMessages()
+    )
   }
   score_set <- score_set |>
     tidyr::pivot_wider(names_from = name, values_from = score)
   class(score_set) <- c("score_set", class(score_set))
   score_set
 }
+
+#' Fill in safe values.
+#'
+#' @param x NULL
+#'
+#' @export
+fill_safe_values <- function(x) {
+  UseMethod("fill_safe_values")
+}
+
+#' @noRd
+#' @export
+fill_safe_values.default <- function(x) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls list}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
+fill_safe_values.list <- function(x) {
+  score_set <- x[[1]]$score_res
+  for (i in 2:length(x)) {
+    score_set <- dplyr::full_join(
+      score_set,
+      x[[i]]$score_res,
+      by = c("name", "score", "outcome", "predictor") # OR suppressMessages()
+    )
+  }
+
+  for (i in 1:length(x)) {
+    # TODO Wonder if there is a cleaner way to do it. map?
+    method_name <- unique(x[[i]]$score_res$name)
+    fallback_val <- x[[i]]$fallback_value
+    score_set <- score_set |>
+      dplyr::mutate(
+        score = ifelse(
+          is.na(score) & name == method_name,
+          fallback_val,
+          score
+        )
+      )
+  }
+
+  score_set <- score_set |>
+    tidyr::pivot_wider(names_from = name, values_from = score)
+
+  class(score_set) <- c("score_set", class(score_set))
+  score_set
+}
+
+# TODO Filter *
+
+# TODO Drop outcome

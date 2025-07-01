@@ -19,7 +19,7 @@
 #' @param score_type A character string.
 #' @param trans A `trans` object from the \pkg{scales} package, such as
 #' [scales::transform_log10()] or [scales::transform_reciprocal()]. Or use built-in
-#' functions, such as.
+#' functions, such as [filters::transform_abs()] or [filters::transform_neg_log10()].
 #' Create custom transforms with [scales::trans_new()].
 #' @param sorts NULL
 #' @param direction A character string. One of:

@@ -1,5 +1,4 @@
 transform_abs <- scales::trans_new(
-  # TODO Put an issue to scales. Point to this file.
   name = "abs",
   transform = function(x) abs(x),
   inverse = function(x) x # dummy inverse

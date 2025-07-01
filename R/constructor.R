@@ -14,12 +14,13 @@
 #' possible values, respectively.
 #' @param inclusive A logical vector of length two, indicating whether the lower and
 #' upper bounds of the range are inclusive (`TRUE`) or exclusive (`FALSE`), respectively.
-#' @param fallback_value NULL
+#' @param fallback_value A numeric scalar used as a fallback value. Typical values
+#' include: `0`, `1`, or `Inf`.
 #' @param score_type A character string.
 #' @param trans A `trans` object from the \pkg{scales} package, such as
-#' [scales::transform_log10()] or [scales::transform_reciprocal()]. You can also use
-#' built-in functions like [filters::transform_abs()] or [filters::transform_neg_log10()].
-#' Custom transformations can be created with [scales::trans_new()].
+#' [scales::transform_log10()] or [scales::transform_reciprocal()]. Built-in functions,
+#' such as [filters::transform_abs()] or [filters::transform_neg_log10()] can also be
+#' used. Custom transformations can be created with [scales::trans_new()].
 #' @param sorts NULL
 #' @param direction A character string. One of:
 #'  - `"maximize"`
@@ -30,7 +31,8 @@
 #' deterministic (`TRUE`) or random (`FALSE`).
 #' @param tuning A logical value, indicating whether the model should be tuned
 #' (`TRUE`) or not (`FALSE`).
-#' @param ties NULL
+#' @param ties A logical value indicating whether ties in score can occur (`TRUE`)
+#' or not (`FALSE`).
 #' @param calculating_fn NULL
 #' @param label NULL
 #' @param ... NULL

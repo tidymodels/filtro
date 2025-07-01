@@ -7,7 +7,7 @@
 bind_scores(x)
 }
 \arguments{
-\item{x}{NULL}
+\item{x}{A list where each element is a score object of class \code{score_obj}.}
 }
 \description{
 Bind all metadata \code{score_obj} and score result \code{score_res}, and assign class \code{score_set} to combined scores.

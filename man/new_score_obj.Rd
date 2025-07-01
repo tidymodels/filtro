@@ -53,9 +53,9 @@ include: \code{0}, \code{1}, or \code{Inf}.}
 \item{score_type}{A character string.}
 
 \item{trans}{A \code{trans} object from the \pkg{scales} package, such as
-\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Built-in functions,
-such as \code{\link[=transform_abs]{transform_abs()}} or \code{\link[=transform_neg_log10]{transform_neg_log10()}} can also be
-used. Custom transformations can be created with \code{\link[scales:new_transform]{scales::trans_new()}}.}
+\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Or use built-in
+functions, such as.
+Create custom transforms with \code{\link[scales:new_transform]{scales::trans_new()}}.}
 
 \item{sorts}{NULL}
 

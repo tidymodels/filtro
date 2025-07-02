@@ -3,7 +3,7 @@
 \docType{data}
 \name{transform_neg_log10}
 \alias{transform_neg_log10}
-\title{Negative log10 Transformation (TODO Rewrite using other method)}
+\title{Negative log10 Transformation TODO Rewrite using other method}
 \format{
 An object of class \code{transform} of length 9.
 }
@@ -11,6 +11,6 @@ An object of class \code{transform} of length 9.
 transform_neg_log10
 }
 \description{
-Negative log10 Transformation (TODO Rewrite using other method)
+Negative log10 Transformation TODO Rewrite using other method
 }
 \keyword{datasets}

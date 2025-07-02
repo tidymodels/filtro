@@ -361,13 +361,12 @@ bind_scores.default <- function(x) {
 #'
 bind_scores.list <- function(x) {
   len_x <- length(x)
-  if (len_x == 0) {
-    cli::cli_abort("{.arg x} is empty. Must contain at least one element")
-  }
-  if (len_x == 1) {
-    score_set <- x[[1]]$score_res
+  if (len_x < 2) {
+    cli::cli_abort(
+      "{.arg x} must contain at least two elements"
+    )
   } else {
-    # TODO Check for identical score object
+    # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
     score_set <- x[[1]]$score_res
     for (i in 2:len_x) {
       score_set <- dplyr::full_join(

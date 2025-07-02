@@ -192,26 +192,61 @@ filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
     cli::cli_abort("{.arg cutoff} must be specified")
   }
   # TODO Check if direction == target, add "need a target"
+  # TODO Can return more # of predictors due to floating-point precision
   if (x$direction == "maximize") {
-    # TODO Can return more # of predictors due to floating-point precision.
-    x$score_res |>
-      dplyr::arrange(dplyr::desc(score)) |>
-      dplyr::filter(score >= cutoff)
+    x$score_res |> dplyr::filter(score >= cutoff)
   } else if (x$direction == "minimize") {
-    # TODO Can return less # of predictors due to floating-point precision.
-    x$score_res |> dplyr::arrange(score) |> dplyr::filter(score <= cutoff)
+    x$score_res |> dplyr::filter(score <= cutoff)
   } else if (x$direction == "target") {
-    # TODO This cutoff value is based on abs(score - target). Not ideal?
-    x$score_res |>
-      dplyr::arrange(abs(score - target)) |>
-      dplyr::filter(abs(score - target) <= cutoff)
+    x$score_res |> dplyr::filter(abs(score - target) <= cutoff)
   }
 }
 
-# TODO Filter score result `score_res` where user can
-# based on number of predictors with option to use cutoff value
-# OR proportion of predictors with option to use cutoff value.
-# Mimic colino's `dual_filter`.
+#' Filter score result `score_res` based on number or proportion of predictors with
+#' optional cutoff value
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+filter_score_auto <- function(x, ...) {
+  UseMethod("filter_score_auto")
+}
+
+#' @noRd
+#' @export
+filter_score_auto.default <- function(x, ...) {
+  cli::cli_abort(
+    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+  )
+}
+
+#' @noRd
+#' @export
+filter_score_auto.score_obj <- function(
+  x,
+  ...,
+  num_terms = NULL,
+  prop_terms = NULL,
+  cutoff = NULL
+) {
+  # TODO Check so that users can only provide num_terms OR prop_terms
+  if (!is.null(num_terms)) {
+    score_res <- filter_score_num(x, ..., num_terms = num_terms, target = NULL)
+  } else if (!is.null(prop_terms)) {
+    score_res <- filter_score_prop(
+      x,
+      ...,
+      prop_terms = prop_terms,
+      target = NULL
+    )
+  }
+  if (!is.null(cutoff)) {
+    score_res <- filter_score_cutoff(x, ..., cutoff = cutoff, target = NULL)
+  }
+  score_res
+}
 
 # TODO Filter score result `score_res` based on user input
 # filter_score_<>
@@ -326,13 +361,16 @@ bind_scores.default <- function(x) {
 #' score_obj_list |> bind_scores()
 #'
 bind_scores.list <- function(x) {
-  score_set <- x[[1]]$score_res
-  for (i in 2:length(x)) {
-    score_set <- dplyr::full_join(
-      score_set,
-      x[[i]]$score_res,
-      by = c("name", "score", "outcome", "predictor") # OR suppressMessages()
-    )
+  for (i in seq_along(x)) {
+    if (i == 1) {
+      score_set <- x[[i]]$score_res
+    } else {
+      score_set <- dplyr::full_join(
+        score_set,
+        x[[i]]$score_res,
+        by = c("name", "score", "outcome", "predictor")
+      )
+    }
   }
   score_set <- score_set |>
     tidyr::pivot_wider(names_from = name, values_from = score)
@@ -340,7 +378,7 @@ bind_scores.list <- function(x) {
   score_set
 }
 
-#' Fill in safe values.
+#' Fill safe values.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
 #'
@@ -367,33 +405,15 @@ fill_safe_values.default <- function(x) {
 #' score_obj_list |> fill_safe_values()
 #'
 fill_safe_values.list <- function(x) {
-  score_set <- x[[1]]$score_res
-  for (i in 2:length(x)) {
-    score_set <- dplyr::full_join(
-      score_set,
-      x[[i]]$score_res,
-      by = c("name", "score", "outcome", "predictor") # OR suppressMessages()
+  score_set <- bind_scores(x)
+  for (i in 1:length(x)) {
+    method_name <- x[[i]]$score_type
+    fallback_val <- x[[i]]$fallback_value
+    score_set[[method_name]] <- tidyr::replace_na(
+      score_set[[method_name]],
+      fallback_val
     )
   }
-
-  for (i in 1:length(x)) {
-    # TODO Wonder if there is a cleaner way to do it. map?
-    method_name <- unique(x[[i]]$score_res$name)
-    fallback_val <- x[[i]]$fallback_value
-    score_set <- score_set |>
-      dplyr::mutate(
-        score = ifelse(
-          is.na(score) & name == method_name,
-          fallback_val,
-          score
-        )
-      )
-  }
-
-  score_set <- score_set |>
-    tidyr::pivot_wider(names_from = name, values_from = score)
-
-  class(score_set) <- c("score_set", class(score_set))
   score_set
 }
 

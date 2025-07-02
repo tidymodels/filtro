@@ -236,17 +236,16 @@ filter_score_auto.score_obj <- function(
   }
 
   if (!is.null(num_terms)) {
-    score_res <- filter_score_num(x, ..., num_terms = num_terms, target = NULL)
+    score_res <- filter_score_num(x, ..., num_terms = num_terms)
   } else if (!is.null(prop_terms)) {
     score_res <- filter_score_prop(
       x,
       ...,
-      prop_terms = prop_terms,
-      target = NULL
+      prop_terms = prop_terms
     )
   }
   if (!is.null(cutoff)) {
-    score_res <- filter_score_cutoff(x, ..., cutoff = cutoff, target = NULL)
+    score_res <- filter_score_cutoff(x, ..., cutoff = cutoff)
   }
   score_res
 }

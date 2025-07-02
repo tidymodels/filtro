@@ -71,7 +71,7 @@ score_obj$direction <- "minimize"
 score_obj |> filter_score_cutoff(cutoff = 63.8)
 
 score_obj$direction <- "target"
-score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4) # TODO This cutoff value is based on abs(score - target). Not ideal?
+score_obj |> filter_score_cutoff(cutoff = 4, target = 63.8) # TODO This cutoff value is based on abs(score - target). Not ideal?
 
 # Filter score based on type and optional cutoff
 score_obj$direction <- "maximize"
@@ -85,6 +85,12 @@ score_obj |> filter_score_auto(num_terms = 2)
 score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.7)
 score_obj |> filter_score_auto(prop_terms = 0.5)
 score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.7)
+
+score_obj$direction <- "target"
+score_obj |> filter_score_auto(num_terms = 2, target = 63.8)
+score_obj |> filter_score_auto(num_terms = 2, cutoff = 0.1, target = 63.8)
+score_obj |> filter_score_auto(prop_terms = 0.5, target = 63.8)
+score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 0.1, target = 63.8)
 
 # Rank score based on min_rank
 score_obj$direction <- "maximize"

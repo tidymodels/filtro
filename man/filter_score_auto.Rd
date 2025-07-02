@@ -2,7 +2,8 @@
 % Please edit documentation in R/utilities.R
 \name{filter_score_auto}
 \alias{filter_score_auto}
-\title{Filter score result \code{score_res} based on type and optional cutoff}
+\title{Filter score result \code{score_res} based on number or proportion of predictors with
+optional cutoff value}
 \usage{
 filter_score_auto(x, ...)
 }
@@ -12,5 +13,6 @@ filter_score_auto(x, ...)
 \item{...}{NULL}
 }
 \description{
-Filter score result \code{score_res} based on type and optional cutoff
+Filter score result \code{score_res} based on number or proportion of predictors with
+optional cutoff value
 }

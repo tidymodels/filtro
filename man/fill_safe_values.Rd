@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{fill_safe_values}
 \alias{fill_safe_values}
-\title{Fill in safe values.}
+\title{Fill safe values.}
 \usage{
 fill_safe_values(x)
 }
@@ -10,5 +10,5 @@ fill_safe_values(x)
 \item{x}{A list where each element is a score object of class \code{score_obj}.}
 }
 \description{
-Fill in safe values.
+Fill safe values.
 }

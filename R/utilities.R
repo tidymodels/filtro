@@ -231,7 +231,10 @@ filter_score_auto.score_obj <- function(
   prop_terms = NULL,
   cutoff = NULL
 ) {
-  # TODO Check so that users can only provide num_terms OR prop_terms
+  if (!is.na(num_terms) & !is.na(prop_terms)) {
+    rlang::abort("`num_terms` and `prop_terms` are mutually exclusive")
+  }
+
   if (!is.null(num_terms)) {
     score_res <- filter_score_num(x, ..., num_terms = num_terms, target = NULL)
   } else if (!is.null(prop_terms)) {

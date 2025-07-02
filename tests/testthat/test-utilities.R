@@ -314,3 +314,5 @@ test_that("filter_score_auto() is working for aov", {
 # TODO Test bind_scores()
 
 # TODO Test fill_safe_values()
+
+# TODO May need to test for methods other than aov

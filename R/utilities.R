@@ -46,12 +46,12 @@ arrange_score.default <- function(x, ..., target = NULL) {
 #' @noRd
 #' @export
 arrange_score.score_obj <- function(x, ..., target = NULL) {
-  # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
     x$score_res |> dplyr::arrange(dplyr::desc(score))
   } else if (x$direction == "minimize") {
     x$score_res |> dplyr::arrange(score)
   } else if (x$direction == "target") {
+    check_target(target)
     x$score_res |> dplyr::arrange(abs(score - target))
   }
 }
@@ -111,8 +111,7 @@ filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
 #' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   # TODO Handle ties here?
-  # TODO Check if direction == target, add "need a target"
-  if (rlang::is_missing(num_terms)) {
+  if (is.null(num_terms)) {
     cli::cli_abort("{.arg num_terms} must be specified")
   }
 
@@ -121,6 +120,7 @@ filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   } else if (x$direction == "minimize") {
     x$score_res |> dplyr::slice_min(score, n = num_terms)
   } else if (x$direction == "target") {
+    check_target(target)
     x$score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(n = num_terms)
@@ -150,8 +150,7 @@ filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
 #' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   # TODO Handle ties here?
-  # TODO Check if direction == target, add "need a target"
-  if (rlang::is_missing(prop_terms)) {
+  if (is.null(prop_terms)) {
     cli::cli_abort("{.arg prop_terms} must be specified")
   }
 
@@ -160,6 +159,7 @@ filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   } else if (x$direction == "minimize") {
     x$score_res |> dplyr::slice_min(score, prop = prop_terms)
   } else if (x$direction == "target") {
+    check_target(target)
     x$score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(prop = prop_terms)
@@ -188,16 +188,16 @@ filter_score_cutoff.default <- function(x, ..., cutoff, target = NULL) {
 #' @noRd
 #' @export
 filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
-  if (rlang::is_missing(cutoff)) {
+  if (is.null(cutoff)) {
     cli::cli_abort("{.arg cutoff} must be specified")
   }
-  # TODO Check if direction == target, add "need a target"
   # TODO Can return more # of predictors due to floating-point precision
   if (x$direction == "maximize") {
     x$score_res |> dplyr::filter(score >= cutoff)
   } else if (x$direction == "minimize") {
     x$score_res |> dplyr::filter(score <= cutoff)
   } else if (x$direction == "target") {
+    check_target(target)
     x$score_res |> dplyr::filter(abs(score - target) <= cutoff)
   }
 }

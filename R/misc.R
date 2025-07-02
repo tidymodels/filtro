@@ -16,6 +16,17 @@ transform_neg_log10 <- scales::trans_new(
   inverse = function(x) 10^(-x)
 )
 
+#' Check if target value is supplied
+#'
+#' @export
+check_target <- function(target) {
+  if (is.null(target)) {
+    cli::cli_abort(
+      "{.arg target} must be supplied when {.arg direction} is {.val target}."
+    )
+  }
+}
+
 # TODO Check num_items
 
 # TODO Check prop_items

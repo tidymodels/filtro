@@ -16,7 +16,9 @@ transform_neg_log10 <- scales::trans_new(
   inverse = function(x) 10^(-x)
 )
 
-#' Check if target value is supplied
+#' Check if target value `target` is supplied
+#'
+#' @param target NULL
 #'
 #' @export
 check_target <- function(target) {
@@ -27,10 +29,37 @@ check_target <- function(target) {
   }
 }
 
-# TODO Check num_items
+#' Check if number of predictors `num_terms` is specified
+#'
+#' @param num_terms NULL
+#'
+#' @export
+check_num_terms <- function(num_terms) {
+  if (is.null(num_terms)) {
+    cli::cli_abort("{.arg num_terms} must be specified")
+  }
+}
 
-# TODO Check prop_items
+#' Check if proportion of predictors `prop_terms` is specified
+#'
+#' @param prop_terms NULL
+#'
+#' @export
+check_prop_terms <- function(prop_terms) {
+  if (is.null(prop_terms)) {
+    cli::cli_abort("{.arg prop_terms} must be specified")
+  }
+}
 
-# TODO Check cutoff
+#' Check if cutoff value `cutoff` is specified
+#'
+#' @param cutoff NULL
+#'
+#' @export
+check_cutoff <- function(cutoff) {
+  if (is.null(cutoff)) {
+    cli::cli_abort("{.arg cutoff} must be specified")
+  }
+}
 
 # TODO Check num_items & prop_items

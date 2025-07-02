@@ -2,10 +2,13 @@
 % Please edit documentation in R/misc.R
 \name{check_target}
 \alias{check_target}
-\title{Check if target value is provided}
+\title{Check if target value \code{target} is supplied}
 \usage{
 check_target(target)
 }
+\arguments{
+\item{target}{NULL}
+}
 \description{
-Check if target value is provided
+Check if target value \code{target} is supplied
 }

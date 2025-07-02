@@ -111,9 +111,7 @@ filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
 #' @export
 filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
   # TODO Handle ties here?
-  if (is.null(num_terms)) {
-    cli::cli_abort("{.arg num_terms} must be specified")
-  }
+  check_num_terms(num_terms)
 
   if (x$direction == "maximize") {
     x$score_res |> dplyr::slice_max(score, n = num_terms)
@@ -150,9 +148,7 @@ filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
 #' @export
 filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
   # TODO Handle ties here?
-  if (is.null(prop_terms)) {
-    cli::cli_abort("{.arg prop_terms} must be specified")
-  }
+  check_prop_terms(prop_terms)
 
   if (x$direction == "maximize") {
     x$score_res |> dplyr::slice_max(score, prop = prop_terms)
@@ -188,9 +184,8 @@ filter_score_cutoff.default <- function(x, ..., cutoff, target = NULL) {
 #' @noRd
 #' @export
 filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
-  if (is.null(cutoff)) {
-    cli::cli_abort("{.arg cutoff} must be specified")
-  }
+  check_cutoff(cutoff)
+
   # TODO Can return more # of predictors due to floating-point precision
   if (x$direction == "maximize") {
     x$score_res |> dplyr::filter(score >= cutoff)

@@ -227,7 +227,9 @@ filter_score_auto.score_obj <- function(
   cutoff = NULL
 ) {
   if (!is.null(num_terms) && !is.null(prop_terms)) {
-    rlang::abort("`num_terms` and `prop_terms` are mutually exclusive")
+    cli::cli_abort(
+      "{.arg num_terms} and {.arg prop_terms} are mutually exclusive."
+    )
   }
 
   if (!is.null(num_terms)) {

@@ -7,7 +7,7 @@ transform_abs <- scales::trans_new(
   inverse = function(x) x # dummy inverse
 )
 
-#' Negative log10 Transformation (TODO Rewrite using other method)
+#' Negative log10 Transformation TODO Rewrite using other method
 #'
 #' @export
 transform_neg_log10 <- scales::trans_new(

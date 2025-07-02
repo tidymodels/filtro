@@ -131,12 +131,12 @@ score_res_imp <- get_scores_forest_importance(score_obj_imp, data, outcome)
 score_obj_imp <- score_obj_imp |> attach_score(score_res_imp)
 
 score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp) # TODO Right now user has to supply the list.
-
-# score_obj_list <- list(score_obj_aov, score_obj_aov)
-# score_obj_list <- list(score_obj_aov)
-# score_obj_list |> bind_scores(list())
-
 score_obj_list |> bind_scores()
+
+bind_scores(list())
+score_obj_list <- list(score_obj_aov)
+score_obj_list |> bind_scores()
+#score_obj_list <- list(score_obj_aov, score_obj_aov) # TODO
 
 # Fill in safe values
 score_obj_list |> fill_safe_values()

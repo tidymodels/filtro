@@ -360,10 +360,16 @@ bind_scores.default <- function(x) {
 #' score_obj_list |> bind_scores()
 #'
 bind_scores.list <- function(x) {
-  for (i in seq_along(x)) {
-    if (i == 1) {
-      score_set <- x[[i]]$score_res
-    } else {
+  len_x <- length(x)
+  if (len_x == 0) {
+    cli::cli_abort("{.arg x} is empty. Must contain at least one element")
+  }
+  if (len_x == 1) {
+    score_set <- x[[1]]$score_res
+  } else {
+    # TODO Check for identical score object
+    score_set <- x[[1]]$score_res
+    for (i in 2:len_x) {
       score_set <- dplyr::full_join(
         score_set,
         x[[i]]$score_res,
@@ -371,8 +377,10 @@ bind_scores.list <- function(x) {
       )
     }
   }
+
   score_set <- score_set |>
     tidyr::pivot_wider(names_from = name, values_from = score)
+
   class(score_set) <- c("score_set", class(score_set))
   score_set
 }

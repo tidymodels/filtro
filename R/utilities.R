@@ -231,7 +231,7 @@ filter_score_auto.score_obj <- function(
   prop_terms = NULL,
   cutoff = NULL
 ) {
-  if (!is.na(num_terms) & !is.na(prop_terms)) {
+  if (!is.null(num_terms) && !is.null(prop_terms)) {
     rlang::abort("`num_terms` and `prop_terms` are mutually exclusive")
   }
 

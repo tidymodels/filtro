@@ -242,7 +242,45 @@ test_that("filter_score_cutoff() is working for aov", {
   )
 })
 
-# TODO Test filter_score_auto()
+test_that("filter_score_auto() is working for aov", {
+  skip_if_not_installed("modeldata")
+  data(ames, package = "modeldata")
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+  outcome <- "Sale_Price"
+  score_obj = score_aov()
+  score_res <- get_scores_aov(score_obj, data, outcome)
+
+  score_obj <- score_obj |> attach_score(score_res)
+
+  score_obj$direction <- "maximize"
+  ex.max <- score_obj |> filter_score_auto(num_terms = 2)
+  ex.max2 <- score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
+  ex.max3 <- score_obj |> filter_score_auto(prop_terms = 0.5)
+  ex.max4 <- score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
+
+  expect_equal(
+    ex.max,
+    score_obj |> filter_score_num(num_terms = 2)
+  )
+
+  expect_equal(
+    ex.max2,
+    {
+      score_obj$score_res <- score_obj |> filter_score_num(num_terms = 2)
+      score_obj |> filter_score_cutoff(cutoff = 63.9)
+    }
+  )
+
+  # TODO Finish the rest
+})
 
 # TODO Test rank_score_min()
 

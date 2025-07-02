@@ -1,3 +1,5 @@
+# TODO Write a helper-* file for repetitive code. Remove comments once confirm that it works.
+
 test_that("attach_score() is working for aov", {
   skip_if_not_installed("modeldata")
   data(ames, package = "modeldata")
@@ -13,29 +15,30 @@ test_that("attach_score() is working for aov", {
   outcome <- "Sale_Price"
   score_obj = score_aov()
   score_res <- get_scores_aov(score_obj, data, outcome)
-
   ex.score_obj <- score_obj |> attach_score(score_res)
 
   expect_equal(ex.score_obj$score_res, score_res)
 })
 
 test_that("arrange_score() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> arrange_score()
@@ -59,22 +62,24 @@ test_that("arrange_score() is working for aov", {
 })
 
 test_that("trans_score() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$trans <- NULL # Default
   ex.identity <- score_obj |> trans_score()
@@ -90,22 +95,24 @@ test_that("trans_score() is working for aov", {
 })
 
 test_that("filter_score_num() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_num(num_terms = 2)
@@ -141,22 +148,24 @@ test_that("filter_score_num() is working for aov", {
 })
 
 test_that("filter_score_prop() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
@@ -192,22 +201,24 @@ test_that("filter_score_prop() is working for aov", {
 })
 
 test_that("filter_score_cutoff() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$direction <- "maximize" # Default
   ex.max <- score_obj |> filter_score_cutoff(cutoff = 63.8)
@@ -243,22 +254,24 @@ test_that("filter_score_cutoff() is working for aov", {
 })
 
 test_that("filter_score_auto() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  # skip_if_not_installed("modeldata")
+  # data(ames, package = "modeldata")
+  # data <- modeldata::ames |>
+  #   dplyr::select(
+  #     Sale_Price,
+  #     MS_SubClass,
+  #     MS_Zoning,
+  #     Lot_Frontage,
+  #     Lot_Area,
+  #     Street
+  #   )
+  # outcome <- "Sale_Price"
+  # score_obj = score_aov()
+  # score_res <- get_scores_aov(score_obj, data, outcome)
+  # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- score_obj |> attach_score(score_res)
+  score_obj <- ames_score_obj()
+  score_res <- score_obj$score_res
 
   score_obj$direction <- "maximize"
   ex.max <- score_obj |> filter_score_auto(num_terms = 2)

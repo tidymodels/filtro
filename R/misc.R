@@ -15,3 +15,11 @@ transform_neg_log10 <- scales::trans_new(
   transform = function(x) -log10(x),
   inverse = function(x) 10^(-x)
 )
+
+# TODO Check num_items
+
+# TODO Check prop_items
+
+# TODO Check cutoff
+
+# TODO Check num_items & prop_items

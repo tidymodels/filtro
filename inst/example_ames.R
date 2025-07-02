@@ -51,6 +51,7 @@ score_obj$direction <- "target"
 score_obj |>
   filter_score_num(score_obj, num_terms = 2, target = 63.8)
 
+
 # Filter score based on proportion of predictors
 score_obj$direction <- "maximize" # Default
 score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
@@ -71,6 +72,17 @@ score_obj |> filter_score_cutoff(cutoff = 63.8)
 
 score_obj$direction <- "target"
 score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4) # TODO This cutoff value is based on abs(score - target). Not ideal?
+
+# Filter score based on type and optional cutoff
+score_obj$direction <- "maximize"
+
+score_obj |> filter_score_auto(num_terms = 2)
+score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
+
+score_obj |> filter_score_auto(prop_terms = 0.5)
+score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
+
+score_obj$direction <- "minimize"
 
 # Rank score based on min_rank
 score_obj$direction <- "maximize"
@@ -112,10 +124,13 @@ score_obj_imp <- score_obj_imp |> attach_score(score_res_imp)
 
 score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp) # TODO Right now user has to supply the list.
 
+# score_obj_list <- list(score_obj_aov, score_obj_aov)
+# score_obj_list <- list(score_obj_aov)
+# score_obj_list |> bind_scores(list())
+
 score_obj_list |> bind_scores()
 
 # Fill in safe values
-
 score_obj_list |> fill_safe_values()
 
 # TODO Filter *

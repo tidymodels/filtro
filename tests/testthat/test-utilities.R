@@ -315,4 +315,12 @@ test_that("filter_score_auto() is working for aov", {
 
 # TODO Test fill_safe_values()
 
+# score_set <- score_obj_list |> bind_scores()
+# for (i in 1:length(score_obj_list)) {
+#   method_name <- score_obj_list[[i]]$score_type
+#   fallback_val <- score_obj_list[[i]]$fallback_value
+#   score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
+# }
+# score_set
+
 # TODO May need to test for methods other than aov

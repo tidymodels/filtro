@@ -415,10 +415,7 @@ fill_safe_values.list <- function(x) {
   for (i in 1:length(x)) {
     method_name <- x[[i]]$score_type
     fallback_val <- x[[i]]$fallback_value
-    score_set[[method_name]] <- tidyr::replace_na(
-      score_set[[method_name]],
-      fallback_val
-    )
+    score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
   }
   score_set
 }

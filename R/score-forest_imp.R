@@ -1,7 +1,7 @@
 score_forest_imp <- function(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "permutation", # c("permutation", "impurity", ...)
+  score_type = "imp_rf",
   direction = "maximize"
 ) {
   new_score_obj(
@@ -12,7 +12,7 @@ score_forest_imp <- function(
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = Inf,
-    score_type = score_type,
+    score_type = score_type, # c("imp_rf", "imp_rf_conditional", "imp_rf_oblique")
     trans = NULL, # TODO
     sorts = NULL, # TODO
     direction = c("maximize", "minimize", "target"),
@@ -25,15 +25,18 @@ score_forest_imp <- function(
 }
 
 get_imp_rf_ranger <- function(score_obj, data, outcome) {
+  if (score_obj$score_type == "imp_rf") {
+    importance_type = "permutation"
+  } # TODO Allow option for importance = c("impurity")
+
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
   fit <- ranger::ranger(
     x = X,
     y = y,
-    #data = data,
     num.trees = score_obj$trees,
     mtry = score_obj$mtry,
-    importance = score_obj$score_type, # TODO importance = c(impurity)
+    importance = importance_type,
     min.node.size = score_obj$min_n,
     classification = score_obj$class, # TODO There is probably a better way to to do this?
     seed = 42 # TODO Add this to pass tests. Remove later.
@@ -55,7 +58,7 @@ get_imp_rf_partykit <- function(score_obj, data, formula) {
 }
 
 get_imp_rf_aorsf <- function(score_obj, data, formula) {
-  if (score_obj$score_type == "permutation") {
+  if (score_obj$score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
@@ -79,8 +82,6 @@ make_scores_forest_importance <- function(
   score <- imp[predictors] |> unname()
   score[is.na(score)] <- 0
 
-  # TODO Have name = c(imp_rf, imp_rf_conditional, imp_rf_oblique) based on score_obj$engine.
-
   res <- dplyr::tibble(
     name = score_type,
     score = score,
@@ -101,14 +102,14 @@ get_scores_forest_importance <- function(
   predictors <- setdiff(names(data), outcome)
 
   if (score_obj$engine == "ranger") {
-    imp <- get_imp_rf_ranger(score_obj, data, outcome)
     score_obj$score_type <- "imp_rf"
+    imp <- get_imp_rf_ranger(score_obj, data, outcome)
   } else if (score_obj$engine == "partykit") {
-    imp <- get_imp_rf_partykit(score_obj, data, formula)
     score_obj$score_type <- "imp_rf_conditional"
+    imp <- get_imp_rf_partykit(score_obj, data, formula)
   } else if (score_obj$engine == "aorsf") {
-    imp <- get_imp_rf_aorsf(score_obj, data, formula)
     score_obj$score_type <- "imp_rf_oblique"
+    imp <- get_imp_rf_aorsf(score_obj, data, formula)
   }
   res <- make_scores_forest_importance(
     score_obj$score_type,

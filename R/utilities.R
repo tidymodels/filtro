@@ -411,6 +411,7 @@ fill_safe_values.default <- function(x) {
 #' score_obj_list |> fill_safe_values()
 #'
 fill_safe_values.list <- function(x) {
+  # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
     method_name <- x[[i]]$score_type
@@ -420,6 +421,8 @@ fill_safe_values.list <- function(x) {
   score_set
 }
 
-# TODO Filter *
-
 # TODO Drop outcome column
+
+# TODO filter_score_*
+# Looking ahead at the example in desiarbility2, I think we'd want
+# predictor, d_roc, d_fstat, d_pval, d_pearson, d_imp_rf, etc, d_all.

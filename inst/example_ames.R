@@ -139,6 +139,7 @@ score_obj_list |> bind_scores()
 #score_obj_list <- list(score_obj_aov, score_obj_aov) # TODO
 
 # Fill in safe values
+score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 score_obj_list |> fill_safe_values()
 
 # TODO Filter *

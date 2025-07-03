@@ -1,7 +1,7 @@
 score_cross_tab <- function(
   range = c(0, 1),
   trans = NULL,
-  score_type = "chisq",
+  score_type = "pval_chisq",
   direction = "minimize"
 ) {
   new_score_obj(
@@ -12,7 +12,7 @@ score_cross_tab <- function(
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
-    score_type = score_type, # c("chisq", "fisher"),
+    score_type = score_type, # c("pval_chisq", "pval_fisher"),
     trans = NULL, # TODO
     sorts = NULL, # TODO
     direction = c("maximize", "minimize", "target"),
@@ -69,10 +69,9 @@ get_scores_cross_tab <- function(
   outcome,
   ... # i.e., score_obj$fdr
 ) {
-  if (score_obj$score_type == "chisq") {
-    # TODO Should I move this elsewhere?
+  if (score_obj$score_type == "pval_chisq") {
     score_obj$calculating_fn <- get_single_chisq
-  } else if (score_obj$score_type == "fisher") {
+  } else if (score_obj$score_type == "pval_fisher") {
     score_obj$calculating_fn <- get_single_fisher
   }
   predictors <- setdiff(names(data), outcome)
@@ -83,8 +82,11 @@ get_scores_cross_tab <- function(
   )
 
   if (score_obj$fdr == TRUE) {
-    # TODO Should I move this elsewhere?
     score <- stats::p.adjust(score)
+  }
+
+  if (is.null(score_obj$neg_log_pval) || isTRUE(score_obj$neg_log_pval)) {
+    score <- -log10(score)
   }
 
   res <- make_scores_cross_tab(score_obj$score_type, score, outcome, predictors)

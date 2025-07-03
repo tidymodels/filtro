@@ -30,7 +30,7 @@ score_aov <- function(
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_single_f_stat,
+    calculating_fn = NULL,
     label = c(score_aov = "ANOVA F-statistics and p-values")
   )
 }
@@ -92,7 +92,6 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 
 get_scores_aov <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "fstat") {
-    # TODO Should I move this elsewhere?
     score_obj$calculating_fn <- get_single_f_stat
   } else if (score_obj$score_type == "pval") {
     score_obj$calculating_fn <- get_single_p_val
@@ -104,6 +103,15 @@ get_scores_aov <- function(score_obj, data, outcome) {
     purrr::set_names(predictors),
     \(x) map_score_aov(data, x, outcome, score_obj$calculating_fn)
   )
+
+  # Do we need score <- stats::p.adjust(score) here too?
+
+  if (
+    score_obj$score_type == "pval" &&
+      (is.null(score_obj$neg_log_pval) || isTRUE(score_obj$neg_log_pval))
+  ) {
+    score <- -log10(score)
+  }
 
   res <- make_scores_aov(score_obj$score_type, score, outcome, predictors)
   res

@@ -1,7 +1,7 @@
 score_cross_tab <- function(
   range = c(0, 1),
   trans = NULL,
-  score_type = "pval_chisq",
+  score_type = "pval_chisq", # Move c() here later. Add validator. Document it.
   direction = "minimize"
 ) {
   new_score_obj(
@@ -43,11 +43,6 @@ map_score_cross_tab <- function(data, predictor, outcome, calculating_fn) {
   if (is.numeric(outcome_col) || is.numeric(predictor_col)) {
     return(NA_real_)
   }
-  # if (
-  #   length(levels(outcome_col)) > 2 || length(levels(predictor_col)) > 2
-  # ) {
-  #   return(NA_real_)
-  # }
 
   res <- calculating_fn(predictor_col, outcome_col)
   res

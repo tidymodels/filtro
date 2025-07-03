@@ -143,4 +143,5 @@ test_that("get_score_cross_tab is working for fisher pval", {
 })
 
 # TODO Test fdr
+# TODO Test multiclass
 # TODO Test more after we add validators

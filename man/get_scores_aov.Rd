@@ -12,12 +12,6 @@ get_scores_aov(score_obj, data, outcome)
 \item{data}{A data frame or tibble containing the outcome and predictor variables.}
 
 \item{outcome}{A character string specifying the name of the outcome variable.}
-
-\item{neg_log10}{A logical value, indicating whether to apply a negative log10
-transformation to p-values (\code{TRUE}) or not (\code{FALSE}).
-If \code{neg_log10} is \code{TRUE}, the transformation is applied, and \code{direction} should be
-set to \code{"maximize"}. If \code{neg_log10} is \code{FALSE}, raw p-values are used, and \code{direction}
-should be set to \code{"minimize"}. By default, \code{neg_log10} is set to \code{TRUE}.}
 }
 \value{
 A tibble of result with one row per predictor, and four columns:
@@ -31,6 +25,15 @@ A tibble of result with one row per predictor, and four columns:
 \description{
 Output a tibble result with with one row per predictor, and four columns:
 \code{name}, \code{score}, \code{predictor}, and \code{outcome}.
+}
+\details{
+The \code{score_obj} object may include the following components:
+\describe{
+\item{\code{neg_log10}}{A logical value indicating whether to apply a negative log10
+transformation to p-values (\code{TRUE} by default). If \code{TRUE}, the transformation
+is applied, and \code{direction} should be set to \code{"maximize"}. If \code{FALSE}, raw p-values
+are used, and \code{direction} should be set to \code{"minimize"}.}
+}
 }
 \examples{
 data(ames, package = "modeldata")

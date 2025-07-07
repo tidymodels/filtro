@@ -1,3 +1,14 @@
+#' Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_cross_tab <- function(
   range = c(0, 1),
   trans = NULL,

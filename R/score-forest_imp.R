@@ -1,7 +1,19 @@
+#' Compute feature importance scores using a random forest, a conditional random forest, or
+#' an oblique random forest
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_forest_imp <- function(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "imp_rf",
+  score_type = "imp_rf", # Move c() here later. Add validator. Document it.
   direction = "maximize"
 ) {
   new_score_obj(

@@ -1,7 +1,18 @@
+#' Compute Pearson or Spearman correlation coefficients
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_cor <- function(
   range = c(-1, 1),
   trans = NULL,
-  score_type = "pearson",
+  score_type = "pearson", # Move c() here later. Add validator. Document it.
   direction = "maximize"
 ) {
   new_score_obj(

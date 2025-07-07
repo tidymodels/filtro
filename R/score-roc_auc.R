@@ -1,4 +1,4 @@
-#' Title
+#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -7,7 +7,10 @@
 #' @export
 #'
 #' @examples NULL
-score_roc_auc <- function(range = c(0, 1), trans = NULL) {
+score_roc_auc <- function(
+  range = c(0, 1),
+  trans = NULL
+) {
   new_score_obj(
     subclass = c("any"), # TODO
     outcome_type = c("numeric", "factor"),

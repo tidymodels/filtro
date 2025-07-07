@@ -90,6 +90,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' @export
 get_scores_aov <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "fstat") {
     score_obj$calculating_fn <- get_single_f_stat

@@ -69,6 +69,7 @@ make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' @export
 get_scores_cross_tab <- function(
   score_obj,
   data,

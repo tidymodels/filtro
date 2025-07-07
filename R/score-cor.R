@@ -67,6 +67,7 @@ make_scores_cor <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' @export
 get_scores_cor <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "pearson") {
     # TODO Should I move this elsewhere?

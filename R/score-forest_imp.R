@@ -103,6 +103,7 @@ make_scores_forest_importance <- function(
   res
 }
 
+#' @export
 get_scores_forest_importance <- function(
   score_obj,
   data,

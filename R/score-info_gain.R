@@ -49,6 +49,7 @@ make_scores_info_gain <- function(
   res
 }
 
+#' @export
 get_scores_info_gain <- function(
   score_obj,
   data,

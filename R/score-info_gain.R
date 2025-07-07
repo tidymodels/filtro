@@ -1,7 +1,18 @@
+#' Compute information gain
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_info_gain <- function(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "infogain",
+  score_type = "infogain", # Move c() here later. Add validator. Document it.
   direction = "maximize"
 ) {
   new_score_obj(

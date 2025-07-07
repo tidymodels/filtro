@@ -1,4 +1,4 @@
-#' Title
+#' Tools for creating new score objects
 #'
 #' @param subclass A character string.
 #' @param outcome_type A character string. One of:
@@ -15,14 +15,25 @@
 #' @param inclusive A logical vector of length two, indicating whether the lower and
 #' upper bounds of the range are inclusive (`TRUE`) or exclusive (`FALSE`), respectively.
 #' @param fallback_value A numeric scalar used as a fallback value. Typical values
-#' include: `0`, `1`, or `Inf`.
-#' @param score_type A character string.
+#' include:
+#'   - `0`
+#'   - `1`
+#'   - `Inf`
+#'
+#' @param score_type A character string indicating the type of scoring metric to compute.
+#' Available options include:
+#'    - `fstat`, `pval`
+#'    - `pearson`, `spearman`
+#'    - `pval_chisq`, `pval_fisher`
+#'    - `imp_rf`, `imp_rf_conditional`, `imp_rf_oblique`
+#'    - `infogain`, `gainratio`, `symuncert`
+#'    - `roc_auc`
 #' @param trans A `trans` object from the \pkg{scales} package, such as
 #' [scales::transform_log10()] or [scales::transform_reciprocal()]. Or use built-in
 #' functions, such as [filters::transform_abs()] or [filters::transform_neg_log10()].
 #' Create custom transforms with [scales::trans_new()].
 #' @param sorts NULL
-#' @param direction A character string. One of:
+#' @param direction A character string indicating the optimization direction. One of:
 #'  - `"maximize"`
 #'  - `"minimize"`
 #'  - `"target"`
@@ -34,7 +45,7 @@
 #' @param ties A logical value indicating whether ties in score can occur (`TRUE`)
 #' or not (`FALSE`).
 #' @param calculating_fn NULL
-#' @param label NULL
+#' @param label A named named character string.
 #' @param ... NULL
 #'
 #' @returns NULL

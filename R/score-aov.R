@@ -1,4 +1,4 @@
-#' Title
+#' Compute F-statistic and p-value scores using ANOVA F-test
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -31,7 +31,7 @@ score_aov <- function(
     tuning = FALSE,
     ties = NULL,
     calculating_fn = NULL,
-    label = c(score_aov = "ANOVA F-statistics and p-values")
+    label = c(score_aov = "ANOVA F-test F-statistics and p-values")
   )
 }
 

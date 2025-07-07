@@ -2,7 +2,7 @@
 % Please edit documentation in R/constructor.R
 \name{new_score_obj}
 \alias{new_score_obj}
-\title{Title}
+\title{Tools for creating new score objects}
 \usage{
 new_score_obj(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
@@ -48,9 +48,23 @@ possible values, respectively.}
 upper bounds of the range are inclusive (\code{TRUE}) or exclusive (\code{FALSE}), respectively.}
 
 \item{fallback_value}{A numeric scalar used as a fallback value. Typical values
-include: \code{0}, \code{1}, or \code{Inf}.}
+include:
+\itemize{
+\item \code{0}
+\item \code{1}
+\item \code{Inf}
+}}
 
-\item{score_type}{A character string.}
+\item{score_type}{A character string indicating the type of scoring metric to compute.
+Available options include:
+\itemize{
+\item \code{fstat}, \code{pval}
+\item \code{pearson}, \code{spearman}
+\item \code{pval_chisq}, \code{pval_fisher}
+\item \code{imp_rf}, \code{imp_rf_conditional}, \code{imp_rf_oblique}
+\item \code{infogain}, \code{gainratio}, \code{symuncert}
+\item \code{roc_auc}
+}}
 
 \item{trans}{A \code{trans} object from the \pkg{scales} package, such as
 \code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Or use built-in
@@ -59,7 +73,7 @@ Create custom transforms with \code{\link[scales:new_transform]{scales::trans_ne
 
 \item{sorts}{NULL}
 
-\item{direction}{A character string. One of:
+\item{direction}{A character string indicating the optimization direction. One of:
 \itemize{
 \item \code{"maximize"}
 \item \code{"minimize"}
@@ -77,12 +91,12 @@ or not (\code{FALSE}).}
 
 \item{calculating_fn}{NULL}
 
-\item{label}{NULL}
+\item{label}{A named named character string.}
 
 \item{...}{NULL}
 }
 \description{
-Title
+Tools for creating new score objects
 }
 \examples{
 NULL

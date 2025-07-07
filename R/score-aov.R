@@ -108,13 +108,17 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'
 #' @param score_obj A score object. See [score_aov()] for details.
 #'
+#' @details
+#' The `score_obj` object may include the following components:
+#' \describe{
+#'   \item{`neg_log10`}{A logical value indicating whether to apply a negative log10
+#'   transformation to p-values (`TRUE` by default). If `TRUE`, the transformation
+#'   is applied, and `direction` should be set to `"maximize"`. If `FALSE`, raw p-values
+#'   are used, and `direction` should be set to `"minimize"`.}
+#' }
+#'
 #' @param data A data frame or tibble containing the outcome and predictor variables.
 #' @param outcome A character string specifying the name of the outcome variable.
-#' @param neg_log10 A logical value, indicating whether to apply a negative log10
-#' transformation to p-values (`TRUE`) or not (`FALSE`).
-#' If `neg_log10` is `TRUE`, the transformation is applied, and `direction` should be
-#' set to `"maximize"`. If `neg_log10` is `FALSE`, raw p-values are used, and `direction`
-#' should be set to `"minimize"`. By default, `neg_log10` is set to `TRUE`.
 #'
 #' @return A tibble of result with one row per predictor, and four columns:
 #' - `name`: the name of scoring metric.

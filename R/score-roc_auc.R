@@ -87,6 +87,7 @@ make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' @export
 get_scores_roc_auc <- function(score_obj, data, outcome) {
   predictors <- setdiff(names(data), outcome)
 

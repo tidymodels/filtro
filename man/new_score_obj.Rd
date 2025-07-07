@@ -2,7 +2,7 @@
 % Please edit documentation in R/constructor.R
 \name{new_score_obj}
 \alias{new_score_obj}
-\title{Tools for creating new score objects}
+\title{Tools for creating new score object}
 \usage{
 new_score_obj(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
@@ -45,7 +45,7 @@ new_score_obj(
 possible values, respectively.}
 
 \item{inclusive}{A logical vector of length two, indicating whether the lower and
-upper bounds of the range are inclusive (\code{TRUE}) or exclusive (\code{FALSE}), respectively.}
+upper bounds of the range are inclusive (\code{TRUE}) or exclusive (\code{FALSE}).}
 
 \item{fallback_value}{A numeric scalar used as a fallback value. Typical values
 include:
@@ -58,12 +58,12 @@ include:
 \item{score_type}{A character string indicating the type of scoring metric to compute.
 Available options include:
 \itemize{
-\item \code{fstat}, \code{pval}
-\item \code{pearson}, \code{spearman}
-\item \code{pval_chisq}, \code{pval_fisher}
-\item \code{imp_rf}, \code{imp_rf_conditional}, \code{imp_rf_oblique}
-\item \code{infogain}, \code{gainratio}, \code{symuncert}
-\item \code{roc_auc}
+\item ANOVA F-Test: \code{"fstat"}, \code{"pval"}
+\item Correlation: \code{"pearson"}, \code{"spearman"}
+\item Cross Tabulation: \code{"pval_chisq"}, \code{"pval_fisher"}
+\item Random Forest:\code{"imp_rf"}, \code{"imp_rf_conditional"}, \code{"imp_rf_oblique"}
+\item Information Gain: \code{"infogain"}, \code{"gainratio"}, \code{"symuncert"}
+\item ROC AUC: \code{"roc_auc"}
 }}
 
 \item{trans}{A \code{trans} object from the \pkg{scales} package, such as
@@ -71,7 +71,12 @@ Available options include:
 functions, such as \code{\link[=transform_abs]{transform_abs()}} or \code{\link[=transform_neg_log10]{transform_neg_log10()}}.
 Create custom transforms with \code{\link[scales:new_transform]{scales::trans_new()}}.}
 
-\item{sorts}{NULL}
+\item{sorts}{A character string indicating used to sort the scores. Common options include:
+\itemize{
+\item \code{identity}
+\item \code{abs}
+\item \code{function(score) max(score, 1 - score)}
+}}
 
 \item{direction}{A character string indicating the optimization direction. One of:
 \itemize{
@@ -96,7 +101,7 @@ or not (\code{FALSE}).}
 \item{...}{NULL}
 }
 \description{
-Tools for creating new score objects
+Tools for creating new score object
 }
 \examples{
 NULL

@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-aov.R
 \name{score_aov}
 \alias{score_aov}
-\title{Compute F-statistic and p-value scores using ANOVA F-test}
+\title{Create score object for ANOVA F-test F-statistics and p-values}
 \usage{
 score_aov(
   range = c(0, Inf),
@@ -12,17 +12,30 @@ score_aov(
 )
 }
 \arguments{
-\item{range}{NULL}
+\item{range}{A numeric vector of length two, specifying the minimum and maximum
+possible values, respectively.}
 
 \item{trans}{NULL}
 
-\item{score_type}{NULL}
+\item{score_type}{A character string indicating the type of scoring metric to compute.
+Available options include:
+\itemize{
+\item \code{fstat}
+\item \code{pval}
+}}
 
-\item{direction}{NULL}
+\item{direction}{For F-statistics, the \code{direction} should be set to \code{"maximize"}.
+For p-values, since the default applies a negative log10 transformation to p-values,
+the \code{direction} should be set to \code{"maximize"}.}
+}
+\value{
+A score object containing associated metadata such as \code{range},
+\code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
 }
 \description{
-Compute F-statistic and p-value scores using ANOVA F-test
+Create a score object that contains associated metadata such as \code{range},
+\code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
 }
 \examples{
-NULL
+score_aov()
 }

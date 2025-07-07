@@ -2,8 +2,7 @@
 % Please edit documentation in R/score-forest_imp.R
 \name{score_forest_imp}
 \alias{score_forest_imp}
-\title{Compute feature importance scores using a random forest, a conditional random forest, or
-an oblique random forest}
+\title{Create score object for feature importance scores}
 \usage{
 score_forest_imp(
   range = c(0, Inf),
@@ -22,8 +21,7 @@ score_forest_imp(
 \item{direction}{NULL}
 }
 \description{
-Compute feature importance scores using a random forest, a conditional random forest, or
-an oblique random forest
+Create score object for feature importance scores
 }
 \examples{
 NULL

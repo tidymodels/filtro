@@ -11,7 +11,7 @@ test_that("get_scores_aov() is working for fstat", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_res <- get_scores_aov(score_obj, data, outcome)
 
   fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
@@ -119,7 +119,7 @@ test_that("get_scores_aov() is working for pval", {
   outcome <- "Sale_Price"
   score_obj = score_aov()
   score_obj$score_type <- "pval"
-  score_obj$neg_log_pval <- FALSE # Turn -log10() off
+  score_obj$neg_log10 <- FALSE # Turn -log10() off
   score_res <- get_scores_aov(score_obj, data, outcome)
 
   fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)

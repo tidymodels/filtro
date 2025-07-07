@@ -1,4 +1,4 @@
-#' Compute information gain
+#' Create score object for information gain
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -49,12 +49,20 @@ make_scores_info_gain <- function(
   res
 }
 
+#' Compute information gain
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#' @param ... NULL
+#'
 #' @export
 get_scores_info_gain <- function(
   score_obj,
   data,
   outcome,
-  ...
+  ... # i.e., score_obj$equal
 ) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]

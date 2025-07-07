@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-cor.R
 \name{score_cor}
 \alias{score_cor}
-\title{Compute Pearson or Spearman correlation coefficients}
+\title{Create score object for correlation coefficients}
 \usage{
 score_cor(
   range = c(-1, 1),
@@ -21,7 +21,7 @@ score_cor(
 \item{direction}{NULL}
 }
 \description{
-Compute Pearson or Spearman correlation coefficients
+Create score object for correlation coefficients
 }
 \examples{
 NULL

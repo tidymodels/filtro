@@ -15,7 +15,7 @@ data <- modeldata::ames |>
     # Lot_Config,
     # Land_Slope
   )
-data <- data %>%
+data <- data |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 outcome <- "Sale_Price"
 score_obj = filters::score_aov()
@@ -113,6 +113,28 @@ score_obj |> rank_score_dense()
 # tmp <- score_obj |> as_result_obj(score)
 # tmp$score |> class()
 
+data(ames, package = "modeldata")
+data <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street #,
+    # Alley, # ADD MORE
+    # Lot_Shape,
+    # Land_Contour,
+    # Utilities,
+    # Lot_Config,
+    # Land_Slope
+  )
+data <- data |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+outcome <- "Sale_Price"
+score_obj = filters::score_aov()
+score_res <- filters::get_scores_aov(score_obj, data, outcome)
+
 # Bind scores and assign class
 score_obj_aov <- filters::score_aov()
 score_res_aov <- filters::get_scores_aov(score_obj_aov, data, outcome)
@@ -137,7 +159,7 @@ score_res_imp <- filters::get_scores_forest_importance(
 score_obj_imp <- score_obj_imp |> filters::attach_score(score_res_imp)
 
 score_obj_info <- filters::score_info_gain()
-score_obj$equal <- TRUE
+score_obj_info$equal <- TRUE
 score_res_info <- filters::get_scores_info_gain(score_obj_info, data, outcome)
 score_obj_info <- score_obj_info |> filters::attach_score(score_res_info)
 
@@ -149,10 +171,10 @@ score_obj_list <- list(
 ) # TODO Right now user has to supply the list.
 score_obj_list |> filters::bind_scores()
 
-bind_scores(list())
-score_obj_list <- list(score_obj_aov)
-score_obj_list |> filters::bind_scores()
-#score_obj_list <- list(score_obj_aov, score_obj_aov) # TODO
+# bind_scores(list())
+# score_obj_list <- list(score_obj_aov)
+# score_obj_list |> filters::bind_scores()
+# #score_obj_list <- list(score_obj_aov, score_obj_aov) # TODO
 
 # Fill in safe values
 score_obj_list <- list(

@@ -15,6 +15,8 @@ data <- modeldata::ames |>
     # Lot_Config,
     # Land_Slope
   )
+data <- data %>%
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 outcome <- "Sale_Price"
 score_obj = score_aov()
 score_res <- get_scores_aov(score_obj, data, outcome)

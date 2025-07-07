@@ -1,4 +1,4 @@
-#' Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test
+#' Create score object for cross tabulation p-values
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -69,6 +69,14 @@ make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#' @param ... NULL
+#'
 #' @export
 get_scores_cross_tab <- function(
   score_obj,

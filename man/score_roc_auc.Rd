@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-roc_auc.R
 \name{score_roc_auc}
 \alias{score_roc_auc}
-\title{Compute area under the Receiver Operating Characteristic curve (ROC AUC)}
+\title{Create score object for area under the Receiver Operating Characteristic curve (ROC AUC)}
 \usage{
 score_roc_auc(range = c(0, 1), trans = NULL)
 }
@@ -12,7 +12,7 @@ score_roc_auc(range = c(0, 1), trans = NULL)
 \item{trans}{NULL}
 }
 \description{
-Compute area under the Receiver Operating Characteristic curve (ROC AUC)
+Create score object for area under the Receiver Operating Characteristic curve (ROC AUC)
 }
 \examples{
 NULL

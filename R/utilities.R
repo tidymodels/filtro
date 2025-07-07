@@ -425,4 +425,4 @@ fill_safe_values.list <- function(x) {
 
 # TODO filter_score_*
 # Looking ahead at the example in desiarbility2, I think we'd want
-# predictor, d_roc, d_fstat, d_pval, d_pearson, d_imp_rf, etc, d_all.
+# predictor, d_fstat, d_pval, d_pearson, d_imp_rf, d_roc_auc, etc, d_all.

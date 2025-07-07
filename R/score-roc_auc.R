@@ -1,4 +1,4 @@
-#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
+#' Create score object for area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -87,6 +87,13 @@ make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#'
 #' @export
 get_scores_roc_auc <- function(score_obj, data, outcome) {
   predictors <- setdiff(names(data), outcome)

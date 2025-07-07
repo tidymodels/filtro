@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-cross_tab.R
 \name{score_cross_tab}
 \alias{score_cross_tab}
-\title{Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test}
+\title{Create score object for cross tabulation p-values}
 \usage{
 score_cross_tab(
   range = c(0, 1),
@@ -21,7 +21,7 @@ score_cross_tab(
 \item{direction}{NULL}
 }
 \description{
-Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test
+Create score object for cross tabulation p-values
 }
 \examples{
 NULL

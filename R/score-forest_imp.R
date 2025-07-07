@@ -1,5 +1,4 @@
-#' Compute feature importance scores using a random forest, a conditional random forest, or
-#' an oblique random forest
+#' Create score object for feature importance scores
 #'
 #' @param range NULL
 #' @param trans NULL
@@ -103,6 +102,15 @@ make_scores_forest_importance <- function(
   res
 }
 
+#' Compute feature importance scores using a random forest, a conditional random forest, or
+#' an oblique random forest
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#' @param ... NULL
+#'
 #' @export
 get_scores_forest_importance <- function(
   score_obj,

@@ -1,15 +1,22 @@
-#' Tools for creating new score object
+#' Construct a new score object
 #'
-#' @param subclass A character string.
-#' @param outcome_type A character string. One of:
+#' Create a new score object that contains associated metadata, such as `range`,
+#' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
+#'
+#' @param subclass A character string indicating the type of predictor-outcome combination
+#' the scoring method supports. One of:
+#'  - `"cat_num"`
+#'  - `"cat_cat"`
+#'  - `"num_num"`
+#'  - `"any"`
+#' @param outcome_type A character string indicating the outcome type. One of:
 #'  - `"numeric"`
 #'  - `"factor"`
-#'
-#' @param predictor_type A character string. One of:
+#' @param predictor_type A character string indicating the predictor type. One of:
 #'  - `"numeric"`
 #'  - `"factor"`
-#'
-#' @param case_weights NULL
+#' @param case_weights A logical value, indicating whether the model accepts
+#' case weights (`TRUE`) or not (`FALSE`).
 #' @param range A numeric vector of length two, specifying the minimum and maximum
 #' possible values, respectively.
 #' @param inclusive A logical vector of length two, indicating whether the lower and
@@ -19,7 +26,6 @@
 #'   - `0`
 #'   - `1`
 #'   - `Inf`
-#'
 #' @param score_type A character string indicating the type of scoring metric to compute.
 #' Available options include:
 #'    - ANOVA F-Test: `"fstat"`, `"pval"`
@@ -28,28 +34,27 @@
 #'    - Random Forest:`"imp_rf"`, `"imp_rf_conditional"`, `"imp_rf_oblique"`
 #'    - Information Gain: `"infogain"`, `"gainratio"`, `"symuncert"`
 #'    - ROC AUC: `"roc_auc"`
-#' @param trans A `trans` object from the \pkg{scales} package, such as
-#' [scales::transform_log10()] or [scales::transform_reciprocal()]. Or use built-in
+#' @param trans An optional `trans` object from the \pkg{scales} package, such as
+#' [scales::transform_log10()] or [scales::transform_reciprocal()]. Use built-in
 #' functions, such as [filters::transform_abs()] or [filters::transform_neg_log10()].
-#' Create custom transforms with [scales::trans_new()].
-#' @param sorts A character string indicating used to sort the scores. Common options include:
+#' Or create custom transforms with [scales::trans_new()].
+#' @param sorts An optional function used to sort the scores. Common options include:
 #'  - `identity`
 #'  - `abs`
 #'  - `function(score) max(score, 1 - score)`
-#'
 #' @param direction A character string indicating the optimization direction. One of:
 #'  - `"maximize"`
 #'  - `"minimize"`
 #'  - `"target"`
-#'
-#' @param deterministic A logical value, indicating whether the resulting score is
-#' deterministic (`TRUE`) or random (`FALSE`).
+#' @param deterministic A logical value, indicating whether the score is
+#' deterministic (`TRUE`) or not (`FALSE`).
 #' @param tuning A logical value, indicating whether the model should be tuned
 #' (`TRUE`) or not (`FALSE`).
-#' @param ties A logical value indicating whether ties in score can occur (`TRUE`)
+#' @param ties An optional logical value indicating whether ties in score can occur (`TRUE`)
 #' or not (`FALSE`).
-#' @param calculating_fn NULL
-#' @param label A named named character string.
+#' @param calculating_fn An optional function used to compute the score. A default function
+#' is selected based on the `score_type`.
+#' @param label A named character string that can be used for printing and plotting.
 #' @param ... NULL
 #'
 #' @returns NULL
@@ -57,7 +62,7 @@
 #'
 #' @examples NULL
 new_score_obj <- function(
-  subclass = c("cat_num", "cat_cat", "num_num", "any"),
+  subclass = c("cat_num", "cat_cat", "num_num", "any"), # TODO Rename subclass
   outcome_type = c("numeric", "factor"),
   predictor_type = c("numeric", "factor"),
   case_weights = NULL,
@@ -95,7 +100,7 @@ new_score_obj <- function(
     calculating_fn = calculating_fn,
     label = label
   )
-  class(res) <- c(subclass, "score_obj") # TODO Rename subclass
+  class(res) <- c(subclass, "score_obj")
 
   res
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/constructor.R
 \name{new_score_obj}
 \alias{new_score_obj}
-\title{Tools for creating new score object}
+\title{Construct a new score object}
 \usage{
 new_score_obj(
   subclass = c("cat_num", "cat_cat", "num_num", "any"),
@@ -25,21 +25,29 @@ new_score_obj(
 )
 }
 \arguments{
-\item{subclass}{A character string.}
+\item{subclass}{A character string indicating the type of predictor-outcome combination
+the scoring method supports. One of:
+\itemize{
+\item \code{"cat_num"}
+\item \code{"cat_cat"}
+\item \code{"num_num"}
+\item \code{"any"}
+}}
 
-\item{outcome_type}{A character string. One of:
+\item{outcome_type}{A character string indicating the outcome type. One of:
 \itemize{
 \item \code{"numeric"}
 \item \code{"factor"}
 }}
 
-\item{predictor_type}{A character string. One of:
+\item{predictor_type}{A character string indicating the predictor type. One of:
 \itemize{
 \item \code{"numeric"}
 \item \code{"factor"}
 }}
 
-\item{case_weights}{NULL}
+\item{case_weights}{A logical value, indicating whether the model accepts
+case weights (\code{TRUE}) or not (\code{FALSE}).}
 
 \item{range}{A numeric vector of length two, specifying the minimum and maximum
 possible values, respectively.}
@@ -66,12 +74,12 @@ Available options include:
 \item ROC AUC: \code{"roc_auc"}
 }}
 
-\item{trans}{A \code{trans} object from the \pkg{scales} package, such as
-\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Or use built-in
+\item{trans}{An optional \code{trans} object from the \pkg{scales} package, such as
+\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Use built-in
 functions, such as \code{\link[=transform_abs]{transform_abs()}} or \code{\link[=transform_neg_log10]{transform_neg_log10()}}.
-Create custom transforms with \code{\link[scales:new_transform]{scales::trans_new()}}.}
+Or create custom transforms with \code{\link[scales:new_transform]{scales::trans_new()}}.}
 
-\item{sorts}{A character string indicating used to sort the scores. Common options include:
+\item{sorts}{An optional function used to sort the scores. Common options include:
 \itemize{
 \item \code{identity}
 \item \code{abs}
@@ -85,23 +93,25 @@ Create custom transforms with \code{\link[scales:new_transform]{scales::trans_ne
 \item \code{"target"}
 }}
 
-\item{deterministic}{A logical value, indicating whether the resulting score is
-deterministic (\code{TRUE}) or random (\code{FALSE}).}
+\item{deterministic}{A logical value, indicating whether the score is
+deterministic (\code{TRUE}) or not (\code{FALSE}).}
 
 \item{tuning}{A logical value, indicating whether the model should be tuned
 (\code{TRUE}) or not (\code{FALSE}).}
 
-\item{ties}{A logical value indicating whether ties in score can occur (\code{TRUE})
+\item{ties}{An optional logical value indicating whether ties in score can occur (\code{TRUE})
 or not (\code{FALSE}).}
 
-\item{calculating_fn}{NULL}
+\item{calculating_fn}{An optional function used to compute the score. A default function
+is selected based on the \code{score_type}.}
 
-\item{label}{A named named character string.}
+\item{label}{A named character string that can be used for printing and plotting.}
 
 \item{...}{NULL}
 }
 \description{
-Tools for creating new score object
+Create a new score object that contains associated metadata, such as \code{range},
+\code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
 }
 \examples{
 NULL

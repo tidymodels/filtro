@@ -1,4 +1,4 @@
-#' Create score object for correlation coefficients
+#' Create a score object for correlation coefficients
 #'
 #' @param range NULL
 #' @param trans NULL

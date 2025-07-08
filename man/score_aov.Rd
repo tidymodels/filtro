@@ -2,40 +2,62 @@
 % Please edit documentation in R/score-aov.R
 \name{score_aov}
 \alias{score_aov}
-\title{Create score object for ANOVA F-test F-statistics and p-values}
+\title{Create a score object for ANOVA F-test F-statistics and p-values}
 \usage{
 score_aov(
   range = c(0, Inf),
-  trans = NULL,
-  score_type = c("fstat", "pval"),
-  direction = c("maximize", "minimize", "target")
+  fallback_value = Inf,
+  score_type = "fstat",
+  direction = "maximize"
 )
 }
 \arguments{
 \item{range}{A numeric vector of length two, specifying the minimum and maximum
 possible values, respectively.}
 
-\item{trans}{NULL}
+\item{fallback_value}{A numeric scalar used as a fallback value. Typical values
+include:
+\itemize{
+\item \code{0}
+\item \code{Inf} (default)
+}
+
+For F-statistics, the \code{fallback_value} should be \code{"Inf"}. For p-values,
+since the default applies a negative log10 transformation to p-values,
+the \code{fallback_value} should be \code{"Inf"}.}
 
 \item{score_type}{A character string indicating the type of scoring metric to compute.
 Available options include:
 \itemize{
-\item \code{fstat}
-\item \code{pval}
+\item \code{"fstat"}
+\item \code{"pval"}
 }}
 
-\item{direction}{For F-statistics, the \code{direction} should be set to \code{"maximize"}.
-For p-values, since the default applies a negative log10 transformation to p-values,
-the \code{direction} should be set to \code{"maximize"}.}
+\item{direction}{A character string indicating the optimization direction. One of:
+\itemize{
+\item \code{"maximize"} (default)
+\item \code{"minimize"}
+\item \code{"target"}
+}
+
+For F-statistics, the \code{direction} should be \code{"maximize"}. For p-values,
+since the default applies a negative log10 transformation to p-values,
+the \code{direction} should be \code{"maximize"}.}
 }
 \value{
-A score object containing associated metadata such as \code{range},
-\code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
+A score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"fstat"} or \code{"pval"}), \code{direction}, and other relevant attributes.
 }
 \description{
-Create a score object that contains associated metadata such as \code{range},
-\code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
+Construct a score object containing metadata for univariate feature scoring using the
+ANOVA F-test.
+Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"fstat"} or \code{"pval"}), \code{direction}, and other relevant attributes.
 }
 \examples{
+# Create a score object
 score_aov()
+# Change score type
+score_obj <- score_aov()
+score_obj$score_type <- "pval"
 }

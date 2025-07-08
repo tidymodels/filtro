@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-cor.R
 \name{score_cor}
 \alias{score_cor}
-\title{Create score object for correlation coefficients}
+\title{Create a score object for correlation coefficients}
 \usage{
 score_cor(
   range = c(-1, 1),
@@ -21,7 +21,7 @@ score_cor(
 \item{direction}{NULL}
 }
 \description{
-Create score object for correlation coefficients
+Create a score object for correlation coefficients
 }
 \examples{
 NULL

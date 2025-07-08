@@ -1,4 +1,4 @@
-#' Create score object for area under the Receiver Operating Characteristic curve (ROC AUC)
+#' Create a score object for area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' @param range NULL
 #' @param trans NULL

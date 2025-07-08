@@ -23,6 +23,8 @@ A tibble of result with one row per predictor, and four columns:
 }
 }
 \description{
+Evaluate the relationship between a numeric outcome and a categorical predictor,
+or vice versa, by computing the ANOVA F-statistic or p-value.
 Output a tibble result with with one row per predictor, and four columns:
 \code{name}, \code{score}, \code{predictor}, and \code{outcome}.
 }
@@ -30,9 +32,20 @@ Output a tibble result with with one row per predictor, and four columns:
 The \code{score_obj} object may include the following components:
 \describe{
 \item{\code{neg_log10}}{A logical value indicating whether to apply a negative log10
-transformation to p-values (\code{TRUE} by default). If \code{TRUE}, the transformation
-is applied, and \code{direction} should be set to \code{"maximize"}. If \code{FALSE}, raw p-values
-are used, and \code{direction} should be set to \code{"minimize"}.}
+transformation to p-values (default is \code{TRUE}).
+\itemize{
+\item If \code{TRUE}, p-values are transformed as \code{-log10(pval)}. In this case:
+\itemize{
+\item The default \code{fallback_value} is \code{Inf}
+\item The default \code{direction} is \code{"maximize"}
+}
+\item If \code{FALSE}, raw p-values are used. In this case:
+\itemize{
+\item The \code{fallback_value} should be set to \code{0}
+\item The \code{direction} should be set to \code{"minimize"}
+}
+}
+}
 }
 }
 \examples{
@@ -46,8 +59,21 @@ data <- modeldata::ames |>
     Lot_Area,
     Street
   )
+# Define outcome
 outcome <- "Sale_Price"
+# Create a score object
 score_obj <- score_aov()
+score_res <- get_scores_aov(score_obj, data, outcome)
+score_res
+# Change score type
+score_obj$score_type <- "pval"
+score_res <- get_scores_aov(score_obj, data, outcome)
+score_res
+# Use raw p-values instead of -log10(p-values)
+score_obj$score_type <- "pval"
+score_obj$neg_log10 <- FALSE
+score_obj$direction <- "minimize"
+score_obj$fallback_value <- 0
 score_res <- get_scores_aov(score_obj, data, outcome)
 score_res
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-info_gain.R
 \name{score_info_gain}
 \alias{score_info_gain}
-\title{Create score object for information gain}
+\title{Create a score object for information gain}
 \usage{
 score_info_gain(
   range = c(0, Inf),
@@ -21,7 +21,7 @@ score_info_gain(
 \item{direction}{NULL}
 }
 \description{
-Create score object for information gain
+Create a score object for information gain
 }
 \examples{
 NULL

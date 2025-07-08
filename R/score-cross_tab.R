@@ -1,4 +1,4 @@
-#' Create score object for cross tabulation p-values
+#' Create a score object for cross tabulation p-values
 #'
 #' @param range NULL
 #' @param trans NULL

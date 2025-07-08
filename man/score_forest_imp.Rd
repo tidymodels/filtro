@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-forest_imp.R
 \name{score_forest_imp}
 \alias{score_forest_imp}
-\title{Create score object for feature importance scores}
+\title{Create a score object for feature importance scores}
 \usage{
 score_forest_imp(
   range = c(0, Inf),
@@ -21,7 +21,7 @@ score_forest_imp(
 \item{direction}{NULL}
 }
 \description{
-Create score object for feature importance scores
+Create a score object for feature importance scores
 }
 \examples{
 NULL

@@ -1,4 +1,4 @@
-#' Create score object for information gain
+#' Create a score object for information gain
 #'
 #' @param range NULL
 #' @param trans NULL

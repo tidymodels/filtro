@@ -1,4 +1,4 @@
-#' Create score object for feature importance scores
+#' Create a score object for feature importance scores
 #'
 #' @param range NULL
 #' @param trans NULL

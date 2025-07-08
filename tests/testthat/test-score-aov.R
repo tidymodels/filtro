@@ -65,7 +65,7 @@ test_that("get_scores_aov() is working for -log10(pval)", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_obj$score_type <- "pval"
   score_res <- get_scores_aov(score_obj, data, outcome)
 
@@ -117,7 +117,7 @@ test_that("get_scores_aov() is working for pval", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_obj$score_type <- "pval"
   score_obj$neg_log10 <- FALSE # Turn -log10() off
   score_res <- get_scores_aov(score_obj, data, outcome)
@@ -158,6 +158,8 @@ test_that("get_scores_aov() is working for pval", {
 })
 
 # TODO Test more after we add validators
+
+# fallback_value
 
 test_that("score_aov() accepts valid score_type", {
   expect_no_error(score_aov(score_type = "fstat"))

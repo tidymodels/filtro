@@ -23,9 +23,12 @@
 score_aov <- function(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "fstat", # Move c() here later. Add validator. Document it.
-  direction = "maximize"
+  score_type = c("fstat", "pval"),
+  direction = c("maximize", "minimize", "target")
 ) {
+  score_type <- rlang::arg_match0(score_type, c("fstat", "pval"))
+  direction <- rlang::arg_match0(direction, c("maximize", "minimize", "target"))
+
   new_score_obj(
     subclass = c("any"),
     outcome_type = c("numeric", "factor"),
@@ -34,10 +37,10 @@ score_aov <- function(
     range = range,
     inclusive = c(TRUE, TRUE),
     fallback_value = Inf,
-    score_type = score_type, #c("fstat", "pval"),
+    score_type = score_type,
     trans = NULL, # TODO
     sorts = NULL, # TODO
-    direction = c("maximize", "minimize", "target"),
+    direction = direction,
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,

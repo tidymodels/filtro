@@ -7,8 +7,8 @@
 score_aov(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "fstat",
-  direction = "maximize"
+  score_type = c("fstat", "pval"),
+  direction = c("maximize", "minimize", "target")
 )
 }
 \arguments{

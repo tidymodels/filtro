@@ -158,3 +158,24 @@ test_that("get_scores_aov() is working for pval", {
 })
 
 # TODO Test more after we add validators
+
+test_that("score_aov() accepts valid score_type", {
+  expect_no_error(score_aov(score_type = "fstat"))
+  expect_no_error(score_aov(score_type = "pval"))
+})
+
+test_that("score_aov() rejects invalid score_type", {
+  expect_error(score_aov(score_type = "invalid"), "must be one of")
+  expect_error(score_aov(score_type = ""), "must be one of")
+})
+
+test_that("score_aov() accepts valid direction", {
+  expect_no_error(score_aov(direction = "maximize"))
+  expect_no_error(score_aov(direction = "minimize"))
+  expect_no_error(score_aov(direction = "target"))
+})
+
+test_that("score_aov() rejects invalid direction", {
+  expect_error(score_aov(direction = "invalid"), "must be one of")
+  expect_error(score_aov(direction = ""), "must be one of")
+})

@@ -45,7 +45,7 @@ score_aov <- function(
   score_type = "fstat",
   direction = "maximize"
 ) {
-  fallback_value <- rlang::arg_match0(fallback_value, c(0, Inf))
+  #fallback_value <- rlang::arg_match0(fallback_value, c(0, Inf))
   score_type <- rlang::arg_match0(score_type, c("fstat", "pval"))
   direction <- rlang::arg_match0(direction, c("maximize", "minimize", "target"))
 

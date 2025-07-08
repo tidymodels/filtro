@@ -1,5 +1,5 @@
 Package: filters
-Title: Tools for Feature Selection Using Supervised Filter-Based Techniques
+Title: Tools for Feature Selection Using Supervised Filter-Based Methods
 Version: 0.0.0.9000
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = "aut"),
@@ -10,20 +10,11 @@ Authors@R: c(
   )
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
-Suggests: 
-    aorsf,
-    FSelectorRcpp,
-    modeldata,
-    partykit,
-    ranger,
-    testthat (>= 3.0.0),
-    titanic
-Config/testthat/edition: 3
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
-URL: https://github.com/tidymodels/filters, https://tidymodels.github.io/filters/
+URL: https://filters.tidymodels.org, https://github.com/tidymodels/filters
 BugReports: https://github.com/tidymodels/filters/issues
+Depends: 
+    R (>= 4.1),
+    scales
 Imports: 
     cli,
     dplyr,
@@ -33,7 +24,17 @@ Imports:
     rlang (>= 1.1.0),
     stats,
     tibble,
-    tidyr
-Depends: 
-    scales
+    tidyr    
+Suggests: 
+    aorsf,
+    FSelectorRcpp,
+    modeldata,
+    partykit,
+    ranger,
+    testthat (>= 3.0.0),
+    titanic
 Config/Needs/website: tidyverse/tidytemplate
+Config/testthat/edition: 3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2

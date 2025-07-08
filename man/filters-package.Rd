@@ -12,6 +12,7 @@ What the package does (one paragraph).
 Useful links:
 \itemize{
   \item \url{https://github.com/tidymodels/filters}
+  \item \url{https://tidymodels.github.io/filters/}
   \item Report bugs at \url{https://github.com/tidymodels/filters/issues}
 }
 

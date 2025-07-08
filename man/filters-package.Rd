@@ -4,15 +4,15 @@
 \name{filters-package}
 \alias{filters}
 \alias{filters-package}
-\title{filters: Tools for Feature Selection Using Supervised Filter-Based Techniques}
+\title{filters: Tools for Feature Selection Using Supervised Filter-Based Methods}
 \description{
 What the package does (one paragraph).
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://filters.tidymodels.org}
   \item \url{https://github.com/tidymodels/filters}
-  \item \url{https://tidymodels.github.io/filters/}
   \item Report bugs at \url{https://github.com/tidymodels/filters/issues}
 }
 

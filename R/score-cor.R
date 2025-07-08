@@ -1,7 +1,18 @@
+#' Create a score object for correlation coefficients
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_cor <- function(
   range = c(-1, 1),
   trans = NULL,
-  score_type = "pearson",
+  score_type = "pearson", # Move c() here later. Add validator. Document it.
   direction = "maximize"
 ) {
   new_score_obj(
@@ -56,6 +67,14 @@ make_scores_cor <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' Compute Pearson or Spearman correlation coefficients
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#'
+#' @export
 get_scores_cor <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "pearson") {
     # TODO Should I move this elsewhere?

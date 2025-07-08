@@ -1,3 +1,14 @@
+#' Create a score object for cross tabulation p-values
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_cross_tab <- function(
   range = c(0, 1),
   trans = NULL,
@@ -58,6 +69,15 @@ make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
   res
 }
 
+#' Compute cross tabulation p-value scores using Fisher’s exact test and the chi-squared test
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#' @param ... NULL
+#'
+#' @export
 get_scores_cross_tab <- function(
   score_obj,
   data,

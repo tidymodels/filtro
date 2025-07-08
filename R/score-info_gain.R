@@ -1,7 +1,18 @@
+#' Create a score object for information gain
+#'
+#' @param range NULL
+#' @param trans NULL
+#' @param score_type NULL
+#' @param direction NULL
+#'
+#' @returns NULL
+#' @export
+#'
+#' @examples NULL
 score_info_gain <- function(
   range = c(0, Inf),
   trans = NULL,
-  score_type = "infogain",
+  score_type = "infogain", # Move c() here later. Add validator. Document it.
   direction = "maximize"
 ) {
   new_score_obj(
@@ -38,11 +49,20 @@ make_scores_info_gain <- function(
   res
 }
 
+#' Compute information gain
+#'
+#' @param score_obj NULL
+#'
+#' @param data NULL
+#' @param outcome NULL
+#' @param ... NULL
+#'
+#' @export
 get_scores_info_gain <- function(
   score_obj,
   data,
   outcome,
-  ...
+  ... # i.e., score_obj$equal
 ) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]

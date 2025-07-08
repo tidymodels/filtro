@@ -11,7 +11,7 @@ test_that("get_scores_aov() is working for fstat", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_res <- get_scores_aov(score_obj, data, outcome)
 
   fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
@@ -65,7 +65,7 @@ test_that("get_scores_aov() is working for -log10(pval)", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_obj$score_type <- "pval"
   score_res <- get_scores_aov(score_obj, data, outcome)
 
@@ -117,9 +117,9 @@ test_that("get_scores_aov() is working for pval", {
       Street
     )
   outcome <- "Sale_Price"
-  score_obj = score_aov()
+  score_obj <- score_aov()
   score_obj$score_type <- "pval"
-  score_obj$neg_log_pval <- FALSE # Turn -log10() off
+  score_obj$neg_log10 <- FALSE # Turn -log10() off
   score_res <- get_scores_aov(score_obj, data, outcome)
 
   fit <- stats::lm(ames$Sale_Price ~ ames$MS_SubClass)
@@ -158,3 +158,26 @@ test_that("get_scores_aov() is working for pval", {
 })
 
 # TODO Test more after we add validators
+
+# fallback_value
+
+test_that("score_aov() accepts valid score_type", {
+  expect_no_error(score_aov(score_type = "fstat"))
+  expect_no_error(score_aov(score_type = "pval"))
+})
+
+test_that("score_aov() rejects invalid score_type", {
+  expect_error(score_aov(score_type = "invalid"), "must be one of")
+  expect_error(score_aov(score_type = ""), "must be one of")
+})
+
+test_that("score_aov() accepts valid direction", {
+  expect_no_error(score_aov(direction = "maximize"))
+  expect_no_error(score_aov(direction = "minimize"))
+  expect_no_error(score_aov(direction = "target"))
+})
+
+test_that("score_aov() rejects invalid direction", {
+  expect_error(score_aov(direction = "invalid"), "must be one of")
+  expect_error(score_aov(direction = ""), "must be one of")
+})

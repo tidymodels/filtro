@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(filters)
+library(filtro)
 
-test_check("filters")
+test_check("filtro")

@@ -18,11 +18,11 @@ data <- modeldata::ames |>
 data <- data |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 outcome <- "Sale_Price"
-score_obj = filters::score_aov()
-score_res <- filters::get_scores_aov(score_obj, data, outcome)
+score_obj = filtro::score_aov()
+score_res <- filtro::get_scores_aov(score_obj, data, outcome)
 
 # Attach score
-score_obj <- score_obj |> filters::attach_score(score_res)
+score_obj <- score_obj |> filtro::attach_score(score_res)
 score_obj$score_res
 
 # Arrange score
@@ -132,36 +132,36 @@ data <- modeldata::ames |>
 data <- data |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 outcome <- "Sale_Price"
-score_obj = filters::score_aov()
-score_res <- filters::get_scores_aov(score_obj, data, outcome)
+score_obj = filtro::score_aov()
+score_res <- filtro::get_scores_aov(score_obj, data, outcome)
 
 # Bind scores and assign class
-score_obj_aov <- filters::score_aov()
-score_res_aov <- filters::get_scores_aov(score_obj_aov, data, outcome)
-score_obj_aov <- score_obj_aov |> filters::attach_score(score_res_aov)
+score_obj_aov <- filtro::score_aov()
+score_res_aov <- filtro::get_scores_aov(score_obj_aov, data, outcome)
+score_obj_aov <- score_obj_aov |> filtro::attach_score(score_res_aov)
 
-score_obj_cor <- filters::score_cor()
-score_res_cor <- filters::get_scores_cor(score_obj_cor, data, outcome)
-score_obj_cor <- score_obj_cor |> filters::attach_score(score_res_cor)
+score_obj_cor <- filtro::score_cor()
+score_res_cor <- filtro::get_scores_cor(score_obj_cor, data, outcome)
+score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
 
-score_obj_imp <- filters::score_forest_imp()
+score_obj_imp <- filtro::score_forest_imp()
 score_obj_imp$engine <- "ranger"
 score_obj_imp$trees <- 10
 score_obj_imp$mtry <- 2
 score_obj_imp$min_n <- 1
 score_obj_imp$class <- FALSE # TODO
 set.seed(42)
-score_res_imp <- filters::get_scores_forest_importance(
+score_res_imp <- filtro::get_scores_forest_importance(
   score_obj_imp,
   data,
   outcome
 )
-score_obj_imp <- score_obj_imp |> filters::attach_score(score_res_imp)
+score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
 
-score_obj_info <- filters::score_info_gain()
+score_obj_info <- filtro::score_info_gain()
 score_obj_info$equal <- TRUE
-score_res_info <- filters::get_scores_info_gain(score_obj_info, data, outcome)
-score_obj_info <- score_obj_info |> filters::attach_score(score_res_info)
+score_res_info <- filtro::get_scores_info_gain(score_obj_info, data, outcome)
+score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
 
 score_obj_list <- list(
   score_obj_aov,
@@ -169,11 +169,11 @@ score_obj_list <- list(
   score_obj_imp,
   score_obj_info
 ) # TODO Right now user has to supply the list.
-score_obj_list |> filters::bind_scores()
+score_obj_list |> filtro::bind_scores()
 
 # bind_scores(list())
 # score_obj_list <- list(score_obj_aov)
-# score_obj_list |> filters::bind_scores()
+# score_obj_list |> filtro::bind_scores()
 # #score_obj_list <- list(score_obj_aov, score_obj_aov) # TODO
 
 # Fill in safe values
@@ -183,7 +183,7 @@ score_obj_list <- list(
   score_obj_imp,
   score_obj_info
 )
-score_obj_list |> filters::fill_safe_values()
+score_obj_list |> filtro::fill_safe_values()
 
 # TODO Filter *
 

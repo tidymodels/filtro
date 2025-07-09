@@ -55,12 +55,14 @@
 #' @param calculating_fn An optional function used to compute the score. A default function
 #' is selected based on the `score_type`.
 #' @param label A named character string that can be used for printing and plotting.
-#' @param ... NULL
+#' @param ... Currently not used.
 #'
-#' @returns NULL
+#' @returns A score object.
 #' @export
 #'
-#' @examples NULL
+#' @examples
+#' # Create a score object
+#' new_score_obj()
 new_score_obj <- function(
   subclass = c("cat_num", "cat_cat", "num_num", "any"), # TODO Rename subclass
   outcome_type = c("numeric", "factor"),

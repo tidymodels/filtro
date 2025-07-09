@@ -1,5 +1,4 @@
 url: https://tidymodels.github.io/filtro
-
 template:
   package: tidytemplate
   bootstrap: 5
@@ -7,13 +6,8 @@ template:
     primary: "#CA225E"
 
   includes:
-    in_header: |
-      <script defer data-domain="filtro.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
+      in_header: |
+        <script defer data-domain="tidymodels.github.io/filtro,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>  
 
 development:
   mode: auto
-
-figures:
-  fig.width: 8
-  fig.height: 5.75
-

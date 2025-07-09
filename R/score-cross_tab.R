@@ -60,7 +60,7 @@ map_score_cross_tab <- function(data, predictor, outcome, calculating_fn) {
 }
 
 make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
-  res <- dplyr::tibble(
+  res <- tibble::tibble(
     name = score_type,
     score = unname(score),
     outcome = outcome,

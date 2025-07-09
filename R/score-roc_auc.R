@@ -78,7 +78,7 @@ map_score_roc_auc <- function(data, predictor, outcome) {
 }
 
 make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
-  res <- dplyr::tibble(
+  res <- tibble::tibble(
     name = score_type,
     score = unname(score),
     outcome = outcome,

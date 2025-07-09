@@ -1,4 +1,4 @@
-url: https://filters.tidymodels.org
+url: https://tidymodels.github.io/filters
 
 template:
   package: tidytemplate

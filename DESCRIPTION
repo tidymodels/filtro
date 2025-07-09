@@ -10,7 +10,7 @@ Authors@R: c(
   )
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
-URL: https://filters.tidymodels.org, https://github.com/tidymodels/filters
+URL: https://tidymodels.github.io/filters, https://github.com/tidymodels/filters
 BugReports: https://github.com/tidymodels/filters/issues
 Depends: 
     R (>= 4.1),

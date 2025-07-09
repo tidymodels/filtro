@@ -1,4 +1,10 @@
 url: https://tidymodels.github.io/filtro/
 template:
+  package: tidytemplate
   bootstrap: 5
+  bslib:
+    primary: "#CA225E"
+
+development:
+  mode: auto
 

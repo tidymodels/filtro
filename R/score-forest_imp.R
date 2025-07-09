@@ -93,7 +93,7 @@ make_scores_forest_importance <- function(
   score <- imp[predictors] |> unname()
   score[is.na(score)] <- 0
 
-  res <- dplyr::tibble(
+  res <- tibble::tibble(
     name = score_type,
     score = score,
     outcome = outcome,

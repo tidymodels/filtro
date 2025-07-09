@@ -40,7 +40,7 @@ make_scores_info_gain <- function(
   fit,
   outcome
 ) {
-  res <- dplyr::tibble(
+  res <- tibble::tibble(
     name = score_type,
     score = fit$importance,
     outcome = outcome,

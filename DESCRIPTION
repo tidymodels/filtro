@@ -13,15 +13,14 @@ License: MIT + file LICENSE
 URL: https://tidymodels.github.io/filtro, https://github.com/tidymodels/filtro
 BugReports: https://github.com/tidymodels/filtro/issues
 Depends: 
-    R (>= 4.1),
-    scales
+    R (>= 4.1)
 Imports: 
     cli,
     dplyr,
-    glue,
     pROC,
     purrr,
     rlang (>= 1.1.0),
+    scales,
     stats,
     tibble,
     tidyr    

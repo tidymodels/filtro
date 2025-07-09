@@ -115,7 +115,7 @@ map_score_aov <- function(data, predictor, outcome, calculating_fn) {
 }
 
 make_scores_aov <- function(score_type, score, outcome, predictors) {
-  res <- dplyr::tibble(
+  res <- tibble::tibble(
     name = score_type,
     score = unname(score),
     outcome = outcome,

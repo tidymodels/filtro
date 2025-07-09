@@ -74,10 +74,7 @@ Available options include:
 \item ROC AUC: \code{"roc_auc"}
 }}
 
-\item{trans}{An optional \code{trans} object from the \pkg{scales} package, such as
-\code{\link[scales:transform_log]{scales::transform_log10()}} or \code{\link[scales:transform_reciprocal]{scales::transform_reciprocal()}}. Use built-in
-functions, such as \code{\link[=transform_abs]{transform_abs()}} or \code{\link[=transform_neg_log10]{transform_neg_log10()}}.
-Or create custom transforms with \code{\link[scales:new_transform]{scales::trans_new()}}.}
+\item{trans}{NULL}
 
 \item{sorts}{An optional function used to sort the scores. Common options include:
 \itemize{

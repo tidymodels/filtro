@@ -16,7 +16,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 ## Overview
 
-The goal of filtro is to …
+The goal of `filtro` is to apply filter-based supervised feature
+selection methods prior to modeling. These methods assess the relevance
+of feature using statistical metrics such as p-values, correlation
+coefficients, importance scores, and information gain. This package
+offers tools to score, rank, and select top features using built-in
+functions and the [desirability2](https://desirability2.tidymodels.org)
+package, and supports use on its own or within tidymodels workflows.
 
 ## Installation
 

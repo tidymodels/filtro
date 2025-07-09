@@ -1,13 +1,10 @@
-url: https://tidymodels.github.io/filtro
+url: https://tidymodels.github.io/filtro/
 template:
   package: tidytemplate
   bootstrap: 5
   bslib:
     primary: "#CA225E"
 
-  includes:
-      in_header: |
-        <script defer data-domain="tidymodels.github.io/filtro,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>  
-
 development:
   mode: auto
+

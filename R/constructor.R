@@ -36,7 +36,7 @@
 #'    - ROC AUC: `"roc_auc"`
 #' @param trans An optional `trans` object from the \pkg{scales} package, such as
 #' [scales::transform_log10()] or [scales::transform_reciprocal()]. Use built-in
-#' functions, such as [filters::transform_abs()] or [filters::transform_neg_log10()].
+#' functions, such as [filtro::transform_abs()] or [filtro::transform_neg_log10()].
 #' Or create custom transforms with [scales::trans_new()].
 #' @param sorts An optional function used to sort the scores. Common options include:
 #'  - `identity`

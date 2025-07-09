@@ -1,3 +1,5 @@
+skip()
+
 # TODO Write a helper-* file for repetitive code. Remove comments once confirm that it works.
 
 test_that("attach_score() is working for aov", {

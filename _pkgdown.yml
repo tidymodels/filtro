@@ -1,4 +1,4 @@
-url: https://tidymodels.github.io/filters
+url: https://tidymodels.github.io/filtro
 
 template:
   package: tidytemplate
@@ -8,7 +8,7 @@ template:
 
   includes:
     in_header: |
-      <script defer data-domain="filters.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
+      <script defer data-domain="filtro.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
 
 development:
   mode: auto

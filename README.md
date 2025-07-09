@@ -1,24 +1,24 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# filters
+# filtro
 
 <!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/filters)](https://CRAN.R-project.org/package=filters)
-[![R-CMD-check](https://github.com/franceslinyc/filters/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/franceslinyc/filters/actions/workflows/R-CMD-check.yaml)
+status](https://www.r-pkg.org/badges/version/filtro)](https://CRAN.R-project.org/package=filtro)
+[![R-CMD-check](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/franceslinyc/filters/graph/badge.svg)](https://app.codecov.io/gh/franceslinyc/filters)
+coverage](https://codecov.io/gh/franceslinyc/filtro/graph/badge.svg)](https://app.codecov.io/gh/franceslinyc/filtro)
 <!-- badges: end -->
 
-The goal of filters is to …
+The goal of filtro is to …
 
 ## Installation
 
-You can install the development version of filters like so:
+You can install the development version of filtro like so:
 
 ``` r
 # FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
@@ -29,7 +29,7 @@ You can install the development version of filters like so:
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(filters)
+library(filtro)
 ## basic example code
 ```
 

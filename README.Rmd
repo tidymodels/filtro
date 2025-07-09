@@ -16,43 +16,44 @@ knitr::opts_chunk$set(
 # filtro
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/tidymodels/filtro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tidymodels/filtro/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/tidymodels/filtro/graph/badge.svg)](https://app.codecov.io/gh/tidymodels/filtro)
 [![CRAN status](https://www.r-pkg.org/badges/version/filtro)](https://CRAN.R-project.org/package=filtro)
-[![R-CMD-check](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/franceslinyc/filtro/graph/badge.svg)](https://app.codecov.io/gh/franceslinyc/filtro)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
+
+## Overview
 
 The goal of filtro is to ...
 
 ## Installation
 
-You can install the development version of filtro like so:
+You can install the released version of filtro from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+# FILL THIS IN! 
 ```
 
-## Example
+You can install the development version from Github with:
 
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-library(filtro)
-## basic example code
+``` r
+# FILL THIS IN! 
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+## A scoring example
 
-```{r cars, results = FALSE}
-summary(cars)
-```
+## A filtering exmple using a single score
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+## A filtering example using multiple scores
 
-You can also embed plots, for example:
+## Contributing
 
-```{r pressure, fig.show='hide'}
-plot(pressure)
-```
+Please note that the filtro project is released with a [Contributor Code of Conduct](https://filtro.tidymodels.org/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+- For questions and discussions about tidymodels packages, modeling, and machine learning, please [post on Posit Community](https://forum.posit.co/new-topic?category_id=15&tags=tidymodels,question).
+
+- If you think you have encountered a bug, please [submit an issue](https://github.com/tidymodels/filtro/issues).
+
+- Either way, learn how to create and share a [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html) (a minimal, reproducible example), to clearly communicate about your code.
+
+- Check out further details on [contributing guidelines for tidymodels packages](https://www.tidymodels.org/contribute/) and [how to get help](https://www.tidymodels.org/help/).

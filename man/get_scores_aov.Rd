@@ -50,7 +50,7 @@ transformation to p-values (default is \code{TRUE}).
 }
 \examples{
 data(ames, package = "modeldata")
-data <- modeldata::ames |>
+ames_subset <- modeldata::ames |>
   dplyr::select(
     Sale_Price,
     MS_SubClass,
@@ -59,21 +59,33 @@ data <- modeldata::ames |>
     Lot_Area,
     Street
   )
-# Define outcome
-outcome <- "Sale_Price"
 # Create a score object
 score_obj <- score_aov()
-score_res <- get_scores_aov(score_obj, data, outcome)
+score_res <- get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_res
 # Change score type
-score_obj$score_type <- "pval"
-score_res <- get_scores_aov(score_obj, data, outcome)
+score_obj <- score_aov(score_type = "pval")
+score_res <- get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_res
 # Use raw p-values instead of -log10(p-values)
-score_obj$score_type <- "pval"
-score_obj$neg_log10 <- FALSE
-score_obj$direction <- "minimize"
-score_obj$fallback_value <- 0
-score_res <- get_scores_aov(score_obj, data, outcome)
+score_obj <- score_aov(
+  score_type = "pval",
+  direction = "minimize",
+  fallback_value = 0
+)
+score_obj$neg_log10 <- FALSE # TODO Set neg_log10 = FALSE in score_aov()?
+score_res <- get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_res
 }

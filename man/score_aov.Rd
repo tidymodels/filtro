@@ -58,6 +58,5 @@ Output a score object containing associated metadata such as \code{range}, \code
 # Create a score object
 score_aov()
 # Change score type
-score_obj <- score_aov()
-score_obj$score_type <- "pval"
+score_aov(score_type = "pval")
 }

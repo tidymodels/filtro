@@ -48,8 +48,8 @@ score_res <- get_scores_cor(
 )
 score_res
 # Return score as spearman correlation
-score_obj <- score_aov(score_type = "spearman")
-score_res <- get_scores_aov(
+score_obj <- score_cor(score_type = "spearman")
+score_res <- get_scores_cor(
   score_obj,
   data = ames_subset,
   outcome = "Sale_Price"

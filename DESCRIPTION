@@ -1,6 +1,6 @@
 Package: filtro
 Title: Tools for Feature Selection Using Supervised Filter-Based Methods
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: c(
     person("Frances", "Lin", , "franceslinyc@gmail.com", role = c("aut", "cre")),
     person("Max", "Kuhn", , "max@posit.co", role = "aut"),

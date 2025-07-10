@@ -18,12 +18,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 The goal of `filtro` is to apply filter-based supervised feature
 selection methods. These methods score feature relevance using metrics
-such as p-values, correlation, and importance scores. This package
-offers tools to score, rank, and select top features using built-in
-functions and the [desirability2](https://desirability2.tidymodels.org)
-package, and supports streamlined preprocessing on its own or within
-tidymodels workflows like the [recipes](https://recipes.tidymodels.org)
-package.
+such as p-values, correlation, and importance scores.
+
+The package offers tools to score, rank, and select top features using
+built-in functions and the
+[desirability2](https://desirability2.tidymodels.org) package, and
+supports streamlined preprocessing on its own or within tidymodels
+workflows like the [recipes](https://recipes.tidymodels.org) package.
 
 ## Installation
 

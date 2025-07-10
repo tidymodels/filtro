@@ -36,8 +36,8 @@ transformation to p-values (default is \code{TRUE}).
 \itemize{
 \item If \code{TRUE}, p-values are transformed as \code{-log10(pval)}. In this case:
 \itemize{
-\item The default \code{fallback_value} is \code{Inf}
-\item The default \code{direction} is \code{"maximize"}
+\item The \code{fallback_value} is \code{Inf} (default)
+\item The \code{direction} is \code{"maximize"} (default)
 }
 \item If \code{FALSE}, raw p-values are used. In this case:
 \itemize{
@@ -59,7 +59,7 @@ ames_subset <- modeldata::ames |>
     Lot_Area,
     Street
   )
-# Create a score object
+# Return score as F-statistics
 score_obj <- score_aov()
 score_res <- get_scores_aov(
   score_obj,
@@ -67,7 +67,7 @@ score_res <- get_scores_aov(
   outcome = "Sale_Price"
 )
 score_res
-# Change score type
+# Return score as p-values
 score_obj <- score_aov(score_type = "pval")
 score_res <- get_scores_aov(
   score_obj,

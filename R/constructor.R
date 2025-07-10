@@ -1,6 +1,6 @@
 #' Construct a new score object
 #'
-#' Create a new score object that contains associated metadata, such as `range`,
+#' Output a new score object that contains associated metadata, such as `range`,
 #' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
 #'
 #' @param subclass A character string indicating the type of predictor-outcome combination
@@ -54,10 +54,13 @@
 #' @param label A named character string that can be used for printing and plotting.
 #' @param ... NULL
 #'
-#' @returns NULL
+#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
+#' `score_type`, `direction`, and other relevant attributes.
 #' @export
 #'
-#' @examples NULL
+#' @examples
+#' # Create a score object
+#' new_score_obj()
 new_score_obj <- function(
   subclass = c("cat_num", "cat_cat", "num_num", "any"), # TODO Rename subclass
   outcome_type = c("numeric", "factor"),

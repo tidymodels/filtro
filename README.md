@@ -3,56 +3,42 @@
 
 # filtro
 
-<!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![CRAN
-status](https://www.r-pkg.org/badges/version/filtro)](https://CRAN.R-project.org/package=filtro)
-[![R-CMD-check](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/franceslinyc/filtro/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/franceslinyc/filtro/graph/badge.svg)](https://app.codecov.io/gh/franceslinyc/filtro)
-<!-- badges: end -->
-
 The goal of filtro is to …
 
 ## Installation
 
-You can install the development version of filtro like so:
+You can install the released version of themis from
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+install.packages("filtro")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+Install the development version from GitHub with:
 
 ``` r
-library(filtro)
-## basic example code
+# install.packages("pak")
+pak::pak("tidymodels/filtro")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+## Contributing
 
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
+This project is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
+- For questions and discussions about tidymodels packages, modeling, and
+  machine learning, [join us on RStudio
+  Community](https://forum.posit.co/new-topic?category_id=15&tags=tidymodels,question).
 
-You can also embed plots, for example:
+- If you think you have encountered a bug, please [submit an
+  issue](https://github.com/tidymodels/themis/issues).
 
-<img src="man/figures/README-pressure-1.png" width="100%" />
+- Either way, learn how to create and share a
+  [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html)
+  (a minimal, reproducible example), to clearly communicate about your
+  code.
 
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+- Check out further details on [contributing guidelines for tidymodels
+  packages](https://www.tidymodels.org/contribute/) and [how to get
+  help](https://www.tidymodels.org/help/).

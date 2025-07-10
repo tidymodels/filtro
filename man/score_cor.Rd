@@ -6,23 +6,48 @@
 \usage{
 score_cor(
   range = c(-1, 1),
-  trans = NULL,
+  fallback_value = 1,
   score_type = "pearson",
   direction = "maximize"
 )
 }
 \arguments{
-\item{range}{NULL}
+\item{range}{A numeric vector of length two, specifying the minimum and maximum
+possible values, respectively.}
 
-\item{trans}{NULL}
+\item{fallback_value}{A numeric scalar used as a fallback value. Typical values
+include:
+\itemize{
+\item \code{1} (default)
+}}
 
-\item{score_type}{NULL}
+\item{score_type}{A character string indicating the type of scoring metric to compute.
+Available options include:
+\itemize{
+\item \code{"pearson"} (default)
+\item \code{"spearman"}
+}}
 
-\item{direction}{NULL}
+\item{direction}{A character string indicating the optimization direction. One of:
+\itemize{
+\item \code{"maximize"} (default)
+\item \code{"minimize"}
+\item \code{"target"}
+}}
+}
+\value{
+A score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"pearson"} or \code{"spearman"}), \code{direction}, and other relevant attributes.
 }
 \description{
-Create a score object for correlation coefficients
+Construct a score object containing metadata for univariate feature scoring using the
+correlation coefficients.
+Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"pearson"} or \code{"spearman"}), \code{direction}, and other relevant attributes.
 }
 \examples{
-NULL
+# Create a score object
+score_cor()
+# Change score type
+score_cor(score_type = "spearman")
 }

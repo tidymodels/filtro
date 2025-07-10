@@ -4,7 +4,7 @@
 \alias{get_scores_aov}
 \title{Compute F-statistic and p-value scores using ANOVA F-test}
 \usage{
-get_scores_aov(score_obj, data, outcome)
+get_scores_aov(score_obj, data, outcome, ...)
 }
 \arguments{
 \item{score_obj}{A score object. See \code{\link[=score_aov]{score_aov()}} for details.}
@@ -12,6 +12,8 @@ get_scores_aov(score_obj, data, outcome)
 \item{data}{A data frame or tibble containing the outcome and predictor variables.}
 
 \item{outcome}{A character string specifying the name of the outcome variable.}
+
+\item{...}{NULL}
 }
 \value{
 A tibble of result with one row per predictor, and four columns:

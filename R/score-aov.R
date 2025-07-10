@@ -146,6 +146,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #' }
 #' @param data A data frame or tibble containing the outcome and predictor variables.
 #' @param outcome A character string specifying the name of the outcome variable.
+#' @param ... NULL
 #'
 #' @return A tibble of result with one row per predictor, and four columns:
 #' - `name`: the name of scoring metric.
@@ -195,7 +196,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'   outcome = "Sale_Price"
 #' )
 #' score_res
-get_scores_aov <- function(score_obj, data, outcome) {
+get_scores_aov <- function(score_obj, data, outcome, ...) {
   if (score_obj$score_type == "fstat") {
     score_obj$calculating_fn <- get_single_f_stat
   } else if (score_obj$score_type == "pval") {

@@ -13,7 +13,6 @@ Useful links:
 \itemize{
   \item \url{https://tidymodels.github.io/filtro}
   \item \url{https://github.com/tidymodels/filtro}
-  \item \url{https://filtro.tidymodels.org}
   \item Report bugs at \url{https://github.com/tidymodels/filtro/issues}
 }
 

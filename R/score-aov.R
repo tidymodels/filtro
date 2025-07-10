@@ -11,22 +11,22 @@
 #'    - `0`
 #'   - `Inf` (default)
 #'
-#' For F-statistics, the `fallback_value` should be `"Inf"`. For p-values,
+#' For F-statistics, the `fallback_value` is `"Inf"`. For p-values,
 #' since the default applies a negative log10 transformation to p-values,
-#' the `fallback_value` should be `"Inf"`.
+#' the `fallback_value` is `"Inf"`.
 #'
 #' @param score_type A character string indicating the type of scoring metric to compute.
 #' Available options include:
-#'    - `"fstat"`
+#'    - `"fstat"` (default)
 #'    - `"pval"`
 #' @param direction A character string indicating the optimization direction. One of:
 #'  - `"maximize"` (default)
 #'  - `"minimize"`
 #'  - `"target"`
 #'
-#' For F-statistics, the `direction` should be `"maximize"`. For p-values,
+#' For F-statistics, the `direction` is `"maximize"`. For p-values,
 #' since the default applies a negative log10 transformation to p-values,
-#' the `direction` should be `"maximize"`.
+#' the `direction` is `"maximize"`.
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type` (`"fstat"` or `"pval"`), `direction`, and other relevant attributes.
@@ -137,8 +137,8 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'   \item{`neg_log10`}{A logical value indicating whether to apply a negative log10
 #'   transformation to p-values (default is `TRUE`).
 #'   - If `TRUE`, p-values are transformed as `-log10(pval)`. In this case:
-#'     - The default `fallback_value` is `Inf`
-#'     - The default `direction` is `"maximize"`
+#'     - The `fallback_value` is `Inf` (default)
+#'     - The `direction` is `"maximize"` (default)
 #'   - If `FALSE`, raw p-values are used. In this case:
 #'     - The `fallback_value` should be set to `0`
 #'     - The `direction` should be set to `"minimize"`
@@ -146,6 +146,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #' }
 #' @param data A data frame or tibble containing the outcome and predictor variables.
 #' @param outcome A character string specifying the name of the outcome variable.
+#' @param ... NULL
 #'
 #' @return A tibble of result with one row per predictor, and four columns:
 #' - `name`: the name of scoring metric.
@@ -166,7 +167,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'     Lot_Area,
 #'     Street
 #'   )
-#' # Create a score object
+#' # Return score as F-statistics
 #' score_obj <- score_aov()
 #' score_res <- get_scores_aov(
 #'   score_obj,
@@ -174,7 +175,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'   outcome = "Sale_Price"
 #' )
 #' score_res
-#' # Change score type
+#' # Return score as p-values
 #' score_obj <- score_aov(score_type = "pval")
 #' score_res <- get_scores_aov(
 #'   score_obj,
@@ -195,7 +196,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #'   outcome = "Sale_Price"
 #' )
 #' score_res
-get_scores_aov <- function(score_obj, data, outcome) {
+get_scores_aov <- function(score_obj, data, outcome, ...) {
   if (score_obj$score_type == "fstat") {
     score_obj$calculating_fn <- get_single_f_stat
   } else if (score_obj$score_type == "pval") {

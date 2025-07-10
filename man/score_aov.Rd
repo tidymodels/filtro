@@ -22,14 +22,14 @@ include:
 \item \code{Inf} (default)
 }
 
-For F-statistics, the \code{fallback_value} should be \code{"Inf"}. For p-values,
+For F-statistics, the \code{fallback_value} is \code{"Inf"}. For p-values,
 since the default applies a negative log10 transformation to p-values,
-the \code{fallback_value} should be \code{"Inf"}.}
+the \code{fallback_value} is \code{"Inf"}.}
 
 \item{score_type}{A character string indicating the type of scoring metric to compute.
 Available options include:
 \itemize{
-\item \code{"fstat"}
+\item \code{"fstat"} (default)
 \item \code{"pval"}
 }}
 
@@ -40,9 +40,9 @@ Available options include:
 \item \code{"target"}
 }
 
-For F-statistics, the \code{direction} should be \code{"maximize"}. For p-values,
+For F-statistics, the \code{direction} is \code{"maximize"}. For p-values,
 since the default applies a negative log10 transformation to p-values,
-the \code{direction} should be \code{"maximize"}.}
+the \code{direction} is \code{"maximize"}.}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

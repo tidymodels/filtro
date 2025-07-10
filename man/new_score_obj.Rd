@@ -106,10 +106,15 @@ is selected based on the \code{score_type}.}
 
 \item{...}{NULL}
 }
+\value{
+A score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type}, \code{direction}, and other relevant attributes.
+}
 \description{
-Create a new score object that contains associated metadata, such as \code{range},
+Output a new score object that contains associated metadata, such as \code{range},
 \code{fallback_value}, \code{score_type}, \code{direction}, and other relevant attributes.
 }
 \examples{
-NULL
+# Create a score object
+new_score_obj()
 }

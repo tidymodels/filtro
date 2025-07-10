@@ -1,20 +1,43 @@
 #' Create a score object for correlation coefficients
 #'
-#' @param range NULL
-#' @param trans NULL
-#' @param score_type NULL
-#' @param direction NULL
+#' Construct a score object containing metadata for univariate feature scoring using the
+#' correlation coefficients.
+#' Output a score object containing associated metadata such as `range`, `fallback_value`,
+#' `score_type` (`"pearson"` or `"spearman"`), `direction`, and other relevant attributes.
 #'
-#' @returns NULL
+#' @inheritParams new_score_obj
+#' @param fallback_value A numeric scalar used as a fallback value. Typical values
+#' include:
+#'    - `1` (default)
+#' @param score_type A character string indicating the type of scoring metric to compute.
+#' Available options include:
+#'    - `"pearson"` (default)
+#'    - `"spearman"`
+#' @param direction A character string indicating the optimization direction. One of:
+#'  - `"maximize"` (default)
+#'  - `"minimize"`
+#'  - `"target"`
+#'
+#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
+#' `score_type` (`"pearson"` or `"spearman"`), `direction`, and other relevant attributes.
+#'
 #' @export
 #'
-#' @examples NULL
+#' @examples
+#' # Create a score object
+#' score_cor()
+#' # Change score type
+#' score_cor(score_type = "spearman")
 score_cor <- function(
   range = c(-1, 1),
-  trans = NULL,
-  score_type = "pearson", # Move c() here later. Add validator. Document it.
+  fallback_value = 1,
+  score_type = "pearson",
   direction = "maximize"
 ) {
+  #fallback_value <- rlang::arg_match0(fallback_value, c(0, Inf))
+  score_type <- rlang::arg_match0(score_type, c("pearson", "spearman"))
+  direction <- rlang::arg_match0(direction, c("maximize", "minimize", "target"))
+
   new_score_obj(
     subclass = c("num_num"),
     outcome_type = "numeric",
@@ -22,15 +45,15 @@ score_cor <- function(
     case_weights = FALSE, # TODO
     range = range,
     inclusive = c(TRUE, TRUE),
-    fallback_value = 1,
-    score_type = score_type, # c("pearson", "spearman"),
+    fallback_value = fallback_value,
+    score_type = score_type,
     trans = NULL, # TODO
     sorts = NULL, # TODO
-    direction = c("maximize", "minimize", "target"),
+    direction = direction,
     deterministic = TRUE,
     tuning = FALSE,
     ties = NULL,
-    calculating_fn = get_single_pearson,
+    calculating_fn = NULL,
     label = c(score_cor = "Correlation scores")
   )
 }
@@ -69,15 +92,53 @@ make_scores_cor <- function(score_type, score, outcome, predictors) {
 
 #' Compute Pearson or Spearman correlation coefficients
 #'
-#' @param score_obj NULL
+#' Evaluate the relationship between a numeric outcome and a numeric predictor,
+#' by computing the Pearson or Spearman correlation coefficients.
+#' Output a tibble result with with one row per predictor, and four columns:
+#' `name`, `score`, `predictor`, and `outcome`.
 #'
-#' @param data NULL
-#' @param outcome NULL
+#' @param score_obj A score object. See [score_cor()] for details.
+#'
+#' @param data A data frame or tibble containing the outcome and predictor variables.
+#' @param outcome A character string specifying the name of the outcome variable.
+#'
+#' @return A tibble of result with one row per predictor, and four columns:
+#' - `name`: the name of scoring metric.
+#' - `score`: the score for the predictor-outcome pair.
+#' - `predictor`: the name of the predictor.
+#' - `outcome`: the name of the outcome.
 #'
 #' @export
+#'
+#' @examples
+#' data(ames, package = "modeldata")
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' # Return score as pearson correlation
+#' score_obj <- score_cor()
+#' score_res <- get_scores_cor(
+#'   score_obj,
+#'   data = ames_subset,
+#'   outcome = "Sale_Price"
+#' )
+#' score_res
+#' # Return score as spearman correlation
+#' score_obj <- score_cor(score_type = "spearman")
+#' score_res <- get_scores_cor(
+#'   score_obj,
+#'   data = ames_subset,
+#'   outcome = "Sale_Price"
+#' )
+#' score_res
 get_scores_cor <- function(score_obj, data, outcome) {
   if (score_obj$score_type == "pearson") {
-    # TODO Should I move this elsewhere?
     score_obj$calculating_fn <- get_single_pearson
   } else if (score_obj$score_type == "spearman") {
     score_obj$calculating_fn <- get_single_spearman

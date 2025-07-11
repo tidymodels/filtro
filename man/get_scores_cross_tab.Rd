@@ -32,9 +32,9 @@ Output a tibble result with with one row per predictor, and four columns:
 }
 \examples{
 library(titanic)
-titanic_train <- titanic_train \%>\%
+titanic_train <- titanic_train |>
   dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-titanic_subset <- titanic_train \%>\%
+titanic_subset <- titanic_train |>
   dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 # Return score as -log10(p-values) for chi-squared
 score_obj <- score_cross_tab()

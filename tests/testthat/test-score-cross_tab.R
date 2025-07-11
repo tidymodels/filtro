@@ -1,9 +1,9 @@
 test_that("get_scores_cross_tab is working for -log10(chisq pval)", {
   library(titanic)
 
-  titanic_train <- titanic_train %>%
+  titanic_train <- titanic_train |>
     dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-  titanic_subset <- titanic_train %>%
+  titanic_subset <- titanic_train |>
     dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
   score_obj <- score_cross_tab(score_type = "pval_chisq")
@@ -44,9 +44,9 @@ test_that("get_scores_cross_tab is working for -log10(chisq pval)", {
 test_that("get_scores_cross_tab is working for chisq pval", {
   library(titanic)
 
-  titanic_train <- titanic_train %>%
+  titanic_train <- titanic_train |>
     dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-  titanic_subset <- titanic_train %>%
+  titanic_subset <- titanic_train |>
     dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
   score_obj <- score_cross_tab(
@@ -89,9 +89,9 @@ test_that("get_scores_cross_tab is working for chisq pval", {
 test_that("get_score_cross_tab is working for -log10(fisher pval)", {
   library(titanic)
 
-  titanic_train <- titanic_train %>%
+  titanic_train <- titanic_train |>
     dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-  titanic_subset <- titanic_train %>%
+  titanic_subset <- titanic_train |>
     dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
   score_obj <- score_cross_tab(score_type = "pval_fisher")
@@ -135,9 +135,9 @@ test_that("get_score_cross_tab is working for -log10(fisher pval)", {
 test_that("get_score_cross_tab is working for fisher pval", {
   library(titanic)
 
-  titanic_train <- titanic_train %>%
+  titanic_train <- titanic_train |>
     dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-  titanic_subset <- titanic_train %>%
+  titanic_subset <- titanic_train |>
     dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
   score_obj <- score_cross_tab(

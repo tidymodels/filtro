@@ -96,13 +96,13 @@ test_that("get_scores_aov() is working for pval", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_aov_v2(
+  score_obj <- score_aov(
     score_type = "pval",
     neg_log10 = FALSE,
     direction = "minimize",
     fallback_value = 0
   )
-  score_res <- get_scores_aov_v2(
+  score_res <- get_scores_aov(
     score_obj,
     data = ames_subset,
     outcome = "Sale_Price"

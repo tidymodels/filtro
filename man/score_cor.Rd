@@ -33,16 +33,6 @@ One of:
 \item \code{"minimize"}
 \item \code{"target"}
 }}
-
-\item{outcome_type}{A character string indicating the outcome type. One of:
-\itemize{
-\item \code{"numeric"}
-}}
-
-\item{predictor_type}{A character string indicating the predictor type. One of:
-\itemize{
-\item \code{"numeric"}
-}}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

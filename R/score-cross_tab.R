@@ -64,8 +64,8 @@ new_score_obj_cross_tab <- S7::new_class(
 
 #' Create a score object for cross tabulation p-values
 #'
-#' Construct a score object containing metadata for univariate feature scoring using the
-#' ANOVA F-test.
+#' Construct a score object containing metadata for univariate feature scoring using
+#' Fisher’s exact test and the chi-squared test.
 #' Output a score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type` (`"pval_chisq"` or `"pval_fisher"`), `direction`, and other relevant attributes.
 #'
@@ -174,9 +174,9 @@ make_scores_cross_tab <- function(score_type, score, outcome, predictors) {
 #'
 #' @examples
 #' library(titanic)
-#' titanic_train <- titanic_train %>%
+#' titanic_train <- titanic_train |>
 #'   dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-#' titanic_subset <- titanic_train %>%
+#' titanic_subset <- titanic_train |>
 #'   dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
 #' # Return score as -log10(p-values) for chi-squared
 #' score_obj <- score_cross_tab()

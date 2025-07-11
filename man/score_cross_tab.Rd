@@ -71,8 +71,8 @@ A score object containing associated metadata such as \code{range}, \code{fallba
 \code{score_type} (\code{"pval_chisq"} or \code{"pval_fisher"}), \code{direction}, and other relevant attributes.
 }
 \description{
-Construct a score object containing metadata for univariate feature scoring using the
-ANOVA F-test.
+Construct a score object containing metadata for univariate feature scoring using
+Fisher’s exact test and the chi-squared test.
 Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
 \code{score_type} (\code{"pval_chisq"} or \code{"pval_fisher"}), \code{direction}, and other relevant attributes.
 }

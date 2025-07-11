@@ -96,9 +96,9 @@ score_aov <- function(
     inclusive = c(TRUE, TRUE),
     fallback_value = fallback_value,
     score_type = score_type,
-    direction = direction,
     #trans = # Cannot set NULL. Otherwise S7 complains
     #sorts =
+    direction = direction,
     deterministic = TRUE,
     tuning = FALSE,
     #ties =

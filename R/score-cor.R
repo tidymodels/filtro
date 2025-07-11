@@ -6,6 +6,10 @@
 #' `score_type` (`"pearson"` or `"spearman"`), `direction`, and other relevant attributes.
 #'
 #' @inheritParams new_score_obj
+#' @param outcome_type A character string indicating the outcome type. One of:
+#'  - `"numeric"`
+#' @param predictor_type A character string indicating the predictor type. One of:
+#'  - `"numeric"`
 #' @param fallback_value A numeric scalar used as a fallback value. One of:
 #'    - `1` (default)
 #' @param score_type A character string indicating the type of scoring metric to compute.

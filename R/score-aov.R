@@ -51,7 +51,7 @@ new_score_obj_aov <- S7::new_class(
   "new_score_obj_aov",
   parent = new_score_obj,
   properties = list(
-    neg_log10 = S7::new_property(S7::class_logical, default = FALSE)
+    neg_log10 = S7::new_property(S7::class_logical, default = TRUE)
   )
 )
 
@@ -214,7 +214,7 @@ make_scores_aov <- function(score_type, score, outcome, predictors) {
 #' # Return raw p-values instead of -log10(p-values)
 #' score_obj <- score_aov(
 #'   score_type = "pval",
-#'   neg_log10 = TRUE,
+#'   neg_log10 = FALSE,
 #'   direction = "minimize",
 #'   fallback_value = 0
 #' )

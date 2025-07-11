@@ -20,7 +20,7 @@ new_score_obj_aov(
   ties = logical(0),
   calculating_fn = function() NULL,
   label = character(0),
-  neg_log10 = FALSE
+  neg_log10 = TRUE
 )
 }
 \arguments{

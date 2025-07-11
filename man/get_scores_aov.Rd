@@ -60,7 +60,7 @@ score_res
 # Return raw p-values instead of -log10(p-values)
 score_obj <- score_aov(
   score_type = "pval",
-  neg_log10 = TRUE,
+  neg_log10 = FALSE,
   direction = "minimize",
   fallback_value = 0
 )

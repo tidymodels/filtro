@@ -46,7 +46,6 @@ possible values, respectively.}
 upper bounds of the range are inclusive (\code{TRUE}) or exclusive (\code{FALSE}).}
 
 \item{fallback_value}{A numeric scalar used as a fallback value. One of:
-include:
 \itemize{
 \item \code{0}
 \item \code{Inf} (default)

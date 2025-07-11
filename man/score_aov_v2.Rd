@@ -17,7 +17,6 @@ score_aov_v2(
 possible values, respectively.}
 
 \item{fallback_value}{A numeric scalar used as a fallback value. One of:
-include:
 \itemize{
 \item \code{0}
 \item \code{Inf} (default)

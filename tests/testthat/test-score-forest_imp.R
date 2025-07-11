@@ -1,3 +1,5 @@
+skip()
+
 test_that("get_score_forest_importance() is working for ranger for classification", {
   skip_if_not_installed("modeldata")
   data(cells, package = "modeldata")

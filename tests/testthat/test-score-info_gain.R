@@ -40,7 +40,7 @@ test_that("get_scores_info_gain() is working for regression", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_info_gain(equal = TRUE)
+  score_obj <- score_info_gain(is_reg = TRUE)
   score_res <- get_scores_info_gain(
     score_obj,
     data = ames_subset,
@@ -50,7 +50,7 @@ test_that("get_scores_info_gain() is working for regression", {
   outcome <- "Sale_Price"
   y <- ames_subset[[outcome]]
   X <- ames_subset[setdiff(names(ames_subset), outcome)]
-  fit <- FSelectorRcpp::information_gain(x = X, y = y)
+  fit <- FSelectorRcpp::information_gain(x = X, y = y, equal = TRUE)
   exp.res <- fit$importance
 
   expect_true(tibble::is_tibble(score_res))

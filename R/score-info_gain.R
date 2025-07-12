@@ -1,6 +1,6 @@
 #' Construct a subclassed score object for information gain with additional metadata
 #'
-#' Introduce a new properties `equal`.
+#' Introduce a new properties `is_reg`.
 #' Output a new score object that contains associated metadata, such as `range`,
 #' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
 #'
@@ -18,7 +18,7 @@
 #'  - `"maximize"` (default)
 #'  - `"minimize"`
 #'  - `"target"`
-#' @param equal NULL
+#' @param is_reg NULL
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -31,7 +31,7 @@ new_score_obj_info_gain <- S7::new_class(
   "new_score_obj_info_gain",
   parent = new_score_obj,
   properties = list(
-    equal = S7::new_property(S7::class_logical, default = FALSE)
+    is_reg = S7::new_property(S7::class_logical, default = FALSE)
   )
 )
 
@@ -56,7 +56,7 @@ score_info_gain <- function(
   fallback_value = Inf,
   score_type = "infogain",
   direction = "maximize",
-  equal = FALSE
+  is_reg = FALSE
 ) {
   new_score_obj_info_gain(
     outcome_type = c("numeric", "factor"),
@@ -73,7 +73,7 @@ score_info_gain <- function(
     tuning = FALSE,
     #ties =
     calculating_fn = function(x) {}, # Otherwise S7 complains
-    equal = equal,
+    is_reg = is_reg,
     label = c(score_infogain = "Information Gain scores")
   )
 }
@@ -105,7 +105,7 @@ get_scores_info_gain <- function(
   score_obj,
   data,
   outcome,
-  ... # i.e., score_obj$equal
+  ... # i.e., score_obj$is_reg
 ) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
@@ -114,7 +114,7 @@ get_scores_info_gain <- function(
     x = X,
     y = y,
     type = "infogain", # TODO
-    equal = score_obj@equal # Set = TRUE for numeric outcome
+    equal = score_obj@is_reg # Set = TRUE for numeric outcome
   )
   res <- make_scores_info_gain(score_obj@score_type, fit, outcome)
   res

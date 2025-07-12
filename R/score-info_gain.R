@@ -37,7 +37,7 @@ new_score_obj_info_gain <- S7::new_class(
 
 #' Create a score object for information gain
 #'
-#' Construct a score object containing metadata for univariate feature scoring using
+#' Construct a score object containing metadata for feature scoring using
 #' information gain.
 #' Output a score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type` (), `direction`, and other relevant attributes.

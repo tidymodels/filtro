@@ -1,7 +1,7 @@
 #' Create a score object for area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' Construct a score object containing metadata for univariate feature scoring using the
-#' the Receiver Operating Characteristic curve (ROC AUC).
+#' Receiver Operating Characteristic curve (ROC AUC).
 #' Output a score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type` (`"roc_auc"`), `direction`, and other relevant attributes.
 #'
@@ -126,7 +126,24 @@ make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
 #'
 #' @export
 #'
-get_scores_roc_auc <- function(score_obj, data, outcome) {
+#' @examples
+#' cells_subset <- modeldata::cells |>
+#'   dplyr::select(
+#'     class,
+#'     angle_ch_1,
+#'     area_ch_1,
+#'     avg_inten_ch_1,
+#'     avg_inten_ch_2
+#'   )
+#' # Return score as ROC AUC for binary classification
+#' score_obj = score_roc_auc()
+#' score_res <- get_scores_roc_auc(
+#'   score_obj,
+#'   data = cells_subset,
+#'   outcome = "class"
+#' )
+#' # Return score as ROC AUC for multiclass classification
+get_scores_roc_auc <- function(score_obj, data, outcome, ...) {
   predictors <- setdiff(names(data), outcome)
 
   score <- purrr::map_dbl(

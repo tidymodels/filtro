@@ -4,16 +4,46 @@
 \alias{score_roc_auc}
 \title{Create a score object for area under the Receiver Operating Characteristic curve (ROC AUC)}
 \usage{
-score_roc_auc(range = c(0, 1), trans = NULL)
+score_roc_auc(
+  range = c(0, 1),
+  fallback_value = 1,
+  score_type = "roc_auc",
+  direction = "maximize"
+)
 }
 \arguments{
-\item{range}{NULL}
+\item{range}{A numeric vector of length two, specifying the minimum and maximum
+possible values, respectively.}
 
-\item{trans}{NULL}
+\item{fallback_value}{A numeric scalar used as a fallback value. One of:
+\itemize{
+\item \code{1} (default)
+}}
+
+\item{score_type}{A character string indicating the type of scoring metric to compute.
+One of:
+\itemize{
+\item \code{"roc_auc"} (default)
+}}
+
+\item{direction}{A character string indicating the optimization direction. One of:
+\itemize{
+\item \code{"maximize"} (default)
+\item \code{"minimize"}
+\item \code{"target"}
+}}
+}
+\value{
+A score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"roc_auc"}), \code{direction}, and other relevant attributes.
 }
 \description{
-Create a score object for area under the Receiver Operating Characteristic curve (ROC AUC)
+Construct a score object containing metadata for univariate feature scoring using the
+Receiver Operating Characteristic curve (ROC AUC).
+Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
+\code{score_type} (\code{"roc_auc"}), \code{direction}, and other relevant attributes.
 }
 \examples{
-NULL
+# Create a score object
+score_roc_auc()
 }

@@ -41,13 +41,13 @@ One of:
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},
-\code{score_type} (), \code{direction}, and other relevant attributes.
+\code{score_type} c(\code{"infogain"}, \code{"gainratio"}, \code{"symuncert"}), \code{direction}, and other relevant attributes.
 }
 \description{
 Construct a score object containing metadata for feature scoring using
 information gain.
 Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
-\code{score_type} (), \code{direction}, and other relevant attributes.
+\code{score_type} c(\code{"infogain"}, \code{"gainratio"}, \code{"symuncert"}), \code{direction}, and other relevant attributes.
 }
 \examples{
 score_info_gain()

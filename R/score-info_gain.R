@@ -40,12 +40,12 @@ new_score_obj_info_gain <- S7::new_class(
 #' Construct a score object containing metadata for feature scoring using
 #' information gain.
 #' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (), `direction`, and other relevant attributes.
+#' `score_type` c(`"infogain"`, `"gainratio"`, `"symuncert"`), `direction`, and other relevant attributes.
 #'
 #' @inheritParams new_score_obj_info_gain
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (), `direction`, and other relevant attributes.
+#' `score_type` c(`"infogain"`, `"gainratio"`, `"symuncert"`), `direction`, and other relevant attributes.
 #'
 #' @export
 #'

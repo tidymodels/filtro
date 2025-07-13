@@ -9,7 +9,7 @@ score_info_gain(
   fallback_value = Inf,
   score_type = "infogain",
   direction = "maximize",
-  equal = FALSE
+  is_reg = FALSE
 )
 }
 \arguments{
@@ -37,14 +37,14 @@ One of:
 \item \code{"target"}
 }}
 
-\item{equal}{NULL}
+\item{is_reg}{NULL}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},
 \code{score_type} (), \code{direction}, and other relevant attributes.
 }
 \description{
-Construct a score object containing metadata for univariate feature scoring using
+Construct a score object containing metadata for feature scoring using
 information gain.
 Output a score object containing associated metadata such as \code{range}, \code{fallback_value},
 \code{score_type} (), \code{direction}, and other relevant attributes.

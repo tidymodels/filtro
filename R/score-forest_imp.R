@@ -17,11 +17,17 @@
 #'  - `"maximize"` (default)
 #'  - `"minimize"`
 #'  - `"target"`
-#' @param engine NULL
-#' @param trees NULL
-#' @param mtry NULL
-#' @param min_n NULL
-#' @param is_reg NULL
+#' @param engine A character string specifying the random forest engine to use for fitting. One of:
+#'  - `"ranger"` (default)
+#'  - `"partykit"`
+#'  - `"aorsf"`
+#' @param trees An integer for the number of trees contained in the ensemble.
+#' @param mtry An integer for the number of predictors that will be randomly sampled at each split
+#' when creating the tree models.
+#' @param min_n An integer for the minimum number of data points in a node that are required for the
+#' node to be split further.
+#' @param is_reg A logical value indicating whether the task is regression (`TRUE`)
+#' or classification (`FALSE`) (default).
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -47,12 +53,12 @@ new_score_obj_forest_imp <- S7::new_class(
 #' Construct a score object containing metadata for feature scoring using a
 #' random forest, a conditional random forest or an oblique random forest
 #' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (), `direction`, and other relevant attributes.
+#' `score_type` (`"imp_rf"`, `"imp_rf_conditional"`, `"imp_rf_oblique"`), `direction`, and other relevant attributes.
 #'
 #' @inheritParams new_score_obj_forest_imp
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (), `direction`, and other relevant attributes.
+#' `score_type` (`"imp_rf"`, `"imp_rf_conditional"`, `"imp_rf_oblique"`), `direction`, and other relevant attributes.
 #'
 #' @export
 #'
@@ -162,13 +168,72 @@ make_scores_forest_importance <- function(
 #' Compute feature importance scores using a random forest, a conditional random forest, or
 #' an oblique random forest
 #'
-#' @param score_obj NULL
+#' Evaluate the relationship between a numeric outcome and a categorical predictor,
+#' or vice versa, by computing feature importance scores.
+#' Output a tibble result with with one row per predictor, and four columns:
+#' `name`, `score`, `predictor`, and `outcome`.
 #'
-#' @param data NULL
-#' @param outcome NULL
+#' @param score_obj A score object. See [score_forest_imp()] for details.
+#'
+#' @param data A data frame or tibble containing the outcome and predictor variables.
+#' @param outcome A character string specifying the name of the outcome variable.
 #' @param ... NULL
 #'
+#' @return A tibble of result with one row per predictor, and four columns:
+#' - `name`: the name of scoring metric.
+#' - `score`: the score for the predictor-outcome pair.
+#' - `predictor`: the name of the predictor.
+#' - `outcome`: the name of the outcome.
+#'
 #' @export
+#'
+#' @examples
+#' # Return importance score using ranger for classification task
+#' cells_subset <- modeldata::cells |>
+#'   dplyr::select(
+#'     class,
+#'     angle_ch_1,
+#'     area_ch_1,
+#'     avg_inten_ch_1,
+#'     avg_inten_ch_2
+#'   )
+#' score_obj <- score_forest_imp()
+#' score_res <- get_scores_forest_importance(
+#'   score_obj,
+#'   data = cells_subset,
+#'   outcome = "class"
+#')
+#' # Return importance score using partykit
+#' score_obj <- score_forest_imp(engine = "partykit")
+#' score_res <- get_scores_forest_importance(
+#'   score_obj,
+#'   data = cells_subset,
+#'   outcome = "class"
+#' )
+#' # Return importance score using aorsf
+#' score_obj <- score_forest_imp(engine = "aorsf")
+#' score_res <- get_scores_forest_importance(
+#'   score_obj,
+#'   data = cells_subset,
+#'   outcome = "class"
+#' )
+#' # Return importance score using ranger for regression task
+#' data(ames, package = "modeldata")
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' score_obj <- score_forest_imp(is_reg = TRUE)
+#' score_res <- get_scores_forest_importance(
+#'   score_obj,
+#'   data = ames_subset,
+#'   outcome = "Sale_Price"
+#' )
 get_scores_forest_importance <- function(
   score_obj,
   data,

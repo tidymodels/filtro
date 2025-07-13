@@ -137,17 +137,3 @@ get_scores_roc_auc <- function(score_obj, data, outcome) {
   res <- make_scores_roc_auc(score_obj@score_type, score, outcome, predictors)
   res
 }
-
-#' @noRd
-#' @export
-print.score_obj <- function(x, ...) {
-  # Option 2
-  # Add ifelse to tell if it has been trained or not
-
-  print_score_label(x) #cat(x$label)
-  invisible(x)
-}
-
-print_score_label <- function(x) {
-  cli::cli_text("{x$label}")
-}

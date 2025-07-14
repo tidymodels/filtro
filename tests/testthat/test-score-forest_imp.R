@@ -1,14 +1,7 @@
 test_that("get_score_forest_importance() is working for ranger for classification", {
   skip_if_not_installed("modeldata")
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2
-    )
+  cells_subset <- helper_cells()
   score_obj <- score_forest_imp()
 
   set.seed(42)
@@ -50,15 +43,7 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
 test_that("get_score_forest_importance() is working for partykit classification", {
   skip_if_not_installed("modeldata")
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2
-    )
-
+  cells_subset <- helper_cells()
   score_obj <- score_forest_imp(engine = "partykit")
 
   set.seed(42)
@@ -98,15 +83,7 @@ test_that("get_score_forest_importance() is working for partykit classification"
 test_that("get_score_forest_importance() is working for aorsf classification", {
   skip_if_not_installed("modeldata")
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2
-    )
-
+  cells_subset <- helper_cells()
   score_obj <- score_forest_imp(engine = "aorsf")
 
   set.seed(42)

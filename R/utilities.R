@@ -48,6 +48,7 @@ arrange_score <- S7::new_generic(
         "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
       )
     }
+
     S7::S7_dispatch()
   }
 )
@@ -72,28 +73,30 @@ S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
 #' @param ... NULL
 #'
 #' @export
-trans_score <- function(x, ...) {
-  UseMethod("trans_score")
-}
+trans_score <- S7::new_generic(
+  "trans_score",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-trans_score.default <- function(x, ...) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-trans_score.score_obj <- function(x, ...) {
+S7::method(trans_score, new_score_obj) <- function(x, ...) {
   # TODO Figure out the basic structure first then come back for this. Have user supply direction =, if they use trans.
-  if (is.null(x$trans)) {
+  if (is.null(x@trans)) {
     trans <- scales::transform_identity()
   } else {
-    trans <- x$trans
+    trans <- x@trans
   }
-  x$score_res |>
+  x@score_res |>
     dplyr::mutate(score = trans$transform(score))
 }
 

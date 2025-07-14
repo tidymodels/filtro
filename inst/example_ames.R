@@ -48,6 +48,17 @@ score_obj |>
   filtro::attach_score(score_res = score_res) |>
   filtro::arrange_score(target = 22.8)
 
+score_obj <- filtro::score_aov(direction = "potato")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filtro::arrange_score()
+
+
 # Transform score
 score_obj$trans <- NULL # Default
 score_obj |> trans_score()

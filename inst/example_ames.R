@@ -59,12 +59,12 @@ score_obj |>
   filtro::arrange_score()
 
 
-# Transform score
-score_obj$trans <- NULL # Default
-score_obj |> trans_score()
+# # Transform score
+# score_obj@trans <- NULL # Default
+# score_obj |> trans_score()
 
-score_obj$trans <- scales::transform_log()
-score_obj |> trans_score()
+# score_obj@trans <- scales::transform_log()
+# score_obj |> trans_score()
 
 # Filter score based on number of predictors
 score_obj$direction <- "maximize" # Default

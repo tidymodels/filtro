@@ -66,16 +66,35 @@ score_obj |>
 # score_obj |> trans_score()
 
 # Filter score based on number of predictors
-score_obj$direction <- "maximize" # Default
-score_obj |> filter_score_num(num_terms = 2)
-
-score_obj$direction <- "minimize"
-score_obj |> filter_score_num(num_terms = 2)
-
-score_obj$direction <- "target"
+score_obj <- filtro::score_aov(direction = "maximize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_obj |>
-  filter_score_num(score_obj, num_terms = 2, target = 63.8)
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_num(num_terms = 2)
 
+score_obj <- filtro::score_aov(direction = "minimize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_num(num_terms = 2)
+
+score_obj <- filtro::score_aov(direction = "target")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_num(num_terms = 2, target = 94.4)
 
 # Filter score based on proportion of predictors
 score_obj$direction <- "maximize" # Default

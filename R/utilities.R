@@ -107,31 +107,38 @@ S7::method(trans_score, new_score_obj) <- function(x, ...) {
 #' @param ... NULL
 #'
 #' @export
-filter_score_num <- function(x, ...) {
-  UseMethod("filter_score_num")
-}
+filter_score_num <- S7::new_generic(
+  "filter_score_num",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-filter_score_num.default <- function(x, ..., num_terms, target = NULL) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-filter_score_num.score_obj <- function(x, ..., num_terms, target = NULL) {
+S7::method(filter_score_num, new_score_obj) <- function(
+  x,
+  ...,
+  num_terms,
+  target = NULL
+) {
   # TODO Handle ties here?
   check_num_terms(num_terms)
 
-  if (x$direction == "maximize") {
-    x$score_res |> dplyr::slice_max(score, n = num_terms)
-  } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::slice_min(score, n = num_terms)
-  } else if (x$direction == "target") {
+  if (x@direction == "maximize") {
+    x@score_res |> dplyr::slice_max(score, n = num_terms)
+  } else if (x@direction == "minimize") {
+    x@score_res |> dplyr::slice_min(score, n = num_terms)
+  } else if (x@direction == "target") {
     check_target(target)
-    x$score_res |>
+    x@score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(n = num_terms)
   }

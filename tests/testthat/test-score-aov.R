@@ -44,8 +44,6 @@ test_that("get_scores_aov() is working for fstat", {
   )
 })
 
-# TODO Test Reversed stats::lm(x ~ y) Can use same data
-
 test_that("get_scores_aov() is working for -log10(pval)", {
   skip_if_not_installed("modeldata")
 
@@ -142,6 +140,8 @@ test_that("get_scores_aov() is working for pval", {
     )
   )
 })
+
+# TODO Test Reversed stats::lm(x ~ y) Can use same data
 
 # TODO Test more after we add validators
 

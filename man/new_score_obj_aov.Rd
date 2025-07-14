@@ -20,20 +20,20 @@ new_score_obj_aov(
   ties = logical(0),
   calculating_fn = function() NULL,
   label = character(0),
-  score_res = (function (.data = list(), row.names = NULL) 
+  results = (function (.data = list(), row.names = NULL) 
  {
-     if
-    (is.null(row.names)) {
+     if (is.null(row.names))
+    {
          list2DF(.data)
      }
      else {
-         out <-
-    list2DF(.data, length(row.names))
+         out <- list2DF(.data,
+    length(row.names))
          attr(out, "row.names") <- row.names
-      
-      out
+         out
      }
- })(),
+
+    })(),
   neg_log10 = TRUE
 )
 }
@@ -110,7 +110,13 @@ is selected based on the \code{score_type}.}
 
 \item{label}{A named character string that can be used for printing and plotting.}
 
-\item{score_res}{A data frame.}
+\item{results}{A tibble of result with one row per predictor, and four columns:
+\itemize{
+\item \code{name}: the name of scoring metric.
+\item \code{score}: the score for the predictor-outcome pair.
+\item \code{predictor}: the name of the predictor.
+\item \code{outcome}: the name of the outcome.
+}}
 
 \item{neg_log10}{A logical value indicating whether to apply a negative log10
 transformation to p-values. One of:

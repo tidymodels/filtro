@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{rank_score_min}
 \alias{rank_score_min}
-\title{Rank score result \code{score_res} based on min_rank (Need a better title)}
+\title{Rank score result \code{results} based on min_rank (Need a better title)}
 \usage{
 rank_score_min(x, ...)
 }
@@ -12,5 +12,5 @@ rank_score_min(x, ...)
 \item{...}{NULL}
 }
 \description{
-Rank score result \code{score_res} based on min_rank (Need a better title)
+Rank score result \code{results} based on min_rank (Need a better title)
 }

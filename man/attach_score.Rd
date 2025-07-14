@@ -2,17 +2,17 @@
 % Please edit documentation in R/utilities.R
 \name{attach_score}
 \alias{attach_score}
-\title{Attach score result \code{score_res} to score object \code{score_obj} containig metadata}
+\title{Attach score result \code{results} to score object \code{score_obj} containig metadata}
 \usage{
-attach_score(x, score_res, ...)
+attach_score(x, results, ...)
 }
 \arguments{
 \item{x}{NULL}
 
-\item{score_res}{NULL}
+\item{results}{NULL}
 
 \item{...}{NULL}
 }
 \description{
-Attach score result \code{score_res} to score object \code{score_obj} containig metadata
+Attach score result \code{results} to score object \code{score_obj} containig metadata
 }

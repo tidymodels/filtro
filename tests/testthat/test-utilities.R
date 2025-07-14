@@ -11,7 +11,7 @@ test_that("attach_score() is working for aov", {
   )
   ex.score_obj <- score_obj |> attach_score(score_res)
 
-  expect_equal(ex.score_obj@score_res, score_res)
+  expect_equal(ex.score_obj@results, score_res)
 })
 
 test_that("arrange_score() is working for aov", {
@@ -20,7 +20,7 @@ test_that("arrange_score() is working for aov", {
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   # TODO Right now user have to run > 3 lines to re-arrange score.
-  # This is because score_res is now a propertity in new_score_obj,
+  # This is because results is now a propertity in new_score_obj,
   # and re-running score_aov() clears score_res.
 
   score_obj <- filtro::score_aov(direction = "maximize")
@@ -30,7 +30,7 @@ test_that("arrange_score() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.max <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filtro::arrange_score()
 
   score_obj <- filtro::score_aov(direction = "minimize")
@@ -40,7 +40,7 @@ test_that("arrange_score() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.min <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filtro::arrange_score()
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -50,7 +50,7 @@ test_that("arrange_score() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filtro::arrange_score(target = 94.4)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -60,7 +60,7 @@ test_that("arrange_score() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target2 <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filtro::arrange_score(target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::arrange(desc(score)))
@@ -90,7 +90,7 @@ test_that("arrange_score() is working for aov", {
 #   # score_obj <- score_obj |> attach_score(score_res)
 
 #   score_obj <- ames_score_obj()
-#   score_res <- score_obj$score_res
+#   score_res <- score_obj$results
 
 #   score_obj$trans <- NULL # Default
 #   ex.identity <- score_obj |> trans_score()
@@ -117,7 +117,7 @@ test_that("filter_score_num() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.max <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_num(num_terms = 2)
 
   score_obj <- filtro::score_aov(direction = "minimize")
@@ -127,7 +127,7 @@ test_that("filter_score_num() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.min <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_num(num_terms = 2)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -137,7 +137,7 @@ test_that("filter_score_num() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_num(num_terms = 2, target = 94.4)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -147,7 +147,7 @@ test_that("filter_score_num() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target2 <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_num(num_terms = 2, target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::slice_max(score, n = 2))
@@ -181,7 +181,7 @@ test_that("filter_score_prop() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.max <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_prop(prop_terms = 0.2)
 
   score_obj <- filtro::score_aov(direction = "minimize")
@@ -191,7 +191,7 @@ test_that("filter_score_prop() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.min <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_prop(prop_terms = 0.2)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -201,7 +201,7 @@ test_that("filter_score_prop() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_prop(prop_terms = 0.2, target = 94.4)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -211,7 +211,7 @@ test_that("filter_score_prop() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target2 <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_prop(prop_terms = 0.2, target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::slice_max(score, prop = 0.2))
@@ -245,7 +245,7 @@ test_that("filter_score_cutoff() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.max <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_cutoff(cutoff = 94.4)
 
   score_obj <- filtro::score_aov(direction = "minimize")
@@ -255,7 +255,7 @@ test_that("filter_score_cutoff() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.min <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_cutoff(cutoff = 94.4)
 
   score_obj <- filtro::score_aov(direction = "target")
@@ -265,11 +265,11 @@ test_that("filter_score_cutoff() is working for aov", {
     outcome = "Sale_Price"
   )
   ex.target <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_cutoff(target = 94.4, cutoff = 4)
 
   ex.target2 <- score_obj |>
-    filtro::attach_score(score_res = score_res) |>
+    filtro::attach_score(results = score_res) |>
     filter_score_cutoff(target = 22.8, cutoff = 1)
 
   expect_equal(

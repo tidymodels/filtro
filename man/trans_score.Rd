@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{trans_score}
 \alias{trans_score}
-\title{Transform score result \code{score_res}}
+\title{Transform score result \code{results}}
 \usage{
 trans_score(x, ...)
 }
@@ -12,5 +12,5 @@ trans_score(x, ...)
 \item{...}{NULL}
 }
 \description{
-Transform score result \code{score_res}
+Transform score result \code{results}
 }

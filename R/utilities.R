@@ -1,23 +1,23 @@
-#' Attach score result `score_res` to score object `score_obj` containig metadata
+#' Attach score result `results` to score object `score_obj` containig metadata
 #'
 #' @param x NULL
-#' @param score_res NULL
+#' @param results NULL
 #' @param ... NULL
 #'
 #' @export
 attach_score <- S7::new_generic(
   "attach_score",
   "x",
-  function(x, score_res, ...) {
+  function(x, results, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
         "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
       )
     }
 
-    # if (!S7::S7_inherits(score_res, "data.frame")) {
+    # if (!S7::S7_inherits(results, "data.frame")) {
     #   cli::cli_abort(
-    #     "{.arg score_res} must be a tibble (a {.cls tbl_df}), not {.obj_type_friendly {score_res}}."
+    #     "{.arg results} must be a tibble (a {.cls tbl_df}), not {.obj_type_friendly {results}}."
     #   )
     # }
 
@@ -27,12 +27,12 @@ attach_score <- S7::new_generic(
 
 #' @noRd
 #' @export
-S7::method(attach_score, new_score_obj) <- function(x, score_res, ...) {
-  x@score_res <- score_res
+S7::method(attach_score, new_score_obj) <- function(x, results, ...) {
+  x@results <- results
   x
 }
 
-#' Arrange score result `score_res`
+#' Arrange score result `results`
 #'
 #' @param x NULL
 #'
@@ -57,16 +57,16 @@ arrange_score <- S7::new_generic(
 #' @export
 S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
   if (x@direction == "maximize") {
-    x@score_res |> dplyr::arrange(dplyr::desc(score))
+    x@results |> dplyr::arrange(dplyr::desc(score))
   } else if (x@direction == "minimize") {
-    x@score_res |> dplyr::arrange(score)
+    x@results |> dplyr::arrange(score)
   } else if (x@direction == "target") {
     check_target(target)
-    x@score_res |> dplyr::arrange(abs(score - target))
+    x@results |> dplyr::arrange(abs(score - target))
   }
 }
 
-#' Transform score result `score_res`
+#' Transform score result `results`
 #'
 #' @param x NULL
 #'
@@ -96,11 +96,11 @@ S7::method(trans_score, new_score_obj) <- function(x, ...) {
   } else {
     trans <- x@trans
   }
-  x@score_res |>
+  x@results |>
     dplyr::mutate(score = trans$transform(score))
 }
 
-#' Filter score result `score_res` based on number of predictors
+#' Filter score result `results` based on number of predictors
 #'
 #' @param x NULL
 #'
@@ -132,18 +132,18 @@ S7::method(filter_score_num, new_score_obj) <- function(
   # TODO Handle ties here?
   check_num_terms(num_terms)
   if (x@direction == "maximize") {
-    x@score_res |> dplyr::slice_max(score, n = num_terms)
+    x@results |> dplyr::slice_max(score, n = num_terms)
   } else if (x@direction == "minimize") {
-    x@score_res |> dplyr::slice_min(score, n = num_terms)
+    x@results |> dplyr::slice_min(score, n = num_terms)
   } else if (x@direction == "target") {
     check_target(target)
-    x@score_res |>
+    x@results |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(n = num_terms)
   }
 }
 
-#' Filter score result `score_res` based on proportion of predictors
+#' Filter score result `results` based on proportion of predictors
 #'
 #' @param x NULL
 #'
@@ -176,18 +176,18 @@ S7::method(filter_score_prop, new_score_obj) <- function(
   check_prop_terms(prop_terms)
   # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
   if (x@direction == "maximize") {
-    x@score_res |> dplyr::slice_max(score, prop = prop_terms)
+    x@results |> dplyr::slice_max(score, prop = prop_terms)
   } else if (x@direction == "minimize") {
-    x@score_res |> dplyr::slice_min(score, prop = prop_terms)
+    x@results |> dplyr::slice_min(score, prop = prop_terms)
   } else if (x@direction == "target") {
     check_target(target)
-    x@score_res |>
+    x@results |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(prop = prop_terms)
   }
 }
 
-#' Filter score result `score_res` based on cutoff value
+#' Filter score result `results` based on cutoff value
 #'
 #' @param x NULL
 #'
@@ -220,17 +220,17 @@ S7::method(filter_score_cutoff, new_score_obj) <- function(
 
   # TODO Can return more # of predictors due to floating-point precision
   if (x@direction == "maximize") {
-    x@score_res |> dplyr::filter(score >= cutoff)
+    x@results |> dplyr::filter(score >= cutoff)
   } else if (x@direction == "minimize") {
-    x@score_res |> dplyr::filter(score <= cutoff)
+    x@results |> dplyr::filter(score <= cutoff)
   } else if (x@direction == "target") {
     # TODO cutoff = is now based on abs(). Not ideal?
     check_target(target)
-    x@score_res |> dplyr::filter(abs(score - target) <= cutoff)
+    x@results |> dplyr::filter(abs(score - target) <= cutoff)
   }
 }
 
-#' Filter score result `score_res` based on number or proportion of predictors with
+#' Filter score result `results` based on number or proportion of predictors with
 #' optional cutoff value
 #'
 #' @param x NULL
@@ -266,24 +266,24 @@ filter_score_auto.score_obj <- function(
   }
 
   if (!is.null(num_terms)) {
-    score_res <- filter_score_num(x, ..., num_terms = num_terms)
+    results <- filter_score_num(x, ..., num_terms = num_terms)
   } else if (!is.null(prop_terms)) {
-    score_res <- filter_score_prop(
+    results <- filter_score_prop(
       x,
       ...,
       prop_terms = prop_terms
     )
   }
   if (!is.null(cutoff)) {
-    score_res <- filter_score_cutoff(x, ..., cutoff = cutoff)
+    results <- filter_score_cutoff(x, ..., cutoff = cutoff)
   }
-  score_res
+  results
 }
 
-# TODO Filter score result `score_res` based on user input
+# TODO Filter score result `results` based on user input
 # filter_score_<>
 
-#' Rank score result `score_res` based on min_rank (Need a better title)
+#' Rank score result `results` based on min_rank (Need a better title)
 #'
 #' @param x NULL
 #'
@@ -307,15 +307,15 @@ rank_score_min.default <- function(x, ...) {
 rank_score_min.score_obj <- function(x, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
-    x$score_res |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+    x$results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
   } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::mutate(rank = dplyr::min_rank((score)))
+    x$results |> dplyr::mutate(rank = dplyr::min_rank((score)))
   } # else if (x$direction == "target") { # TODO
-  #   x$score_res |> dplyr::arrange(abs(score - target))
+  #   x$results |> dplyr::arrange(abs(score - target))
   # }
 }
 
-#' Rank score result `score_res` based on dense_rank (Need a better title)
+#' Rank score result `results` based on dense_rank (Need a better title)
 #'
 #' @param x NULL
 #'
@@ -339,11 +339,11 @@ rank_score_dense.default <- function(x, ...) {
 rank_score_dense.score_obj <- function(x, ..., target = NULL) {
   # TODO Check if direction == target, add "need a target"
   if (x$direction == "maximize") {
-    x$score_res |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+    x$results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
   } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::mutate(rank = dplyr::dense_rank((score)))
+    x$results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
   } # else if (x$direction == "target") { # TODO
-  #   x$score_res |> dplyr::arrange(abs(score - target))
+  #   x$results |> dplyr::arrange(abs(score - target))
   # }
 }
 
@@ -366,7 +366,7 @@ rank_score_dense.score_obj <- function(x, ..., target = NULL) {
 #   x
 # }
 
-#' Bind all metadata `score_obj` and score result `score_res`, and assign class `score_set` to combined scores.
+#' Bind all metadata `score_obj` and score result `results`, and assign class `score_set` to combined scores.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
 #'
@@ -400,11 +400,11 @@ bind_scores.list <- function(x) {
     )
   } else {
     # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
-    score_set <- x[[1]]$score_res
+    score_set <- x[[1]]$results
     for (i in 2:length_x) {
       score_set <- dplyr::full_join(
         score_set,
-        x[[i]]$score_res,
+        x[[i]]$results,
         by = c("name", "score", "outcome", "predictor")
       )
     }

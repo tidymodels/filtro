@@ -248,11 +248,12 @@ get_scores_aov <- function(score_obj, data, outcome, ...) {
   }
 
   res <- make_scores_aov(
-    # TODO Is there any advange using score_obj@results <- here?
     score_obj@score_type,
     score,
     outcome,
     predictors
   )
   res
+  # score_obj@score_res <- res # TODO Is there any advange using score_obj@results <- here?
+  # score_obj
 }

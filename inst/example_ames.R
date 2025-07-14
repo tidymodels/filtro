@@ -12,17 +12,38 @@ score_res <- filtro::get_scores_aov(
 )
 
 # Attach score
-score_obj <- score_obj |> filtro::attach_score(score_res = score_res)
+score_obj |> filtro::attach_score(score_res = score_res)
 
 # Arrange score
-score_obj$direction <- "maximize" # Default
-score_obj |> arrange_score()
+score_obj <- filtro::score_aov(direction = "maximize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filtro::arrange_score()
 
-score_obj$direction <- "minimize"
-score_obj |> arrange_score()
+score_obj <- filtro::score_aov(direction = "minimize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filtro::arrange_score()
 
-score_obj$direction <- "target"
-score_obj |> arrange_score(target = 63.8)
+score_obj <- filtro::score_aov(direction = "target")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filtro::arrange_score(target = 22.8)
 
 # Transform score
 score_obj$trans <- NULL # Default

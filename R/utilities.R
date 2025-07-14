@@ -32,28 +32,29 @@ S7::method(attach_score, new_score_obj) <- function(x, score_res, ...) {
 #' @param ... NULL
 #'
 #' @export
-arrange_score <- function(x, ...) {
-  UseMethod("arrange_score")
-}
+arrange_score <- S7::new_generic(
+  "arrange_score",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-arrange_score.default <- function(x, ..., target = NULL) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-arrange_score.score_obj <- function(x, ..., target = NULL) {
-  if (x$direction == "maximize") {
-    x$score_res |> dplyr::arrange(dplyr::desc(score))
-  } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::arrange(score)
-  } else if (x$direction == "target") {
+S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
+  if (x@direction == "maximize") {
+    x@score_res |> dplyr::arrange(dplyr::desc(score))
+  } else if (x@direction == "minimize") {
+    x@score_res |> dplyr::arrange(score)
+  } else if (x@direction == "target") {
     check_target(target)
-    x$score_res |> dplyr::arrange(abs(score - target))
+    x@score_res |> dplyr::arrange(abs(score - target))
   }
 }
 

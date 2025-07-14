@@ -19,7 +19,10 @@ test_that("arrange_score() is working for aov", {
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- filtro::score_aov(direction = "maximize") # TODO Right now user have to run > 3 lines to re-arrange score
+  score_obj <- filtro::score_aov(direction = "maximize")
+  # TODO Right now user have to run > 3 lines to re-arrange score.
+  # This is because score_res is now a propertity in new_score_obj,
+  # and re-running score_aov() clears score_res.
   score_res <- filtro::get_scores_aov(
     score_obj,
     data = ames_subset,

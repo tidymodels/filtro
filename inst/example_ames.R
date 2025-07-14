@@ -13,6 +13,9 @@ score_res <- filtro::get_scores_aov(
 
 # Attach score
 score_obj |> filtro::attach_score(score_res = score_res)
+score_obj |> filtro::attach_score(score_res = "score_res") #TODO Add to test
+potato <- S7::new_class("potato")
+potato |> filtro::attach_score(score_res = score_res)
 
 # Arrange score
 score_obj <- filtro::score_aov(direction = "maximize")

@@ -20,6 +20,20 @@ new_score_obj_info_gain(
   ties = logical(0),
   calculating_fn = function() NULL,
   label = character(0),
+  score_res = (function (.data = list(), row.names = NULL) 
+ {
+     if
+    (is.null(row.names)) {
+         list2DF(.data)
+     }
+     else {
+         out <-
+    list2DF(.data, length(row.names))
+         attr(out, "row.names") <- row.names
+      
+      out
+     }
+ })(),
   is_reg = FALSE
 )
 }
@@ -88,6 +102,8 @@ or not (\code{FALSE}).}
 is selected based on the \code{score_type}.}
 
 \item{label}{A named character string that can be used for printing and plotting.}
+
+\item{score_res}{A data frame.}
 
 \item{is_reg}{NULL}
 }

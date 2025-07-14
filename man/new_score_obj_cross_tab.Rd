@@ -20,6 +20,20 @@ new_score_obj_cross_tab(
   ties = logical(0),
   calculating_fn = function() NULL,
   label = character(0),
+  score_res = (function (.data = list(), row.names = NULL) 
+ {
+     if
+    (is.null(row.names)) {
+         list2DF(.data)
+     }
+     else {
+         out <-
+    list2DF(.data, length(row.names))
+         attr(out, "row.names") <- row.names
+      
+      out
+     }
+ })(),
   neg_log10 = TRUE,
   fdr = FALSE
 )
@@ -94,6 +108,8 @@ or not (\code{FALSE}).}
 is selected based on the \code{score_type}.}
 
 \item{label}{A named character string that can be used for printing and plotting.}
+
+\item{score_res}{A data frame.}
 
 \item{neg_log10}{A logical value indicating whether to apply a negative log10
 transformation to p-values. One of:

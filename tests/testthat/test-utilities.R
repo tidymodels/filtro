@@ -1,26 +1,20 @@
-skip()
-
-# TODO Write a helper-* file for repetitive code. Remove comments once confirm that it works.
-
 test_that("attach_score() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  score_obj <- filtro::score_aov()
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.score_obj <- score_obj |> attach_score(score_res)
 
-  expect_equal(ex.score_obj$score_res, score_res)
+  expect_equal(ex.score_obj@score_res, score_res)
 })
+
+skip()
 
 test_that("arrange_score() is working for aov", {
   # skip_if_not_installed("modeldata")

@@ -20,6 +20,20 @@ new_score_obj_forest_imp(
   ties = logical(0),
   calculating_fn = function() NULL,
   label = character(0),
+  score_res = (function (.data = list(), row.names = NULL) 
+ {
+     if
+    (is.null(row.names)) {
+         list2DF(.data)
+     }
+     else {
+         out <-
+    list2DF(.data, length(row.names))
+         attr(out, "row.names") <- row.names
+      
+      out
+     }
+ })(),
   engine = "ranger",
   trees = 10,
   mtry = 2,
@@ -91,6 +105,8 @@ or not (\code{FALSE}).}
 is selected based on the \code{score_type}.}
 
 \item{label}{A named character string that can be used for printing and plotting.}
+
+\item{score_res}{A data frame.}
 
 \item{engine}{A character string specifying the random forest engine to use for fitting. One of:
 \itemize{

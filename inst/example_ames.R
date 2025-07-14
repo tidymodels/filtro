@@ -1,29 +1,18 @@
 skip_if_not_installed("modeldata")
-data(ames, package = "modeldata")
-data <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street #,
-    # Alley, # ADD MORE
-    # Lot_Shape,
-    # Land_Contour,
-    # Utilities,
-    # Lot_Config,
-    # Land_Slope
-  )
-data <- data |>
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
-outcome <- "Sale_Price"
-score_obj = filtro::score_aov()
-score_res <- filtro::get_scores_aov(score_obj, data, outcome)
+
+score_obj <- filtro::score_aov()
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 
 # Attach score
-score_obj <- score_obj |> filtro::attach_score(score_res)
-score_obj$score_res
+score_obj <- score_obj |> filtro::attach_score(score_res = score_res)
 
 # Arrange score
 score_obj$direction <- "maximize" # Default

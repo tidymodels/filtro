@@ -4,7 +4,7 @@
 \alias{attach_score}
 \title{Attach score result \code{score_res} to score object \code{score_obj} containig metadata}
 \usage{
-attach_score(x, ...)
+attach_score(x, score_res, ...)
 }
 \arguments{
 \item{x}{NULL}

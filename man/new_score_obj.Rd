@@ -19,7 +19,21 @@ new_score_obj(
   tuning = logical(0),
   ties = logical(0),
   calculating_fn = function() NULL,
-  label = character(0)
+  label = character(0),
+  score_res = (function (.data = list(), row.names = NULL) 
+ {
+     if
+    (is.null(row.names)) {
+         list2DF(.data)
+     }
+     else {
+         out <-
+    list2DF(.data, length(row.names))
+         attr(out, "row.names") <- row.names
+      
+      out
+     }
+ })()
 )
 }
 \arguments{
@@ -92,6 +106,8 @@ or not (\code{FALSE}).}
 is selected based on the \code{score_type}.}
 
 \item{label}{A named character string that can be used for printing and plotting.}
+
+\item{score_res}{A data frame.}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

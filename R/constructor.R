@@ -46,6 +46,7 @@
 #' @param calculating_fn An optional function used to compute the score. A default function
 #' is selected based on the `score_type`.
 #' @param label A named character string that can be used for printing and plotting.
+#' @param score_res A data frame.
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -77,6 +78,7 @@ new_score_obj <- S7::new_class(
     tuning = S7::class_logical,
     ties = S7::class_logical,
     calculating_fn = S7::class_function,
-    label = S7::class_character
+    label = S7::class_character,
+    score_res = S7::class_data.frame
   )
 )

@@ -5,22 +5,23 @@
 #' @param ... NULL
 #'
 #' @export
-attach_score <- function(x, ...) {
-  UseMethod("attach_score")
-}
+attach_score <- S7::new_generic(
+  "attach_score",
+  "x",
+  function(x, score_res, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-attach_score.default <- function(x, score_res, ...) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-attach_score.score_obj <- function(x, score_res, ...) {
-  x$score_res <- score_res
+S7::method(attach_score, new_score_obj) <- function(x, score_res, ...) {
+  x@score_res <- score_res
   x
 }
 

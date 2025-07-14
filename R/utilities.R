@@ -1,7 +1,7 @@
 #' Attach score result `score_res` to score object `score_obj` containig metadata
 #'
 #' @param x NULL
-#'
+#' @param score_res NULL
 #' @param ... NULL
 #'
 #' @export

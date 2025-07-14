@@ -9,6 +9,8 @@ attach_score(x, score_res, ...)
 \arguments{
 \item{x}{NULL}
 
+\item{score_res}{NULL}
+
 \item{...}{NULL}
 }
 \description{

@@ -247,6 +247,12 @@ get_scores_aov <- function(score_obj, data, outcome, ...) {
     score <- -log10(score)
   }
 
-  res <- make_scores_aov(score_obj@score_type, score, outcome, predictors)
+  res <- make_scores_aov(
+    # TODO Is there any advange using score_obj@results <- here?
+    score_obj@score_type,
+    score,
+    outcome,
+    predictors
+  )
   res
 }

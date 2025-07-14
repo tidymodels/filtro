@@ -79,6 +79,7 @@ new_score_obj <- S7::new_class(
     ties = S7::class_logical,
     calculating_fn = S7::class_function,
     label = S7::class_character,
+    #results = S7::class_data.frame
     score_res = S7::class_data.frame
   )
 )

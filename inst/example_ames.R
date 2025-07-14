@@ -58,7 +58,6 @@ score_obj |>
   filtro::attach_score(score_res = score_res) |>
   filtro::arrange_score()
 
-
 # # Transform score
 # score_obj@trans <- NULL # Default
 # score_obj |> trans_score()

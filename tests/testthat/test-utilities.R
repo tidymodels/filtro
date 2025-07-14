@@ -19,7 +19,7 @@ test_that("arrange_score() is working for aov", {
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- filtro::score_aov(direction = "maximize")
+  score_obj <- filtro::score_aov(direction = "maximize") # TODO Right now user have to run > 3 lines to re-arrange score
   score_res <- filtro::get_scores_aov(
     score_obj,
     data = ames_subset,
@@ -70,38 +70,38 @@ test_that("arrange_score() is working for aov", {
 
 skip()
 
-test_that("trans_score() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+# test_that("trans_score() is working for aov", {
+#   # skip_if_not_installed("modeldata")
+#   # data(ames, package = "modeldata")
+#   # data <- modeldata::ames |>
+#   #   dplyr::select(
+#   #     Sale_Price,
+#   #     MS_SubClass,
+#   #     MS_Zoning,
+#   #     Lot_Frontage,
+#   #     Lot_Area,
+#   #     Street
+#   #   )
+#   # outcome <- "Sale_Price"
+#   # score_obj = score_aov()
+#   # score_res <- get_scores_aov(score_obj, data, outcome)
+#   # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+#   score_obj <- ames_score_obj()
+#   score_res <- score_obj$score_res
 
-  score_obj$trans <- NULL # Default
-  ex.identity <- score_obj |> trans_score()
+#   score_obj$trans <- NULL # Default
+#   ex.identity <- score_obj |> trans_score()
 
-  score_obj$trans <- scales::transform_log()
-  ex.log <- score_obj |> trans_score()
+#   score_obj$trans <- scales::transform_log()
+#   ex.log <- score_obj |> trans_score()
 
-  # TODO Add a couple more scales::transform_*()
+#   # TODO Add a couple more scales::transform_*()
 
-  expect_equal(ex.identity, score_res)
+#   expect_equal(ex.identity, score_res)
 
-  expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
-})
+#   expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
+# })
 
 test_that("filter_score_num() is working for aov", {
   # skip_if_not_installed("modeldata")

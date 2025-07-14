@@ -97,15 +97,36 @@ score_obj |>
   filter_score_num(num_terms = 2, target = 94.4)
 
 # Filter score based on proportion of predictors
-score_obj$direction <- "maximize" # Default
-score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
-
-score_obj$direction <- "minimize"
-score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
-
-score_obj$direction <- "target"
+# TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
+score_obj <- filtro::score_aov(direction = "maximize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_obj |>
-  filter_score_prop(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_prop(prop_terms = 0.2)
+
+score_obj <- filtro::score_aov(direction = "minimize")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_prop(prop_terms = 0.2)
+
+score_obj <- filtro::score_aov(direction = "target")
+score_res <- filtro::get_scores_aov(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj |>
+  filtro::attach_score(score_res = score_res) |>
+  filter_score_prop(prop_terms = 0.2, target = 94.4)
 
 # Filter score based on cutoff value
 score_obj$direction <- "maximize"

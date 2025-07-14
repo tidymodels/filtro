@@ -151,31 +151,38 @@ S7::method(filter_score_num, new_score_obj) <- function(
 #' @param ... NULL
 #'
 #' @export
-filter_score_prop <- function(x, ...) {
-  UseMethod("filter_score_prop")
-}
+filter_score_prop <- S7::new_generic(
+  "filter_score_prop",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-filter_score_prop.default <- function(x, ..., prop_terms, target = NULL) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-filter_score_prop.score_obj <- function(x, ..., prop_terms, target = NULL) {
+S7::method(filter_score_prop, new_score_obj) <- function(
+  x,
+  ...,
+  prop_terms,
+  target = NULL
+) {
   # TODO Handle ties here?
   check_prop_terms(prop_terms)
 
-  if (x$direction == "maximize") {
-    x$score_res |> dplyr::slice_max(score, prop = prop_terms)
-  } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::slice_min(score, prop = prop_terms)
-  } else if (x$direction == "target") {
+  if (x@direction == "maximize") {
+    x@score_res |> dplyr::slice_max(score, prop = prop_terms)
+  } else if (x@direction == "minimize") {
+    x@score_res |> dplyr::slice_min(score, prop = prop_terms)
+  } else if (x@direction == "target") {
     check_target(target)
-    x$score_res |>
+    x@score_res |>
       dplyr::arrange(abs(score - target)) |>
       dplyr::slice_head(prop = prop_terms)
   }

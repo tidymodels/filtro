@@ -72,8 +72,6 @@ test_that("arrange_score() is working for aov", {
   expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 22.8)))
 })
 
-skip()
-
 # test_that("trans_score() is working for aov", {
 #   # skip_if_not_installed("modeldata")
 #   # data(ames, package = "modeldata")
@@ -172,38 +170,49 @@ test_that("filter_score_num() is working for aov", {
 })
 
 test_that("filter_score_prop() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(score_res = score_res) |>
+    filter_score_prop(prop_terms = 0.2)
 
-  score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+  score_obj <- filtro::score_aov(direction = "minimize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.min <- score_obj |>
+    filtro::attach_score(score_res = score_res) |>
+    filter_score_prop(prop_terms = 0.2)
 
-  score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
-
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target <- score_obj |>
-    filter_score_prop(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+    filtro::attach_score(score_res = score_res) |>
+    filter_score_prop(prop_terms = 0.2, target = 94.4)
 
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target2 <- score_obj |>
-    filter_score_prop(score_obj, prop_terms = 0.2, target = 10.4)
+    filtro::attach_score(score_res = score_res) |>
+    filter_score_prop(prop_terms = 0.2, target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::slice_max(score, prop = 0.2))
 
@@ -212,14 +221,14 @@ test_that("filter_score_prop() is working for aov", {
   expect_equal(
     ex.target,
     score_res |>
-      dplyr::arrange(abs(score - 63.8)) |>
+      dplyr::arrange(abs(score - 94.4)) |>
       dplyr::slice_head(prop = 0.2)
   )
 
   expect_equal(
     ex.target2,
     score_res |>
-      dplyr::arrange(abs(score - 10.4)) |>
+      dplyr::arrange(abs(score - 22.8)) |>
       dplyr::slice_head(prop = 0.2)
   )
 })
@@ -276,6 +285,8 @@ test_that("filter_score_cutoff() is working for aov", {
     score_res |> dplyr::filter(abs(score - 10.4) <= 1)
   )
 })
+
+skip()
 
 test_that("filter_score_auto() is working for aov", {
   # skip_if_not_installed("modeldata")

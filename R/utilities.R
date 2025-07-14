@@ -131,7 +131,6 @@ S7::method(filter_score_num, new_score_obj) <- function(
 ) {
   # TODO Handle ties here?
   check_num_terms(num_terms)
-
   if (x@direction == "maximize") {
     x@score_res |> dplyr::slice_max(score, n = num_terms)
   } else if (x@direction == "minimize") {
@@ -175,7 +174,7 @@ S7::method(filter_score_prop, new_score_obj) <- function(
 ) {
   # TODO Handle ties here?
   check_prop_terms(prop_terms)
-
+  # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
   if (x@direction == "maximize") {
     x@score_res |> dplyr::slice_max(score, prop = prop_terms)
   } else if (x@direction == "minimize") {
@@ -195,31 +194,39 @@ S7::method(filter_score_prop, new_score_obj) <- function(
 #' @param ... NULL
 #'
 #' @export
-filter_score_cutoff <- function(x, ...) {
-  UseMethod("filter_score_cutoff")
-}
+filter_score_cutoff <- S7::new_generic(
+  "filter_score_cutoff",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-filter_score_cutoff.default <- function(x, ..., cutoff, target = NULL) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-filter_score_cutoff.score_obj <- function(x, ..., cutoff, target = NULL) {
+S7::method(filter_score_cutoff, new_score_obj) <- function(
+  x,
+  ...,
+  cutoff,
+  target = NULL
+) {
   check_cutoff(cutoff)
 
   # TODO Can return more # of predictors due to floating-point precision
-  if (x$direction == "maximize") {
-    x$score_res |> dplyr::filter(score >= cutoff)
-  } else if (x$direction == "minimize") {
-    x$score_res |> dplyr::filter(score <= cutoff)
-  } else if (x$direction == "target") {
+  if (x@direction == "maximize") {
+    x@score_res |> dplyr::filter(score >= cutoff)
+  } else if (x@direction == "minimize") {
+    x@score_res |> dplyr::filter(score <= cutoff)
+  } else if (x@direction == "target") {
+    # TODO cutoff = is now based on abs(). Not ideal?
     check_target(target)
-    x$score_res |> dplyr::filter(abs(score - target) <= cutoff)
+    x@score_res |> dplyr::filter(abs(score - target) <= cutoff)
   }
 }
 

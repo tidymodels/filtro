@@ -10,7 +10,8 @@ Authors@R: c(
   )
 Description: Tidy tools to apply filter-based supervised feature selection 
     methods. These methods score and rank feature relevance using metrics 
-    such as p-values, correlation, and importance scores.
+    such as p-values, correlation, and importance scores (Kuhn and Johnson 
+    (2019) <doi:10.1201/9781315108230>). 
 License: MIT + file LICENSE
 URL: https://github.com/tidymodels/filtro
 BugReports: https://github.com/tidymodels/filtro/issues

@@ -293,49 +293,74 @@ test_that("filter_score_cutoff() is working for aov", {
   )
 })
 
-skip()
 
 test_that("filter_score_auto() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(num_terms = 2)
+  ex.max2 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(num_terms = 2, cutoff = 94.6)
 
-  score_obj$direction <- "maximize"
-  ex.max <- score_obj |> filter_score_auto(num_terms = 2)
-  ex.max2 <- score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
-  ex.max3 <- score_obj |> filter_score_auto(prop_terms = 0.5)
-  ex.max4 <- score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
+  ex.max3 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(prop_terms = 0.5)
+  ex.max4 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(prop_terms = 0.5, cutoff = 94.6)
 
   expect_equal(
     ex.max,
-    score_obj |> filter_score_num(num_terms = 2)
+    score_obj |>
+      filtro::attach_score(results = score_res) |>
+      filter_score_num(num_terms = 2)
   )
 
   expect_equal(
     ex.max2,
     {
-      score_obj$score_res <- score_obj |> filter_score_num(num_terms = 2)
-      score_obj |> filter_score_cutoff(cutoff = 63.9)
+      score_res2 <- score_obj |>
+        filtro::attach_score(results = score_res) |>
+        filter_score_num(num_terms = 2)
+      score_obj |>
+        filtro::attach_score(results = score_res2) |>
+        filter_score_cutoff(cutoff = 94.6)
     }
   )
 
-  # TODO Finish the rest
+  expect_equal(
+    ex.max3,
+    score_obj |>
+      filtro::attach_score(results = score_res) |>
+      filter_score_prop(prop_terms = 0.5)
+  )
+
+  expect_equal(
+    ex.max4,
+    {
+      score_res4 <- score_obj |>
+        filtro::attach_score(results = score_res) |>
+        filter_score_prop(prop_terms = 0.5)
+      score_obj |>
+        filtro::attach_score(results = score_res4) |>
+        filter_score_cutoff(cutoff = 94.6)
+    }
+  )
+  # TODO Finish direction = "minimize"
+  # TODO Finish direction = "target"
 })
+
+skip()
 
 # TODO Test rank_score_min()
 

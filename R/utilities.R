@@ -238,21 +238,23 @@ S7::method(filter_score_cutoff, new_score_obj) <- function(
 #' @param ... NULL
 #'
 #' @export
-filter_score_auto <- function(x, ...) {
-  UseMethod("filter_score_auto")
-}
+filter_score_auto <- S7::new_generic(
+  "filter_score_auto",
+  "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, new_score_obj)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
 
 #' @noRd
 #' @export
-filter_score_auto.default <- function(x, ...) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-filter_score_auto.score_obj <- function(
+S7::method(filter_score_auto, new_score_obj) <- function(
   x,
   ...,
   num_terms = NULL,
@@ -280,90 +282,71 @@ filter_score_auto.score_obj <- function(
   results
 }
 
-# TODO Filter score result `results` based on user input
+# Filter score result `results` based on user input TODO
 # filter_score_<>
 
-#' Rank score result `results` based on min_rank (Need a better title)
-#'
-#' @param x NULL
-#'
-#' @param ... NULL
-#'
-#' @export
-rank_score_min <- function(x, ...) {
-  UseMethod("rank_score_min")
-}
-
-#' @noRd
-#' @export
-rank_score_min.default <- function(x, ...) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-rank_score_min.score_obj <- function(x, ..., target = NULL) {
-  # TODO Check if direction == target, add "need a target"
-  if (x$direction == "maximize") {
-    x$results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
-  } else if (x$direction == "minimize") {
-    x$results |> dplyr::mutate(rank = dplyr::min_rank((score)))
-  } # else if (x$direction == "target") { # TODO
-  #   x$results |> dplyr::arrange(abs(score - target))
-  # }
-}
-
-#' Rank score result `results` based on dense_rank (Need a better title)
-#'
-#' @param x NULL
-#'
-#' @param ... NULL
-#'
-#' @export
-rank_score_dense <- function(x, ...) {
-  UseMethod("rank_score_dense")
-}
-
-#' @noRd
-#' @export
-rank_score_dense.default <- function(x, ...) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-  )
-}
-
-#' @noRd
-#' @export
-rank_score_dense.score_obj <- function(x, ..., target = NULL) {
-  # TODO Check if direction == target, add "need a target"
-  if (x$direction == "maximize") {
-    x$results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
-  } else if (x$direction == "minimize") {
-    x$results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
-  } # else if (x$direction == "target") { # TODO
-  #   x$results |> dplyr::arrange(abs(score - target))
-  # }
-}
-
-# #' Assign class `result_obj` to score object `score_obj` TODO
+# #' Rank score result `results` based on min_rank (Need a better title) TODO
 # #'
 # #' @param x NULL
 # #'
 # #' @param ... NULL
 # #'
 # #' @export
-# as_result_obj <- function(x, ...) {
-#   UseMethod("as_result_obj")
+# rank_score_min <- function(x, ...) {
+#   UseMethod("rank_score_min")
 # }
 
 # #' @noRd
 # #' @export
-# as_result_obj.score_obj <- function(x, res, ...) {
-#   class(res) <- c("result_obj", class(res))
-#   x$res <- res # COMMENT This overlaps with attach_score()
-#   x
+# rank_score_min.default <- function(x, ...) {
+#   cli::cli_abort(
+#     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+#   )
+# }
+
+# #' @noRd
+# #' @export
+# rank_score_min.score_obj <- function(x, ..., target = NULL) {
+#   # TODO Check if direction == target, add "need a target"
+#   if (x$direction == "maximize") {
+#     x$results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+#   } else if (x$direction == "minimize") {
+#     x$results |> dplyr::mutate(rank = dplyr::min_rank((score)))
+#   } # else if (x$direction == "target") { # TODO
+#   #   x$results |> dplyr::arrange(abs(score - target))
+#   # }
+# }
+
+# #' Rank score result `results` based on dense_rank (Need a better title)
+# #'
+# #' @param x NULL
+# #'
+# #' @param ... NULL
+# #'
+# #' @export
+# rank_score_dense <- function(x, ...) {
+#   UseMethod("rank_score_dense")
+# }
+
+# #' @noRd
+# #' @export
+# rank_score_dense.default <- function(x, ...) {
+#   cli::cli_abort(
+#     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
+#   )
+# }
+
+# #' @noRd
+# #' @export
+# rank_score_dense.score_obj <- function(x, ..., target = NULL) {
+#   # TODO Check if direction == target, add "need a target"
+#   if (x$direction == "maximize") {
+#     x$results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+#   } else if (x$direction == "minimize") {
+#     x$results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
+#   } # else if (x$direction == "target") { # TODO
+#   #   x$results |> dplyr::arrange(abs(score - target))
+#   # }
 # }
 
 #' Bind all metadata `score_obj` and score result `results`, and assign class `score_set` to combined scores.

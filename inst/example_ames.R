@@ -159,42 +159,37 @@ score_obj |>
   filter_score_cutoff(cutoff = 4, target = 94.4)
 
 # Filter score based on type and optional cutoff
-score_obj$direction <- "maximize"
-score_obj |> filter_score_auto(num_terms = 2)
-score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
-score_obj |> filter_score_auto(prop_terms = 0.5)
-score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
+# score_obj$direction <- "maximize"
+# score_obj |> filter_score_auto(num_terms = 2)
+# score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
+# score_obj |> filter_score_auto(prop_terms = 0.5)
+# score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
 
-score_obj$direction <- "minimize"
-score_obj |> filter_score_auto(num_terms = 2)
-score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.7)
-score_obj |> filter_score_auto(prop_terms = 0.5)
-score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.7)
+# score_obj$direction <- "minimize"
+# score_obj |> filter_score_auto(num_terms = 2)
+# score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.7)
+# score_obj |> filter_score_auto(prop_terms = 0.5)
+# score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.7)
 
-score_obj$direction <- "target"
-score_obj |> filter_score_auto(num_terms = 2, target = 63.8)
-score_obj |> filter_score_auto(num_terms = 2, cutoff = 0.1, target = 63.8)
-score_obj |> filter_score_auto(prop_terms = 0.5, target = 63.8)
-score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 0.1, target = 63.8)
+# score_obj$direction <- "target"
+# score_obj |> filter_score_auto(num_terms = 2, target = 63.8)
+# score_obj |> filter_score_auto(num_terms = 2, cutoff = 0.1, target = 63.8)
+# score_obj |> filter_score_auto(prop_terms = 0.5, target = 63.8)
+# score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 0.1, target = 63.8)
 
-# Rank score based on min_rank
-score_obj$direction <- "maximize"
-score_obj |> rank_score_min()
+# # Rank score based on min_rank
+# score_obj$direction <- "maximize"
+# score_obj |> rank_score_min()
 
-score_obj$direction <- "minimize"
-score_obj |> rank_score_min()
+# score_obj$direction <- "minimize"
+# score_obj |> rank_score_min()
 
-# Rank score based on dense_rank
-score_obj$direction <- "maximize"
-score_obj |> rank_score_dense()
+# # Rank score based on dense_rank
+# score_obj$direction <- "maximize"
+# score_obj |> rank_score_dense()
 
-score_obj$direction <- "minimize"
-score_obj |> rank_score_dense()
-
-# # Assign class result_obj to score object score_obj TODO
-# score |> class()
-# tmp <- score_obj |> as_result_obj(score)
-# tmp$score |> class()
+# score_obj$direction <- "minimize"
+# score_obj |> rank_score_dense()
 
 data(ames, package = "modeldata")
 data <- modeldata::ames |>

@@ -396,17 +396,7 @@ S7::method(bind_scores, score_list) <- function(x) {
 #' @param x A list where each element is a score object of class `score_obj`.
 #'
 #' @export
-fill_safe_values <- function(x) {
-  UseMethod("fill_safe_values")
-}
-
-#' @noRd
-#' @export
-fill_safe_values.default <- function(x) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls list}, not {.obj_type_friendly {x}}."
-  )
-}
+fill_safe_values <- S7::new_generic("fill_safe_values", "x")
 
 #' @noRd
 #' @export
@@ -416,13 +406,13 @@ fill_safe_values.default <- function(x) {
 #' # Fill in safe values
 #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 #' score_obj_list |> fill_safe_values()
-#'
-fill_safe_values.list <- function(x) {
+score_list <- S7::new_S3_class("list") # Otherwise S7 complains
+S7::method(fill_safe_values, score_list) <- function(x) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
-    method_name <- x[[i]]$score_type
-    fallback_val <- x[[i]]$fallback_value
+    method_name <- x[[i]]@score_type
+    fallback_val <- x[[i]]@fallback_value
     score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
   }
   score_set

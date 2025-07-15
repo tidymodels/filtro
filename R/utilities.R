@@ -349,9 +349,17 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 #   # }
 # }
 
+#' Construct an S7 subclass of base R's `list`
+#'
+#' Output an S7 subclass of S3 base R's `list`, used in method dispatch for [bind_scores()].
+#'
+#' @export
+score_list <- S7::new_S3_class("list")
+
 #' Bind all metadata `score_obj` and score result `results`, and assign class `score_set` to combined scores.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 bind_scores <- S7::new_generic("bind_scores", "x")
@@ -364,7 +372,6 @@ bind_scores <- S7::new_generic("bind_scores", "x")
 #' # Bind scores
 #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 #' score_obj_list |> bind_scores()
-score_list <- S7::new_S3_class("list") # Otherwise S7 complains
 S7::method(bind_scores, score_list) <- function(x) {
   length_x <- length(x)
   if (length_x < 2) {
@@ -393,6 +400,7 @@ S7::method(bind_scores, score_list) <- function(x) {
 #' Fill safe values.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 fill_safe_values <- S7::new_generic("fill_safe_values", "x")
@@ -405,7 +413,6 @@ fill_safe_values <- S7::new_generic("fill_safe_values", "x")
 #' # Fill in safe values
 #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 #' score_obj_list |> fill_safe_values()
-score_list <- S7::new_S3_class("list") # Otherwise S7 complains
 S7::method(fill_safe_values, score_list) <- function(x) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)

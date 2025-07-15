@@ -8,6 +8,8 @@ bind_scores(x, ...)
 }
 \arguments{
 \item{x}{A list where each element is a score object of class \code{score_obj}.}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Bind all metadata \code{score_obj} and score result \code{results}, and assign class \code{score_set} to combined scores.

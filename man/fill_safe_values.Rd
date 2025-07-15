@@ -8,6 +8,8 @@ fill_safe_values(x, ...)
 }
 \arguments{
 \item{x}{A list where each element is a score object of class \code{score_obj}.}
+
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Fill safe values.

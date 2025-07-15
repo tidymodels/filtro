@@ -7,7 +7,7 @@
 #' @export
 attach_score <- S7::new_generic(
   "attach_score",
-  "x",
+  dispatch_args = "x",
   function(x, results, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -35,7 +35,7 @@ S7::method(attach_score, new_score_obj) <- function(x, results, ...) {
 #' @export
 arrange_score <- S7::new_generic(
   "arrange_score",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -69,7 +69,7 @@ S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
 #' @export
 trans_score <- S7::new_generic(
   "trans_score",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -103,7 +103,7 @@ S7::method(trans_score, new_score_obj) <- function(x, ...) {
 #' @export
 filter_score_num <- S7::new_generic(
   "filter_score_num",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -146,7 +146,7 @@ S7::method(filter_score_num, new_score_obj) <- function(
 #' @export
 filter_score_prop <- S7::new_generic(
   "filter_score_prop",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -190,7 +190,7 @@ S7::method(filter_score_prop, new_score_obj) <- function(
 #' @export
 filter_score_cutoff <- S7::new_generic(
   "filter_score_cutoff",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -234,7 +234,7 @@ S7::method(filter_score_cutoff, new_score_obj) <- function(
 #' @export
 filter_score_auto <- S7::new_generic(
   "filter_score_auto",
-  "x",
+  dispatch_args = "x",
   function(x, ...) {
     if (!S7::S7_inherits(x, new_score_obj)) {
       cli::cli_abort(
@@ -357,7 +357,7 @@ score_list <- S7::new_S3_class("list")
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
-bind_scores <- S7::new_generic("bind_scores", "x")
+bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 
 #' @noRd
 #' @export
@@ -398,7 +398,7 @@ S7::method(bind_scores, score_list) <- function(x) {
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
-fill_safe_values <- S7::new_generic("fill_safe_values", "x")
+fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 
 #' @noRd
 #' @export

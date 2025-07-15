@@ -364,7 +364,6 @@ bind_scores <- S7::new_generic("bind_scores", "x")
 #' # Bind scores
 #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 #' score_obj_list |> bind_scores()
-#'
 score_list <- S7::new_S3_class("list") # Otherwise S7 complains
 S7::method(bind_scores, score_list) <- function(x) {
   length_x <- length(x)

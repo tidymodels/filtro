@@ -4,9 +4,9 @@
 \name{filtro-package}
 \alias{filtro}
 \alias{filtro-package}
-\title{filtro: Tools for Feature Selection Using Supervised Filter-Based Methods}
+\title{filtro: Feature Selection Using Supervised Filter-Based Methods}
 \description{
-Tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, and importance scores.
+Tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, and importance scores (Kuhn and Johnson (2019) \doi{10.1201/9781315108230}).
 }
 \seealso{
 Useful links:

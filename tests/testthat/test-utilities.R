@@ -311,7 +311,6 @@ test_that("filter_score_auto() is working for aov", {
   ex.max2 <- score_obj |>
     filtro::attach_score(results = score_res) |>
     filter_score_auto(num_terms = 2, cutoff = 94.6)
-
   ex.max3 <- score_obj |>
     filtro::attach_score(results = score_res) |>
     filter_score_auto(prop_terms = 0.5)

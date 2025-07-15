@@ -351,12 +351,13 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 
 #' Construct an S7 subclass of base R's `list`
 #'
-#' Output an S7 subclass of S3 base R's `list`, used in method dispatch for [bind_scores()].
+#' Output an S7 subclass of S3 base R's `list`, used in method dispatch for
+#' [bind_scores()] and [fill_safe_values()].
 #'
 #' @export
 score_list <- S7::new_S3_class("list")
 
-#' Bind all metadata `score_obj` and score result `results`, and assign class `score_set` to combined scores.
+#' Bind all metadata `score_obj` and score result `results`.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
 #' @param ... Further arguments passed to or from other methods.

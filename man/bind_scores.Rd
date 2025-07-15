@@ -4,7 +4,7 @@
 \alias{bind_scores}
 \title{Bind all metadata \code{score_obj} and score result \code{results}, and assign class \code{score_set} to combined scores.}
 \usage{
-bind_scores(x)
+bind_scores(x, ...)
 }
 \arguments{
 \item{x}{A list where each element is a score object of class \code{score_obj}.}

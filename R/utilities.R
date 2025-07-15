@@ -354,17 +354,7 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 #' @param x A list where each element is a score object of class `score_obj`.
 #'
 #' @export
-bind_scores <- function(x) {
-  UseMethod("bind_scores")
-}
-
-#' @noRd
-#' @export
-bind_scores.default <- function(x) {
-  cli::cli_abort(
-    "{.arg x} must be {.cls list}, not {.obj_type_friendly {x}}."
-  )
-}
+bind_scores <- S7::new_generic("bind_scores", "x")
 
 #' @noRd
 #' @export
@@ -375,7 +365,8 @@ bind_scores.default <- function(x) {
 #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
 #' score_obj_list |> bind_scores()
 #'
-bind_scores.list <- function(x) {
+score_list <- S7::new_S3_class("list") # Otherwise S7 complains
+S7::method(bind_scores, score_list) <- function(x) {
   length_x <- length(x)
   if (length_x < 2) {
     cli::cli_abort(
@@ -383,11 +374,11 @@ bind_scores.list <- function(x) {
     )
   } else {
     # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
-    score_set <- x[[1]]$results
+    score_set <- x[[1]]@results
     for (i in 2:length_x) {
       score_set <- dplyr::full_join(
         score_set,
-        x[[i]]$results,
+        x[[i]]@results,
         by = c("name", "score", "outcome", "predictor")
       )
     }
@@ -396,7 +387,7 @@ bind_scores.list <- function(x) {
   score_set <- score_set |>
     tidyr::pivot_wider(names_from = name, values_from = score)
 
-  class(score_set) <- c("score_set", class(score_set))
+  #class(score_set) <- c("score_set", class(score_set)) TODO Check with desirability2
   score_set
 }
 

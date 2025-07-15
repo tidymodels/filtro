@@ -191,54 +191,41 @@ score_obj |>
 # score_obj$direction <- "minimize"
 # score_obj |> rank_score_dense()
 
-data(ames, package = "modeldata")
-data <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street #,
-    # Alley, # ADD MORE
-    # Lot_Shape,
-    # Land_Contour,
-    # Utilities,
-    # Lot_Config,
-    # Land_Slope
-  )
-data <- data |>
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
-outcome <- "Sale_Price"
-score_obj = filtro::score_aov()
-score_res <- filtro::get_scores_aov(score_obj, data, outcome)
 
 # Bind scores and assign class
 score_obj_aov <- filtro::score_aov()
-score_res_aov <- filtro::get_scores_aov(score_obj_aov, data, outcome)
-score_obj_aov <- score_obj_aov |> filtro::attach_score(score_res_aov)
+score_res_aov <- filtro::get_scores_aov(
+  score_obj_aov,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
+score_obj_aov <- score_obj_aov |> attach_score(score_res_aov)
 
 score_obj_cor <- filtro::score_cor()
-score_res_cor <- filtro::get_scores_cor(score_obj_cor, data, outcome)
+score_res_cor <- filtro::get_scores_cor(
+  score_obj_cor,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
 
-score_obj_imp <- filtro::score_forest_imp()
-score_obj_imp$engine <- "ranger"
-score_obj_imp$trees <- 10
-score_obj_imp$mtry <- 2
-score_obj_imp$min_n <- 1
-score_obj_imp$class <- FALSE # TODO
-set.seed(42)
-score_res_imp <- filtro::get_scores_forest_importance(
+score_obj_imp <- filtro::score_forest_imp(is_reg = TRUE)
+score_res_imp <- get_scores_forest_importance(
   score_obj_imp,
-  data,
-  outcome
+  data = ames_subset,
+  outcome = "Sale_Price"
 )
 score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
 
-score_obj_info <- filtro::score_info_gain()
-score_obj_info$equal <- TRUE
-score_res_info <- filtro::get_scores_info_gain(score_obj_info, data, outcome)
+score_obj_info <- score_info_gain(is_reg = TRUE)
+score_res_info <- get_scores_info_gain(
+  score_obj_info,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
 
 score_obj_list <- list(

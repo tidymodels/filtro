@@ -293,7 +293,6 @@ test_that("filter_score_cutoff() is working for aov", {
   )
 })
 
-
 test_that("filter_score_auto() is working for aov", {
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
@@ -359,8 +358,6 @@ test_that("filter_score_auto() is working for aov", {
   # TODO Finish direction = "target"
 })
 
-skip()
-
 # TODO Test rank_score_min()
 
 # TODO Test rank_score_dense()
@@ -377,16 +374,67 @@ skip()
 # score_res %>%
 #   dplyr::mutate(rank = dplyr::dense_rank((score)))
 
-# TODO Test bind_scores()
+test_that("bind_scores() is working for aov", {
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  score_obj_aov <- filtro::score_aov()
+  score_res_aov <- filtro::get_scores_aov(
+    score_obj_aov,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_aov <- score_obj_aov |> attach_score(score_res_aov)
+
+  score_obj_cor <- filtro::score_cor()
+  score_res_cor <- filtro::get_scores_cor(
+    score_obj_cor,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
+
+  score_obj_imp <- filtro::score_forest_imp(is_reg = TRUE)
+  score_res_imp <- get_scores_forest_importance(
+    score_obj_imp,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
+
+  score_obj_info <- score_info_gain(is_reg = TRUE)
+  score_res_info <- get_scores_info_gain(
+    score_obj_info,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
+
+  score_obj_list <- list(
+    score_obj_aov,
+    score_obj_cor,
+    score_obj_imp,
+    score_obj_info
+  )
+
+  ex.res <- score_obj_list |> filtro::bind_scores()
+
+  expect_equal(ex.res, {
+    score_set <- score_obj_list[[1]]@results
+    for (i in 2:length(score_obj_list)) {
+      next_results <- score_obj_list[[i]]@results
+      score_set <- dplyr::full_join(
+        score_set,
+        next_results,
+        by = c("name", "score", "outcome", "predictor")
+      )
+    }
+    score_set |>
+      tidyr::pivot_wider(names_from = name, values_from = score)
+  })
+})
 
 # TODO Test fill_safe_values()
-
-# score_set <- score_obj_list |> bind_scores()
-# for (i in 1:length(score_obj_list)) {
-#   method_name <- score_obj_list[[i]]$score_type
-#   fallback_val <- score_obj_list[[i]]$fallback_value
-#   score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
-# }
-# score_set
 
 # TODO May need to test for methods other than aov

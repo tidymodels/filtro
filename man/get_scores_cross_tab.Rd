@@ -31,38 +31,40 @@ Output a tibble result with with one row per predictor, and four columns:
 \code{name}, \code{score}, \code{predictor}, and \code{outcome}.
 }
 \examples{
-library(titanic)
-titanic_train <- titanic_train |>
-  dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
-titanic_subset <- titanic_train |>
-  dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
-# Return score as -log10(p-values) for chi-squared
-score_obj <- score_cross_tab()
-score_res <- get_scores_cross_tab(
-  score_obj,
-  data = titanic_subset,
-  outcome = "Survived"
-)
-score_res
-# Return score as -log10(p-values) for fisher's
-score_obj <- score_cross_tab(score_type = "pval_fisher")
-score_res <- get_scores_cross_tab(
-  score_obj,
-  data = titanic_subset,
-  outcome = "Survived"
-)
-score_res
-# Return raw p-values instead of -log10(p-values) for chi-squared
-score_obj <- score_cross_tab(
-  score_type = "pval_chisq",
-  neg_log10 = FALSE,
-  direction = "minimize",
-  fallback_value = 0
-)
-score_res <- get_scores_cross_tab(
-  score_obj,
-  data = titanic_subset,
-  outcome = "Survived"
-)
-score_res
+if (rlang::is_installed("titanic")) {
+  library(titanic)
+  titanic_train <- titanic_train |>
+    dplyr::mutate(dplyr::across(c(Survived, Pclass, Sex, Embarked), as.factor))
+  titanic_subset <- titanic_train |>
+    dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
+  # Return score as -log10(p-values) for chi-squared
+  score_obj <- score_cross_tab()
+  score_res <- get_scores_cross_tab(
+    score_obj,
+    data = titanic_subset,
+    outcome = "Survived"
+  )
+  score_res
+  # Return score as -log10(p-values) for fisher's
+  score_obj <- score_cross_tab(score_type = "pval_fisher")
+  score_res <- get_scores_cross_tab(
+    score_obj,
+    data = titanic_subset,
+    outcome = "Survived"
+  )
+  score_res
+  # Return raw p-values instead of -log10(p-values) for chi-squared
+  score_obj <- score_cross_tab(
+    score_type = "pval_chisq",
+    neg_log10 = FALSE,
+    direction = "minimize",
+    fallback_value = 0
+  )
+  score_res <- get_scores_cross_tab(
+    score_obj,
+    data = titanic_subset,
+    outcome = "Survived"
+  )
+  score_res
+}
 }

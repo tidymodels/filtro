@@ -114,3 +114,4 @@ Output a new score object that contains associated metadata, such as \code{range
 # Create a score object
 new_score_obj()
 }
+\keyword{internal}

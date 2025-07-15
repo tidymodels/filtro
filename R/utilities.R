@@ -414,7 +414,8 @@ S7::method(fill_safe_values, score_list) <- function(x) {
   for (i in 1:length(x)) {
     method_name <- x[[i]]@score_type
     fallback_val <- x[[i]]@fallback_value
-    score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
+    is_na_score <- is.na(score_set[[method_name]])
+    score_set[[method_name]][is_na_score] <- fallback_val
   }
   score_set
 }

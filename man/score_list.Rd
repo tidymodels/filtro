@@ -11,6 +11,7 @@ An object of class \code{S7_S3_class} of length 3.
 score_list
 }
 \description{
-Output an S7 subclass of S3 base R's \code{list}, used in method dispatch for \code{\link[=bind_scores]{bind_scores()}}.
+Output an S7 subclass of S3 base R's \code{list}, used in method dispatch for
+\code{\link[=bind_scores]{bind_scores()}} and \code{\link[=fill_safe_values]{fill_safe_values()}}.
 }
 \keyword{datasets}

@@ -15,12 +15,6 @@ attach_score <- S7::new_generic(
       )
     }
 
-    # if (!S7::S7_inherits(results, "data.frame")) {
-    #   cli::cli_abort(
-    #     "{.arg results} must be a tibble (a {.cls tbl_df}), not {.obj_type_friendly {results}}."
-    #   )
-    # }
-
     S7::S7_dispatch()
   }
 )

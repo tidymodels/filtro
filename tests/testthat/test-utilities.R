@@ -12,6 +12,8 @@ test_that("attach_score() is working for aov", {
   ex.score_obj <- score_obj |> attach_score(score_res)
 
   expect_equal(ex.score_obj@results, score_res)
+
+  expect_snapshot(print(ex.score_obj@results))
 })
 
 test_that("arrange_score() is working for aov", {

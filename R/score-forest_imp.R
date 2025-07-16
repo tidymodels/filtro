@@ -22,12 +22,13 @@
 #'  - `"partykit"`
 #'  - `"aorsf"`
 #' @param trees An integer for the number of trees contained in the ensemble.
-#' @param mtry An integer for the number of predictors that will be randomly sampled at each split
-#' when creating the tree models.
-#' @param min_n An integer for the minimum number of data points in a node that are required for the
-#' node to be split further.
-#' @param is_reg A logical value indicating whether the task is regression (`TRUE`)
-#' or classification (`FALSE`) (default).
+#' @param mtry An integer for the number of predictors that will
+#' be randomly sampled at each split when creating the tree models.
+#' @param min_n An integer for the minimum number of data points
+#' in a node that are required for the node to be split further.
+#' @param mode A character string indicating the task type. One of:
+#'  - `"regression"`
+#'  - `"classification"`
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -44,7 +45,7 @@ new_score_obj_forest_imp <- S7::new_class(
     trees = S7::new_property(S7::class_numeric, default = 10), # TODO May need to set other default
     mtry = S7::new_property(S7::class_numeric, default = 2),
     min_n = S7::new_property(S7::class_numeric, default = 1),
-    is_reg = S7::new_property(S7::class_logical, default = FALSE)
+    mode = S7::new_property(S7::class_character, default = "classification")
   )
 )
 
@@ -72,7 +73,7 @@ score_forest_imp <- function(
   trees = 10,
   mtry = 2,
   min_n = 1,
-  is_reg = FALSE
+  mode = "classification"
 ) {
   new_score_obj_forest_imp(
     outcome_type = "numeric",
@@ -93,7 +94,7 @@ score_forest_imp <- function(
     trees = trees,
     mtry = mtry,
     min_n = min_n,
-    is_reg = is_reg,
+    mode = mode,
     label = c(score_rfimp = "Random Forest importance scores")
   )
 }
@@ -112,7 +113,7 @@ get_imp_rf_ranger <- function(score_obj, data, outcome) {
     mtry = score_obj@mtry,
     importance = importance_type,
     min.node.size = score_obj@min_n,
-    classification = !score_obj@is_reg, # TODO Might scream at me.
+    classification = score_obj@mode == "classification",
     seed = 42 # TODO Add this to pass tests. Remove later.
   )
   imp <- fit$variable.importance

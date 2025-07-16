@@ -1,6 +1,6 @@
 #' Construct a subclassed score object for feature importance scores with additional metadata
 #'
-#' Introduce new properties `engine`, `trees`, `mtry`, `min_n` and `is_reg`.
+#' Introduce new properties `engine`, `trees`, `mtry`, `min_n` and `mode`.
 #' Output a new score object that contains associated metadata, such as `range`,
 #' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
 #'
@@ -26,9 +26,10 @@
 #' be randomly sampled at each split when creating the tree models.
 #' @param min_n An integer for the minimum number of data points
 #' in a node that are required for the node to be split further.
-#' @param mode A character string indicating the task type. One of:
+#' @param mode A character string indicating the task type. Relevant only for `ranger`. One of:
 #'  - `"regression"`
 #'  - `"classification"`
+#' @param seed An interger of random seed. Relevant only for `ranger`.
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -45,7 +46,8 @@ new_score_obj_forest_imp <- S7::new_class(
     trees = S7::new_property(S7::class_numeric, default = 10), # TODO May need to set other default
     mtry = S7::new_property(S7::class_numeric, default = 2),
     min_n = S7::new_property(S7::class_numeric, default = 1),
-    mode = S7::new_property(S7::class_character, default = "classification")
+    mode = S7::new_property(S7::class_character, default = "classification"),
+    seed = S7::new_property(S7::class_numeric, default = 42)
   )
 )
 
@@ -73,7 +75,8 @@ score_forest_imp <- function(
   trees = 10,
   mtry = 2,
   min_n = 1,
-  mode = "classification"
+  mode = "classification",
+  seed = 42
 ) {
   new_score_obj_forest_imp(
     outcome_type = "numeric",
@@ -95,6 +98,7 @@ score_forest_imp <- function(
     mtry = mtry,
     min_n = min_n,
     mode = mode,
+    seed = seed,
     label = c(score_rfimp = "Random Forest importance scores")
   )
 }
@@ -114,7 +118,7 @@ get_imp_rf_ranger <- function(score_obj, data, outcome) {
     importance = importance_type,
     min.node.size = score_obj@min_n,
     classification = score_obj@mode == "classification",
-    seed = 42 # TODO Add this to pass tests. Remove later.
+    seed = score_obj@seed
   )
   imp <- fit$variable.importance
   imp
@@ -144,7 +148,7 @@ get_imp_rf_aorsf <- function(score_obj, data, formula) {
     n_retry = score_obj@mtry,
     importance = importance_type
   )
-  imp <- fit$importance # orsf_vi_permute(fit)
+  imp <- fit$importance
   imp
 }
 
@@ -229,7 +233,7 @@ make_scores_forest_importance <- function(
 #'     Lot_Area,
 #'     Street
 #'   )
-#' score_obj <- score_forest_imp(is_reg = TRUE)
+#' score_obj <- score_forest_imp(mode = "regression")
 #' score_res <- get_scores_forest_importance(
 #'   score_obj,
 #'   data = ames_subset,
@@ -239,7 +243,7 @@ get_scores_forest_importance <- function(
   score_obj,
   data,
   outcome,
-  ... # i.e., score_obj$engine, score_obj$trees, score_obj$mtry, score_obj$min_n, score_obj$is_reg
+  ... # i.e., score_obj$engine, score_obj$trees, score_obj$mtry, score_obj$min_n, score_obj$mode
 ) {
   outcome_name <- outcome |> as.name()
   formula <- stats::as.formula(paste(outcome_name, "~ ."))

@@ -2,9 +2,7 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
   skip_if_not_installed("modeldata")
 
   cells_subset <- helper_cells()
-  score_obj <- score_forest_imp()
-
-  set.seed(42)
+  score_obj <- score_forest_imp(seed = 42)
   score_res <- get_scores_forest_importance(
     score_obj,
     data = cells_subset,
@@ -14,7 +12,6 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
   outcome <- "class"
   y <- cells_subset[[outcome]]
   X <- cells_subset[setdiff(names(cells_subset), outcome)]
-  set.seed(42)
   fit <- ranger::ranger(
     y = y,
     x = X,
@@ -23,7 +20,7 @@ test_that("get_score_forest_importance() is working for ranger for classificatio
     importance = "permutation",
     min.node.size = 1,
     classification = TRUE,
-    seed = 42 # TODO Add this to pass tests. Remove later. set.seed(42) alone does not seem to work.
+    seed = 42
   )
   exp.res <- unname(fit$variable.importance)
 
@@ -124,8 +121,7 @@ test_that("get_score_forest_importance() is working for ranger regression", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_forest_imp(is_reg = TRUE)
-  set.seed(42)
+  score_obj <- score_forest_imp(mode = "regression", seed = 42)
   score_res <- get_scores_forest_importance(
     score_obj,
     data = ames_subset,
@@ -135,7 +131,6 @@ test_that("get_score_forest_importance() is working for ranger regression", {
   outcome <- "Sale_Price"
   y <- ames_subset[[outcome]]
   X <- ames_subset[setdiff(names(ames_subset), outcome)]
-  set.seed(42)
   fit <- ranger::ranger(
     x = X,
     y = y,
@@ -144,7 +139,7 @@ test_that("get_score_forest_importance() is working for ranger regression", {
     importance = "permutation",
     min.node.size = 1,
     classification = FALSE,
-    seed = 42 # TODO Add this to pass tests. Remove later. set.seed(42) alone does not seem to work.
+    seed = 42
   )
   exp.res <- unname(fit$variable.importance)
 
@@ -165,7 +160,7 @@ test_that("get_score_forest_importance() is working for partykit regression", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_forest_imp(engine = "partykit", is_reg = TRUE)
+  score_obj <- score_forest_imp(engine = "partykit")
   set.seed(42)
   score_res <- get_scores_forest_importance(
     score_obj,
@@ -204,7 +199,7 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_forest_imp(engine = "aorsf", is_reg = TRUE)
+  score_obj <- score_forest_imp(engine = "aorsf")
   set.seed(42)
   score_res <- get_scores_forest_importance(
     score_obj,

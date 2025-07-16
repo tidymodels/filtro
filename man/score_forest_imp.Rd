@@ -13,7 +13,8 @@ score_forest_imp(
   trees = 10,
   mtry = 2,
   min_n = 1,
-  is_reg = FALSE
+  mode = "classification",
+  seed = 42
 )
 }
 \arguments{
@@ -49,14 +50,19 @@ One of:
 
 \item{trees}{An integer for the number of trees contained in the ensemble.}
 
-\item{mtry}{An integer for the number of predictors that will be randomly sampled at each split
-when creating the tree models.}
+\item{mtry}{An integer for the number of predictors that will
+be randomly sampled at each split when creating the tree models.}
 
-\item{min_n}{An integer for the minimum number of data points in a node that are required for the
-node to be split further.}
+\item{min_n}{An integer for the minimum number of data points
+in a node that are required for the node to be split further.}
 
-\item{is_reg}{A logical value indicating whether the task is regression (\code{TRUE})
-or classification (\code{FALSE}) (default).}
+\item{mode}{A character string indicating the task type. Relevant only for \code{ranger}. One of:
+\itemize{
+\item \code{"regression"}
+\item \code{"classification"}
+}}
+
+\item{seed}{An interger of random seed. Relevant only for \code{ranger}.}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

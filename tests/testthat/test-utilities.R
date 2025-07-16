@@ -397,7 +397,7 @@ test_that("bind_scores() is working for aov", {
   )
   score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
 
-  score_obj_imp <- filtro::score_forest_imp(is_reg = TRUE)
+  score_obj_imp <- filtro::score_forest_imp(mode = "regression")
   score_res_imp <- get_scores_forest_importance(
     score_obj_imp,
     data = ames_subset,
@@ -458,7 +458,7 @@ test_that("fill_safe_values() is working for aov", {
   )
   score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
 
-  score_obj_imp <- filtro::score_forest_imp(is_reg = TRUE)
+  score_obj_imp <- filtro::score_forest_imp(mode = "regression")
   score_res_imp <- get_scores_forest_importance(
     score_obj_imp,
     data = ames_subset,

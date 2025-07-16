@@ -72,7 +72,7 @@ ames_subset <- modeldata::ames |>
     Lot_Area,
     Street
   )
-score_obj <- score_forest_imp(is_reg = TRUE)
+score_obj <- score_forest_imp(mode = "regression")
 score_res <- get_scores_forest_importance(
   score_obj,
   data = ames_subset,

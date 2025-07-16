@@ -18,7 +18,9 @@
 #'  - `"maximize"` (default)
 #'  - `"minimize"`
 #'  - `"target"`
-#' @param is_reg NULL
+#' @param mode A character string indicating the task type. One of:
+#'  - `"regression"`
+#'  - `"classification"` (default)
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,
 #' `score_type`, `direction`, and other relevant attributes.
@@ -31,7 +33,7 @@ new_score_obj_info_gain <- S7::new_class(
   "new_score_obj_info_gain",
   parent = new_score_obj,
   properties = list(
-    is_reg = S7::new_property(S7::class_logical, default = FALSE)
+    mode = S7::new_property(S7::class_character, default = "classification")
   )
 )
 
@@ -56,7 +58,7 @@ score_info_gain <- function(
   fallback_value = Inf,
   score_type = "infogain",
   direction = "maximize",
-  is_reg = FALSE
+  mode = "classification"
 ) {
   new_score_obj_info_gain(
     outcome_type = c("numeric", "factor"),
@@ -73,7 +75,7 @@ score_info_gain <- function(
     tuning = FALSE,
     #ties =
     calculating_fn = function(x) {}, # Otherwise S7 complains
-    is_reg = is_reg,
+    mode = mode,
     label = c(score_infogain = "Information Gain scores")
   )
 }
@@ -114,7 +116,7 @@ get_scores_info_gain <- function(
     x = X,
     y = y,
     type = "infogain", # TODO
-    equal = score_obj@is_reg # Set = TRUE for numeric outcome
+    equal = score_obj@mode == "regression" # Set = TRUE for numeric outcome
   )
   res <- make_scores_info_gain(score_obj@score_type, fit, outcome)
   res

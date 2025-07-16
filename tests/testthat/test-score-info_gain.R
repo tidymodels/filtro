@@ -40,7 +40,7 @@ test_that("get_scores_info_gain() is working for regression", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_info_gain(is_reg = TRUE)
+  score_obj <- score_info_gain(mode = "regression")
   score_res <- get_scores_info_gain(
     score_obj,
     data = ames_subset,

@@ -59,7 +59,7 @@ in a node that are required for the node to be split further.}
 \item{mode}{A character string indicating the task type. Relevant only for \code{ranger}. One of:
 \itemize{
 \item \code{"regression"}
-\item \code{"classification"}
+\item \code{"classification"} (default)
 }}
 
 \item{seed}{An interger of random seed. Relevant only for \code{ranger}.}

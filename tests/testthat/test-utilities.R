@@ -405,7 +405,7 @@ test_that("bind_scores() is working for aov", {
   )
   score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
 
-  score_obj_info <- score_info_gain(is_reg = TRUE)
+  score_obj_info <- score_info_gain(mode = "regression")
   score_res_info <- get_scores_info_gain(
     score_obj_info,
     data = ames_subset,
@@ -466,7 +466,7 @@ test_that("fill_safe_values() is working for aov", {
   )
   score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
 
-  score_obj_info <- score_info_gain(is_reg = TRUE)
+  score_obj_info <- score_info_gain(mode = "regression")
   score_res_info <- get_scores_info_gain(
     score_obj_info,
     data = ames_subset,

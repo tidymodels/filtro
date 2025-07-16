@@ -21,7 +21,7 @@ new_score_obj_info_gain(
   calculating_fn = function() NULL,
   label = character(0),
   results = data.frame(),
-  is_reg = FALSE
+  mode = "classification"
 )
 }
 \arguments{
@@ -98,7 +98,11 @@ is selected based on the \code{score_type}.}
 \item \code{outcome}: the name of the outcome.
 }}
 
-\item{is_reg}{NULL}
+\item{mode}{A character string indicating the task type. One of:
+\itemize{
+\item \code{"regression"}
+\item \code{"classification"} (default)
+}}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

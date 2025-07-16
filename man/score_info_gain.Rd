@@ -9,7 +9,7 @@ score_info_gain(
   fallback_value = Inf,
   score_type = "infogain",
   direction = "maximize",
-  is_reg = FALSE
+  mode = "classification"
 )
 }
 \arguments{
@@ -37,7 +37,11 @@ One of:
 \item \code{"target"}
 }}
 
-\item{is_reg}{NULL}
+\item{mode}{A character string indicating the task type. One of:
+\itemize{
+\item \code{"regression"}
+\item \code{"classification"} (default)
+}}
 }
 \value{
 A score object containing associated metadata such as \code{range}, \code{fallback_value},

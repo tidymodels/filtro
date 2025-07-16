@@ -28,7 +28,7 @@
 #' in a node that are required for the node to be split further.
 #' @param mode A character string indicating the task type. Relevant only for `ranger`. One of:
 #'  - `"regression"`
-#'  - `"classification"`
+#'  - `"classification"` (default)
 #' @param seed An interger of random seed. Relevant only for `ranger`.
 #'
 #' @returns A score object containing associated metadata such as `range`, `fallback_value`,

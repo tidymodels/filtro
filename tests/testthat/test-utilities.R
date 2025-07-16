@@ -13,7 +13,7 @@ test_that("attach_score() is working for aov", {
 
   expect_equal(ex.score_obj@results, score_res)
 
-  expect_snapshot(print(ex.score_obj@results)) # Add to pass R CMD check
+  expect_snapshot(print(ex.score_obj@results)) # TODO Add to pass R CMD check
 })
 
 test_that("arrange_score() is working for aov", {

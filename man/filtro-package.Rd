@@ -4,14 +4,13 @@
 \name{filtro-package}
 \alias{filtro}
 \alias{filtro-package}
-\title{filtro: Tools for Feature Selection Using Supervised Filter-Based Methods}
+\title{filtro: Feature Selection Using Supervised Filter-Based Methods}
 \description{
-What the package does (one paragraph).
+Tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, and importance scores (Kuhn and Johnson (2019) \doi{10.1201/9781315108230}).
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://tidymodels.github.io/filtro}
   \item \url{https://github.com/tidymodels/filtro}
   \item Report bugs at \url{https://github.com/tidymodels/filtro/issues}
 }

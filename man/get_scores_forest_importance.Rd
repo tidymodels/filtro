@@ -8,15 +8,74 @@ an oblique random forest}
 get_scores_forest_importance(score_obj, data, outcome, ...)
 }
 \arguments{
-\item{score_obj}{NULL}
+\item{score_obj}{A score object. See \code{\link[=score_forest_imp]{score_forest_imp()}} for details.}
 
-\item{data}{NULL}
+\item{data}{A data frame or tibble containing the outcome and predictor variables.}
 
-\item{outcome}{NULL}
+\item{outcome}{A character string specifying the name of the outcome variable.}
 
 \item{...}{NULL}
 }
+\value{
+A tibble of result with one row per predictor, and four columns:
+\itemize{
+\item \code{name}: the name of scoring metric.
+\item \code{score}: the score for the predictor-outcome pair.
+\item \code{predictor}: the name of the predictor.
+\item \code{outcome}: the name of the outcome.
+}
+}
 \description{
-Compute feature importance scores using a random forest, a conditional random forest, or
-an oblique random forest
+Evaluate the relationship between a numeric outcome and a categorical predictor,
+or vice versa, by computing feature importance scores.
+Output a tibble result with with one row per predictor, and four columns:
+\code{name}, \code{score}, \code{predictor}, and \code{outcome}.
+}
+\examples{
+# Return importance score using ranger for classification task
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2
+  )
+score_obj <- score_forest_imp()
+score_res <- get_scores_forest_importance(
+  score_obj,
+  data = cells_subset,
+  outcome = "class"
+)
+# Return importance score using partykit
+score_obj <- score_forest_imp(engine = "partykit")
+score_res <- get_scores_forest_importance(
+  score_obj,
+  data = cells_subset,
+  outcome = "class"
+)
+# Return importance score using aorsf
+score_obj <- score_forest_imp(engine = "aorsf")
+score_res <- get_scores_forest_importance(
+  score_obj,
+  data = cells_subset,
+  outcome = "class"
+)
+# Return importance score using ranger for regression task
+data(ames, package = "modeldata")
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+score_obj <- score_forest_imp(mode = "regression")
+score_res <- get_scores_forest_importance(
+  score_obj,
+  data = ames_subset,
+  outcome = "Sale_Price"
+)
 }

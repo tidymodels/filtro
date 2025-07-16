@@ -1,134 +1,156 @@
-skip()
-
-# TODO Write a helper-* file for repetitive code. Remove comments once confirm that it works.
-
 test_that("attach_score() is working for aov", {
-  skip_if_not_installed("modeldata")
-  data(ames, package = "modeldata")
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  outcome <- "Sale_Price"
-  score_obj = score_aov()
-  score_res <- get_scores_aov(score_obj, data, outcome)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  score_obj <- filtro::score_aov()
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.score_obj <- score_obj |> attach_score(score_res)
 
-  expect_equal(ex.score_obj$score_res, score_res)
+  expect_equal(ex.score_obj@results, score_res)
+
+  expect_snapshot(print(ex.score_obj@results)) # TODO Add to pass R CMD check
 })
 
 test_that("arrange_score() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  # TODO Right now user have to run > 3 lines to re-arrange score.
+  # This is because results is now a propertity in new_score_obj,
+  # and re-running score_aov() clears score_res.
 
-  score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> arrange_score()
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filtro::arrange_score()
 
-  score_obj$direction <- "minimize"
-  ex.min <- score_obj |> arrange_score()
+  score_obj <- filtro::score_aov(direction = "minimize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.min <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filtro::arrange_score()
 
-  score_obj$direction <- "target"
-  ex.target <- score_obj |> arrange_score(target = 63.8)
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.target <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filtro::arrange_score(target = 94.4)
 
-  score_obj$direction <- "target"
-  ex.target2 <- score_obj |> arrange_score(target = 10.4)
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.target2 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filtro::arrange_score(target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::arrange(desc(score)))
 
   expect_equal(ex.min, score_res |> dplyr::arrange(score))
 
-  expect_equal(ex.target, score_res |> dplyr::arrange(abs(score - 63.8)))
+  expect_equal(ex.target, score_res |> dplyr::arrange(abs(score - 94.4)))
 
-  expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 10.4)))
+  expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 22.8)))
 })
 
-test_that("trans_score() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+# test_that("trans_score() is working for aov", {
+#   # skip_if_not_installed("modeldata")
+#   # data(ames, package = "modeldata")
+#   # data <- modeldata::ames |>
+#   #   dplyr::select(
+#   #     Sale_Price,
+#   #     MS_SubClass,
+#   #     MS_Zoning,
+#   #     Lot_Frontage,
+#   #     Lot_Area,
+#   #     Street
+#   #   )
+#   # outcome <- "Sale_Price"
+#   # score_obj = score_aov()
+#   # score_res <- get_scores_aov(score_obj, data, outcome)
+#   # score_obj <- score_obj |> attach_score(score_res)
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+#   score_obj <- ames_score_obj()
+#   score_res <- score_obj$results
 
-  score_obj$trans <- NULL # Default
-  ex.identity <- score_obj |> trans_score()
+#   score_obj$trans <- NULL # Default
+#   ex.identity <- score_obj |> trans_score()
 
-  score_obj$trans <- scales::transform_log()
-  ex.log <- score_obj |> trans_score()
+#   score_obj$trans <- scales::transform_log()
+#   ex.log <- score_obj |> trans_score()
 
-  # TODO Add a couple more scales::transform_*()
+#   # TODO Add a couple more scales::transform_*()
 
-  expect_equal(ex.identity, score_res)
+#   expect_equal(ex.identity, score_res)
 
-  expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
-})
+#   expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
+# })
 
 test_that("filter_score_num() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_num(num_terms = 2)
 
-  score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score_num(num_terms = 2)
+  score_obj <- filtro::score_aov(direction = "minimize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.min <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_num(num_terms = 2)
 
-  score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score_num(num_terms = 2)
-
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target <- score_obj |>
-    filter_score_num(score_obj, num_terms = 2, target = 63.8)
+    filtro::attach_score(results = score_res) |>
+    filter_score_num(num_terms = 2, target = 94.4)
 
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target2 <- score_obj |>
-    filter_score_num(score_obj, num_terms = 2, target = 10.4)
+    filtro::attach_score(results = score_res) |>
+    filter_score_num(num_terms = 2, target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::slice_max(score, n = 2))
 
@@ -137,51 +159,62 @@ test_that("filter_score_num() is working for aov", {
   expect_equal(
     ex.target,
     score_res |>
-      dplyr::arrange(abs(score - 63.8)) |>
+      dplyr::arrange(abs(score - 94.4)) |>
       dplyr::slice_head(n = 2)
   )
 
   expect_equal(
     ex.target2,
     score_res |>
-      dplyr::arrange(abs(score - 10.4)) |>
+      dplyr::arrange(abs(score - 22.8)) |>
       dplyr::slice_head(n = 2)
   )
 })
 
 test_that("filter_score_prop() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_prop(prop_terms = 0.2)
 
-  score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+  score_obj <- filtro::score_aov(direction = "minimize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.min <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_prop(prop_terms = 0.2)
 
-  score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score_prop(prop_terms = 0.2) # TODO Can return NULL for prop = 0.1 if # of predictor is small
-
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target <- score_obj |>
-    filter_score_prop(score_obj, prop_terms = 0.2, target = 63.8) # TODO Can return NULL for prop = 0.1 if # of predictor is small
+    filtro::attach_score(results = score_res) |>
+    filter_score_prop(prop_terms = 0.2, target = 94.4)
 
-  score_obj$direction <- "target"
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
   ex.target2 <- score_obj |>
-    filter_score_prop(score_obj, prop_terms = 0.2, target = 10.4)
+    filtro::attach_score(results = score_res) |>
+    filter_score_prop(prop_terms = 0.2, target = 22.8)
 
   expect_equal(ex.max, score_res |> dplyr::slice_max(score, prop = 0.2))
 
@@ -190,111 +223,141 @@ test_that("filter_score_prop() is working for aov", {
   expect_equal(
     ex.target,
     score_res |>
-      dplyr::arrange(abs(score - 63.8)) |>
+      dplyr::arrange(abs(score - 94.4)) |>
       dplyr::slice_head(prop = 0.2)
   )
 
   expect_equal(
     ex.target2,
     score_res |>
-      dplyr::arrange(abs(score - 10.4)) |>
+      dplyr::arrange(abs(score - 22.8)) |>
       dplyr::slice_head(prop = 0.2)
   )
 })
 
 test_that("filter_score_cutoff() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_cutoff(cutoff = 94.4)
 
-  score_obj$direction <- "maximize" # Default
-  ex.max <- score_obj |> filter_score_cutoff(cutoff = 63.8)
+  score_obj <- filtro::score_aov(direction = "minimize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.min <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_cutoff(cutoff = 94.4)
 
-  score_obj$direction <- "minimize"
-  ex.min <- score_obj |> filter_score_cutoff(cutoff = 63.8)
+  score_obj <- filtro::score_aov(direction = "target")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.target <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_cutoff(target = 94.4, cutoff = 4)
 
-  score_obj$direction <- "target"
-  ex.target <- score_obj |> filter_score_cutoff(target = 63.8, cutoff = 4)
-
-  score_obj$direction <- "target"
-  ex.target2 <- score_obj |> filter_score_cutoff(target = 10.4, cutoff = 1)
+  ex.target2 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_cutoff(target = 22.8, cutoff = 1)
 
   expect_equal(
     ex.max,
-    score_res |> dplyr::filter(score >= 63.8)
+    score_res |> dplyr::filter(score >= 94.4)
   )
 
   expect_equal(
     ex.min,
-    score_res |> dplyr::filter(score <= 63.8)
+    score_res |> dplyr::filter(score <= 94.4)
   )
 
   expect_equal(
     ex.target,
-    score_res |> dplyr::filter(abs(score - 63.8) <= 4)
+    score_res |> dplyr::filter(abs(score - 94.4) <= 4)
   )
 
   expect_equal(
     ex.target2,
-    score_res |> dplyr::filter(abs(score - 10.4) <= 1)
+    score_res |> dplyr::filter(abs(score - 22.8) <= 1)
   )
 })
 
 test_that("filter_score_auto() is working for aov", {
-  # skip_if_not_installed("modeldata")
-  # data(ames, package = "modeldata")
-  # data <- modeldata::ames |>
-  #   dplyr::select(
-  #     Sale_Price,
-  #     MS_SubClass,
-  #     MS_Zoning,
-  #     Lot_Frontage,
-  #     Lot_Area,
-  #     Street
-  #   )
-  # outcome <- "Sale_Price"
-  # score_obj = score_aov()
-  # score_res <- get_scores_aov(score_obj, data, outcome)
-  # score_obj <- score_obj |> attach_score(score_res)
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  score_obj <- ames_score_obj()
-  score_res <- score_obj$score_res
-
-  score_obj$direction <- "maximize"
-  ex.max <- score_obj |> filter_score_auto(num_terms = 2)
-  ex.max2 <- score_obj |> filter_score_auto(num_terms = 2, cutoff = 63.9)
-  ex.max3 <- score_obj |> filter_score_auto(prop_terms = 0.5)
-  ex.max4 <- score_obj |> filter_score_auto(prop_terms = 0.5, cutoff = 63.9)
+  score_obj <- filtro::score_aov(direction = "maximize")
+  score_res <- filtro::get_scores_aov(
+    score_obj,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  ex.max <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(num_terms = 2)
+  ex.max2 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(num_terms = 2, cutoff = 94.6)
+  ex.max3 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(prop_terms = 0.5)
+  ex.max4 <- score_obj |>
+    filtro::attach_score(results = score_res) |>
+    filter_score_auto(prop_terms = 0.5, cutoff = 94.6)
 
   expect_equal(
     ex.max,
-    score_obj |> filter_score_num(num_terms = 2)
+    score_obj |>
+      filtro::attach_score(results = score_res) |>
+      filter_score_num(num_terms = 2)
   )
 
   expect_equal(
     ex.max2,
     {
-      score_obj$score_res <- score_obj |> filter_score_num(num_terms = 2)
-      score_obj |> filter_score_cutoff(cutoff = 63.9)
+      score_res2 <- score_obj |>
+        filtro::attach_score(results = score_res) |>
+        filter_score_num(num_terms = 2)
+      score_obj |>
+        filtro::attach_score(results = score_res2) |>
+        filter_score_cutoff(cutoff = 94.6)
     }
   )
 
-  # TODO Finish the rest
+  expect_equal(
+    ex.max3,
+    score_obj |>
+      filtro::attach_score(results = score_res) |>
+      filter_score_prop(prop_terms = 0.5)
+  )
+
+  expect_equal(
+    ex.max4,
+    {
+      score_res4 <- score_obj |>
+        filtro::attach_score(results = score_res) |>
+        filter_score_prop(prop_terms = 0.5)
+      score_obj |>
+        filtro::attach_score(results = score_res4) |>
+        filter_score_cutoff(cutoff = 94.6)
+    }
+  )
+  # TODO Finish direction = "minimize"
+  # TODO Finish direction = "target"
 })
 
 # TODO Test rank_score_min()
@@ -313,16 +376,122 @@ test_that("filter_score_auto() is working for aov", {
 # score_res %>%
 #   dplyr::mutate(rank = dplyr::dense_rank((score)))
 
-# TODO Test bind_scores()
+test_that("bind_scores() is working for aov", {
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-# TODO Test fill_safe_values()
+  score_obj_aov <- filtro::score_aov()
+  score_res_aov <- filtro::get_scores_aov(
+    score_obj_aov,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_aov <- score_obj_aov |> attach_score(score_res_aov)
 
-# score_set <- score_obj_list |> bind_scores()
-# for (i in 1:length(score_obj_list)) {
-#   method_name <- score_obj_list[[i]]$score_type
-#   fallback_val <- score_obj_list[[i]]$fallback_value
-#   score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
-# }
-# score_set
+  score_obj_cor <- filtro::score_cor()
+  score_res_cor <- filtro::get_scores_cor(
+    score_obj_cor,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
+
+  score_obj_imp <- filtro::score_forest_imp(mode = "regression")
+  score_res_imp <- get_scores_forest_importance(
+    score_obj_imp,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
+
+  score_obj_info <- score_info_gain(mode = "regression")
+  score_res_info <- get_scores_info_gain(
+    score_obj_info,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
+
+  score_obj_list <- list(
+    score_obj_aov,
+    score_obj_cor,
+    score_obj_imp,
+    score_obj_info
+  )
+
+  ex.res <- score_obj_list |> filtro::bind_scores()
+
+  expect_equal(ex.res, {
+    score_set <- score_obj_list[[1]]@results
+    for (i in 2:length(score_obj_list)) {
+      next_results <- score_obj_list[[i]]@results
+      score_set <- dplyr::full_join(
+        score_set,
+        next_results,
+        by = c("name", "score", "outcome", "predictor")
+      )
+    }
+    score_set |>
+      tidyr::pivot_wider(names_from = name, values_from = score)
+  })
+})
+
+test_that("fill_safe_values() is working for aov", {
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  score_obj_aov <- filtro::score_aov()
+  score_res_aov <- filtro::get_scores_aov(
+    score_obj_aov,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_aov <- score_obj_aov |> attach_score(score_res_aov)
+
+  score_obj_cor <- filtro::score_cor()
+  score_res_cor <- filtro::get_scores_cor(
+    score_obj_cor,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
+
+  score_obj_imp <- filtro::score_forest_imp(mode = "regression")
+  score_res_imp <- get_scores_forest_importance(
+    score_obj_imp,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
+
+  score_obj_info <- score_info_gain(mode = "regression")
+  score_res_info <- get_scores_info_gain(
+    score_obj_info,
+    data = ames_subset,
+    outcome = "Sale_Price"
+  )
+  score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
+
+  score_obj_list <- list(
+    score_obj_aov,
+    score_obj_cor,
+    score_obj_imp,
+    score_obj_info
+  )
+
+  ex.res <- score_obj_list |> filtro::fill_safe_values()
+
+  expect_equal(ex.res, {
+    score_set <- score_obj_list |> filtro::bind_scores()
+    for (i in 1:length(score_obj_list)) {
+      method_name <- score_obj_list[[i]]@score_type
+      fallback_val <- score_obj_list[[i]]@fallback_value
+      score_set[[method_name]][is.na(score_set[[method_name]])] <- fallback_val
+    }
+    score_set
+  })
+})
 
 # TODO May need to test for methods other than aov

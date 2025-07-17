@@ -15,17 +15,26 @@ class_score_aov <- S7::new_class(
 #'
 #' @description
 #'
-#' This method is used when either:
+#' These objects are used when either:
 #'
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
 #'
-#' In either case, a linear model (vi [lm()]) is created with the proper
+#' In either case, a linear model (vi [stats::lm()]) is created with the proper
 #' variable roles, and the overall p-value for the hypothesis that all means are
 #' equal is computed via the standard F-statistic. The p-value that is returned
 #' is transformed to be `-log10(p_value)` so that larger values are associated
 #' with more important predictors.
-#' @name score_aov
+#'
+#' `score_aov_pval` and `score_aov_fstat` are objects that define the technique.
+#' To apply the filter on data, you would use the [fit()] method:
+#'
+#' \preformatted{
+#'   fit(score_aov_pval, formula, data)
+#' }
+#'
+#' See the Examples section below.
+#' @name score_aov_pval
 #' @export
 score_aov_pval <-
   class_score_aov(
@@ -42,7 +51,7 @@ score_aov_pval <-
     label = "ANOVA p-values"
   )
 
-#' @name score_aov
+#' @name score_aov_pval
 #' @export
 score_aov_fstat <-
   class_score_aov(
@@ -62,7 +71,7 @@ score_aov_fstat <-
 # ------------------------------------------------------------------------------
 
 #' Compute analysis of variance scores
-# @name fit-aov
+#' @name score_aov_pval
 #' @include class_score.R
 #' @param object A score class object based on `class_score_aov`.
 #' @param formula A standard R formula with a single outcome on the right-hand
@@ -91,12 +100,12 @@ score_aov_fstat <-
 #'
 #'   cell_p_val_res <-
 #'     score_aov_pval |>
-#'     fit_class_score_aov(class ~ ., data = cell_data)
+#'     fit(class ~ ., data = cell_data)
 #'   cell_p_val_res@results
 #'
 #'   cell_t_stat_res <-
 #'     score_aov_fstat |>
-#'     fit_class_score_aov(class ~ ., data = cell_data)
+#'     fit(class ~ ., data = cell_data)
 #'   cell_t_stat_res@results
 #'
 #'   # ----------------------------------------------------------------------------
@@ -114,21 +123,20 @@ score_aov_fstat <-
 #'
 #'   perm_p_val_res <-
 #'     score_aov_pval |>
-#'     fit_class_score_aov(permeability ~ ., data = permeability)
+#'     fit(permeability ~ ., data = permeability)
 #'   perm_p_val_res@results
 #'
-#'   # Note that some failed and are given NA score values. For example:
+#'   # Note that some `lm()` calls failed and are given NA score values. For
+#'   # example:
 #'   table(permeability$chem_fp_0007)
 #'
 #'   perm_t_stat_res <-
 #'     score_aov_fstat |>
-#'     fit_class_score_aov(permeability ~ ., data = permeability)
+#'     fit(permeability ~ ., data = permeability)
 #'   perm_t_stat_res@results
 #' }
-#' @seealso [score_aov_pval], [score_aov_fstat]
 #' @export
-# S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
-fit_class_score_aov <- function(object, formula, data, ...) {
+S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)
   # TODO add case weights
 

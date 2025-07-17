@@ -53,6 +53,8 @@ class_score <- S7::new_class(
 # Methods
 
 # An api mimicking generics::required_pkgs() to return the `packages` property
+#' @noRd
+#' @export
 required_pkgs <- S7::new_generic("required_pkgs", "x")
 
 #' @keywords internal
@@ -63,6 +65,8 @@ S7::method(required_pkgs, class_score) <- function(x, ...) {
 }
 
 # An api mimicking generics::fit() to estimate the statistics
+#' @noRd
+#' @export
 fit <- S7::new_generic("fit", dispatch_args = "object")
 
 

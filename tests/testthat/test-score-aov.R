@@ -16,18 +16,18 @@ test_that("aov computations - class outcome", {
 
   cell_fstat_res <-
     score_aov_fstat |>
-    fit_class_score_aov(class ~ ., data = cell_data)
+    fit(class ~ ., data = cell_data)
 
   cell_pval_res <-
     score_aov_pval |>
-    fit_class_score_aov(class ~ ., data = cell_data)
+    fit(class ~ ., data = cell_data)
 
   natrual_units <- score_aov_pval
   natrual_units@neg_log10 <- FALSE
 
   cell_pval_natrual_res <-
     natrual_units |>
-    fit_class_score_aov(class ~ ., data = cell_data)
+    fit(class ~ ., data = cell_data)
 
   # ----------------------------------------------------------------------------
 
@@ -68,18 +68,18 @@ test_that("aov computations - numeric outcome", {
 
   perm_fstat_res <-
     score_aov_fstat |>
-    fit_class_score_aov(permeability ~ ., data = perm_data)
+    fit(permeability ~ ., data = perm_data)
 
   perm_pval_res <-
     score_aov_pval |>
-    fit_class_score_aov(permeability ~ ., data = perm_data)
+    fit(permeability ~ ., data = perm_data)
 
   natrual_units <- score_aov_pval
   natrual_units@neg_log10 <- FALSE
 
   perm_pval_natrual_res <-
     natrual_units |>
-    fit_class_score_aov(permeability ~ ., data = perm_data)
+    fit(permeability ~ ., data = perm_data)
 
   # ----------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ test_that("aov computations - wrong variable types", {
 
   perm_fstat_res <-
     score_aov_fstat |>
-    fit_class_score_aov(permeability ~ ., data = perm_data)
+    fit(permeability ~ ., data = perm_data)
 
   expect_true(all(is.na(perm_fstat_res@results$score)))
 
@@ -136,7 +136,7 @@ test_that("aov computations - wrong variable types", {
 
   ames_fstat_res <-
     score_aov_fstat |>
-    fit_class_score_aov(Utilities ~ ., data = ames_data)
+    fit(Utilities ~ ., data = ames_data)
 
   expect_true(all(is.na(ames_fstat_res@results$score)))
 
@@ -149,10 +149,14 @@ test_that("aov computations - wrong variable types", {
 
   ames_chr_res <-
     score_aov_fstat |>
-    fit_class_score_aov(Sale_Price ~ ., data = ames_data_chr)
+    fit(Sale_Price ~ ., data = ames_data_chr)
 
   expect_true(all(is.na(ames_chr_res@results$score)))
 
 })
 
+test_that("aov computations - required packages", {
 
+  expect_equal(required_pkgs(score_aov_pval), "filtro")
+
+})

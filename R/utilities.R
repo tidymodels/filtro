@@ -425,3 +425,43 @@ S7::method(fill_safe_values, score_list) <- function(x) {
 # TODO filter_score_*
 # Looking ahead at the example in desiarbility2, I think we'd want
 # predictor, d_fstat, d_pval, d_pearson, d_imp_rf, d_roc_auc, etc, d_all.
+
+
+# ------------------------------------------------------------------------------
+# Used with ANOVA methods
+
+flip_if_needed_aov <- function(predictor, outcome) {
+  if (is.factor(outcome) && is.numeric(predictor)) {
+    list(predictor = outcome, outcome = predictor)
+  } else {
+    list(predictor = predictor, outcome = outcome)
+  }
+}
+
+# ------------------------------------------------------------------------------
+# lightly process entire data setdata
+
+# Add args for data types and filter here?
+process_all_data <- function(f, data) {
+  # Note that model.frame() places the outcome(s) as the first column(s)
+  mod_frame <- stats::model.frame(
+    f,
+    data = data,
+    drop.unused.levels = TRUE,
+    # We can omit data later (if needed) on a one-predictor-at-a-time basis
+    na.action = "na.pass"
+  )
+
+  res <- tibble::as_tibble(mod_frame)
+
+  res
+}
+
+# ------------------------------------------------------------------------------
+# reshape data
+
+named_vec_to_tibble <- function(x, name, outcome) {
+  res <- tibble::enframe(x, name = "predictor", value = "score") |>
+    dplyr::mutate(outcome = outcome, name = name)
+  res[, c("name", "score", "outcome", "predictor")]
+}

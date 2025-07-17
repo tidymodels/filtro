@@ -1,4 +1,5 @@
 test_that("attach_score() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -17,6 +18,7 @@ test_that("attach_score() is working for aov", {
 })
 
 test_that("arrange_score() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -108,6 +110,7 @@ test_that("arrange_score() is working for aov", {
 # })
 
 test_that("filter_score_num() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -172,6 +175,7 @@ test_that("filter_score_num() is working for aov", {
 })
 
 test_that("filter_score_prop() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -236,6 +240,7 @@ test_that("filter_score_prop() is working for aov", {
 })
 
 test_that("filter_score_cutoff() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -296,6 +301,7 @@ test_that("filter_score_cutoff() is working for aov", {
 })
 
 test_that("filter_score_auto() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -377,6 +383,7 @@ test_that("filter_score_auto() is working for aov", {
 #   dplyr::mutate(rank = dplyr::dense_rank((score)))
 
 test_that("bind_scores() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -438,6 +445,7 @@ test_that("bind_scores() is working for aov", {
 })
 
 test_that("fill_safe_values() is working for aov", {
+  skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))

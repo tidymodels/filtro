@@ -1,169 +1,158 @@
-test_that("get_scores_aov() is working for fstat", {
-  skip_if_not_installed("modeldata")
-
-  ames_subset <- helper_ames()
-  score_obj <- score_aov(score_type = "fstat")
-  score_res <- get_scores_aov(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
+test_that("aov object creation", {
+  expect_equal(
+    class(score_aov_fstat),
+    c("filtro::class_score_aov", "filtro::class_score", "S7_object")
   )
 
-  expect_true(tibble::is_tibble(score_res))
-
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
-
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-  expect_equal(unique(score_res$name), "fstat")
-
-  expect_equal(unique(score_res$outcome), "Sale_Price")
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_SubClass)
-  exp.MS_SubClass <- stats::anova(fit)$`F value`[1]
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_Zoning)
-  exp.MS_Zoning <- stats::anova(fit)$`F value`[1]
-
-  exp.Lot_Frontage <- NA
-
-  exp.Lot_Area <- NA
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$Street)
-  exp.Street <- stats::anova(fit)$`F value`[1]
-
-  expect_identical(
-    score_res$score,
-    c(
-      exp.MS_SubClass,
-      exp.MS_Zoning,
-      exp.Lot_Frontage,
-      exp.Lot_Area,
-      exp.Street
-    )
+  expect_equal(
+    class(score_aov_pval),
+    c("filtro::class_score_aov", "filtro::class_score", "S7_object")
   )
 })
 
-test_that("get_scores_aov() is working for -log10(pval)", {
+test_that("aov computations - class outcome", {
   skip_if_not_installed("modeldata")
+  cell_data <- helper_cells()
 
-  ames_subset <- helper_ames()
-  score_obj <- score_aov(score_type = "pval")
-  score_res <- get_scores_aov(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
+  cell_fstat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(class ~ ., data = cell_data)
+
+  cell_pval_res <-
+    score_aov_pval |>
+    fit_class_score_aov(class ~ ., data = cell_data)
+
+  natrual_units <- score_aov_pval
+  natrual_units@neg_log10 <- FALSE
+
+  cell_pval_natrual_res <-
+    natrual_units |>
+    fit_class_score_aov(class ~ ., data = cell_data)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- cell_fstat_res@results$predictor
+  for (i in predictors) {
+    tmp_data <- tibble::tibble(y = cell_data[[i]], x = cell_data$class)
+    fit <- lm(y ~ x, data = tmp_data)
+    fit_aov <- anova(fit)
+
+    fstat <- cell_fstat_res@results[cell_fstat_res@results$predictor == i, ]
+    lg10 <- cell_pval_res@results[cell_fstat_res@results$predictor == i, ]
+    nat <- cell_pval_natrual_res@results[
+      cell_fstat_res@results$predictor == i,
+    ]
+
+    expect_equal(fstat$score, fit_aov[1, "F value"])
+    expect_equal(lg10$score, -log10(fit_aov[1, "Pr(>F)"]))
+    expect_equal(nat$score, fit_aov[1, "Pr(>F)"])
+  }
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(cell_pval_natrual_res@range, c(0.0, 1.0))
+  expect_equal(cell_pval_natrual_res@inclusive, rep(TRUE, 2))
+  expect_equal(cell_pval_natrual_res@fallback_value, .Machine$double.neg.eps)
+  expect_equal(
+    cell_pval_natrual_res@sorts,
+    function(x) x,
+    ignore_function_env = TRUE
   )
-
-  expect_true(tibble::is_tibble(score_res))
-
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
-
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-  expect_equal(unique(score_res$name), "pval")
-
-  expect_equal(unique(score_res$outcome), "Sale_Price")
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_SubClass)
-  exp.MS_SubClass <- -log10(stats::anova(fit)$`Pr(>F)`[1])
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_Zoning)
-  exp.MS_Zoning <- -log10(stats::anova(fit)$`Pr(>F)`[1])
-
-  exp.Lot_Frontage <- NA
-
-  exp.Lot_Area <- NA
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$Street)
-  exp.Street <- -log10(stats::anova(fit)$`Pr(>F)`[1])
-
-  expect_identical(
-    score_res$score,
-    c(
-      exp.MS_SubClass,
-      exp.MS_Zoning,
-      exp.Lot_Frontage,
-      exp.Lot_Area,
-      exp.Street
-    )
-  )
+  expect_equal(cell_pval_natrual_res@direction, "minimize")
 })
 
-test_that("get_scores_aov() is working for pval", {
+
+test_that("aov computations - numeric outcome", {
   skip_if_not_installed("modeldata")
+  perm_data <- helper_perm_factors()
 
-  ames_subset <- helper_ames()
-  score_obj <- score_aov(
-    score_type = "pval",
-    neg_log10 = FALSE,
-    direction = "minimize",
-    fallback_value = 0
+  perm_fstat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(permeability ~ ., data = perm_data)
+
+  perm_pval_res <-
+    score_aov_pval |>
+    fit_class_score_aov(permeability ~ ., data = perm_data)
+
+  natrual_units <- score_aov_pval
+  natrual_units@neg_log10 <- FALSE
+
+  perm_pval_natrual_res <-
+    natrual_units |>
+    fit_class_score_aov(permeability ~ ., data = perm_data)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- perm_fstat_res@results$predictor
+  for (i in predictors) {
+    fstat <- perm_fstat_res@results[perm_fstat_res@results$predictor == i, ]
+    lg10 <- perm_pval_res@results[perm_fstat_res@results$predictor == i, ]
+    nat <- perm_pval_natrual_res@results[perm_fstat_res@results$predictor == i,]
+
+    num_x <- length(unique(perm_data[[i]]))
+    if (num_x == 1) {
+      expect_equal(fstat$score, NA_real_)
+      expect_equal(lg10$score, NA_real_)
+      expect_equal(nat$score, NA_real_)
+    } else {
+      tmp_data <- tibble::tibble(x = perm_data[[i]], y = perm_data$permeability)
+      fit <- lm(y ~ x, data = tmp_data)
+      fit_aov <- anova(fit)
+
+      expect_equal(fstat$score, fit_aov[1, "F value"])
+      expect_equal(lg10$score, -log10(fit_aov[1, "Pr(>F)"]))
+      expect_equal(nat$score, fit_aov[1, "Pr(>F)"])
+    }
+  }
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(perm_pval_natrual_res@range, c(0.0, 1.0))
+  expect_equal(perm_pval_natrual_res@inclusive, rep(TRUE, 2))
+  expect_equal(perm_pval_natrual_res@fallback_value, .Machine$double.neg.eps)
+  expect_equal(
+    perm_pval_natrual_res@sorts,
+    function(x) x,
+    ignore_function_env = TRUE
   )
-  score_res <- get_scores_aov(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
-
-  expect_true(tibble::is_tibble(score_res))
-
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
-
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-  expect_equal(unique(score_res$name), "pval")
-
-  expect_equal(unique(score_res$outcome), "Sale_Price")
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_SubClass)
-  exp.MS_SubClass <- stats::anova(fit)$`Pr(>F)`[1]
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$MS_Zoning)
-  exp.MS_Zoning <- stats::anova(fit)$`Pr(>F)`[1]
-
-  exp.Lot_Frontage <- NA
-
-  exp.Lot_Area <- NA
-
-  fit <- stats::lm(ames_subset$Sale_Price ~ ames_subset$Street)
-  exp.Street <- stats::anova(fit)$`Pr(>F)`[1]
-
-  expect_identical(
-    score_res$score,
-    c(
-      exp.MS_SubClass,
-      exp.MS_Zoning,
-      exp.Lot_Frontage,
-      exp.Lot_Area,
-      exp.Street
-    )
-  )
+  expect_equal(perm_pval_natrual_res@direction, "minimize")
 })
 
-# TODO Test Reversed stats::lm(x ~ y) Can use same data
+test_that("aov computations - wrong variable types", {
+  skip_if_not_installed("modeldata")
 
-# TODO Test more after we add validators
+  perm_data <- helper_perm()
 
-# fallback_value
+  perm_fstat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(permeability ~ ., data = perm_data)
 
-# test_that("score_aov() accepts valid score_type", {
-#   expect_no_error(score_aov(score_type = "fstat"))
-#   expect_no_error(score_aov(score_type = "pval"))
-# })
+  expect_true(all(is.na(perm_fstat_res@results$score)))
 
-# test_that("score_aov() rejects invalid score_type", {
-#   expect_error(score_aov(score_type = "invalid"), "must be one of")
-#   expect_error(score_aov(score_type = ""), "must be one of")
-# })
+  ###
 
-# test_that("score_aov() accepts valid direction", {
-#   expect_no_error(score_aov(direction = "maximize"))
-#   expect_no_error(score_aov(direction = "minimize"))
-#   expect_no_error(score_aov(direction = "target"))
-# })
+  ames_data <- helper_ames_v2() |>
+    dplyr::select(-Lot_Frontage, -Lot_Area, -Sale_Price)
 
-# test_that("score_aov() rejects invalid direction", {
-#   expect_error(score_aov(direction = "invalid"), "must be one of")
-#   expect_error(score_aov(direction = ""), "must be one of")
-# })
+  ames_fstat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(Utilities ~ ., data = ames_data)
+
+  expect_true(all(is.na(ames_fstat_res@results$score)))
+
+  ###
+
+  ames_data_chr <-
+    helper_ames_v2() |>
+    dplyr::select(-Lot_Frontage, -Lot_Area) |>
+    dplyr::mutate(dplyr::across(c(-Sale_Price), as.character))
+
+  ames_chr_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(Sale_Price ~ ., data = ames_data_chr)
+
+  expect_true(all(is.na(ames_chr_res@results$score)))
+
+})
+
+

@@ -2,7 +2,7 @@
 % Please edit documentation in R/score-aov.R
 \name{fit_class_score_aov}
 \alias{fit_class_score_aov}
-\title{Compute ANOVA p-values scores}
+\title{Compute analysis of variance scores}
 \usage{
 fit_class_score_aov(object, formula, data, ...)
 }
@@ -19,5 +19,63 @@ formula.}
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Compute ANOVA p-values scores
+Compute analysis of variance scores
+}
+\details{
+The function will determine which columns are predictors and outcomes in the
+linear model; no user intervention is required.
+
+Missing values are removed for each predictor/outcome combination being
+scored.
+In cases where \code{\link[=lm]{lm()}} or \code{\link[=anova]{anova()}} fail, the scoring proceeds silently, and
+a missing value is given for the score.
+}
+\examples{
+if (rlang::is_installed("modeldata")) {
+
+  # Analysis of variance where `class` is the outcome and the numeric
+  # predictors are the outcomes
+
+  cell_data <- modeldata::cells
+  cell_data$case <- NULL
+
+  cell_p_val_res <-
+    score_aov_pval |>
+    fit_class_score_aov(class ~ ., data = cell_data)
+  cell_p_val_res@results
+
+  cell_t_stat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(class ~ ., data = cell_data)
+  cell_t_stat_res@results
+
+  # ----------------------------------------------------------------------------
+  library(dplyr)
+
+  # Analysis of variance where `class` is the predictor data and the response
+  # is the numeric outcome data
+
+  permeability <-
+    modeldata::permeability_qsar |>
+    # Make the problem a little smaller for time; use 50 predictors
+    select(1:51) |>
+    # Make the binary predictor columns into factors
+    mutate(across(starts_with("chem_fp"), as.factor))
+
+  perm_p_val_res <-
+    score_aov_pval |>
+    fit_class_score_aov(permeability ~ ., data = permeability)
+  perm_p_val_res@results
+
+  # Note that some failed and are given NA score values. For example:
+  table(permeability$chem_fp_0007)
+
+  perm_t_stat_res <-
+    score_aov_fstat |>
+    fit_class_score_aov(permeability ~ ., data = permeability)
+  perm_t_stat_res@results
+}
+}
+\seealso{
+\link{score_aov_pval}, \link{score_aov_fstat}
 }

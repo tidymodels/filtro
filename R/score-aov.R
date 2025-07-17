@@ -1,146 +1,174 @@
-#' Construct a subclassed score object for ANOVA F-test F-statistics and p-values with additional metadata
-#'
-#' Introduce a new properties `neg_log10`.
-#' Output a new score object that contains associated metadata, such as `range`,
-#' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
-#'
-#' @inheritParams new_score_obj
-#'
-#' @param fallback_value A numeric scalar used as a fallback value. One of:
-#'    - `0`
-#'   - `Inf` (default)
-#'
-#' For F-statistics, the `fallback_value` is `"Inf"`. For p-values,
-#' since the default applies a negative log10 transformation to p-values,
-#' the `fallback_value` is `"Inf"`.
-#'
-#' @param score_type A character string indicating the type of scoring metric to compute.
-#' One of:
-#'    - `"fstat"` (default)
-#'    - `"pval"`
-#' @param direction A character string indicating the optimization direction. One of:
-#'  - `"maximize"` (default)
-#'  - `"minimize"`
-#'  - `"target"`
-#'
-#' For F-statistics, the `direction` is `"maximize"`. For p-values,
-#' since the default applies a negative log10 transformation to p-values,
-#' the `direction` is `"maximize"`.
-#'
-#' @param neg_log10 A logical value indicating whether to apply a negative log10
-#' transformation to p-values. One of:
-#'  - `TRUE` (default)
-#'  - `FALSE`
-#'
-#'  If `TRUE`, p-values are transformed as `-log10(pval)`. In this case:
-#'  - The `fallback_value` is `Inf` (default)
-#'  - The `direction` is `"maximize"` (default)
-#'
-#'  If `FALSE`, raw p-values are used. In this case:
-#'  - The `fallback_value` needs to be set to `0`
-#'  - The `direction` needs to be set to `"minimize"`
-#'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type`, `direction`, and other relevant attributes.
+#' @rdname class_score
+#' @include class_score.R
+#' @keywords internal
 #' @export
-#'
-#' @examples
-#' # Create a score object
-#' new_score_obj_aov()
-new_score_obj_aov <- S7::new_class(
-  "new_score_obj_aov",
-  parent = new_score_obj,
+class_score_aov <- S7::new_class(
+  "class_score_aov",
+  parent = class_score,
   properties = list(
+    # Represent the score as -log10(p_value)?
     neg_log10 = S7::new_property(S7::class_logical, default = TRUE)
   )
 )
 
-#' Create a score object for ANOVA F-test F-statistics and p-values
+#' Scoring via analysis of variance hypothesis tests
 #'
-#' Construct a score object containing metadata for univariate feature scoring using the
-#' ANOVA F-test.
-#' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"fstat"` or `"pval"`), `direction`, and other relevant attributes.
+#' @description
 #'
-#' @inheritParams new_score_obj_aov
+#' This method is used when either:
 #'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"fstat"` or `"pval"`), `direction`, and other relevant attributes.
+#' - The predictors are numeric and the outcome is a factor/category, or
+#' - The predictors are factors and the outcome is numeric.
 #'
-#' @export
+#' In either case, a linear model (vi [lm()]) is created with the proper
+#' variable roles, and the overall p-value for the hypothesis that all means are
+#' equal is computed via the standard F-statistic. The p-value that is returned
+#' is transformed to be `-log10(p_value)` so that larger values are associated
+#' with more important predictors.
+#' @details
+#' The function will determine which columns are predictors and outcomes in the
+#' linear model; no user intervention is required.
+#'
+#' Missing values are removed for each predictor/outcome combination being
+#' scored.
+#' In cases where [lm()] or [anova()] fail, the scoring proceeds silently, and
+#' a missing value is given for the score.
 #'
 #' @examples
-#' # Create a score object
-#' score_aov()
-#' # Change score type to use -log10(p-values)
-#' score_aov(score_type = "pval")
-#' # Change score type to use raw p-values
-#' score_aov(
-#'   score_type = "pval",
-#'   neg_log10 = FALSE,
-#'   direction = "minimize",
-#'   fallback_value = 0
-#' )
-score_aov <- function(
-  range = c(0, Inf),
-  fallback_value = Inf,
-  score_type = "fstat",
-  direction = "maximize",
-  neg_log10 = TRUE
-) {
-  new_score_obj_aov(
+#' if (rlang::is_installed("modeldata")) {
+#'
+#'   # Analysis of variance where `class` is the outcome and the numeric
+#'   # predictors are the outcomes
+#'
+#'   cell_data <- modeldata::cells
+#'   cell_data$case <- NULL
+#'
+#'   cell_p_val_res <-
+#'     score_aov_pval |>
+#'     fit_class_score_aov(class ~ ., data = cell_data)
+#'   cell_p_val_res@results
+#'
+#'   cell_t_stat_res <-
+#'     score_aov_fstat |>
+#'     fit_class_score_aov(class ~ ., data = cell_data)
+#'   cell_t_stat_res@results
+#'
+#'   # ----------------------------------------------------------------------------
+#'   library(dplyr)
+#'
+#'   # Analysis of variance where `class` is the predictor data and the response
+#'   # is the numeric outcome data
+#'
+#'   permeability <-
+#'     modeldata::permeability_qsar |>
+#'     # Make the problem a little smaller for time; use 50 predictors
+#'     select(1:51) |>
+#'     # Make the binary predictor columns into factors
+#'     mutate(across(starts_with("chem_fp"), as.factor))
+#'
+#'   perm_p_val_res <-
+#'     score_aov_pval |>
+#'     fit_class_score_aov(permeability ~ ., data = permeability)
+#'   perm_p_val_res@results
+#'
+#'   # Note that some failed and are given NA score values. For example:
+#'   table(permeability$chem_fp_0007)
+#'
+#'   perm_t_stat_res <-
+#'     score_aov_fstat |>
+#'     fit_class_score_aov(permeability ~ ., data = permeability)
+#'   perm_t_stat_res@results
+#' }
+#' @name score_aov
+#' @export
+score_aov_pval <-
+  class_score_aov(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = range,
-    inclusive = c(TRUE, TRUE),
-    fallback_value = fallback_value,
-    score_type = score_type,
-    #trans = # Cannot set NULL. Otherwise S7 complains
-    #sorts =
-    direction = direction,
+    case_weights = TRUE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "aov_pval",
+    direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
-    #ties =
-    calculating_fn = function(x) {}, # Otherwise S7 complains
-    neg_log10 = neg_log10,
-    label = c(score_aov = "ANOVA F-test F-statistics and p-values")
+    label = "ANOVA p-values"
   )
-}
 
-flip_if_needed_aov <- function(predictor, outcome) {
-  # TODO Move to utilities.R
-  if (is.factor(outcome) && is.numeric(predictor)) {
-    list(predictor = outcome, outcome = predictor)
-  } else {
-    list(predictor = predictor, outcome = outcome)
+#' @name score_aov
+#' @export
+score_aov_fstat <-
+  class_score_aov(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = TRUE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "aov_fstat",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "ANOVA F-statistics"
+  )
+
+# ------------------------------------------------------------------------------
+
+#' Compute ANOVA p-values scores
+# @name fit-aov
+#' @include class_score.R
+#' @param object A score class object based on `class_score_aov`.
+#' @param formula A standard R formula with a single outcome on the right-hand
+#' side and one or more predictors (or `.`) on the left-hand side. The data are
+#' processed via [stats::model.frame()].
+#' @param data A data frame containing the relevant columns defined by the
+#' formula.
+#' @param ... Further arguments passed to or from other methods.
+#' @export
+# S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
+fit_class_score_aov <- function(object, formula, data, ...) {
+  analysis_data <- process_all_data(formula, data = data)
+
+  # Note that model.frame() places the outcome(s) as the first column(s)
+  predictors <- names(analysis_data)[-1]
+  outcome <- names(analysis_data)[1]
+
+  use_pval <- object@score_type == "aov_pval"
+  score <- purrr::map_dbl(
+    purrr::set_names(predictors),
+    \(x) {
+      map_score_aov(
+        analysis_data,
+        predictor = x,
+        outcome = outcome,
+        pval = use_pval
+      )
+    }
+  )
+  res <- named_vec_to_tibble(score, object@score_type, outcome)
+
+  if (use_pval) {
+    if (object@neg_log10) {
+      res$score <- -log10(res$score)
+    } else {
+      object@range <- c(0.0, 1.0)
+      object@fallback <- .Machine$double.neg.eps
+      object@sorts <- function(x) x
+      object@direction <- "minimize"
+    }
   }
+
+  object@results <- res
+  object
 }
 
-get_single_f_stat <- function(predictor, outcome) {
-  flipped <- flip_if_needed_aov(predictor, outcome)
-  outcome <- flipped$outcome
-  predictor <- flipped$predictor
-
-  fit <- stats::lm(outcome ~ predictor)
-  res <- stats::anova(fit)$`F value`[1] # summary(fit)$fstatistic[1] |> as.numeric()
-  return(res)
-}
-
-get_single_p_val <- function(predictor, outcome) {
-  flipped <- flip_if_needed_aov(predictor, outcome)
-  outcome <- flipped$outcome
-  predictor <- flipped$predictor
-
-  fit <- stats::lm(outcome ~ predictor)
-  res <- stats::anova(fit)$`Pr(>F)`[1]
-  return(res)
-}
-
-map_score_aov <- function(data, predictor, outcome, calculating_fn) {
+map_score_aov <- function(data, predictor, outcome, pval) {
   predictor_col <- data[[predictor]]
   outcome_col <- data[[outcome]]
 
+  # TODO Add general logic for these checks in process_all_data() and use when
+  # that function is first called
   if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
     return(NA_real_)
   }
@@ -149,111 +177,35 @@ map_score_aov <- function(data, predictor, outcome, calculating_fn) {
     return(NA_real_)
   }
 
-  res <- calculating_fn(predictor_col, outcome_col)
+  res <- get_single_aov(predictor_col, outcome_col, pval)
   res
 }
 
-make_scores_aov <- function(score_type, score, outcome, predictors) {
-  res <- tibble::tibble(
-    name = score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = predictors
+get_single_aov <- function(predictor, outcome, pval = TRUE) {
+  flipped <- flip_if_needed_aov(predictor, outcome)
+  outcome <- flipped$outcome
+  predictor <- flipped$predictor
+  df <- tibble::tibble(outcome = outcome, predictor = predictor)
+
+  fit <- try(
+    stats::lm(outcome ~ predictor, data = df, na.action = "na.omit"),
+    silent = TRUE
   )
-  res
-}
-
-#' Compute F-statistic and p-value scores using ANOVA F-test
-#'
-#' Evaluate the relationship between a numeric outcome and a categorical predictor,
-#' or vice versa, by computing the ANOVA F-statistic or p-value.
-#' Output a tibble result with with one row per predictor, and four columns:
-#' `name`, `score`, `predictor`, and `outcome`.
-#'
-#' @param score_obj A score object. See [score_aov()] for details.
-#'
-#' @param data A data frame or tibble containing the outcome and predictor variables.
-#' @param outcome A character string specifying the name of the outcome variable.
-#' @param ... NULL
-#'
-#' @return A tibble of result with one row per predictor, and four columns:
-#' - `name`: the name of scoring metric.
-#' - `score`: the score for the predictor-outcome pair.
-#' - `predictor`: the name of the predictor.
-#' - `outcome`: the name of the outcome.
-#'
-#' @export
-#'
-#' @examples
-#' data(ames, package = "modeldata")
-#' ames_subset <- modeldata::ames |>
-#'   dplyr::select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
-#' # Return score as F-statistics
-#' score_obj <- score_aov()
-#' score_res <- get_scores_aov(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-#' score_res
-#' # Return score as p-values
-#' score_obj <- score_aov(score_type = "pval")
-#' score_res <- get_scores_aov(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-#' score_res
-#' # Return raw p-values instead of -log10(p-values)
-#' score_obj <- score_aov(
-#'   score_type = "pval",
-#'   neg_log10 = FALSE,
-#'   direction = "minimize",
-#'   fallback_value = 0
-#' )
-#' score_res <- get_scores_aov(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-#' score_res
-get_scores_aov <- function(score_obj, data, outcome, ...) {
-  if (score_obj@score_type == "fstat") {
-    score_obj@calculating_fn <- get_single_f_stat
-  } else if (score_obj@score_type == "pval") {
-    score_obj@calculating_fn <- get_single_p_val
+  if (inherits(fit, "try-error")) {
+    res <- NA_real_
+  } else {
+    res <- try(stats::anova(fit), silent = TRUE)
+    if (inherits(res, "try-error")) {
+      res <- NA_real_
+    } else {
+      if (pval) {
+        res <- res$`Pr(>F)`[1]
+      } else {
+        res <- res$`F value`[1]
+      }
+    }
   }
 
-  predictors <- setdiff(names(data), outcome)
-
-  score <- purrr::map_dbl(
-    purrr::set_names(predictors),
-    \(x) map_score_aov(data, x, outcome, score_obj@calculating_fn)
-  )
-
-  # Do we need score <- stats::p.adjust(score) here too?
-
-  if (
-    score_obj@score_type == "pval" &&
-      (is.null(score_obj@neg_log10) || isTRUE(score_obj@neg_log10))
-  ) {
-    score <- -log10(score)
-  }
-
-  res <- make_scores_aov(
-    score_obj@score_type,
-    score,
-    outcome,
-    predictors
-  )
-  res
-  # score_obj@score_res <- res # TODO Is there any advange using score_obj@results <- here?
-  # score_obj
+  return(res)
 }
+

@@ -1,11 +1,9 @@
-# Either move this file to the desirability2 package and rename it to 'test-filtro.R',
-# or keep it in the current location with the same filename.
-
+# TODO Write these informal tests as formal tests after S7 refactor
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-score_obj_aov <- filtro::score_aov()
+score_obj_aov <- filtro::score_aov(score_type = "pval")
 score_res_aov <- filtro::get_scores_aov(
   score_obj_aov,
   data = ames_subset,
@@ -44,21 +42,60 @@ score_obj_list <- list(
   score_obj_info
 )
 
-mtr <- score_obj_list |> filtro::fill_safe_values()
-mtr <- mtr |> # TODO Do not include outcome in @results from the very beginning
-  dplyr::select(-outcome)
+scores_combined <- score_obj_list |> filtro::fill_safe_values()
+scores_combined <- scores_combined |> dplyr::select(-outcome) # TODO Remove this after removing outcome from score-*.R
 
-#pak::pak("tidymodels/desirability2")
-library(desirability2)
+# Default prop_terms = 0.99 in order to compare item_selected()
+prop_selected(scores_combined, maximize(pval))
 
-all_vars <- names(mtr)
-
-desirability2::desirability(maximize(fstat))
-
-res <- desirability2::desirability(
-  maximize(fstat),
-  maximize(pearson),
-  .use_data = TRUE
+prop_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1)
 )
 
-d_vars <- sort(unique(unlist(res@variables)))
+prop_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+# Would suggest keeping num_selected() just for reference. Plus, prop_selected() and num_selected()
+# only differ in the argument n = vs, prop = in dplyr::slice_max()
+num_selected(scores_combined, maximize(pval))
+
+num_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1)
+)
+
+num_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+num_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
+
+num_selected(
+  scores_combined,
+  num_terms = 2,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain),
+)
+
+num_selected(
+  scores_combined,
+  maximize(pearson)
+)

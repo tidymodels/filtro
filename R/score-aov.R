@@ -130,6 +130,7 @@ score_aov_fstat <-
 # S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
 fit_class_score_aov <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)
+  # TODO add case weights
 
   # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
@@ -154,7 +155,8 @@ fit_class_score_aov <- function(object, formula, data, ...) {
       res$score <- -log10(res$score)
     } else {
       object@range <- c(0.0, 1.0)
-      object@fallback <- .Machine$double.neg.eps
+      object@inclusive <- rep(TRUE, 2)
+      object@fallback_value <- .Machine$double.neg.eps
       object@sorts <- function(x) x
       object@direction <- "minimize"
     }

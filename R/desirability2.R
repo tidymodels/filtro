@@ -1,15 +1,8 @@
-# TODO Where do I put this? How I do document this?
-if (!rlang::is_installed("desirability2")) {
-  pak::pak("tidymodels/desirability2")
-}
-library(desirability2)
-
 # Adapted from show_best_desirability() in desirability2's tune.R
 # TODO Document this
 prop_selected <- function(x, ..., prop_terms = 0.99, eval_time = NULL) {
   mtr <- x
   all_vars <- names(mtr)
-  # TODO filter on eval_time
 
   res <- desirability2::desirability(..., .use_data = TRUE)
 

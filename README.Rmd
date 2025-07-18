@@ -33,13 +33,14 @@ The package offers tools to score, rank, and select top features using built-in 
 You can install the released version of filtro from [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# FILL THIS IN! 
+install.packages("filtro")
 ```
 
-You can install the development version from Github with:
+Install the development version from GitHub with:
 
 ``` r
-# FILL THIS IN! 
+# install.packages("pak")
+pak::pak("tidymodels/filtro")
 ```
 
 ## A scoring example

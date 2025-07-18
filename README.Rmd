@@ -39,7 +39,7 @@ This project is released with a [Contributor Code of Conduct](https://contributo
 
 - For questions and discussions about tidymodels packages, modeling, and machine learning, [join us on RStudio Community](https://forum.posit.co/new-topic?category_id=15&tags=tidymodels,question).
 
-- If you think you have encountered a bug, please [submit an issue](https://github.com/tidymodels/themis/issues).
+- If you think you have encountered a bug, please [submit an issue](https://github.com/tidymodels/filtro/issues).
 
 - Either way, learn how to create and share a [reprex](https://reprex.tidyverse.org/articles/articles/learn-reprex.html) (a minimal, reproducible example), to clearly communicate about your code.
 

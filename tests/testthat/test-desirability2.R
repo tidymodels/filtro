@@ -47,6 +47,7 @@ score_obj_list <- list(
 scores_combined <- score_obj_list |> filtro::fill_safe_values()
 scores_combined <- scores_combined |> dplyr::select(-outcome) # TODO Remove this after removing outcome from score-*.R
 
+# prop_selected
 # Default prop_terms = 0.99 in order to compare item_selected()
 prop_selected(scores_combined, maximize(pval))
 
@@ -63,8 +64,7 @@ prop_selected(
   maximize(imp_rf)
 )
 
-# Would suggest keeping num_selected() just for reference. Plus, prop_selected() and num_selected()
-# only differ in the argument n = vs, prop = in dplyr::slice_max()
+# num_selected
 num_selected(scores_combined, maximize(pval))
 
 num_selected(
@@ -100,4 +100,61 @@ num_selected(
 num_selected(
   scores_combined,
   maximize(pearson)
+)
+
+# cutoff_selected
+cutoff_selected(scores_combined, maximize(pval))
+
+cutoff_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1)
+)
+
+cutoff_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+# dual_selected()
+dual_selected(scores_combined, maximize(pval))
+
+dual_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1)
+)
+
+dual_selected(
+  scores_combined,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+dual_selected(
+  scores_combined,
+  cutoff = 0.274,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+dual_selected(
+  scores_combined,
+  prop_terms = 0.5,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+dual_selected(
+  scores_combined,
+  prop_terms = 0.5,
+  cutoff = 0.274,
+  maximize(pval),
+  maximize(pearson, low = 0, high = 1),
+  maximize(imp_rf)
 )

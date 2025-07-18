@@ -34,7 +34,9 @@ tidymodels workflows such as the
 Install the released version of filtro from
 [CRAN](https://CRAN.R-project.org) with:
 
-    NOT YET!
+``` r
+library(filtro)
+```
 
 Install the development version from GitHub with:
 

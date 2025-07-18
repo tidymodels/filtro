@@ -41,8 +41,8 @@ workflows such as the [recipes](https://recipes.tidymodels.org) package.
 
 Install the released version of filtro from [CRAN](https://CRAN.R-project.org) with:
 
-```
-NOT YET!
+``` r
+install.packages("filtro")
 ```
 
 Install the development version from GitHub with:

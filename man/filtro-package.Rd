@@ -12,6 +12,7 @@ Tidy tools to apply filter-based supervised feature selection methods. These met
 Useful links:
 \itemize{
   \item \url{https://github.com/tidymodels/filtro}
+  \item \url{https://filtro.tidymodels.org/}
   \item Report bugs at \url{https://github.com/tidymodels/filtro/issues}
 }
 
@@ -21,7 +22,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Max Kuhn \email{max@posit.co}
+  \item Max Kuhn \email{max@posit.co} (\href{https://orcid.org/0000-0003-2402-136X}{ORCID})
   \item Emil Hvitfeldt \email{emil.hvitfeldt@posit.co}
 }
 

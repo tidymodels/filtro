@@ -21,6 +21,7 @@ Depends:
     R (>= 4.1)
 Imports: 
     cli,
+    desirability2 (>= 0.0.1.9000),
     dplyr,
     pROC,
     purrr,
@@ -38,6 +39,8 @@ Suggests:
     ranger,
     testthat (>= 3.0.0),
     titanic
+Remotes:
+    tidymodels/desirability2
 Config/Needs/website: tidyverse/tidytemplate
 Config/testthat/edition: 3
 Encoding: UTF-8

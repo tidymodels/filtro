@@ -68,5 +68,3 @@ S7::method(required_pkgs, class_score) <- function(x, ...) {
 #' @noRd
 #' @export
 fit <- S7::new_generic("fit", dispatch_args = "object")
-
-

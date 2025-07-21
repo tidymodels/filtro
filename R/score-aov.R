@@ -219,4 +219,3 @@ get_single_aov <- function(predictor, outcome, pval = TRUE) {
 
   return(res)
 }
-

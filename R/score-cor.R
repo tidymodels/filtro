@@ -1,3 +1,67 @@
+#' @rdname class_score
+#' @include class_score.R
+#' @keywords internal
+#' @export
+class_score_cor <- S7::new_class(
+  "class_score_cor",
+  parent = class_score
+)
+
+#' Scoring via correlation coefficient
+#'
+#' @description
+#'
+#' These objects are used when:
+#'
+#' - The predictors are numeric and the outcome is numeric.
+#'
+#' In this case, a correlation coefficient (via [stats::cor()]) is computed with the proper
+#' variable roles.
+#'
+#' `score_cor_pearson` and `score_cor_spearman` are objects that define the technique.
+#' To apply the filter on data, you would use the [fit()] method:
+#'
+#' \preformatted{
+#'   fit(score_cor_pearson, formula, data)
+#' }
+#'
+#' See the Examples section below.
+#' @name score_cor_pearson
+#' @export
+score_cor_pearson <-
+  class_score_cor(
+    outcome_type = "numeric",
+    predictor_type = "numeric",
+    case_weights = FALSE,
+    range = c(-1, 1),
+    inclusive = c(TRUE, TRUE),
+    fallback_value = 1,
+    score_type = "cor_pearson",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Pearson correlation coefficient"
+  )
+
+#' @name score_cor_spearman
+#' @export
+score_cor_spearman <-
+  class_score_cor(
+    outcome_type = "numeric",
+    predictor_type = "numeric",
+    case_weights = FALSE,
+    range = c(-1, 1),
+    inclusive = c(TRUE, TRUE),
+    fallback_value = 1,
+    score_type = "cor_spearman",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Spearman's rank correlation coefficient"
+  )
+
+# ------------------------------------------------------------------------------
+
 #' Create a score object for correlation coefficients
 #'
 #' Construct a score object containing metadata for univariate feature scoring using the

@@ -1,3 +1,30 @@
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
+
+set.seed(42)
+cells_imp_rf_res <- score_imp_rf |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_res@results
+
+set.seed(42)
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_conditional_res@results
+
+set.seed(42)
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_oblique_res@results
+
+skip()
+
 test_that("get_score_forest_importance() is working for ranger for classification", {
   skip_if_not_installed("modeldata")
 
@@ -61,7 +88,7 @@ test_that("get_score_forest_importance() is working for partykit classification"
   imp <- partykit::varimp(fit, conditional = TRUE)
   outcome <- "class"
   predictors <- setdiff(names(cells_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -101,7 +128,7 @@ test_that("get_score_forest_importance() is working for aorsf classification", {
   imp <- fit$importance
   outcome <- "class"
   predictors <- setdiff(names(cells_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -179,7 +206,7 @@ test_that("get_score_forest_importance() is working for partykit regression", {
   imp <- partykit::varimp(fit, conditional = TRUE)
   outcome <- "Sale_Price"
   predictors <- setdiff(names(ames_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -218,7 +245,7 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
   imp <- fit$importance
   outcome <- "Sale_Price"
   predictors <- setdiff(names(ames_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))

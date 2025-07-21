@@ -43,7 +43,7 @@ score_cor_pearson <-
     label = "Pearson correlation coefficient"
   )
 
-#' @name score_cor_spearman
+#' @name score_cor_pearson
 #' @export
 score_cor_spearman <-
   class_score_cor(

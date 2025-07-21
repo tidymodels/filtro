@@ -62,68 +62,69 @@ score_cor_spearman <-
 
 # ------------------------------------------------------------------------------
 
-#' Create a score object for correlation coefficients
+#' Compute correlation coefficients
+#' @name score_cor_pearson
+#' @include class_score.R
+#' @param object A score class object based on `class_score_cor`.
+#' @param formula A standard R formula with a single outcome on the right-hand
+#' side and one or more predictors (or `.`) on the left-hand side. The data are
+#' processed via [stats::model.frame()].
+#' @param data A data frame containing the relevant columns defined by the
+#' formula.
+#' @param ... Further arguments passed to or from other methods.
+#' @details
+#' The function will determine which columns are predictors and outcomes and
+#' compute correlations; no user intervention is required.
 #'
-#' Construct a score object containing metadata for univariate feature scoring using the
-#' correlation coefficients.
-#' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"pearson"` or `"spearman"`), `direction`, and other relevant attributes.
-#'
-#' @inheritParams new_score_obj
-#' @param fallback_value A numeric scalar used as a fallback value. One of:
-#'    - `1` (default)
-#' @param score_type A character string indicating the type of scoring metric to compute.
-#' One of:
-#'    - `"pearson"` (default)
-#'    - `"spearman"`
-#' @param direction A character string indicating the optimization direction. One of:
-#'  - `"maximize"` (default)
-#'  - `"minimize"`
-#'  - `"target"`
-#'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"pearson"` or `"spearman"`), `direction`, and other relevant attributes.
-#'
-#' @export
+#' Missing values are removed for each predictor/outcome combination being
+#' scored.
+#' In cases where [cor()] fail, the scoring proceeds silently, and
+#' a missing value is given for the score.
 #'
 #' @examples
-#' # Create a score object
-#' score_cor()
-#' # Change score type
-#' score_cor(score_type = "spearman")
-score_cor <- function(
-  range = c(-1, 1),
-  fallback_value = 1,
-  score_type = "pearson",
-  direction = "maximize"
-) {
-  new_score_obj(
-    outcome_type = "numeric",
-    predictor_type = "numeric",
-    case_weights = FALSE,
-    range = range,
-    inclusive = c(TRUE, TRUE),
-    fallback_value = fallback_value,
-    score_type = score_type,
-    #trans = # Cannot set NULL. Otherwise S7 complains
-    #sorts =
-    direction = direction,
-    deterministic = TRUE,
-    tuning = FALSE,
-    #ties =
-    calculating_fn = function(x) {}, # Otherwise S7 complains
-    label = c(score_cor = "Correlation scores")
+#' if (rlang::is_installed("modeldata")) {
+#'
+#'   library(dplyr)
+#'
+#'   ames_subset <- modeldata::ames |>
+#'     select(
+#'       Sale_Price,
+#'       MS_SubClass,
+#'       MS_Zoning,
+#'       Lot_Frontage,
+#'       Lot_Area,
+#'       Street
+#'     )
+#'
+#'   ames_cor_pearson_res <-
+#'     score_cor_pearson |>
+#'     fit(Sale_Price ~ ., data = ames_subset)
+#'   ames_cor_pearson_res@results
+#'
+#'   ames_cor_spearman_res <-
+#'     score_cor_spearman |>
+#'     fit(Sale_Price ~ ., data = ames_subset)
+#'   ames_cor_spearman_res@results
+#' }
+#' @export
+S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
+  analysis_data <- process_all_data(formula, data = data)
+  predictors <- names(analysis_data)[-1]
+  outcome <- names(analysis_data)[1]
+
+  if (object@score_type == "cor_pearson") {
+    object@calculating_fn <- get_single_pearson
+  } else if (object@score_type == "cor_spearman") {
+    object@calculating_fn <- get_single_spearman
+  }
+  score <- purrr::map_dbl(
+    purrr::set_names(predictors),
+    \(x) map_score_cor(data, x, outcome, object@calculating_fn)
   )
-}
+  res <- named_vec_to_tibble(score, object@score_type, outcome)
 
-get_single_pearson <- function(predictor, outcome) {
-  res <- stats::cor(predictor, outcome, method = "pearson")
-  return(res)
-}
-
-get_single_spearman <- function(predictor, outcome) {
-  res <- stats::cor(predictor, outcome, method = "spearman")
-  return(res)
+  object@results <- res
+  object
 }
 
 map_score_cor <- function(data, predictor, outcome, calculating_fn) {
@@ -138,76 +139,12 @@ map_score_cor <- function(data, predictor, outcome, calculating_fn) {
   res
 }
 
-make_scores_cor <- function(score_type, score, outcome, predictors) {
-  res <- tibble::tibble(
-    name = score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = predictors
-  )
-  res
+get_single_pearson <- function(predictor, outcome) {
+  res <- stats::cor(predictor, outcome, method = "pearson")
+  return(res)
 }
 
-#' Compute Pearson or Spearman correlation coefficients
-#'
-#' Evaluate the relationship between a numeric outcome and a numeric predictor,
-#' by computing the Pearson or Spearman correlation coefficients.
-#' Output a tibble result with with one row per predictor, and four columns:
-#' `name`, `score`, `predictor`, and `outcome`.
-#'
-#' @param score_obj A score object. See [score_cor()] for details.
-#'
-#' @param data A data frame or tibble containing the outcome and predictor variables.
-#' @param outcome A character string specifying the name of the outcome variable.
-#'
-#' @return A tibble of result with one row per predictor, and four columns:
-#' - `name`: the name of scoring metric.
-#' - `score`: the score for the predictor-outcome pair.
-#' - `predictor`: the name of the predictor.
-#' - `outcome`: the name of the outcome.
-#'
-#' @export
-#'
-#' @examples
-#' data(ames, package = "modeldata")
-#' ames_subset <- modeldata::ames |>
-#'   dplyr::select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
-#' # Return score as pearson correlation
-#' score_obj <- score_cor()
-#' score_res <- get_scores_cor(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-#' score_res
-#' # Return score as spearman correlation
-#' score_obj <- score_cor(score_type = "spearman")
-#' score_res <- get_scores_cor(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-#' score_res
-get_scores_cor <- function(score_obj, data, outcome) {
-  if (score_obj@score_type == "pearson") {
-    score_obj@calculating_fn <- get_single_pearson
-  } else if (score_obj@score_type == "spearman") {
-    score_obj@calculating_fn <- get_single_spearman
-  }
-  predictors <- setdiff(names(data), outcome)
-
-  score <- purrr::map_dbl(
-    purrr::set_names(predictors),
-    \(x) map_score_cor(data, x, outcome, score_obj@calculating_fn)
-  )
-
-  res <- make_scores_cor(score_obj@score_type, score, outcome, predictors)
-  res
+get_single_spearman <- function(predictor, outcome) {
+  res <- stats::cor(predictor, outcome, method = "spearman")
+  return(res)
 }

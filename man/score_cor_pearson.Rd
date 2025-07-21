@@ -15,6 +15,18 @@ score_cor_pearson
 
 score_cor_spearman
 }
+\arguments{
+\item{object}{A score class object based on \code{class_score_cor}.}
+
+\item{formula}{A standard R formula with a single outcome on the right-hand
+side and one or more predictors (or \code{.}) on the left-hand side. The data are
+processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
+
+\item{data}{A data frame containing the relevant columns defined by the
+formula.}
+
+\item{...}{Further arguments passed to or from other methods.}
+}
 \description{
 These objects are used when:
 \itemize{
@@ -32,5 +44,40 @@ To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
 }
 
 See the Examples section below.
+}
+\details{
+The function will determine which columns are predictors and outcomes and
+compute correlations; no user intervention is required.
+
+Missing values are removed for each predictor/outcome combination being
+scored.
+In cases where \code{\link[=cor]{cor()}} fail, the scoring proceeds silently, and
+a missing value is given for the score.
+}
+\examples{
+if (rlang::is_installed("modeldata")) {
+
+  library(dplyr)
+
+  ames_subset <- modeldata::ames |>
+    select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+
+  ames_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_cor_pearson_res@results
+
+  ames_cor_spearman_res <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_cor_spearman_res@results
+}
 }
 \keyword{datasets}

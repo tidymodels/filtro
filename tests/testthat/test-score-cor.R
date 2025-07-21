@@ -1,3 +1,27 @@
+ames_subset <- helper_ames()
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+ames_cor_spearman_res <-
+  score_cor_spearman |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_spearman_res@results
+
+skip()
+
 test_that("get_scores_cor() is working for pearson", {
   skip_if_not_installed("modeldata")
 

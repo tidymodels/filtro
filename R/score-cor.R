@@ -106,7 +106,6 @@ score_cor_spearman <-
 #'     fit(Sale_Price ~ ., data = ames_subset)
 #'   ames_cor_spearman_res@results
 #' }
-#' # Analysis of variance where `class` is the predictor data and the response
 #' @export
 S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

@@ -106,6 +106,7 @@ score_cor_spearman <-
 #'     fit(Sale_Price ~ ., data = ames_subset)
 #'   ames_cor_spearman_res@results
 #' }
+#' # Analysis of variance where `class` is the predictor data and the response
 #' @export
 S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)
@@ -119,7 +120,14 @@ S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
   }
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
-    \(x) map_score_cor(data, x, outcome, object@calculating_fn)
+    \(x) {
+      map_score_cor(
+        data,
+        predictor = x,
+        outcome = outcome,
+        calculating_fn = object@calculating_fn
+      )
+    }
   )
   res <- named_vec_to_tibble(score, object@score_type, outcome)
 

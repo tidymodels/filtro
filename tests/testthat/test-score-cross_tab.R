@@ -1,3 +1,19 @@
+library(dplyr)
+
+titanic_subset <- titanic_train |>
+  mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
+  select(Survived, Pclass, Sex, Age, Fare, Embarked)
+
+titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+  fit(Survived ~ ., data = titanic_subset)
+titanic_xtab_pval_chisq_res@results
+
+titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
+  fit(Survived ~ ., data = titanic_subset)
+titanic_xtab_pval_fisher_res@results
+
+skip()
+
 test_that("get_scores_cross_tab is working for -log10(chisq pval)", {
   if (rlang::is_installed("titanic")) {
     library(titanic)

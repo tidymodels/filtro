@@ -79,5 +79,6 @@ if (rlang::is_installed("modeldata")) {
     fit(Sale_Price ~ ., data = ames_subset)
   ames_cor_spearman_res@results
 }
+# Analysis of variance where `class` is the predictor data and the response
 }
 \keyword{datasets}

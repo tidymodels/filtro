@@ -14,38 +14,51 @@ status](https://www.r-pkg.org/badges/version/filtro)](https://CRAN.R-project.org
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+> ⚠️ **filtro is under active development; breaking changes may occur.**
+
 ## Overview
 
-The goal of `filtro` is to apply filter-based supervised feature
-selection methods. These methods score feature relevance using metrics
-such as p-values, correlation, and importance scores.
+`filtro` is tidy tools to apply filter-based supervised feature
+selection methods. These methods score and rank feature relevance using
+metrics such as p-values, correlation, importance scores, and more.
 
-The package offers tools to score, rank, and select top features using
-built-in functions and the
+`filtro` provides functions to rank and select a top number or
+proportion of features using built-in methods and the
 [desirability2](https://desirability2.tidymodels.org) package, and
-supports streamlined preprocessing on its own or within tidymodels
-workflows like the [recipes](https://recipes.tidymodels.org) package.
+supports streamlined preprocessing, either standalone or within
+tidymodels workflows such as the
+[recipes](https://recipes.tidymodels.org) package.
 
 ## Installation
 
-You can install the released version of filtro from
+Install the released version of filtro from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# FILL THIS IN! 
+install.packages("filtro")
 ```
 
-You can install the development version from Github with:
+Install the development version from GitHub with:
 
 ``` r
-# FILL THIS IN! 
+# install.packages("pak")
+pak::pak("tidymodels/filtro")
 ```
+
+## Feature selection methods
+
+1.  
+2.  
+3.  
+4.  
+5.  
+6.  
 
 ## A scoring example
 
-## A filtering exmple using a single score
+## A filtering exmple for *singular* score
 
-## A filtering example using multiple scores
+## A filtering example for *plural* scores
 
 ## Contributing
 

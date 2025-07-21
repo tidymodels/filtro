@@ -1,6 +1,6 @@
 Package: filtro
 Title: Feature Selection Using Supervised Filter-Based Methods
-Version: 0.0.0.9000
+Version: 0.1.0.9000
 Authors@R: c(
     person("Frances", "Lin", , "franceslinyc@gmail.com", role = c("aut", "cre")),
     person("Max", "Kuhn", , "max@posit.co", role = "aut",
@@ -14,7 +14,8 @@ Description: Tidy tools to apply filter-based supervised feature selection
     such as p-values, correlation, and importance scores (Kuhn and Johnson
     (2019) <doi:10.1201/9781315108230>).
 License: MIT + file LICENSE
-URL: https://github.com/tidymodels/filtro
+URL: https://github.com/tidymodels/filtro,
+    https://filtro.tidymodels.org/
 BugReports: https://github.com/tidymodels/filtro/issues
 Depends: 
     R (>= 4.1)

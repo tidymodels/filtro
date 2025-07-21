@@ -20,7 +20,7 @@ class_score_aov <- S7::new_class(
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
 #'
-#' In either case, a linear model (vi [stats::lm()]) is created with the proper
+#' In either case, a linear model (via [stats::lm()]) is created with the proper
 #' variable roles, and the overall p-value for the hypothesis that all means are
 #' equal is computed via the standard F-statistic. The p-value that is returned
 #' is transformed to be `-log10(p_value)` so that larger values are associated

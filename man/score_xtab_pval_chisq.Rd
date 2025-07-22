@@ -4,7 +4,7 @@
 \name{score_xtab_pval_chisq}
 \alias{score_xtab_pval_chisq}
 \alias{score_xtab_pval_fisher}
-\title{Scoring via the chi-squared test or Fisher’s exact test}
+\title{Scoring via the chi-squared test or Fisher's exact test}
 \format{
 An object of class \code{filtro::class_score_xtab} (inherits from \code{filtro::class_score}, \code{S7_object}) of length 1.
 
@@ -63,6 +63,7 @@ if (rlang::is_installed("titanic")) {
 
   # Binary factor example
 
+  library(titanic)
   library(dplyr)
 
   titanic_subset <- titanic_train |>

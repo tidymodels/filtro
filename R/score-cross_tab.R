@@ -13,7 +13,7 @@ class_score_xtab <- S7::new_class(
   )
 )
 
-#' Scoring via the chi-squared test or Fisher’s exact test
+#' Scoring via the chi-squared test or Fisher's exact test
 #'
 #' @description
 #'
@@ -67,7 +67,7 @@ score_xtab_pval_fisher <-
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
-    label = "Fisher’s exact test cross tabulation p-values"
+    label = "Fisher's exact test cross tabulation p-values"
   )
 
 # ------------------------------------------------------------------------------
@@ -96,6 +96,7 @@ score_xtab_pval_fisher <-
 #'
 #'   # Binary factor example
 #'
+#'   library(titanic)
 #'   library(dplyr)
 #'
 #'   titanic_subset <- titanic_train |>

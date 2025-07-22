@@ -1,3 +1,4 @@
+library(titanic)
 library(dplyr)
 
 titanic_subset <- titanic_train |>

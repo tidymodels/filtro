@@ -1,3 +1,67 @@
+# classification task
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
+
+set.seed(42)
+cells_imp_rf_res <- score_imp_rf |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_res@results
+
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_conditional_res@results
+
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_oblique_res@results
+
+# regression task
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+regression_task <- score_imp_rf
+regression_task@mode <- "regression"
+
+set.seed(42)
+ames_imp_rf_regression_task_res <-
+  regression_task |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_regression_task_res@results
+
+# other configuration
+rf_config <- score_imp_rf
+# tuning parameters
+rf_config@trees <- 100
+rf_config@mtry <- 2
+rf_config@min_n <- 1
+# relevant only for ranger
+rf_config@mode <- "regression"
+rf_config@seed <- 42
+
+set.seed(42)
+ames_imp_rf_config_res <-
+  rf_config |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_config_res@results
+
+skip()
+
 test_that("get_score_forest_importance() is working for ranger for classification", {
   skip_if_not_installed("modeldata")
 
@@ -61,7 +125,7 @@ test_that("get_score_forest_importance() is working for partykit classification"
   imp <- partykit::varimp(fit, conditional = TRUE)
   outcome <- "class"
   predictors <- setdiff(names(cells_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -101,7 +165,7 @@ test_that("get_score_forest_importance() is working for aorsf classification", {
   imp <- fit$importance
   outcome <- "class"
   predictors <- setdiff(names(cells_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -179,7 +243,7 @@ test_that("get_score_forest_importance() is working for partykit regression", {
   imp <- partykit::varimp(fit, conditional = TRUE)
   outcome <- "Sale_Price"
   predictors <- setdiff(names(ames_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))
@@ -218,7 +282,7 @@ test_that("get_score_forest_importance() is working for aorsf regression", {
   imp <- fit$importance
   outcome <- "Sale_Price"
   predictors <- setdiff(names(ames_subset), outcome)
-  exp.imp <- as.numeric(imp[predictors])
+  exp.imp <- imp[predictors] |> unname()
   exp.imp[is.na(exp.imp)] <- 0
 
   expect_true(tibble::is_tibble(score_res))

@@ -1,61 +1,149 @@
-#' Create a score object for area under the Receiver Operating Characteristic curve (ROC AUC)
-#'
-#' Construct a score object containing metadata for univariate feature scoring using the
-#' Receiver Operating Characteristic curve (ROC AUC).
-#' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"roc_auc"`), `direction`, and other relevant attributes.
-#'
-#' @inheritParams new_score_obj
-#' @param fallback_value A numeric scalar used as a fallback value. One of:
-#'    - `1` (default)
-#' @param score_type A character string indicating the type of scoring metric to compute.
-#' One of:
-#'    - `"roc_auc"` (default)
-#' @param direction A character string indicating the optimization direction. One of:
-#'  - `"maximize"` (default)
-#'  - `"minimize"`
-#'  - `"target"`
-#'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"roc_auc"`), `direction`, and other relevant attributes.
-#'
+#' @rdname class_score
+#' @include class_score.R
+#' @keywords internal
 #' @export
+class_score_roc_auc <- S7::new_class(
+  "class_score_roc_auc",
+  parent = class_score
+)
+
+#' Scoring via area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
-#' @examples
-#' # Create a score object
-#' score_roc_auc()
-score_roc_auc <- function(
-  range = c(0, 1),
-  fallback_value = 1,
-  score_type = "roc_auc",
-  direction = "maximize"
-) {
-  new_score_obj(
+#' @description
+#'
+#' These objects are used when either:
+#'
+#' - The predictors are numeric and the outcome is a factor/category, or
+#' - The predictors are factors and the outcome is numeric.
+#'
+#' In either case, a ROC curve (via [pROC::roc()]) is created with the proper
+#' variable roles, and the area under the ROC curve is computed (via [pROC::auc()]).
+#' Values higher than 0.5 (i.e., `max(roc_auc, 1 - roc_auc)` > 0.5) are associated with
+#' more important predictors.
+#'
+#' `score_roc_auc` is object that define the technique.
+#' To apply the filter on data, you would use the [fit()] method:
+#'
+#' \preformatted{
+#'   fit(score_roc_auc, formula, data)
+#' }
+#'
+#' See the Examples section below.
+#' @name score_roc_auc
+#' @export
+score_roc_auc <-
+  class_score_roc_auc(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = range,
+    case_weights = TRUE, # TODO
+    range = c(0, 1),
     inclusive = c(TRUE, TRUE),
-    fallback_value = fallback_value,
-    score_type = score_type,
-    #trans = # Cannot set NULL. Otherwise S7 complains
-    #sorts =
-    direction = direction,
+    fallback_value = 1,
+    score_type = "roc_auc",
+    direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
-    #ties =
-    calculating_fn = function(x) {}, # Otherwise S7 complains
-    label = c(score_rocauc = "ROC AUC scores")
+    label = "Area under the Receiver Operating Characteristic curve (ROC AUC)"
   )
+
+# ------------------------------------------------------------------------------
+
+#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
+#' @name score_roc_auc
+#' @include class_score.R
+#' @param object A score class object based on `class_score_roc_auc`.
+#' @param formula A standard R formula with a single outcome on the right-hand
+#' side and one or more predictors (or `.`) on the left-hand side. The data are
+#' processed via [stats::model.frame()].
+#' @param data A data frame containing the relevant columns defined by the
+#' formula.
+#' @param ... Further arguments passed to or from other methods.
+#' @details
+#' The function will determine which columns are predictors and outcomes for the
+#' ROC analysis; no user intervention is required.
+#'
+#' Missing values are removed for each predictor/outcome combination being
+#' scored.
+#' In cases where [pROC::roc()] fail, the scoring proceeds silently, and
+#' a missing value is given for the score.
+#'
+#' @examples
+#' if (rlang::is_installed("modeldata")) {
+#'
+#'   library(dplyr)
+#'
+#'   # ROC AUC where the numeric predictors are the predictors and
+#'   # `class` is the class outcome/response
+#'
+#'   cells_subset <- modeldata::cells |>
+#'     dplyr::select(
+#'       class,
+#'       angle_ch_1,
+#'       area_ch_1,
+#'       avg_inten_ch_1,
+#'       avg_inten_ch_2,
+#'       avg_inten_ch_3
+#'     )
+#'
+#'   cells_roc_auc_res <- score_roc_auc |>
+#'     fit(class ~ ., data = cells_subset)
+#'   cells_roc_auc_res@results
+#'
+#'   # ----------------------------------------------------------------------------
+#'
+#'   # ROC AUC where `Sale_Price` is the numeric predictor and the class predictors
+#'   # are the outcomes/responses
+#'
+#'   ames_subset <- modeldata::ames |>
+#'     dplyr::select(
+#'       Sale_Price,
+#'       MS_SubClass,
+#'       MS_Zoning,
+#'       Lot_Frontage,
+#'       Lot_Area,
+#'       Street
+#'     )
+#'   ames_subset <- ames_subset |>
+#'     dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#'   ames_roc_auc_res <- score_roc_auc |>
+#'     fit(Sale_Price ~ ., data = ames_subset)
+#'   ames_roc_auc_res@results
+#' }
+#'   # TODO Add multiclass example
+#' @export
+S7::method(fit, class_score_roc_auc) <- function(object, formula, data, ...) {
+  analysis_data <- process_all_data(formula, data = data)
+  # TODO add case weights
+
+  # Note that model.frame() places the outcome(s) as the first column(s)
+  predictors <- names(analysis_data)[-1]
+  outcome <- names(analysis_data)[1]
+
+  score <- purrr::map_dbl(
+    purrr::set_names(predictors),
+    \(x) map_score_roc_auc(analysis_data, predictor = x, outcome = outcome)
+  )
+  res <- named_vec_to_tibble(score, object@score_type, outcome)
+
+  object@results <- res
+  object
 }
 
-flip_if_needed_roc_auc <- function(predictor, outcome) {
-  # TODO Move to utilities.R
-  if (is.factor(outcome) && is.numeric(predictor)) {
-    list(predictor = predictor, outcome = outcome)
-  } else {
-    list(predictor = outcome, outcome = predictor)
+map_score_roc_auc <- function(data, predictor, outcome) {
+  predictor_col <- data[[predictor]]
+  outcome_col <- data[[outcome]]
+
+  if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
+    return(NA_real_)
   }
+
+  if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
+    return(NA_real_)
+  }
+
+  res <- get_single_roc_auc(predictor_col, outcome_col)
+  res
 }
 
 get_single_roc_auc <- function(predictor, outcome, ...) {
@@ -76,81 +164,5 @@ get_single_roc_auc <- function(predictor, outcome, ...) {
     )
   }
   res <- pROC::auc(roc) |> as.numeric()
-  res
-}
-
-map_score_roc_auc <- function(data, predictor, outcome) {
-  predictor_col <- data[[predictor]]
-  outcome_col <- data[[outcome]]
-
-  if (is.factor(outcome_col) && !is.numeric(predictor_col)) {
-    return(NA_real_)
-  }
-
-  if (is.numeric(outcome_col) && !is.factor(predictor_col)) {
-    return(NA_real_)
-  }
-
-  res <- get_single_roc_auc(predictor_col, outcome_col)
-  res
-}
-
-make_scores_roc_auc <- function(score_type, score, outcome, predictors) {
-  res <- tibble::tibble(
-    name = score_type,
-    score = unname(score),
-    outcome = outcome,
-    predictor = predictors
-  )
-  res
-}
-
-#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
-#'
-#' Evaluate the relationship between a numeric outcome and a categorical predictor,
-#' or vice versa, by computing the area under the Receiver Operating Characteristic curve (ROC AUC).
-#' Output a tibble result with with one row per predictor, and four columns:
-#' `name`, `score`, `predictor`, and `outcome`.
-#'
-#' @param score_obj A score object. See [score_roc_auc()] for details.
-#'
-#' @param data A data frame or tibble containing the outcome and predictor variables.
-#' @param outcome A character string specifying the name of the outcome variable.
-#' @param ... NULL
-#'
-#' @return A tibble of result with one row per predictor, and four columns:
-#' - `name`: the name of scoring metric.
-#' - `score`: the score for the predictor-outcome pair.
-#' - `predictor`: the name of the predictor.
-#' - `outcome`: the name of the outcome.
-#'
-#' @export
-#'
-#' @examples
-#' cells_subset <- modeldata::cells |>
-#'   dplyr::select(
-#'     class,
-#'     angle_ch_1,
-#'     area_ch_1,
-#'     avg_inten_ch_1,
-#'     avg_inten_ch_2
-#'   )
-#' # Return score as ROC AUC for binary classification
-#' score_obj = score_roc_auc()
-#' score_res <- get_scores_roc_auc(
-#'   score_obj,
-#'   data = cells_subset,
-#'   outcome = "class"
-#' )
-#' # Return score as ROC AUC for multiclass classification
-get_scores_roc_auc <- function(score_obj, data, outcome, ...) {
-  predictors <- setdiff(names(data), outcome)
-
-  score <- purrr::map_dbl(
-    purrr::set_names(predictors),
-    \(x) map_score_roc_auc(data, x, outcome)
-  )
-
-  res <- make_scores_roc_auc(score_obj@score_type, score, outcome, predictors)
-  res
+  return(res)
 }

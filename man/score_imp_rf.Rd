@@ -5,7 +5,7 @@
 \alias{score_imp_rf}
 \alias{score_imp_rf_conditional}
 \alias{score_imp_rf_oblique}
-\title{Scoring via random forest, conditional random forest, or oblique random forest}
+\title{Scoring via random forests}
 \format{
 An object of class \code{filtro::class_score_imp_rf} (inherits from \code{filtro::class_score}, \code{S7_object}) of length 1.
 
@@ -39,10 +39,10 @@ These objects are used when either:
 \item The predictors are factors and the outcome is numeric.
 }
 
-In either case, a random forest (via \code{\link[ranger:ranger]{ranger::ranger()}}, \code{\link[partykit:cforest]{partykit::cforest()}},
-or \code{\link[aorsf:orsf]{aorsf::orsf()}}) is created with the proper variable roles, and the feature
-importance scores are computed. The larger values are associated with more
-important predictors.
+In either case, a random forest, conditional random forest, or oblique random forest
+(via \code{\link[ranger:ranger]{ranger::ranger()}}, \code{\link[partykit:cforest]{partykit::cforest()}}, or \code{\link[aorsf:orsf]{aorsf::orsf()}}) is created with
+the proper variable roles, and the feature importance scores are computed. Larger
+values are associated with more important predictors.
 
 \code{score_imp_rf}, \code{score_imp_rf_conditional} and \code{score_imp_rf_oblique} are
 objects that define the technique.

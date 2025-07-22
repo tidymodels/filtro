@@ -21,7 +21,7 @@ class_score_imp_rf <- S7::new_class(
   )
 )
 
-#' Scoring via random forest, conditional random forest, or oblique random forest
+#' Scoring via random forests
 #'
 #' @description
 #'
@@ -30,10 +30,10 @@ class_score_imp_rf <- S7::new_class(
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
 #'
-#' In either case, a random forest (via [ranger::ranger()], [partykit::cforest()],
-#' or [aorsf::orsf()]) is created with the proper variable roles, and the feature
-#' importance scores are computed. The larger values are associated with more
-#' important predictors.
+#' In either case, a random forest, conditional random forest, or oblique random forest
+#' (via [ranger::ranger()], [partykit::cforest()], or [aorsf::orsf()]) is created with
+#' the proper variable roles, and the feature importance scores are computed. Larger
+#' values are associated with more important predictors.
 #'
 #' `score_imp_rf`, `score_imp_rf_conditional` and `score_imp_rf_oblique` are
 #' objects that define the technique.
@@ -99,7 +99,7 @@ score_imp_rf_oblique <-
 
 # ------------------------------------------------------------------------------
 
-#' Compute feature importance scores via random forest
+#' Compute random forest feature importance scores
 #' @name score_imp_rf
 #' @include class_score.R
 #' @param object A score class object based on `class_score_imp_rf`.
@@ -197,7 +197,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
 
   score <- imp[predictors]
   score[is.na(score)] <- 0
-  score <- stats::setNames(score, predictors) # TODO Confirm this is the right approach
+  score <- stats::setNames(score, nm = predictors) # TODO Confirm this is the right approach
 
   res <- named_vec_to_tibble(score, object@score_type, outcome)
 

@@ -1,3 +1,49 @@
+# Classification task
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
+
+cells_info_gain_res <- score_info_gain |>
+  fit(class ~ ., data = cells_subset)
+cells_info_gain_res@results
+
+cells_gain_ratio_res <- score_gain_ratio |>
+  fit(class ~ ., data = cells_subset)
+cells_gain_ratio_res@results
+
+cells_sym_uncert_res <- score_sym_uncert |>
+  fit(class ~ ., data = cells_subset)
+cells_sym_uncert_res@results
+
+# Regression task
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+regression_task <- score_info_gain
+regression_task@mode <- "regression"
+
+ames_info_gain_regression_task_res <-
+  regression_task |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_regression_task_res@results
+
+skip()
+
 test_that("get_scores_info_gain() is working for classification", {
   skip_if_not_installed("modeldata")
 

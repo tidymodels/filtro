@@ -33,9 +33,9 @@ These objects are used when:
 \item The predictors are numeric and the outcome is numeric.
 }
 
-In this case, a correlation coefficient (via \code{\link[stats:cor]{stats::cor()}}) is computed with the proper
-variable roles. The raw values closer to 1 or -1 (i.e., the absolute values closer to 1)
-are associated with more important predictors.
+In this case, a correlation coefficient (via \code{\link[stats:cor]{stats::cor()}}) is computed with
+the proper variable roles. Raw values closer to 1 or -1 (i.e., absolute values
+closer to 1) are associated with more important predictors.
 
 \code{score_cor_pearson} and \code{score_cor_spearman} are objects that define the technique.
 To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:

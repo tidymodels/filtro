@@ -77,6 +77,6 @@ if (rlang::is_installed("titanic")) {
     fit(Survived ~ ., data = titanic_subset)
   titanic_xtab_pval_fisher_res@results
 }
-  # TODO Add multiclass factor example
+  # TODO Add multiclass example
 }
 \keyword{datasets}

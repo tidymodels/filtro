@@ -34,7 +34,7 @@ These objects are used when:
 }
 
 In this case, a correlation coefficient (via \code{\link[stats:cor]{stats::cor()}}) is computed with
-the proper variable roles. Raw values closer to 1 or -1 (i.e., absolute values
+the proper variable roles. Values closer to 1 or -1 (i.e., \code{abs(cor_pearson)}
 closer to 1) are associated with more important predictors.
 
 \code{score_cor_pearson} and \code{score_cor_spearman} are objects that define the technique.

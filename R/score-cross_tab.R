@@ -110,7 +110,7 @@ score_xtab_pval_fisher <-
 #'     fit(Survived ~ ., data = titanic_subset)
 #'   titanic_xtab_pval_fisher_res@results
 #' }
-#'   # TODO Add multiclass factor example
+#'   # TODO Add multiclass example
 #' @export
 S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

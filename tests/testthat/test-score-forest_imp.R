@@ -1,4 +1,4 @@
-# Classification task
+# classification task
 cells_subset <- modeldata::cells |>
   dplyr::select(
     class,
@@ -22,7 +22,7 @@ cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
   fit(class ~ ., data = cells_subset)
 cells_imp_rf_oblique_res@results
 
-# Regression task
+# regression task
 ames_subset <- modeldata::ames |>
   dplyr::select(
     Sale_Price,
@@ -44,13 +44,13 @@ ames_imp_rf_regression_task_res <-
   fit(Sale_Price ~ ., data = ames_subset)
 ames_imp_rf_regression_task_res@results
 
-# Other configuration
+# other configuration
 rf_config <- score_imp_rf
-# Tuning parameters
+# tuning parameters
 rf_config@trees <- 100
 rf_config@mtry <- 2
 rf_config@min_n <- 1
-# Relevant only for ranger
+# relevant only for ranger
 rf_config@mode <- "regression"
 rf_config@seed <- 42
 

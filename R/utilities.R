@@ -26,6 +26,7 @@ S7::method(attach_score, new_score_obj) <- function(x, results, ...) {
   x
 }
 
+# ------------------------------------------------------------------------------
 #' Arrange score result `results`
 #'
 #' @param x NULL
@@ -60,6 +61,7 @@ S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
   }
 }
 
+# ------------------------------------------------------------------------------
 #' Transform score result `results`
 #'
 #' @param x NULL
@@ -94,6 +96,7 @@ S7::method(trans_score, new_score_obj) <- function(x, ...) {
     dplyr::mutate(score = trans$transform(score))
 }
 
+# ------------------------------------------------------------------------------
 #' Filter score result `results` based on number of predictors
 #'
 #' @param x NULL
@@ -137,6 +140,7 @@ S7::method(filter_score_num, new_score_obj) <- function(
   }
 }
 
+# ------------------------------------------------------------------------------
 #' Filter score result `results` based on proportion of predictors
 #'
 #' @param x NULL
@@ -181,6 +185,7 @@ S7::method(filter_score_prop, new_score_obj) <- function(
   }
 }
 
+# ------------------------------------------------------------------------------
 #' Filter score result `results` based on cutoff value
 #'
 #' @param x NULL
@@ -224,6 +229,7 @@ S7::method(filter_score_cutoff, new_score_obj) <- function(
   }
 }
 
+# ------------------------------------------------------------------------------
 #' Filter score result `results` based on number or proportion of predictors with
 #' optional cutoff value
 #'
@@ -279,6 +285,7 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 # Filter score result `results` based on user input TODO
 # filter_score_<>
 
+# ------------------------------------------------------------------------------
 # #' Rank score result `results` based on min_rank (Need a better title) TODO
 # #'
 # #' @param x NULL
@@ -311,6 +318,7 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 #   # }
 # }
 
+# ------------------------------------------------------------------------------
 # #' Rank score result `results` based on dense_rank (Need a better title)
 # #'
 # #' @param x NULL
@@ -343,6 +351,7 @@ S7::method(filter_score_auto, new_score_obj) <- function(
 #   # }
 # }
 
+# ------------------------------------------------------------------------------
 #' Construct an S7 subclass of base R's `list`
 #'
 #' Output an S7 subclass of S3 base R's `list`, used in method dispatch for
@@ -392,6 +401,7 @@ S7::method(bind_scores, score_list) <- function(x) {
   score_set
 }
 
+# ------------------------------------------------------------------------------
 #' Fill safe values.
 #'
 #' @param x A list where each element is a score object of class `score_obj`.
@@ -421,11 +431,9 @@ S7::method(fill_safe_values, score_list) <- function(x) {
 }
 
 # TODO Drop outcome column
-
-# TODO filter_score_*
-# Looking ahead at the example in desiarbility2, I think we'd want
-# predictor, d_fstat, d_pval, d_pearson, d_imp_rf, d_roc_auc, etc, d_all.
-
+# TODO show_best_desirability_score_*
+# TODO rank_desirability_score_*
+# TODO filter_desirability_score_*
 
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods
@@ -435,6 +443,17 @@ flip_if_needed_aov <- function(predictor, outcome) {
     list(predictor = outcome, outcome = predictor)
   } else {
     list(predictor = predictor, outcome = outcome)
+  }
+}
+
+# ------------------------------------------------------------------------------
+# Used with ROC AUC methods
+
+flip_if_needed_roc_auc <- function(predictor, outcome) {
+  if (is.factor(outcome) && is.numeric(predictor)) {
+    list(predictor = predictor, outcome = outcome)
+  } else {
+    list(predictor = outcome, outcome = predictor)
   }
 }
 

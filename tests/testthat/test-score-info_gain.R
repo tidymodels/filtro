@@ -1,4 +1,4 @@
-# Classification task
+# class outcome
 cells_subset <- modeldata::cells |>
   dplyr::select(
     class,
@@ -21,7 +21,7 @@ cells_sym_uncert_res <- score_sym_uncert |>
   fit(class ~ ., data = cells_subset)
 cells_sym_uncert_res@results
 
-# Regression task
+# numeric outcome
 ames_subset <- modeldata::ames |>
   dplyr::select(
     Sale_Price,

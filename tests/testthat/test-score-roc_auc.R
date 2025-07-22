@@ -1,3 +1,37 @@
+# classification task
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
+
+cells_roc_auc_res <- score_roc_auc |>
+  fit(class ~ ., data = cells_subset)
+cells_roc_auc_res@results
+
+# regression task
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_roc_auc_res <- score_roc_auc |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_roc_auc_res@results
+
+skip()
+
 test_that("get_scores_roc_auc() is working", {
   skip_if_not_installed("modeldata")
 

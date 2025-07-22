@@ -40,7 +40,7 @@ score_aov_pval <-
   class_score_aov(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = TRUE,
+    case_weights = TRUE, # TODO
     range = c(0, Inf),
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,
@@ -92,8 +92,8 @@ score_aov_fstat <-
 #' @examples
 #' if (rlang::is_installed("modeldata")) {
 #'
-#'   # Analysis of variance where `class` is the predictor and the numeric
-#'   # predictors are the responses
+#'   # Analysis of variance where `class` is the class predictor and the numeric
+#'   # predictors are the outcomes/responses
 #'
 #'   cell_data <- modeldata::cells
 #'   cell_data$case <- NULL
@@ -111,8 +111,8 @@ score_aov_fstat <-
 #'   # ----------------------------------------------------------------------------
 #'   library(dplyr)
 #'
-#'   # Analysis of variance where `chem_fp_*` are the predictors and the numeric
-#'   # `permeability` is the response
+#'   # Analysis of variance where `chem_fp_*` are the class predictors and `permeability`
+#'   # is the numeric outcome/response
 #'
 #'   permeability <-
 #'     modeldata::permeability_qsar |>
@@ -216,6 +216,5 @@ get_single_aov <- function(predictor, outcome, pval = TRUE) {
       }
     }
   }
-
   return(res)
 }

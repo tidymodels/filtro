@@ -124,7 +124,7 @@ score_imp_rf_oblique <-
 #'
 #'   library(dplyr)
 #'
-#'   # Random forests for classification tasks
+#'   # Random forests for classification task
 #'
 #'   cells_subset <- modeldata::cells |>
 #'     dplyr::select(
@@ -136,25 +136,25 @@ score_imp_rf_oblique <-
 #'       avg_inten_ch_3
 #'     )
 #'
-#'   # Random forests
+#'   # Random forest
 #'   set.seed(42)
 #'   cells_imp_rf_res <- score_imp_rf |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_imp_rf_res@results
 #'
-#'   # Conditional random forests
+#'   # Conditional random forest
 #'   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_imp_rf_conditional_res@results
 #'
-#'   # Oblique random forests
+#'   # Oblique random forest
 #'   cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_imp_rf_oblique_res@results
 #'
 #'   # ----------------------------------------------------------------------------
 #'
-#'   # Random forests for regression tasks
+#'   # Random forests for regression task
 #'
 #'   ames_subset <- modeldata::ames |>
 #'     dplyr::select(

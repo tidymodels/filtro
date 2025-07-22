@@ -1,110 +1,215 @@
-#' Construct a subclassed score object for feature importance scores with additional metadata
-#'
-#' Introduce new properties `engine`, `trees`, `mtry`, `min_n` and `mode`.
-#' Output a new score object that contains associated metadata, such as `range`,
-#' `fallback_value`, `score_type`, `direction`, and other relevant attributes.
-#'
-#' @inheritParams new_score_obj
-#'
-#' @param fallback_value A numeric scalar used as a fallback value. One of:
-#'   - `Inf` (default)
-#' @param score_type A character string indicating the type of scoring metric to compute.
-#' One of:
-#'    - `"imp_rf"` (default)
-#'    - `"imp_rf_conditional"`
-#'    - `"imp_rf_oblique"`
-#' @param direction A character string indicating the optimization direction. One of:
-#'  - `"maximize"` (default)
-#'  - `"minimize"`
-#'  - `"target"`
-#' @param engine A character string specifying the random forest engine to use for fitting. One of:
-#'  - `"ranger"` (default)
-#'  - `"partykit"`
-#'  - `"aorsf"`
-#' @param trees An integer for the number of trees contained in the ensemble.
-#' @param mtry An integer for the number of predictors that will
-#' be randomly sampled at each split when creating the tree models.
-#' @param min_n An integer for the minimum number of data points
-#' in a node that are required for the node to be split further.
-#' @param mode A character string indicating the task type. Relevant only for `ranger`. One of:
-#'  - `"regression"`
-#'  - `"classification"` (default)
-#' @param seed An interger of random seed. Relevant only for `ranger`.
-#'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type`, `direction`, and other relevant attributes.
+#' @rdname class_score
+#' @include class_score.R
+#' @keywords internal
 #' @export
-#'
-#' @examples
-#' # Create a score object
-#' new_score_obj_forest_imp()
-new_score_obj_forest_imp <- S7::new_class(
-  "new_score_obj_forest_imp",
-  parent = new_score_obj,
+class_score_imp_rf <- S7::new_class(
+  "class_score_imp_rf",
+  parent = class_score,
   properties = list(
+    # What is the random forest engine to use for fitting?
     engine = S7::new_property(S7::class_character, default = "ranger"),
-    trees = S7::new_property(S7::class_numeric, default = 10), # TODO May need to set other default
+    # What is the number of trees contained in the ensemble?
+    trees = S7::new_property(S7::class_numeric, default = 100), # TODO May need to set other default
+    # What is the number of predictors that will be randomly sampled at each split when creating the tree models?
     mtry = S7::new_property(S7::class_numeric, default = 2),
+    # What is the minimum number of data points in a node that are required for the node to be split further?
     min_n = S7::new_property(S7::class_numeric, default = 1),
-    mode = S7::new_property(S7::class_character, default = "classification"),
+    # What is the task type? Relevant only for ranger.
+    mode = S7::new_property(S7::class_character, default = "classification"), # TODO True, False?
+    # What is the random seed?
     seed = S7::new_property(S7::class_numeric, default = 42)
   )
 )
 
-#' Create a score object for feature importance scores
+#' Scoring via random forests
 #'
-#' Construct a score object containing metadata for feature scoring using a
-#' random forest, a conditional random forest or an oblique random forest
-#' Output a score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"imp_rf"`, `"imp_rf_conditional"`, `"imp_rf_oblique"`), `direction`, and other relevant attributes.
+#' @description
 #'
-#' @inheritParams new_score_obj_forest_imp
+#' These objects are used when either:
 #'
-#' @returns A score object containing associated metadata such as `range`, `fallback_value`,
-#' `score_type` (`"imp_rf"`, `"imp_rf_conditional"`, `"imp_rf_oblique"`), `direction`, and other relevant attributes.
+#' - The predictors are numeric and the outcome is a factor/category, or
+#' - The predictors are factors and the outcome is numeric.
 #'
+#' In either case, a random forest, conditional random forest, or oblique random forest
+#' (via [ranger::ranger()], [partykit::cforest()], or [aorsf::orsf()]) is created with
+#' the proper variable roles, and the feature importance scores are computed. Larger
+#' values are associated with more important predictors.
+#'
+#' `score_imp_rf`, `score_imp_rf_conditional` and `score_imp_rf_oblique` are
+#' objects that define the technique.
+#' To apply the filter on data, you would use the [fit()] method:
+#'
+#' \preformatted{
+#'   fit(score_imp_rf, formula, data)
+#' }
+#'
+#' See the Examples section below.
+#' @name score_imp_rf
 #' @export
-#'
-#' @examples NULL
-score_forest_imp <- function(
-  range = c(0, Inf),
-  fallback_value = Inf,
-  score_type = "imp_rf",
-  direction = "maximize",
-  engine = "ranger",
-  trees = 10,
-  mtry = 2,
-  min_n = 1,
-  mode = "classification",
-  seed = 42
-) {
-  new_score_obj_forest_imp(
-    outcome_type = "numeric",
-    predictor_type = "numeric",
+score_imp_rf <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
     case_weights = FALSE,
-    range = range,
-    inclusive = c(TRUE, TRUE),
-    fallback_value = fallback_value,
-    score_type = score_type,
-    #trans = # Cannot set NULL. Otherwise S7 complains
-    #sorts =
-    direction = direction,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf",
+    direction = "maximize",
     deterministic = FALSE,
     tuning = TRUE,
-    #ties =
-    calculating_fn = function(x) {}, # Otherwise S7 complains
-    engine = engine,
-    trees = trees,
-    mtry = mtry,
-    min_n = min_n,
-    mode = mode,
-    seed = seed,
-    label = c(score_rfimp = "Random Forest importance scores")
+    label = "Random forest importance scores"
   )
+
+#' @name score_imp_rf
+#' @export
+score_imp_rf_conditional <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf_conditional",
+    direction = "maximize",
+    deterministic = FALSE,
+    tuning = TRUE,
+    label = "Random forest importance scores",
+    engine = "partykit"
+  )
+
+#' @name score_imp_rf
+#' @export
+score_imp_rf_oblique <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf_oblique",
+    direction = "maximize",
+    deterministic = FALSE,
+    tuning = TRUE,
+    label = "Random forest importance scores",
+    engine = "aorsf"
+  )
+
+# ------------------------------------------------------------------------------
+
+#' Compute random forest feature importance scores
+#' @name score_imp_rf
+#' @include class_score.R
+#' @param object A score class object based on `class_score_imp_rf`.
+#' @param formula A standard R formula with a single outcome on the right-hand
+#' side and one or more predictors (or `.`) on the left-hand side. The data are
+#' processed via [stats::model.frame()].
+#' @param data A data frame containing the relevant columns defined by the
+#' formula.
+#' @param ... Further arguments passed to or from other methods.
+#' @details
+#' The function will determine which columns are predictors and outcomes in the
+#' random forest; no user intervention is required.
+#'
+#' Missing values are removed for each predictor/outcome combination being
+#' scored.
+#' When a predictor's importance score is 0, [partykit::cforest()] may omit its
+#' name from the results. In cases like these, a score of 0 is assigned to the
+#' missing predictors.
+#'
+#' @examples
+#' if (rlang::is_installed("modeldata")) {
+#'
+#'   library(dplyr)
+#'
+#'   # Random forests for classification task
+#'
+#'   cells_subset <- modeldata::cells |>
+#'     dplyr::select(
+#'       class,
+#'       angle_ch_1,
+#'       area_ch_1,
+#'       avg_inten_ch_1,
+#'       avg_inten_ch_2,
+#'       avg_inten_ch_3
+#'     )
+#'
+#'   # Random forest
+#'   set.seed(42)
+#'   cells_imp_rf_res <- score_imp_rf |>
+#'     fit(class ~ ., data = cells_subset)
+#'   cells_imp_rf_res@results
+#'
+#'   # Conditional random forest
+#'   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+#'     fit(class ~ ., data = cells_subset)
+#'   cells_imp_rf_conditional_res@results
+#'
+#'   # Oblique random forest
+#'   cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+#'     fit(class ~ ., data = cells_subset)
+#'   cells_imp_rf_oblique_res@results
+#'
+#'   # ----------------------------------------------------------------------------
+#'
+#'   # Random forests for regression task
+#'
+#'   ames_subset <- modeldata::ames |>
+#'     dplyr::select(
+#'       Sale_Price,
+#'       MS_SubClass,
+#'       MS_Zoning,
+#'       Lot_Frontage,
+#'       Lot_Area,
+#'       Street
+#'     )
+#'   ames_subset <- ames_subset |>
+#'     dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#'   regression_task <- score_imp_rf
+#'   regression_task@mode <- "regression"
+#'
+#'   set.seed(42)
+#'   ames_imp_rf_regression_task_res <-
+#'     regression_task |>
+#'     fit(Sale_Price ~ ., data = ames_subset)
+#'   ames_imp_rf_regression_task_res@results
+#'   # TODO Add example of how to change trees, mtry, min_n, seed
+#' }
+#' @export
+S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
+  analysis_data <- process_all_data(formula, data = data)
+
+  # Note that model.frame() places the outcome(s) as the first column(s)
+  predictors <- names(analysis_data)[-1]
+  outcome <- names(analysis_data)[1]
+
+  if (object@score_type == "imp_rf") {
+    imp <- get_imp_rf_ranger(
+      object,
+      data = analysis_data,
+      outcome = outcome
+    )
+  } else if (object@score_type == "imp_rf_conditional") {
+    imp <- get_imp_rf_partykit(object, data = analysis_data, formula = formula)
+  } else if (object@score_type == "imp_rf_oblique") {
+    imp <- get_imp_rf_aorsf(object, data = analysis_data, formula = formula)
+  }
+
+  score <- imp[predictors]
+  score[is.na(score)] <- 0
+  score <- stats::setNames(score, nm = predictors) # TODO Confirm this is the right approach
+
+  res <- named_vec_to_tibble(score, object@score_type, outcome)
+
+  object@results <- res
+  object
 }
 
-get_imp_rf_ranger <- function(score_obj, data, outcome) {
-  if (score_obj@score_type == "imp_rf") {
+get_imp_rf_ranger <- function(object, data, outcome) {
+  if (object@score_type == "imp_rf") {
     importance_type = "permutation"
   } # TODO Allow option for importance = c("impurity")
 
@@ -113,157 +218,41 @@ get_imp_rf_ranger <- function(score_obj, data, outcome) {
   fit <- ranger::ranger(
     x = X,
     y = y,
-    num.trees = score_obj@trees,
-    mtry = score_obj@mtry,
+    num.trees = object@trees,
+    mtry = object@mtry,
     importance = importance_type,
-    min.node.size = score_obj@min_n,
-    classification = score_obj@mode == "classification",
-    seed = score_obj@seed
+    min.node.size = object@min_n,
+    classification = object@mode == "classification",
+    seed = object@seed
   )
   imp <- fit$variable.importance
   imp
 }
 
-get_imp_rf_partykit <- function(score_obj, data, formula) {
+get_imp_rf_partykit <- function(object, data, formula) {
   fit <- partykit::cforest(
     formula = formula,
     data = data,
-    control = partykit::ctree_control(minsplit = score_obj@min_n), # TODO Eventually have user pass in ctree_control()
-    ntree = score_obj@trees,
-    mtry = score_obj@mtry,
+    control = partykit::ctree_control(minsplit = object@min_n), # TODO Eventually have user pass in ctree_control()
+    ntree = object@trees,
+    mtry = object@mtry,
   )
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }
 
-get_imp_rf_aorsf <- function(score_obj, data, formula) {
-  if (score_obj@score_type == "imp_rf_oblique") {
+get_imp_rf_aorsf <- function(object, data, formula) {
+  if (object@score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
   fit <- aorsf::orsf(
     formula = formula,
     data = data,
-    n_tree = score_obj@trees,
-    n_retry = score_obj@mtry,
+    n_tree = object@trees,
+    n_retry = object@mtry,
     importance = importance_type
   )
   imp <- fit$importance
   imp
-}
-
-make_scores_forest_importance <- function(
-  score_type,
-  imp,
-  outcome,
-  predictors
-) {
-  score <- imp[predictors] |> unname()
-  score[is.na(score)] <- 0
-
-  res <- tibble::tibble(
-    name = score_type,
-    score = score,
-    outcome = outcome,
-    predictor = predictors
-  )
-  res
-}
-
-#' Compute feature importance scores using a random forest, a conditional random forest, or
-#' an oblique random forest
-#'
-#' Evaluate the relationship between a numeric outcome and a categorical predictor,
-#' or vice versa, by computing feature importance scores.
-#' Output a tibble result with with one row per predictor, and four columns:
-#' `name`, `score`, `predictor`, and `outcome`.
-#'
-#' @param score_obj A score object. See [score_forest_imp()] for details.
-#'
-#' @param data A data frame or tibble containing the outcome and predictor variables.
-#' @param outcome A character string specifying the name of the outcome variable.
-#' @param ... NULL
-#'
-#' @return A tibble of result with one row per predictor, and four columns:
-#' - `name`: the name of scoring metric.
-#' - `score`: the score for the predictor-outcome pair.
-#' - `predictor`: the name of the predictor.
-#' - `outcome`: the name of the outcome.
-#'
-#' @export
-#'
-#' @examples
-#' # Return importance score using ranger for classification task
-#' cells_subset <- modeldata::cells |>
-#'   dplyr::select(
-#'     class,
-#'     angle_ch_1,
-#'     area_ch_1,
-#'     avg_inten_ch_1,
-#'     avg_inten_ch_2
-#'   )
-#' score_obj <- score_forest_imp()
-#' score_res <- get_scores_forest_importance(
-#'   score_obj,
-#'   data = cells_subset,
-#'   outcome = "class"
-#')
-#' # Return importance score using partykit
-#' score_obj <- score_forest_imp(engine = "partykit")
-#' score_res <- get_scores_forest_importance(
-#'   score_obj,
-#'   data = cells_subset,
-#'   outcome = "class"
-#' )
-#' # Return importance score using aorsf
-#' score_obj <- score_forest_imp(engine = "aorsf")
-#' score_res <- get_scores_forest_importance(
-#'   score_obj,
-#'   data = cells_subset,
-#'   outcome = "class"
-#' )
-#' # Return importance score using ranger for regression task
-#' data(ames, package = "modeldata")
-#' ames_subset <- modeldata::ames |>
-#'   dplyr::select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
-#' score_obj <- score_forest_imp(mode = "regression")
-#' score_res <- get_scores_forest_importance(
-#'   score_obj,
-#'   data = ames_subset,
-#'   outcome = "Sale_Price"
-#' )
-get_scores_forest_importance <- function(
-  score_obj,
-  data,
-  outcome,
-  ... # i.e., score_obj$engine, score_obj$trees, score_obj$mtry, score_obj$min_n, score_obj$mode
-) {
-  outcome_name <- outcome |> as.name()
-  formula <- stats::as.formula(paste(outcome_name, "~ ."))
-  predictors <- setdiff(names(data), outcome)
-
-  if (score_obj@engine == "ranger") {
-    score_obj@score_type <- "imp_rf"
-    imp <- get_imp_rf_ranger(score_obj, data, outcome)
-  } else if (score_obj@engine == "partykit") {
-    score_obj@score_type <- "imp_rf_conditional"
-    imp <- get_imp_rf_partykit(score_obj, data, formula)
-  } else if (score_obj@engine == "aorsf") {
-    score_obj@score_type <- "imp_rf_oblique"
-    imp <- get_imp_rf_aorsf(score_obj, data, formula)
-  }
-  res <- make_scores_forest_importance(
-    score_obj@score_type,
-    imp,
-    outcome,
-    predictors
-  )
-  res
 }

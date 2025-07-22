@@ -2,3 +2,5 @@ url: https://filtro.tidymodels.org
 template:
   bootstrap: 5
 
+development:
+  mode: auto

@@ -9,7 +9,7 @@ class_score_imp_rf <- S7::new_class(
     # What is the random forest engine to use for fitting?
     engine = S7::new_property(S7::class_character, default = "ranger"),
     # What is the number of trees contained in the ensemble?
-    trees = S7::new_property(S7::class_numeric, default = 10), # TODO May need to set other default
+    trees = S7::new_property(S7::class_numeric, default = 100), # TODO May need to set other default
     # What is the number of predictors that will be randomly sampled at each split when creating the tree models?
     mtry = S7::new_property(S7::class_numeric, default = 2),
     # What is the minimum number of data points in a node that are required for the node to be split further?

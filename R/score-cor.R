@@ -16,7 +16,8 @@ class_score_cor <- S7::new_class(
 #' - The predictors are numeric and the outcome is numeric.
 #'
 #' In this case, a correlation coefficient (via [stats::cor()]) is computed with the proper
-#' variable roles.
+#' variable roles. The raw values closer to 1 or -1 (i.e., the absolute values closer to 1)
+#' are associated with more important predictors.
 #'
 #' `score_cor_pearson` and `score_cor_spearman` are objects that define the technique.
 #' To apply the filter on data, you would use the [fit()] method:

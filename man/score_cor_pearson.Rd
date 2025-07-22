@@ -34,7 +34,8 @@ These objects are used when:
 }
 
 In this case, a correlation coefficient (via \code{\link[stats:cor]{stats::cor()}}) is computed with the proper
-variable roles.
+variable roles. The raw values closer to 1 or -1 (i.e., the absolute values closer to 1)
+are associated with more important predictors.
 
 \code{score_cor_pearson} and \code{score_cor_spearman} are objects that define the technique.
 To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:

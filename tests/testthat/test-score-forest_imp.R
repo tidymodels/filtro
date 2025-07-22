@@ -13,15 +13,34 @@ cells_imp_rf_res <- score_imp_rf |>
   fit(class ~ ., data = cells_subset)
 cells_imp_rf_res@results
 
-set.seed(42)
 cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
   fit(class ~ ., data = cells_subset)
 cells_imp_rf_conditional_res@results
 
-set.seed(42)
 cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
   fit(class ~ ., data = cells_subset)
 cells_imp_rf_oblique_res@results
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+regression_task <- score_imp_rf
+regression_task@mode <- "regression"
+
+set.seed(42)
+ames_imp_rf_regression_task_res <-
+  regression_task |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_regression_task_res@results
 
 skip()
 

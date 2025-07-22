@@ -61,8 +61,8 @@ a missing value is given for the score.
 \examples{
 if (rlang::is_installed("modeldata")) {
 
-  # Analysis of variance where `class` is the outcome and the numeric
-  # predictors are the outcomes
+  # Analysis of variance where `class` is the predictor and the numeric
+  # predictors are the responses
 
   cell_data <- modeldata::cells
   cell_data$case <- NULL
@@ -80,8 +80,8 @@ if (rlang::is_installed("modeldata")) {
   # ----------------------------------------------------------------------------
   library(dplyr)
 
-  # Analysis of variance where `class` is the predictor data and the response
-  # is the numeric outcome data
+  # Analysis of variance where `chem_fp_*` are the predictors and the numeric
+  # `permeability` is the response
 
   permeability <-
     modeldata::permeability_qsar |>

@@ -81,15 +81,18 @@ if (rlang::is_installed("modeldata")) {
       avg_inten_ch_3
     )
 
+  # Random forests
   set.seed(42)
   cells_imp_rf_res <- score_imp_rf |>
     fit(class ~ ., data = cells_subset)
   cells_imp_rf_res@results
 
+  # Conditional random forests
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
     fit(class ~ ., data = cells_subset)
   cells_imp_rf_conditional_res@results
 
+  # Oblique random forests
   cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
     fit(class ~ ., data = cells_subset)
   cells_imp_rf_oblique_res@results

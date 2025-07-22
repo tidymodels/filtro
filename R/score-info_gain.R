@@ -124,14 +124,17 @@ score_sym_uncert <-
 #'       avg_inten_ch_3
 #'     )
 #'
+#'   # Information gain
 #'   cells_info_gain_res <- score_info_gain |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_info_gain_res@results
 #'
+#'   # Gain ratio
 #'   cells_gain_ratio_res <- score_gain_ratio |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_gain_ratio_res@results
 #'
+#'   # Symmetrical uncertainty
 #'   cells_sym_uncert_res <- score_sym_uncert |>
 #'     fit(class ~ ., data = cells_subset)
 #'   cells_sym_uncert_res@results

@@ -165,7 +165,13 @@ map_score_cross_tab <- function(data, predictor, outcome, calculating_fn) {
     return(NA_real_)
   }
 
-  res <- calculating_fn(predictor_col, outcome_col)
+  res <- try(
+    calculating_fn(predictor_col, outcome_col),
+    silent = TRUE
+  )
+  if (inherits(fit, "try-error")) {
+    res <- NA_real_
+  }
   res
 }
 

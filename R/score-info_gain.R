@@ -171,7 +171,14 @@ S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
 
-  imp <- get_info_gain(object, data = analysis_data, outcome = outcome)
+  imp <- try(
+    get_info_gain(object, data = analysis_data, outcome = outcome),
+    silent = TRUE
+  )
+
+  if (inherits(imp, "try-error")) {
+    imp <- NA_real_
+  }
 
   score <- imp$importance
   score[is.na(score)] <- 0

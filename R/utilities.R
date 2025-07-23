@@ -1,31 +1,3 @@
-#' Attach score result `results` to score object `score_obj` containig metadata
-#'
-#' @param x NULL
-#' @param results NULL
-#' @param ... NULL
-#'
-#' @export
-attach_score <- S7::new_generic(
-  "attach_score",
-  dispatch_args = "x",
-  function(x, results, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
-      cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
-      )
-    }
-
-    S7::S7_dispatch()
-  }
-)
-
-#' @noRd
-#' @export
-S7::method(attach_score, new_score_obj) <- function(x, results, ...) {
-  x@results <- results
-  x
-}
-
 # ------------------------------------------------------------------------------
 #' Arrange score result `results`
 #'

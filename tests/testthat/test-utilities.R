@@ -20,6 +20,10 @@ ames_aov_fstat_res |>
 
 # Show best score based on based on proportion of predictors
 
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
 ames_aov_pval_res@results
 ames_aov_pval_res |>
   filtro::show_best_score_prop(prop_terms = 0.2)
@@ -30,6 +34,10 @@ ames_aov_fstat_res |>
 
 # Show best score based on number of predictors
 
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
 ames_aov_pval_res@results
 ames_aov_pval_res |>
   filtro::show_best_score_num(num_terms = 2)
@@ -39,6 +47,10 @@ ames_aov_fstat_res |>
   filtro::show_best_score_num(num_terms = 2)
 
 # Show best score based on cutoff value
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
 ames_aov_pval_res@results
 ames_aov_pval_res |>
@@ -51,6 +63,10 @@ ames_aov_fstat_res |>
 # Show best score based on proportion of predictors with
 # optional cutoff value
 
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
 ames_aov_pval_res@results
 ames_aov_pval_res |>
   filtro::show_best_score_dual(prop_terms = 0.5)
@@ -62,6 +78,28 @@ ames_aov_pval_res |>
   filtro::show_best_score_dual(num_terms = 2)
 ames_aov_pval_res |>
   filtro::show_best_score_dual(prop_terms = 2, cutoff = 130)
+
+# Rank score based on min_rank()
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |> filtro::rank_best_score_min()
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |> filtro::rank_best_score_min()
+
+# Rank score based on dense_rank()
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |> filtro::rank_best_score_dense()
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |> filtro::rank_best_score_dense()
 
 skip()
 

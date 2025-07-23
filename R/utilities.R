@@ -255,71 +255,88 @@ S7::method(show_best_score_dual, class_score) <- function(
   results
 }
 
-# # ------------------------------------------------------------------------------
-# # #' Rank score result `results` based on min_rank (Need a better title) TODO
-# # #'
-# # #' @param x NULL
-# # #'
-# # #' @param ... NULL
-# # #'
-# # #' @export
-# # rank_score_min <- function(x, ...) {
-# #   UseMethod("rank_score_min")
-# # }
+# ------------------------------------------------------------------------------
+#' Rank score based on min_rank(), where tied values receive the same (smalles) rank
+#' and ranks are with gaps
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_best_score_min <- S7::new_generic(
+  "rank_best_score_min",
+  dispatch_args = "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, class_score)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+      )
+    }
 
-# # #' @noRd
-# # #' @export
-# # rank_score_min.default <- function(x, ...) {
-# #   cli::cli_abort(
-# #     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-# #   )
-# # }
+    S7::S7_dispatch()
+  }
+)
 
-# # #' @noRd
-# # #' @export
-# # rank_score_min.score_obj <- function(x, ..., target = NULL) {
-# #   # TODO Check if direction == target, add "need a target"
-# #   if (x$direction == "maximize") {
-# #     x$results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
-# #   } else if (x$direction == "minimize") {
-# #     x$results |> dplyr::mutate(rank = dplyr::min_rank((score)))
-# #   } # else if (x$direction == "target") { # TODO
-# #   #   x$results |> dplyr::arrange(abs(score - target))
-# #   # }
-# # }
+#' @noRd
+#' @export
+S7::method(rank_best_score_min, class_score) <- function(
+  x,
+  ...,
+  target = NULL
+) {
+  # TODO Check if direction == target, add "need a target"
 
-# # ------------------------------------------------------------------------------
-# # #' Rank score result `results` based on dense_rank (Need a better title)
-# # #'
-# # #' @param x NULL
-# # #'
-# # #' @param ... NULL
-# # #'
-# # #' @export
-# # rank_score_dense <- function(x, ...) {
-# #   UseMethod("rank_score_dense")
-# # }
+  # TODO Need to deal with NA
+  if (x@direction == "maximize") {
+    x@results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+  } else if (x@direction == "minimize") {
+    x@results |> dplyr::mutate(rank = dplyr::min_rank((score)))
+  } # else if (x@direction == "target") { # TODO
+  #   x@results |> dplyr::arrange(abs(score - target))
+  # }
+}
 
-# # #' @noRd
-# # #' @export
-# # rank_score_dense.default <- function(x, ...) {
-# #   cli::cli_abort(
-# #     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-# #   )
-# # }
+#' Rank score based on dense_rank(), where tied values receive the same rank
+#' and ranks are consecutive without gaps
+#'
+#' @param x NULL
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_best_score_dense <- S7::new_generic(
+  "rank_best_score_dense",
+  dispatch_args = "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, class_score)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+      )
+    }
 
-# # #' @noRd
-# # #' @export
-# # rank_score_dense.score_obj <- function(x, ..., target = NULL) {
-# #   # TODO Check if direction == target, add "need a target"
-# #   if (x$direction == "maximize") {
-# #     x$results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
-# #   } else if (x$direction == "minimize") {
-# #     x$results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
-# #   } # else if (x$direction == "target") { # TODO
-# #   #   x$results |> dplyr::arrange(abs(score - target))
-# #   # }
-# # }
+    S7::S7_dispatch()
+  }
+)
+
+#' @noRd
+#' @export
+S7::method(rank_best_score_dense, class_score) <- function(
+  x,
+  ...,
+  target = NULL
+) {
+  # TODO Check if direction == target, add "need a target"
+
+  # TODO Need to deal with NA
+  if (x@direction == "maximize") {
+    x@results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+  } else if (x@direction == "minimize") {
+    x@results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
+  } # else if (x@direction == "target") { # TODO
+  #   x@results |> dplyr::arrange(abs(score - target))
+  # }
+}
 
 # # ------------------------------------------------------------------------------
 # #' Construct an S7 subclass of base R's `list`

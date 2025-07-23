@@ -56,29 +56,29 @@ In cases where \code{\link[=cor]{cor()}} fail, the scoring proceeds silently, an
 a missing value is given for the score.
 }
 \examples{
-if (rlang::is_installed("modeldata")) {
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-  library(dplyr)
+library(dplyr)
 
-  ames_subset <- modeldata::ames |>
-    select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
+ames_subset <- modeldata::ames |>
+  select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
 
-  ames_cor_pearson_res <-
-    score_cor_pearson |>
-    fit(Sale_Price ~ ., data = ames_subset)
-  ames_cor_pearson_res@results
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
 
-  ames_cor_spearman_res <-
-    score_cor_spearman |>
-    fit(Sale_Price ~ ., data = ames_subset)
-  ames_cor_spearman_res@results
-}
+ames_cor_spearman_res <-
+  score_cor_spearman |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_spearman_res@results
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

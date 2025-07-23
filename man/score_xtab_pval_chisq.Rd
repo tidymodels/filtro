@@ -59,25 +59,25 @@ In cases where \code{\link[stats:chisq.test]{stats::chisq.test()}} or \code{\lin
 silently, and a missing value is given for the score.
 }
 \examples{
-if (rlang::is_installed("titanic")) {
+\dontshow{if (rlang::is_installed("titanic")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-  # Binary factor example
+# Binary factor example
 
-  library(titanic)
-  library(dplyr)
+library(titanic)
+library(dplyr)
 
-  titanic_subset <- titanic_train |>
-    mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
-    select(Survived, Pclass, Sex, Age, Fare, Embarked)
+titanic_subset <- titanic_train |>
+  mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
+  select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
-  titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
-    fit(Survived ~ ., data = titanic_subset)
-  titanic_xtab_pval_chisq_res@results
+titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+  fit(Survived ~ ., data = titanic_subset)
+titanic_xtab_pval_chisq_res@results
 
-  titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
-    fit(Survived ~ ., data = titanic_subset)
-  titanic_xtab_pval_fisher_res@results
-}
-  # TODO Add multiclass example
+titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
+  fit(Survived ~ ., data = titanic_subset)
+titanic_xtab_pval_fisher_res@results
+# TODO Add multiclass example
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

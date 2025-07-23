@@ -2,15 +2,15 @@
 % Please edit documentation in R/utilities.R
 \name{arrange_score}
 \alias{arrange_score}
-\title{Arrange score result \code{results}}
+\title{Arrange score}
 \usage{
 arrange_score(x, ...)
 }
 \arguments{
-\item{x}{NULL}
+\item{x}{A score class object.}
 
 \item{...}{NULL}
 }
 \description{
-Arrange score result \code{results}
+Arrange score
 }

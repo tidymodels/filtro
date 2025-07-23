@@ -1,21 +1,69 @@
-test_that("attach_score() is working for aov", {
-  skip("refactor arrange code for aov objects")
-  ames_subset <- helper_ames()
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
+# Arrange score
 
-  score_obj <- filtro::score_aov()
-  score_res <- filtro::get_scores_aov(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
-  ex.score_obj <- score_obj |> attach_score(score_res)
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  expect_equal(ex.score_obj@results, score_res)
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::arrange_score()
 
-  expect_snapshot(print(ex.score_obj@results)) # TODO Add to pass R CMD check
-})
+ames_aov_fstat_res <-
+  score_aov_fstat |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::arrange_score()
+
+# Show best score based on based on proportion of predictors
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_prop(prop_terms = 0.2)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_prop(prop_terms = 0.2)
+
+# Show best score based on number of predictors
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_num(num_terms = 2)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_num(num_terms = 2)
+
+# Show best score based on cutoff value
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_cutoff(cutoff = 130)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_cutoff(cutoff = 94.5)
+
+# Show best score based on proportion of predictors with
+# optional cutoff value
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 0.5)
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(num_terms = 2)
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 2, cutoff = 130)
+
+skip()
 
 test_that("arrange_score() is working for aov", {
   skip("refactor arrange code for aov objects")

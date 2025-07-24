@@ -85,7 +85,7 @@ show_best_desirability_prop(
 )
 
 # show_best_desirability_num
-show_best_desirability_num(scores_combined, maximize(pval))
+show_best_desirability_num(scores_combined, maximize(aov_pval))
 
 show_best_desirability_num(
   scores_combined,

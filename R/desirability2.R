@@ -7,21 +7,9 @@ show_best_desirability_prop <- function(
 ) {
   mtr <- x
   all_vars <- names(mtr)
-
   res <- desirability2::desirability(..., .use_data = TRUE)
-
   check_extra_vars(res, all_vars)
-
-  d_nms <- make_col_names(res)
-  for (i in seq_along(res@translated)) {
-    tmp <- try(rlang::eval_tidy(res@translated[[i]], mtr), silent = TRUE)
-    if (inherits(tmp, "try-error")) {
-      cli::cli_abort(
-        "An error occured when computing a desirability score: {tmp}."
-      )
-    }
-    mtr[[d_nms[i]]] <- tmp
-  }
+  mtr <- compute_desirability_scores(res, mtr)
 
   mtr <-
     mtr |>
@@ -33,6 +21,29 @@ show_best_desirability_prop <- function(
 }
 
 # ------------------------------------------------------------------------------
+show_best_desirability_num <- function(
+  x,
+  ...,
+  num_terms = 5,
+  eval_time = NULL
+) {
+  mtr <- x
+  all_vars <- names(mtr)
+  res <- desirability2::desirability(..., .use_data = TRUE)
+  check_extra_vars(res, all_vars)
+  mtr <- compute_desirability_scores(res, mtr)
+
+  mtr <-
+    mtr |>
+    dplyr::mutate(
+      .d_overall = d_overall(dplyr::across(dplyr::starts_with(".d_")))
+    ) |>
+    dplyr::slice_max(.d_overall, n = num_terms, with_ties = TRUE)
+  mtr
+}
+
+# ------------------------------------------------------------------------------
+# Helpers
 
 check_extra_vars <- function(res, all_vars) {
   d_vars <- sort(unique(unlist(res@variables)))
@@ -46,37 +57,7 @@ check_extra_vars <- function(res, all_vars) {
   }
 }
 
-make_col_names <- function(x) {
-  vars <- purrr::map_chr(x@variables, ~ paste0(.x, collapse = "_"))
-  fns <- purrr::map_chr(x@translated, ~ rlang::expr_deparse(.x[[1]]))
-  res <- purrr::map2_chr(fns, vars, ~ paste0(".", .x, "_", .y))
-  make.names(res, unique = TRUE)
-}
-
-# ------------------------------------------------------------------------------
-show_best_desirability_num <- function(
-  x,
-  ...,
-  num_terms = 5,
-  eval_time = NULL
-) {
-  mtr <- x
-  all_vars <- names(mtr)
-  # TODO filter on eval_time
-
-  res <- desirability2::desirability(..., .use_data = TRUE)
-
-  d_vars <- sort(unique(unlist(res@variables)))
-  extra_vars <- setdiff(d_vars, all_vars)
-  num_extras <- length(extra_vars)
-  if (num_extras > 0) {
-    cli::cli_abort(
-      "The desirability specification includes {num_extras} variable{?s} that
-      {?was/were} not collected: {.val {extra_vars}}."
-    )
-  }
-
-  # Make individual scores:
+compute_desirability_scores <- function(res, mtr) {
   d_nms <- make_col_names(res)
   for (i in seq_along(res@translated)) {
     tmp <- try(rlang::eval_tidy(res@translated[[i]], mtr), silent = TRUE)
@@ -87,14 +68,14 @@ show_best_desirability_num <- function(
     }
     mtr[[d_nms[i]]] <- tmp
   }
-
-  mtr <-
-    mtr |>
-    dplyr::mutate(
-      .d_overall = d_overall(dplyr::across(dplyr::starts_with(".d_")))
-    ) |>
-    dplyr::slice_max(.d_overall, n = num_terms, with_ties = TRUE)
   mtr
+}
+
+make_col_names <- function(x) {
+  vars <- purrr::map_chr(x@variables, ~ paste0(.x, collapse = "_"))
+  fns <- purrr::map_chr(x@translated, ~ rlang::expr_deparse(.x[[1]]))
+  res <- purrr::map2_chr(fns, vars, ~ paste0(".", .x, "_", .y))
+  make.names(res, unique = TRUE)
 }
 
 # # ------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{show_best_score_cutoff}
 \alias{show_best_score_cutoff}
-\title{Show best score based on based on cutoff value}
+\title{Show best score, based on based on cutoff value \emph{(singular)}}
 \usage{
 show_best_score_cutoff(x, ...)
 }
@@ -12,5 +12,5 @@ show_best_score_cutoff(x, ...)
 \item{...}{NULL}
 }
 \description{
-Show best score based on based on cutoff value
+Show best score, based on based on cutoff value \emph{(singular)}
 }

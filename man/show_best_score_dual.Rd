@@ -2,8 +2,8 @@
 % Please edit documentation in R/utilities.R
 \name{show_best_score_dual}
 \alias{show_best_score_dual}
-\title{Show best score based on number or proportion of predictors with
-optional cutoff value}
+\title{Show best score, based on number or proportion of predictors with
+optional cutoff value \emph{(singular)}}
 \usage{
 show_best_score_dual(x, ...)
 }
@@ -13,6 +13,6 @@ show_best_score_dual(x, ...)
 \item{...}{NULL}
 }
 \description{
-Show best score based on number or proportion of predictors with
-optional cutoff value
+Show best score, based on number or proportion of predictors with
+optional cutoff value \emph{(singular)}
 }

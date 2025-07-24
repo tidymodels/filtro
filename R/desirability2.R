@@ -1,15 +1,33 @@
 # ------------------------------------------------------------------------------
+#' Show best desirability scores, based on proportion of predictors *(plural)*
+#'
+#' Adapted from, and analogous to [desirability2::show_best_desirability()] that can
+#' simultaneously optimize multiple scores using desirability functions. This is a
+#' *plural* scores method. See [show_best_score_prop()] for *singular* score method.
+#'
+#' @param x A tibble. The results of [fill_safe_values()].
+#'
+#' @param ... NULL
+#' @param prop_terms A numeric value specifying the proportion
+#' of predictors to consider.
+#'
+#' @return [show_best_desirability_prop()] returns a tibble with `prop_terms`
+#' proportion of rows. When showing the results,
+#' the metrics are presented in "wide format" (one column per metric) and there
+#' are new columns for the corresponding desirability values (each starts with
+#' `.d_`).
+#'
+#' @export
 show_best_desirability_prop <- function(
   x,
   ...,
-  prop_terms = 0.99,
-  eval_time = NULL
+  prop_terms = 0.99
 ) {
   mtr <- x
   all_vars <- names(mtr)
   res <- desirability2::desirability(..., .use_data = TRUE)
-  check_extra_vars(res, all_vars)
-  mtr <- compute_desirability_scores(res, mtr)
+  check_extra_vars(res, all_vars = all_vars)
+  mtr <- compute_desirability_scores(res, mtr = mtr)
 
   mtr <-
     mtr |>
@@ -24,14 +42,13 @@ show_best_desirability_prop <- function(
 show_best_desirability_num <- function(
   x,
   ...,
-  num_terms = 5,
-  eval_time = NULL
+  num_terms = 5
 ) {
   mtr <- x
   all_vars <- names(mtr)
   res <- desirability2::desirability(..., .use_data = TRUE)
-  check_extra_vars(res, all_vars)
-  mtr <- compute_desirability_scores(res, mtr)
+  check_extra_vars(res, all_vars = all_vars)
+  mtr <- compute_desirability_scores(res, mtr = mtr)
 
   mtr <-
     mtr |>
@@ -77,6 +94,12 @@ make_col_names <- function(x) {
   res <- purrr::map2_chr(fns, vars, ~ paste0(".", .x, "_", .y))
   make.names(res, unique = TRUE)
 }
+
+# ------------------------------------------------------------------------------
+# TODO d_target() via target()
+
+# ------------------------------------------------------------------------------
+# TODO d_box() via constrain()
 
 # # ------------------------------------------------------------------------------
 # show_best_score_cutoff <- function(x, ..., cutoff = 0.01, eval_time = NULL) {

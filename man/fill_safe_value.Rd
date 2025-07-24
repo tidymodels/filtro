@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{fill_safe_value}
 \alias{fill_safe_value}
-\title{Fill safe value \emph{singular}}
+\title{Fill safe value \emph{(singular)}}
 \usage{
 fill_safe_value(x, ...)
 }

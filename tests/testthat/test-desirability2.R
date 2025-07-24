@@ -52,20 +52,31 @@ scores_combined <- class_score_list |>
 scores_combined
 
 # show_best_desirability_prop
-# Default prop_terms = 0.99 in order to compare item_selected()
-# Output for aov_pval is weird
-show_best_desirability_prop(scores_combined, maximize(aov_pval))
+# Default prop_terms = 0.99. Change it later.
+# TODO Output for aov_pval is weird. Inf is probably not a good idea for safe value.
+show_best_desirability_prop(scores_combined, prop_terms = 1, maximize(aov_pval))
 
 show_best_desirability_prop(
   scores_combined,
+  prop_terms = 1,
   maximize(cor_pearson, low = 0, high = 1)
 )
 
-show_best_desirability_prop(scores_combined, maximize(imp_rf))
+show_best_desirability_prop(
+  scores_combined,
+  prop_terms = 1,
+  target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+)
 
 show_best_desirability_prop(
   scores_combined,
-  maximize(aov_pval),
+  prop_terms = 1,
+  constrain(cor_pearson, low = 0.2, high = 1)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1)
 )
 
@@ -85,24 +96,25 @@ show_best_desirability_prop(
 )
 
 # show_best_desirability_num
+# Default num_terms = 5. Change it later.
 show_best_desirability_num(scores_combined, maximize(aov_pval))
 
 show_best_desirability_num(
   scores_combined,
-  maximize(aov_pval),
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1)
 )
 
 show_best_desirability_num(
   scores_combined,
-  maximize(aov_pval),
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
 show_best_desirability_num(
   scores_combined,
-  maximize(aov_pval),
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain)
@@ -111,15 +123,10 @@ show_best_desirability_num(
 show_best_desirability_num(
   scores_combined,
   num_terms = 2,
-  maximize(aov_pval),
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
-)
-
-show_best_desirability_num(
-  scores_combined,
-  maximize(cor_pearson)
 )
 
 # # show_best_score_cutoff

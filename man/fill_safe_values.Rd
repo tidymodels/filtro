@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{fill_safe_values}
 \alias{fill_safe_values}
-\title{Fill safe values \emph{plural}}
+\title{Fill safe values \emph{(plural)}}
 \usage{
 fill_safe_values(x, ...)
 }
@@ -12,7 +12,7 @@ fill_safe_values(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Wraps \code{\link[=bind_scores]{bind_scores()}} and fills in safe values for missing scores.
+Fills in safe values for missing scores, wrapped \code{\link[=bind_scores]{bind_scores()}}.
 This is a \emph{plural} scores method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} score method.
 }
 \examples{

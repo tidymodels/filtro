@@ -2,8 +2,8 @@
 % Please edit documentation in R/utilities.R
 \name{rank_best_score_min}
 \alias{rank_best_score_min}
-\title{Rank score based on min_rank(), where tied values receive the same (smalles) rank
-and ranks are with gaps}
+\title{Rank score based on \code{dplyr::min_rank()}, where tied values receive the
+same rank and ranks are with gaps \emph{(singular)}}
 \usage{
 rank_best_score_min(x, ...)
 }
@@ -13,6 +13,6 @@ rank_best_score_min(x, ...)
 \item{...}{NULL}
 }
 \description{
-Rank score based on min_rank(), where tied values receive the same (smalles) rank
-and ranks are with gaps
+Rank score based on \code{dplyr::min_rank()}, where tied values receive the
+same rank and ranks are with gaps \emph{(singular)}
 }

@@ -2,8 +2,8 @@
 % Please edit documentation in R/utilities.R
 \name{rank_best_score_dense}
 \alias{rank_best_score_dense}
-\title{Rank score based on dense_rank(), where tied values receive the same rank
-and ranks are consecutive without gaps}
+\title{Rank score based on \code{dplyr::dense_rank()}, where tied values receive the
+same rank and ranks are with gaps \emph{(singular)}}
 \usage{
 rank_best_score_dense(x, ...)
 }
@@ -13,6 +13,6 @@ rank_best_score_dense(x, ...)
 \item{...}{NULL}
 }
 \description{
-Rank score based on dense_rank(), where tied values receive the same rank
-and ranks are consecutive without gaps
+Rank score based on \code{dplyr::dense_rank()}, where tied values receive the
+same rank and ranks are with gaps \emph{(singular)}
 }

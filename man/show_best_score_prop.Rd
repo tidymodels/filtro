@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{show_best_score_prop}
 \alias{show_best_score_prop}
-\title{Show best score based on proportion of predictors}
+\title{Show best score, based on proportion of predictors \emph{(singular)}}
 \usage{
 show_best_score_prop(x, ...)
 }
@@ -12,5 +12,5 @@ show_best_score_prop(x, ...)
 \item{...}{NULL}
 }
 \description{
-Show best score based on proportion of predictors
+Show best score, based on proportion of predictors \emph{(singular)}
 }

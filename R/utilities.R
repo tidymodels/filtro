@@ -34,7 +34,7 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 }
 
 # ------------------------------------------------------------------------------
-#' Fill safe value *singular*
+#' Fill safe value *(singular)*
 #'
 #' Fills in safe value for missing score. This is a *singular* score method.
 #' See [fill_safe_values()] for *plural* scores method.
@@ -112,7 +112,7 @@ S7::method(fill_safe_value, class_score) <- function(x) {
 # }
 
 # ------------------------------------------------------------------------------
-#' Show best score based on proportion of predictors
+#' Show best score, based on proportion of predictors *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -158,7 +158,7 @@ S7::method(show_best_score_prop, class_score) <- function(
 
 
 # ------------------------------------------------------------------------------
-#' Show best score based on number of predictors
+#' Show best score, based on number of predictors *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -202,7 +202,7 @@ S7::method(show_best_score_num, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Show best score based on based on cutoff value
+#' Show best score, based on based on cutoff value *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -246,8 +246,8 @@ S7::method(show_best_score_cutoff, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Show best score based on number or proportion of predictors with
-#' optional cutoff value
+#' Show best score, based on number or proportion of predictors with
+#' optional cutoff value *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -299,8 +299,8 @@ S7::method(show_best_score_dual, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Rank score based on min_rank(), where tied values receive the same (smalles) rank
-#' and ranks are with gaps
+#' Rank score based on `dplyr::min_rank()`, where tied values receive the
+#' same rank and ranks are with gaps *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -340,8 +340,9 @@ S7::method(rank_best_score_min, class_score) <- function(
   # }
 }
 
-#' Rank score based on dense_rank(), where tied values receive the same rank
-#' and ranks are consecutive without gaps
+# ------------------------------------------------------------------------------
+#' Rank score based on `dplyr::dense_rank()`, where tied values receive the
+#' same rank and ranks are with gaps *(singular)*
 #'
 #' @param x A score class object.
 #'
@@ -481,9 +482,9 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 }
 
 # ------------------------------------------------------------------------------
-#' Fill safe values *plural*
+#' Fill safe values *(plural)*
 #'
-#' Wraps [bind_scores()] and fills in safe values for missing scores.
+#' Fills in safe values for missing scores, wrapped [bind_scores()].
 #' This is a *plural* scores method. See [fill_safe_value()] for *singular* score method.
 #'
 #' @param x A list.

@@ -129,21 +129,32 @@ show_best_desirability_num(
   maximize(infogain),
 )
 
-# # show_best_score_cutoff
-# show_best_score_cutoff(scores_combined, maximize(aov_pval))
+# show_best_desirability_cutoff
+show_best_desirability_cutoff(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1)
+)
 
-# show_best_score_cutoff(
-#   scores_combined,
-#   maximize(aov_pval),
-#   maximize(cor_pearson, low = 0, high = 1)
-# )
+show_best_desirability_cutoff(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
 
-# show_best_score_cutoff(
-#   scores_combined,
-#   maximize(aov_pval),
-#   maximize(cor_pearson, low = 0, high = 1),
-#   maximize(imp_rf)
-# )
+show_best_desirability_cutoff(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
+
+show_best_desirability_cutoff(
+  scores_combined,
+  cutoff = 0.5,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
 
 # # show_best_score_dual
 # # TODO Rewrite show_best_score_dual

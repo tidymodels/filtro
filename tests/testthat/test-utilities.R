@@ -101,6 +101,53 @@ ames_aov_pval_res |> filtro::rank_best_score_dense()
 ames_aov_fstat_res@results
 ames_aov_fstat_res |> filtro::rank_best_score_dense()
 
+# Construct an S7 subclass of base R's `list` for Method Dispatch
+# Bind all `class_score` objects, including their associated metadata and scores
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# forest imp
+score_imp_rf_reg <- score_imp_rf
+score_imp_rf_reg@mode <- "regression"
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+
+# info gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+# Bind scores
+class_score_list |> bind_scores()
+
 skip()
 
 test_that("arrange_score() is working for aov", {

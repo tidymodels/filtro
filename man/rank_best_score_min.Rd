@@ -8,7 +8,7 @@ and ranks are with gaps}
 rank_best_score_min(x, ...)
 }
 \arguments{
-\item{x}{NULL}
+\item{x}{A score class object.}
 
 \item{...}{NULL}
 }

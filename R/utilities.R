@@ -36,18 +36,18 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 # # ------------------------------------------------------------------------------
 # #' Transform score
 # #'
-# #' @param x NULL
+# #' @param x A score class object.
 # #'
 # #' @param ... NULL
 # #'
 # #' @export
-# trans_score <- S7::new_generic(
-#   "trans_score",
+# transform_score <- S7::new_generic(
+#   "transform_score",
 #   dispatch_args = "x",
 #   function(x, ...) {
-#     if (!S7::S7_inherits(x, new_score_obj)) {
+#     if (!S7::S7_inherits(x, class_score)) {
 #       cli::cli_abort(
-#         "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+#         "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
 #       )
 #     }
 
@@ -55,10 +55,7 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 #   }
 # )
 
-# #' @noRd
-# #' @export
-# S7::method(trans_score, new_score_obj) <- function(x, ...) {
-#   # TODO Figure out the basic structure first then come back for this. Have user supply direction =, if they use trans.
+# S7::method(transform_score, class_score) <- function(x, ...) {
 #   if (is.null(x@trans)) {
 #     trans <- scales::transform_identity()
 #   } else {
@@ -206,7 +203,7 @@ S7::method(show_best_score_cutoff, class_score) <- function(
 #' Show best score based on number or proportion of predictors with
 #' optional cutoff value
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
@@ -259,7 +256,7 @@ S7::method(show_best_score_dual, class_score) <- function(
 #' Rank score based on min_rank(), where tied values receive the same (smalles) rank
 #' and ranks are with gaps
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
@@ -300,7 +297,7 @@ S7::method(rank_best_score_min, class_score) <- function(
 #' Rank score based on dense_rank(), where tied values receive the same rank
 #' and ranks are consecutive without gaps
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
@@ -338,58 +335,107 @@ S7::method(rank_best_score_dense, class_score) <- function(
   # }
 }
 
+# ------------------------------------------------------------------------------
+#' Construct an S7 subclass of base R's `list` for Method Dispatch
+#'
+#' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
+#' [bind_scores()] and [fill_safe_values()].
+#'
+#' @export
+class_score_list <- S7::new_S3_class("list")
+
+#' Bind all `class_score` objects, including their associated metadata and scores
+#'
+#' @param x A score class object.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # anova pval
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # pearson cor
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # forest imp
+#' score_imp_rf_reg <- score_imp_rf
+#' score_imp_rf_reg@mode <- "regression"
+#' set.seed(42)
+#' ames_imp_rf_reg_res <-
+#'   score_imp_rf_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_imp_rf_reg_res@results
+#'
+#' # info gain
+#' score_info_gain_reg <- score_info_gain
+#' score_info_gain_reg@mode <- "regression"
+#'
+#' ames_info_gain_reg_res <-
+#'   score_info_gain_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_info_gain_reg_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res,
+#'   ames_imp_rf_reg_res,
+#'   ames_info_gain_reg_res
+#' )
+#'
+#' # Bind scores
+#' class_score_list |> bind_scores()
+#' @export
+bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
+
+#' @noRd
+#' @export
+S7::method(bind_scores, class_score_list) <- function(x) {
+  length_x <- length(x)
+  if (length_x < 2) {
+    cli::cli_abort(
+      "{.arg x} must contain at least two elements"
+    )
+  } else {
+    # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
+    score_set <- x[[1]]@results
+    for (i in 2:length_x) {
+      score_set <- dplyr::full_join(
+        score_set,
+        x[[i]]@results,
+        by = c("name", "score", "outcome", "predictor")
+      )
+    }
+  }
+
+  score_set <- score_set |>
+    tidyr::pivot_wider(names_from = name, values_from = score)
+  score_set
+}
+
 # # ------------------------------------------------------------------------------
-# #' Construct an S7 subclass of base R's `list`
-# #'
-# #' Output an S7 subclass of S3 base R's `list`, used in method dispatch for
-# #' [bind_scores()] and [fill_safe_values()].
-# #'
-# #' @export
-# score_list <- S7::new_S3_class("list")
-
-# #' Bind all metadata `score_obj` and score result `results`.
-# #'
-# #' @param x A list where each element is a score object of class `score_obj`.
-# #' @param ... Further arguments passed to or from other methods.
-# #'
-# #' @export
-# bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
-
-# #' @noRd
-# #' @export
-# #'
-# #' @examples
-# #' # Create a list of `score_obj`
-# #' # Bind scores
-# #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
-# #' score_obj_list |> bind_scores()
-# S7::method(bind_scores, score_list) <- function(x) {
-#   length_x <- length(x)
-#   if (length_x < 2) {
-#     cli::cli_abort(
-#       "{.arg x} must contain at least two elements"
-#     )
-#   } else {
-#     # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
-#     score_set <- x[[1]]@results
-#     for (i in 2:length_x) {
-#       score_set <- dplyr::full_join(
-#         score_set,
-#         x[[i]]@results,
-#         by = c("name", "score", "outcome", "predictor")
-#       )
-#     }
-#   }
-
-#   score_set <- score_set |>
-#     tidyr::pivot_wider(names_from = name, values_from = score)
-
-#   #class(score_set) <- c("score_set", class(score_set)) TODO Check with desirability2
-#   score_set
-# }
-
-# # ------------------------------------------------------------------------------
-# #' Fill safe values.
+# #' Fill safe values
 # #'
 # #' @param x A list where each element is a score object of class `score_obj`.
 # #' @param ... Further arguments passed to or from other methods.

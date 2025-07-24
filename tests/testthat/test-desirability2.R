@@ -1,5 +1,5 @@
 skip()
-# TODO Write these informal tests as formal tests after S7 refactor
+
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -42,18 +42,26 @@ class_score_list <- list(
   ames_info_gain_reg_res
 )
 
-# Bind scores
-class_score_list |> bind_scores()
-
 # Fill safe values
-class_score_list |> fill_safe_values()
-
-scores_combined <- class_score_list |> filtro::fill_safe_values()
-scores_combined <- scores_combined |> dplyr::select(-outcome) # TODO Remove this after removing outcome from score-*.R
+scores_combined <- class_score_list |>
+  filtro::fill_safe_values() |>
+  # TODO Write a helper at current line to transform scores if needed,
+  # e.g., abs(cor_*), max(roc_auc, 1 - roc_auc)
+  # TODO Remove the next line after removing outcome from score-*.R
+  dplyr::select(-outcome)
+scores_combined
 
 # show_best_desirability_prop
 # Default prop_terms = 0.99 in order to compare item_selected()
+# Output for aov_pval is weird
 show_best_desirability_prop(scores_combined, maximize(aov_pval))
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1)
+)
+
+show_best_desirability_prop(scores_combined, maximize(imp_rf))
 
 show_best_desirability_prop(
   scores_combined,
@@ -63,9 +71,17 @@ show_best_desirability_prop(
 
 show_best_desirability_prop(
   scores_combined,
-  maximize(aov_pval),
+  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  #maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
 )
 
 # show_best_desirability_num
@@ -106,60 +122,60 @@ show_best_desirability_num(
   maximize(cor_pearson)
 )
 
-# show_best_score_cutoff
-show_best_score_cutoff(scores_combined, maximize(aov_pval))
+# # show_best_score_cutoff
+# show_best_score_cutoff(scores_combined, maximize(aov_pval))
 
-show_best_score_cutoff(
-  scores_combined,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1)
-)
+# show_best_score_cutoff(
+#   scores_combined,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1)
+# )
 
-show_best_score_cutoff(
-  scores_combined,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+# show_best_score_cutoff(
+#   scores_combined,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1),
+#   maximize(imp_rf)
+# )
 
-# show_best_score_dual
-# TODO Rewrite show_best_score_dual
-show_best_score_dual(scores_combined, maximize(aov_pval))
+# # show_best_score_dual
+# # TODO Rewrite show_best_score_dual
+# show_best_score_dual(scores_combined, maximize(aov_pval))
 
-show_best_score_dual(
-  scores_combined,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1)
-)
+# show_best_score_dual(
+#   scores_combined,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1)
+# )
 
-show_best_score_dual(
-  scores_combined,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+# show_best_score_dual(
+#   scores_combined,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1),
+#   maximize(imp_rf)
+# )
 
-show_best_score_dual(
-  scores_combined,
-  cutoff = 0.274,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+# show_best_score_dual(
+#   scores_combined,
+#   cutoff = 0.274,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1),
+#   maximize(imp_rf)
+# )
 
-show_best_score_dual(
-  scores_combined,
-  prop_terms = 0.5,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+# show_best_score_dual(
+#   scores_combined,
+#   prop_terms = 0.5,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1),
+#   maximize(imp_rf)
+# )
 
-show_best_score_dual(
-  scores_combined,
-  prop_terms = 0.5,
-  cutoff = 0.274,
-  maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+# show_best_score_dual(
+#   scores_combined,
+#   prop_terms = 0.5,
+#   cutoff = 0.274,
+#   maximize(aov_pval),
+#   maximize(cor_pearson, low = 0, high = 1),
+#   maximize(imp_rf)
+# )

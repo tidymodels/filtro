@@ -1,160 +1,165 @@
 skip()
 # TODO Write these informal tests as formal tests after S7 refactor
-
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-score_obj_aov <- filtro::score_aov(score_type = "pval")
-score_res_aov <- filtro::get_scores_aov(
-  score_obj_aov,
-  data = ames_subset,
-  outcome = "Sale_Price"
-)
-score_obj_aov <- score_obj_aov |> attach_score(score_res_aov)
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
 
-score_obj_cor <- filtro::score_cor()
-score_res_cor <- filtro::get_scores_cor(
-  score_obj_cor,
-  data = ames_subset,
-  outcome = "Sale_Price"
-)
-score_obj_cor <- score_obj_cor |> filtro::attach_score(score_res_cor)
+# cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
 
-score_obj_imp <- filtro::score_forest_imp(mode = "regression")
-score_res_imp <- get_scores_forest_importance(
-  score_obj_imp,
-  data = ames_subset,
-  outcome = "Sale_Price"
-)
-score_obj_imp <- score_obj_imp |> filtro::attach_score(score_res_imp)
+# forest imp
+score_imp_rf_reg <- score_imp_rf
+score_imp_rf_reg@mode <- "regression"
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
 
-score_obj_info <- score_info_gain(mode = "regression")
-score_res_info <- get_scores_info_gain(
-  score_obj_info,
-  data = ames_subset,
-  outcome = "Sale_Price"
-)
-score_obj_info <- score_obj_info |> filtro::attach_score(score_res_info)
+# info gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
 
-score_obj_list <- list(
-  score_obj_aov,
-  score_obj_cor,
-  score_obj_imp,
-  score_obj_info
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
 )
 
-scores_combined <- score_obj_list |> filtro::fill_safe_values()
+# Bind scores
+class_score_list |> bind_scores()
+
+# Fill safe values
+class_score_list |> fill_safe_values()
+
+scores_combined <- class_score_list |> filtro::fill_safe_values()
 scores_combined <- scores_combined |> dplyr::select(-outcome) # TODO Remove this after removing outcome from score-*.R
 
-# prop_selected
+# show_best_desirability_prop
 # Default prop_terms = 0.99 in order to compare item_selected()
-prop_selected(scores_combined, maximize(pval))
+show_best_desirability_prop(scores_combined, maximize(aov_pval))
 
-prop_selected(
+show_best_desirability_prop(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1)
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1)
 )
 
-prop_selected(
+show_best_desirability_prop(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-# num_selected
-num_selected(scores_combined, maximize(pval))
+# show_best_desirability_num
+show_best_desirability_num(scores_combined, maximize(pval))
 
-num_selected(
+show_best_desirability_num(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1)
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1)
 )
 
-num_selected(
+show_best_desirability_num(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-num_selected(
+show_best_desirability_num(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain)
 )
 
-num_selected(
+show_best_desirability_num(
   scores_combined,
   num_terms = 2,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
 )
 
-num_selected(
+show_best_desirability_num(
   scores_combined,
-  maximize(pearson)
+  maximize(cor_pearson)
 )
 
-# cutoff_selected
-cutoff_selected(scores_combined, maximize(pval))
+# show_best_score_cutoff
+show_best_score_cutoff(scores_combined, maximize(aov_pval))
 
-cutoff_selected(
+show_best_score_cutoff(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1)
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1)
 )
 
-cutoff_selected(
+show_best_score_cutoff(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-# dual_selected()
-dual_selected(scores_combined, maximize(pval))
+# show_best_score_dual
+# TODO Rewrite show_best_score_dual
+show_best_score_dual(scores_combined, maximize(aov_pval))
 
-dual_selected(
+show_best_score_dual(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1)
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1)
 )
 
-dual_selected(
+show_best_score_dual(
   scores_combined,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-dual_selected(
+show_best_score_dual(
   scores_combined,
   cutoff = 0.274,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-dual_selected(
+show_best_score_dual(
   scores_combined,
   prop_terms = 0.5,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
-dual_selected(
+show_best_score_dual(
   scores_combined,
   prop_terms = 0.5,
   cutoff = 0.274,
-  maximize(pval),
-  maximize(pearson, low = 0, high = 1),
+  maximize(aov_pval),
+  maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )

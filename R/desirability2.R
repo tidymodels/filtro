@@ -1,6 +1,10 @@
-# Adapted from show_best_desirability() in desirability2's tune.R
-# TODO Document this
-prop_selected <- function(x, ..., prop_terms = 0.99, eval_time = NULL) {
+# ------------------------------------------------------------------------------
+show_best_desirability_prop <- function(
+  x,
+  ...,
+  prop_terms = 0.99,
+  eval_time = NULL
+) {
   mtr <- x
   all_vars <- names(mtr)
 
@@ -44,9 +48,13 @@ make_col_names <- function(x) {
   make.names(res, unique = TRUE)
 }
 
-# Adapted from show_best_desirability() in desirability2's tune.R
-# TODO Document this
-num_selected <- function(x, ..., num_terms = 5, eval_time = NULL) {
+# ------------------------------------------------------------------------------
+show_best_desirability_num <- function(
+  x,
+  ...,
+  num_terms = 5,
+  eval_time = NULL
+) {
   mtr <- x
   all_vars <- names(mtr)
   # TODO filter on eval_time
@@ -84,7 +92,8 @@ num_selected <- function(x, ..., num_terms = 5, eval_time = NULL) {
   mtr
 }
 
-cutoff_selected <- function(x, ..., cutoff = 0.01, eval_time = NULL) {
+# ------------------------------------------------------------------------------
+show_best_score_cutoff <- function(x, ..., cutoff = 0.01, eval_time = NULL) {
   mtr <- x
   all_vars <- names(mtr)
   # TODO filter on eval_time
@@ -122,7 +131,8 @@ cutoff_selected <- function(x, ..., cutoff = 0.01, eval_time = NULL) {
   mtr
 }
 
-dual_selected <- function(
+# ------------------------------------------------------------------------------
+show_best_score_dual <- function(
   x,
   ...,
   prop_terms = 0.99,

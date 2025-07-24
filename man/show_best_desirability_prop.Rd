@@ -22,7 +22,7 @@ are new columns for the corresponding desirability values (each starts with
 \code{.d_}).
 }
 \description{
-analogous to, and adapted from \code{\link[desirability2:show_best_desirability]{desirability2::show_best_desirability()}} that can
+Analogous to, and adapted from \code{\link[desirability2:show_best_desirability]{desirability2::show_best_desirability()}} that can
 simultaneously optimize multiple scores using desirability functions.
 See also \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} scoring method.
 }

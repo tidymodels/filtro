@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 #' Show best desirability scores, based on proportion of predictors *(plural)*
 #'
-#' analogous to, and adapted from [desirability2::show_best_desirability()] that can
+#' Analogous to, and adapted from [desirability2::show_best_desirability()] that can
 #' simultaneously optimize multiple scores using desirability functions.
 #' See also [show_best_score_prop()] for *singular* scoring method.
 #'

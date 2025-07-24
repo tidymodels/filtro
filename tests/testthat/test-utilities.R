@@ -148,6 +148,9 @@ class_score_list <- list(
 # Bind scores
 class_score_list |> bind_scores()
 
+# Fill safe values
+class_score_list |> fill_safe_values()
+
 skip()
 
 test_that("arrange_score() is working for aov", {

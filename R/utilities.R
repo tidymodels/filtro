@@ -434,37 +434,89 @@ S7::method(bind_scores, class_score_list) <- function(x) {
   score_set
 }
 
-# # ------------------------------------------------------------------------------
-# #' Fill safe values
-# #'
-# #' @param x A list where each element is a score object of class `score_obj`.
-# #' @param ... Further arguments passed to or from other methods.
-# #'
-# #' @export
-# fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
+# ------------------------------------------------------------------------------
+#' Fill safe values
+#'
+#' Wraps [bind_scores()] and fills in safe values for missing scores.
+#'
+#' @param x A score class object.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # anova pval
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # pearson cor
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # forest imp
+#' score_imp_rf_reg <- score_imp_rf
+#' score_imp_rf_reg@mode <- "regression"
+#' set.seed(42)
+#' ames_imp_rf_reg_res <-
+#'   score_imp_rf_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_imp_rf_reg_res@results
+#'
+#' # info gain
+#' score_info_gain_reg <- score_info_gain
+#' score_info_gain_reg@mode <- "regression"
+#'
+#' ames_info_gain_reg_res <-
+#'   score_info_gain_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_info_gain_reg_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res,
+#'   ames_imp_rf_reg_res,
+#'   ames_info_gain_reg_res
+#' )
+#'
+#' # Fill safe values
+#' class_score_list |> fill_safe_values()
+#' @export
+fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 
-# #' @noRd
-# #' @export
-# #'
-# #' @examples
-# #' # Create a list of `score_obj`
-# #' # Fill in safe values
-# #' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
-# #' score_obj_list |> fill_safe_values()
-# S7::method(fill_safe_values, score_list) <- function(x) {
-#   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
-#   score_set <- bind_scores(x)
-#   for (i in 1:length(x)) {
-#     method_name <- x[[i]]@score_type
-#     fallback_val <- x[[i]]@fallback_value
-#     is_na_score <- is.na(score_set[[method_name]])
-#     score_set[[method_name]][is_na_score] <- fallback_val
-#   }
-#   score_set
-# }
+#' @noRd
+#' @export
+S7::method(fill_safe_values, class_score_list) <- function(x) {
+  # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
+  score_set <- bind_scores(x)
+  for (i in 1:length(x)) {
+    method_name <- x[[i]]@score_type
+    fallback_val <- x[[i]]@fallback_value
+    is_na_score <- is.na(score_set[[method_name]])
+    score_set[[method_name]][is_na_score] <- fallback_val
+  }
+  score_set
+}
 
 # # TODO Drop outcome column
-# # TODO show_best_desirability_score_*
 # # TODO rank_desirability_score_*
 # # TODO filter_desirability_score_*
 

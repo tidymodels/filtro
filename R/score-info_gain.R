@@ -30,7 +30,7 @@ class_score_info_gain <- S7::new_class(
 #' To apply the filter on data, you would use the [fit()] method:
 #'
 #' \preformatted{
-#'   fit(score_info_gain, formula, data)
+#' fit(score_info_gain, formula, data)
 #' }
 #'
 #' See the Examples section below.
@@ -107,62 +107,60 @@ score_sym_uncert <-
 #' name from the results. In cases like these, a score of 0 is assigned to the
 #' missing predictors.
 #'
-#' @examples
-#' if (rlang::is_installed("modeldata")) {
+#' @examples rlang::is_installed("modeldata")
 #'
-#'   library(dplyr)
+#' library(dplyr)
 #'
-#'   # Entropy-based filter for classification tasks
+#' # Entropy-based filter for classification tasks
 #'
-#'   cells_subset <- modeldata::cells |>
-#'     dplyr::select(
-#'       class,
-#'       angle_ch_1,
-#'       area_ch_1,
-#'       avg_inten_ch_1,
-#'       avg_inten_ch_2,
-#'       avg_inten_ch_3
-#'     )
+#' cells_subset <- modeldata::cells |>
+#'   dplyr::select(
+#'     class,
+#'     angle_ch_1,
+#'     area_ch_1,
+#'     avg_inten_ch_1,
+#'     avg_inten_ch_2,
+#'     avg_inten_ch_3
+#'   )
 #'
-#'   # Information gain
-#'   cells_info_gain_res <- score_info_gain |>
-#'     fit(class ~ ., data = cells_subset)
-#'   cells_info_gain_res@results
+#' # Information gain
+#' cells_info_gain_res <- score_info_gain |>
+#'   fit(class ~ ., data = cells_subset)
+#' cells_info_gain_res@results
 #'
-#'   # Gain ratio
-#'   cells_gain_ratio_res <- score_gain_ratio |>
-#'     fit(class ~ ., data = cells_subset)
-#'   cells_gain_ratio_res@results
+#' # Gain ratio
+#' cells_gain_ratio_res <- score_gain_ratio |>
+#'   fit(class ~ ., data = cells_subset)
+#' cells_gain_ratio_res@results
 #'
-#'   # Symmetrical uncertainty
-#'   cells_sym_uncert_res <- score_sym_uncert |>
-#'     fit(class ~ ., data = cells_subset)
-#'   cells_sym_uncert_res@results
+#' # Symmetrical uncertainty
+#' cells_sym_uncert_res <- score_sym_uncert |>
+#'   fit(class ~ ., data = cells_subset)
+#' cells_sym_uncert_res@results
 #'
-#'   # ----------------------------------------------------------------------------
+#' # ----------------------------------------------------------------------------
 #'
-#'   # Entropy-based filter for regression tasks
+#' # Entropy-based filter for regression tasks
 #'
-#'   ames_subset <- modeldata::ames |>
-#'     dplyr::select(
-#'       Sale_Price,
-#'       MS_SubClass,
-#'       MS_Zoning,
-#'       Lot_Frontage,
-#'       Lot_Area,
-#'       Street
-#'     )
-#'   ames_subset <- ames_subset |>
-#'     dplyr::mutate(Sale_Price = log10(Sale_Price))
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
 #'
-#'   regression_task <- score_info_gain
-#'   regression_task@mode <- "regression"
+#' regression_task <- score_info_gain
+#' regression_task@mode <- "regression"
 #'
-#'   ames_info_gain_regression_task_res <-
-#'     regression_task |>
-#'     fit(Sale_Price ~ ., data = ames_subset)
-#'   ames_info_gain_regression_task_res@results
-#' }
+#' ames_info_gain_regression_task_res <-
+#'   regression_task |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_info_gain_regression_task_res@results
 #' @export
 S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

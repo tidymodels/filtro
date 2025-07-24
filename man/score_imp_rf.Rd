@@ -65,63 +65,63 @@ name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.
 }
 \examples{
-if (rlang::is_installed("modeldata")) {
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-  library(dplyr)
+library(dplyr)
 
-  # Random forests for classification task
+# Random forests for classification task
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2,
-      avg_inten_ch_3
-    )
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
 
-  # Random forest
-  set.seed(42)
-  cells_imp_rf_res <- score_imp_rf |>
-    fit(class ~ ., data = cells_subset)
-  cells_imp_rf_res@results
+# Random forest
+set.seed(42)
+cells_imp_rf_res <- score_imp_rf |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_res@results
 
-  # Conditional random forest
-  cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(class ~ ., data = cells_subset)
-  cells_imp_rf_conditional_res@results
+# Conditional random forest
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_conditional_res@results
 
-  # Oblique random forest
-  cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
-    fit(class ~ ., data = cells_subset)
-  cells_imp_rf_oblique_res@results
+# Oblique random forest
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset)
+cells_imp_rf_oblique_res@results
 
-  # ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
-  # Random forests for regression task
+# Random forests for regression task
 
-  ames_subset <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  regression_task <- score_imp_rf
-  regression_task@mode <- "regression"
+regression_task <- score_imp_rf
+regression_task@mode <- "regression"
 
-  set.seed(42)
-  ames_imp_rf_regression_task_res <-
-    regression_task |>
-    fit(Sale_Price ~ ., data = ames_subset)
-  ames_imp_rf_regression_task_res@results
-  # TODO Add example of how to change trees, mtry, min_n, seed
-}
+set.seed(42)
+ames_imp_rf_regression_task_res <-
+  regression_task |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_regression_task_res@results
+# TODO Add example of how to change trees, mtry, min_n, seed
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

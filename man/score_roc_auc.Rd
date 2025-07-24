@@ -53,48 +53,48 @@ In cases where \code{\link[pROC:roc]{pROC::roc()}} fail, the scoring proceeds si
 a missing value is given for the score.
 }
 \examples{
-if (rlang::is_installed("modeldata")) {
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-  library(dplyr)
+library(dplyr)
 
-  # ROC AUC where the numeric predictors are the predictors and
-  # `class` is the class outcome/response
+# ROC AUC where the numeric predictors are the predictors and
+# `class` is the class outcome/response
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2,
-      avg_inten_ch_3
-    )
+cells_subset <- modeldata::cells |>
+  dplyr::select(
+    class,
+    angle_ch_1,
+    area_ch_1,
+    avg_inten_ch_1,
+    avg_inten_ch_2,
+    avg_inten_ch_3
+  )
 
-  cells_roc_auc_res <- score_roc_auc |>
-    fit(class ~ ., data = cells_subset)
-  cells_roc_auc_res@results
+cells_roc_auc_res <- score_roc_auc |>
+  fit(class ~ ., data = cells_subset)
+cells_roc_auc_res@results
 
-  # ----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
-  # ROC AUC where `Sale_Price` is the numeric predictor and the class predictors
-  # are the outcomes/responses
+# ROC AUC where `Sale_Price` is the numeric predictor and the class predictors
+# are the outcomes/responses
 
-  ames_subset <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  ames_roc_auc_res <- score_roc_auc |>
-    fit(Sale_Price ~ ., data = ames_subset)
-  ames_roc_auc_res@results
-}
-  # TODO Add multiclass example
+ames_roc_auc_res <- score_roc_auc |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_roc_auc_res@results
+# TODO Add multiclass example
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

@@ -82,31 +82,29 @@ score_cor_spearman <-
 #' In cases where [cor()] fail, the scoring proceeds silently, and
 #' a missing value is given for the score.
 #'
-#' @examples
-#' if (rlang::is_installed("modeldata")) {
+#' @examplesIf rlang::is_installed("modeldata")
 #'
-#'   library(dplyr)
+#' library(dplyr)
 #'
-#'   ames_subset <- modeldata::ames |>
-#'     select(
-#'       Sale_Price,
-#'       MS_SubClass,
-#'       MS_Zoning,
-#'       Lot_Frontage,
-#'       Lot_Area,
-#'       Street
-#'     )
+#' ames_subset <- modeldata::ames |>
+#'   select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
 #'
-#'   ames_cor_pearson_res <-
-#'     score_cor_pearson |>
-#'     fit(Sale_Price ~ ., data = ames_subset)
-#'   ames_cor_pearson_res@results
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
 #'
-#'   ames_cor_spearman_res <-
-#'     score_cor_spearman |>
-#'     fit(Sale_Price ~ ., data = ames_subset)
-#'   ames_cor_spearman_res@results
-#' }
+#' ames_cor_spearman_res <-
+#'   score_cor_spearman |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_spearman_res@results
 #' @export
 S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

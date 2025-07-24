@@ -59,50 +59,49 @@ In cases where \code{\link[=lm]{lm()}} or \code{\link[=anova]{anova()}} fail, th
 a missing value is given for the score.
 }
 \examples{
-if (rlang::is_installed("modeldata")) {
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# Analysis of variance where `class` is the class predictor and the numeric
+# predictors are the outcomes/responses
 
-  # Analysis of variance where `class` is the class predictor and the numeric
-  # predictors are the outcomes/responses
+cell_data <- modeldata::cells
+cell_data$case <- NULL
 
-  cell_data <- modeldata::cells
-  cell_data$case <- NULL
+cell_p_val_res <-
+  score_aov_pval |>
+  fit(class ~ ., data = cell_data)
+cell_p_val_res@results
 
-  cell_p_val_res <-
-    score_aov_pval |>
-    fit(class ~ ., data = cell_data)
-  cell_p_val_res@results
+cell_t_stat_res <-
+  score_aov_fstat |>
+  fit(class ~ ., data = cell_data)
+cell_t_stat_res@results
 
-  cell_t_stat_res <-
-    score_aov_fstat |>
-    fit(class ~ ., data = cell_data)
-  cell_t_stat_res@results
+# ---------------------------------------------------------------------------
+library(dplyr)
 
-  # ----------------------------------------------------------------------------
-  library(dplyr)
+# Analysis of variance where `chem_fp_*` are the class predictors and
+# `permeability` is the numeric outcome/response
 
-  # Analysis of variance where `chem_fp_*` are the class predictors and `permeability`
-  # is the numeric outcome/response
+permeability <-
+  modeldata::permeability_qsar |>
+  # Make the problem a little smaller for time; use 50 predictors
+  select(1:51) |>
+  # Make the binary predictor columns into factors
+  mutate(across(starts_with("chem_fp"), as.factor))
 
-  permeability <-
-    modeldata::permeability_qsar |>
-    # Make the problem a little smaller for time; use 50 predictors
-    select(1:51) |>
-    # Make the binary predictor columns into factors
-    mutate(across(starts_with("chem_fp"), as.factor))
+perm_p_val_res <-
+  score_aov_pval |>
+  fit(permeability ~ ., data = permeability)
+perm_p_val_res@results
 
-  perm_p_val_res <-
-    score_aov_pval |>
-    fit(permeability ~ ., data = permeability)
-  perm_p_val_res@results
+# Note that some `lm()` calls failed and are given NA score values. For
+# example:
+table(permeability$chem_fp_0007)
 
-  # Note that some `lm()` calls failed and are given NA score values. For
-  # example:
-  table(permeability$chem_fp_0007)
-
-  perm_t_stat_res <-
-    score_aov_fstat |>
-    fit(permeability ~ ., data = permeability)
-  perm_t_stat_res@results
-}
+perm_t_stat_res <-
+  score_aov_fstat |>
+  fit(permeability ~ ., data = permeability)
+perm_t_stat_res@results
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

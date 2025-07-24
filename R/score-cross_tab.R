@@ -91,27 +91,25 @@ score_xtab_pval_fisher <-
 #' In cases where [stats::chisq.test()] or [stats::fisher.test()] fail, the scoring proceeds
 #' silently, and a missing value is given for the score.
 #'
-#' @examples
-#' if (rlang::is_installed("titanic")) {
+#' @examplesIf rlang::is_installed("titanic")
 #'
-#'   # Binary factor example
+#' # Binary factor example
 #'
-#'   library(titanic)
-#'   library(dplyr)
+#' library(titanic)
+#' library(dplyr)
 #'
-#'   titanic_subset <- titanic_train |>
-#'     mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
-#'     select(Survived, Pclass, Sex, Age, Fare, Embarked)
+#' titanic_subset <- titanic_train |>
+#'   mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
+#'   select(Survived, Pclass, Sex, Age, Fare, Embarked)
 #'
-#'   titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
-#'     fit(Survived ~ ., data = titanic_subset)
-#'   titanic_xtab_pval_chisq_res@results
+#' titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+#'   fit(Survived ~ ., data = titanic_subset)
+#' titanic_xtab_pval_chisq_res@results
 #'
-#'   titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
-#'     fit(Survived ~ ., data = titanic_subset)
-#'   titanic_xtab_pval_fisher_res@results
-#' }
-#'   # TODO Add multiclass example
+#' titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
+#'   fit(Survived ~ ., data = titanic_subset)
+#' titanic_xtab_pval_fisher_res@results
+#' # TODO Add multiclass example
 #' @export
 S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

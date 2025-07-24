@@ -18,6 +18,22 @@ ames_aov_fstat_res@results
 ames_aov_fstat_res |>
   filtro::arrange_score()
 
+# Fill safe value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::fill_safe_value()
+
+ames_aov_fstat_res <-
+  score_aov_fstat |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::fill_safe_value()
+
+
 # Show best score based on based on proportion of predictors
 
 ames_subset <- helper_ames()
@@ -150,6 +166,7 @@ class_score_list |> bind_scores()
 
 # Fill safe values
 class_score_list |> fill_safe_values()
+
 
 skip()
 

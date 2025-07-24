@@ -33,6 +33,43 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
   }
 }
 
+# ------------------------------------------------------------------------------
+#' Fill safe value
+#'
+#' @param x A score class object.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+
+#' @export
+fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
+
+#' @noRd
+#' @export
+S7::method(fill_safe_value, class_score) <- function(x) {
+  results <- x@results
+  is_na_score <- is.na(results$score)
+  results$score[is_na_score] <- x@fallback_value
+  x@results <- results
+  x@results
+}
+
 # # ------------------------------------------------------------------------------
 # #' Transform score
 # #'
@@ -516,9 +553,11 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
   score_set
 }
 
-# # TODO Drop outcome column
-# # TODO rank_desirability_score_*
-# # TODO filter_desirability_score_*
+# TODO fill_safe_value()
+# TODO transform_score() and/or transform_scores()
+# TODO Drop outcome column
+# TODO rank_desirability_score_*
+# TODO filter_desirability_score_*
 
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods

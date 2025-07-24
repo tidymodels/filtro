@@ -1,4 +1,4 @@
-test_that("cor object creation", {
+test_that("object creation", {
   expect_s3_class(
     score_cor_pearson,
     c("filtro::class_score_cor", "filtro::class_score", "S7_object")
@@ -10,7 +10,7 @@ test_that("cor object creation", {
   )
 })
 
-test_that("cor computations", {
+test_that("computations", {
   perm_pearson_res <-
     score_cor_pearson |>
     fit(mpg ~ ., data = mtcars)
@@ -46,7 +46,7 @@ test_that("cor computations", {
   expect_equal(perm_pearson_res@direction, "maximize")
 })
 
-test_that("aov computations - wrong variable types", {
+test_that("computations - wrong variable types", {
   skip_if_not_installed("modeldata")
 
   perm_data <- helper_perm()
@@ -60,7 +60,7 @@ test_that("aov computations - wrong variable types", {
   expect_true(all(is.na(perm_pearson_res@results$score)))
 })
 
-test_that("aov computations - required packages", {
+test_that("computations - required packages", {
   expect_equal(required_pkgs(score_cor_pearson), "filtro")
   expect_equal(required_pkgs(score_cor_spearman), "filtro")
 })

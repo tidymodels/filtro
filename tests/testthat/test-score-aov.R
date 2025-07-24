@@ -1,4 +1,4 @@
-test_that("aov object creation", {
+test_that("object creation", {
   expect_s3_class(
     score_aov_fstat,
     c("filtro::class_score_aov", "filtro::class_score", "S7_object")
@@ -10,7 +10,7 @@ test_that("aov object creation", {
   )
 })
 
-test_that("aov computations - class outcome", {
+test_that("computations - class outcome", {
   skip_if_not_installed("modeldata")
   cell_data <- helper_cells()
 
@@ -65,7 +65,7 @@ test_that("aov computations - class outcome", {
   expect_equal(cell_pval_natrual_res@direction, "minimize")
 })
 
-test_that("aov computations - numeric outcome", {
+test_that("computations - numeric outcome", {
   skip_if_not_installed("modeldata")
   perm_data <- helper_perm_factors()
 
@@ -123,7 +123,7 @@ test_that("aov computations - numeric outcome", {
   expect_equal(perm_pval_natrual_res@direction, "minimize")
 })
 
-test_that("aov computations - wrong variable types", {
+test_that("computations - wrong variable types", {
   skip_if_not_installed("modeldata")
 
   perm_data <- helper_perm()
@@ -159,7 +159,7 @@ test_that("aov computations - wrong variable types", {
   expect_true(all(is.na(ames_chr_res@results$score)))
 })
 
-test_that("aov computations - required packages", {
+test_that("computations - required packages", {
   expect_equal(required_pkgs(score_aov_fstat), "filtro")
   expect_equal(required_pkgs(score_aov_pval), "filtro")
 })

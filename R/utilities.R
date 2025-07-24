@@ -34,12 +34,38 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 }
 
 # ------------------------------------------------------------------------------
-#' Fill safe value
+#' Fill safe value *singular*
+#'
+#' Fills in safe value for missing score. This is a *singular* score method.
+#' See [fill_safe_values()] for *plural* scores method.
 #'
 #' @param x A score class object.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # Fill safe value
+#' ames_aov_pval_res |>
+#'   filtro::fill_safe_value()
 #' @export
 fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 
@@ -366,7 +392,7 @@ class_score_list <- S7::new_S3_class("list")
 
 #' Bind all `class_score` objects, including their associated metadata and scores
 #'
-#' @param x A score class object.
+#' @param x A list.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -455,11 +481,12 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 }
 
 # ------------------------------------------------------------------------------
-#' Fill safe values
+#' Fill safe values *plural*
 #'
 #' Wraps [bind_scores()] and fills in safe values for missing scores.
+#' This is a *plural* scores method. See [fill_safe_value()] for *singular* score method.
 #'
-#' @param x A score class object.
+#' @param x A list.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'

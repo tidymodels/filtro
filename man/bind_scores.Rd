@@ -7,7 +7,7 @@
 bind_scores(x, ...)
 }
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A list.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

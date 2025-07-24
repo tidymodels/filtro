@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{fill_safe_value}
 \alias{fill_safe_value}
-\title{Fill safe value}
+\title{Fill safe value \emph{singular}}
 \usage{
 fill_safe_value(x, ...)
 }
@@ -12,5 +12,32 @@ fill_safe_value(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Fill safe value
+Fills in safe value for missing score. This is a \emph{singular} score method.
+See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scores method.
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+
+# Fill safe value
+ames_aov_pval_res |>
+  filtro::fill_safe_value()
+\dontshow{\}) # examplesIf}
 }

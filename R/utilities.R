@@ -40,23 +40,6 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @examplesIf rlang::is_installed("modeldata")
-#'
-#' library(dplyr)
-#'
-#' ames_subset <- modeldata::ames |>
-#'   dplyr::select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
-#' ames_subset <- ames_subset |>
-#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
-#'
-
 #' @export
 fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 

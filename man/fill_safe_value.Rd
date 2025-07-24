@@ -14,21 +14,3 @@ fill_safe_value(x, ...)
 \description{
 Fill safe value
 }
-\examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-
-library(dplyr)
-
-ames_subset <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street
-  )
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-\dontshow{\}) # examplesIf}
-}

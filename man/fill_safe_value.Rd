@@ -12,8 +12,8 @@ fill_safe_value(x, ...)
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Fills in safe value for missing score. This is a \emph{singular} score method.
-See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scores method.
+Fills in safe value for missing score. This is a \emph{singular} scoring method.
+See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scoring method.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

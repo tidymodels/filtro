@@ -10,6 +10,9 @@ show_best_score_prop(x, ...)
 \item{x}{A score class object.}
 
 \item{...}{NULL}
+
+\item{prop_terms}{A numeric value specifying the proportion
+of predictors to consider.}
 }
 \description{
 Show best score, based on proportion of predictors \emph{(singular)}

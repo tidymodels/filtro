@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
 #' Show best desirability scores, based on proportion of predictors *(plural)*
 #'
-#' Adapted from, and analogous to [desirability2::show_best_desirability()] that can
-#' simultaneously optimize multiple scores using desirability functions. This is a
-#' *plural* scores method. See [show_best_score_prop()] for *singular* score method.
+#' analogous to, and adapted from [desirability2::show_best_desirability()] that can
+#' simultaneously optimize multiple scores using desirability functions.
+#' See also [show_best_score_prop()] for *singular* scoring method.
 #'
 #' @param x A tibble. The results of [fill_safe_values()].
 #'

@@ -13,7 +13,7 @@ fill_safe_values(x, ...)
 }
 \description{
 Fills in safe values for missing scores, wrapped \code{\link[=bind_scores]{bind_scores()}}.
-This is a \emph{plural} scores method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} score method.
+This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

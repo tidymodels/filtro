@@ -36,8 +36,8 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 # ------------------------------------------------------------------------------
 #' Fill safe value *(singular)*
 #'
-#' Fills in safe value for missing score. This is a *singular* score method.
-#' See [fill_safe_values()] for *plural* scores method.
+#' Fills in safe value for missing score. This is a *singular* scoring method.
+#' See [fill_safe_values()] for *plural* scoring method.
 #'
 #' @param x A score class object.
 #'
@@ -117,6 +117,8 @@ S7::method(fill_safe_value, class_score) <- function(x) {
 #' @param x A score class object.
 #'
 #' @param ... NULL
+#' @param prop_terms A numeric value specifying the proportion
+#' of predictors to consider.
 #'
 #' @export
 show_best_score_prop <- S7::new_generic(
@@ -485,7 +487,7 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 #' Fill safe values *(plural)*
 #'
 #' Fills in safe values for missing scores, wrapped [bind_scores()].
-#' This is a *plural* scores method. See [fill_safe_value()] for *singular* score method.
+#' This is a *plural* scoring method. See [fill_safe_value()] for *singular* scoring method.
 #'
 #' @param x A list.
 #'

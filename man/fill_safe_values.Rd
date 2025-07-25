@@ -2,15 +2,75 @@
 % Please edit documentation in R/utilities.R
 \name{fill_safe_values}
 \alias{fill_safe_values}
-\title{Fill safe values.}
+\title{Fill safe values \emph{(plural)}}
 \usage{
 fill_safe_values(x, ...)
 }
 \arguments{
-\item{x}{A list where each element is a score object of class \code{score_obj}.}
+\item{x}{A list.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Fill safe values.
+Fills in safe values for missing scores, wrapped \code{\link[=bind_scores]{bind_scores()}}.
+This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# pearson cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# forest imp
+score_imp_rf_reg <- score_imp_rf
+score_imp_rf_reg@mode <- "regression"
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+
+# info gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+# Fill safe values
+class_score_list |> fill_safe_values()
+\dontshow{\}) # examplesIf}
 }

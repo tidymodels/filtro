@@ -2,15 +2,74 @@
 % Please edit documentation in R/utilities.R
 \name{bind_scores}
 \alias{bind_scores}
-\title{Bind all metadata \code{score_obj} and score result \code{results}.}
+\title{Bind all \code{class_score} objects, including their associated metadata and scores}
 \usage{
 bind_scores(x, ...)
 }
 \arguments{
-\item{x}{A list where each element is a score object of class \code{score_obj}.}
+\item{x}{A list.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Bind all metadata \code{score_obj} and score result \code{results}.
+Bind all \code{class_score} objects, including their associated metadata and scores
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# pearson cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# forest imp
+score_imp_rf_reg <- score_imp_rf
+score_imp_rf_reg@mode <- "regression"
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+
+# info gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+# Bind scores
+class_score_list |> bind_scores()
+\dontshow{\}) # examplesIf}
 }

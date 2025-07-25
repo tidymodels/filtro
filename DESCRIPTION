@@ -48,7 +48,7 @@ RoxygenNote: 7.3.2
 Collate: 
     'aaa.R'
     'class_score.R'
-    'constructor.R'
+    'desirability2.R'
     'filtro-package.R'
     'import-standalone-obj-type.R'
     'import-standalone-types-check.R'

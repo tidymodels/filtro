@@ -1,35 +1,7 @@
-#' Attach score result `results` to score object `score_obj` containig metadata
-#'
-#' @param x NULL
-#' @param results NULL
-#' @param ... NULL
-#'
-#' @export
-attach_score <- S7::new_generic(
-  "attach_score",
-  dispatch_args = "x",
-  function(x, results, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
-      cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
-      )
-    }
-
-    S7::S7_dispatch()
-  }
-)
-
-#' @noRd
-#' @export
-S7::method(attach_score, new_score_obj) <- function(x, results, ...) {
-  x@results <- results
-  x
-}
-
 # ------------------------------------------------------------------------------
-#' Arrange score result `results`
+#' Arrange score
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
@@ -38,9 +10,9 @@ arrange_score <- S7::new_generic(
   "arrange_score",
   dispatch_args = "x",
   function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
+    if (!S7::S7_inherits(x, class_score)) {
       cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
       )
     }
 
@@ -50,7 +22,7 @@ arrange_score <- S7::new_generic(
 
 #' @noRd
 #' @export
-S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
+S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
   if (x@direction == "maximize") {
     x@results |> dplyr::arrange(dplyr::desc(score))
   } else if (x@direction == "minimize") {
@@ -62,55 +34,100 @@ S7::method(arrange_score, new_score_obj) <- function(x, ..., target = NULL) {
 }
 
 # ------------------------------------------------------------------------------
-#' Transform score result `results`
+#' Fill safe value *(singular)*
 #'
-#' @param x NULL
+#' Fills in safe value for missing score. This is a *singular* scoring method.
+#' See [fill_safe_values()] for *plural* scoring method.
 #'
-#' @param ... NULL
+#' @param x A score class object.
 #'
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # Fill safe value
+#' ames_aov_pval_res |>
+#'   filtro::fill_safe_value()
 #' @export
-trans_score <- S7::new_generic(
-  "trans_score",
-  dispatch_args = "x",
-  function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
-      cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
-      )
-    }
-
-    S7::S7_dispatch()
-  }
-)
+fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 
 #' @noRd
 #' @export
-S7::method(trans_score, new_score_obj) <- function(x, ...) {
-  # TODO Figure out the basic structure first then come back for this. Have user supply direction =, if they use trans.
-  if (is.null(x@trans)) {
-    trans <- scales::transform_identity()
-  } else {
-    trans <- x@trans
-  }
-  x@results |>
-    dplyr::mutate(score = trans$transform(score))
+S7::method(fill_safe_value, class_score) <- function(x) {
+  results <- x@results
+  is_na_score <- is.na(results$score)
+  results$score[is_na_score] <- x@fallback_value
+  x@results <- results
+  x@results
 }
 
+# # ------------------------------------------------------------------------------
+# #' Transform score
+# #'
+# #' @param x A score class object.
+# #'
+# #' @param ... NULL
+# #'
+# #' @export
+# transform_score <- S7::new_generic(
+#   "transform_score",
+#   dispatch_args = "x",
+#   function(x, ...) {
+#     if (!S7::S7_inherits(x, class_score)) {
+#       cli::cli_abort(
+#         "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+#       )
+#     }
+
+#     S7::S7_dispatch()
+#   }
+# )
+
+# S7::method(transform_score, class_score) <- function(x, ...) {
+#   if (is.null(x@trans)) {
+#     trans <- scales::transform_identity()
+#   } else {
+#     trans <- x@trans
+#   }
+#   x@results |>
+#     dplyr::mutate(score = trans$transform(score))
+# }
+
 # ------------------------------------------------------------------------------
-#' Filter score result `results` based on number of predictors
+#' Show best score, based on proportion of predictors *(singular)*
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
+#' @param prop_terms A numeric value specifying the proportion
+#' of predictors to consider.
 #'
 #' @export
-filter_score_num <- S7::new_generic(
-  "filter_score_num",
+show_best_score_prop <- S7::new_generic(
+  "show_best_score_prop",
   dispatch_args = "x",
   function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
+    if (!S7::S7_inherits(x, class_score)) {
       cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
       )
     }
 
@@ -120,58 +137,14 @@ filter_score_num <- S7::new_generic(
 
 #' @noRd
 #' @export
-S7::method(filter_score_num, new_score_obj) <- function(
-  x,
-  ...,
-  num_terms,
-  target = NULL
-) {
-  # TODO Handle ties here?
-  check_num_terms(num_terms)
-  if (x@direction == "maximize") {
-    x@results |> dplyr::slice_max(score, n = num_terms)
-  } else if (x@direction == "minimize") {
-    x@results |> dplyr::slice_min(score, n = num_terms)
-  } else if (x@direction == "target") {
-    check_target(target)
-    x@results |>
-      dplyr::arrange(abs(score - target)) |>
-      dplyr::slice_head(n = num_terms)
-  }
-}
-
-# ------------------------------------------------------------------------------
-#' Filter score result `results` based on proportion of predictors
-#'
-#' @param x NULL
-#'
-#' @param ... NULL
-#'
-#' @export
-filter_score_prop <- S7::new_generic(
-  "filter_score_prop",
-  dispatch_args = "x",
-  function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
-      cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
-      )
-    }
-
-    S7::S7_dispatch()
-  }
-)
-
-#' @noRd
-#' @export
-S7::method(filter_score_prop, new_score_obj) <- function(
+S7::method(show_best_score_prop, class_score) <- function(
   x,
   ...,
   prop_terms,
   target = NULL
 ) {
-  # TODO Handle ties here?
   check_prop_terms(prop_terms)
+
   # TODO Can return NULL for prop = 0.1 if # of predictor is small. dplyr::near()?
   if (x@direction == "maximize") {
     x@results |> dplyr::slice_max(score, prop = prop_terms)
@@ -185,21 +158,22 @@ S7::method(filter_score_prop, new_score_obj) <- function(
   }
 }
 
+
 # ------------------------------------------------------------------------------
-#' Filter score result `results` based on cutoff value
+#' Show best score, based on number of predictors *(singular)*
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
 #' @export
-filter_score_cutoff <- S7::new_generic(
-  "filter_score_cutoff",
+show_best_score_num <- S7::new_generic(
+  "show_best_score_num",
   dispatch_args = "x",
   function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
+    if (!S7::S7_inherits(x, class_score)) {
       cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
       )
     }
 
@@ -209,7 +183,51 @@ filter_score_cutoff <- S7::new_generic(
 
 #' @noRd
 #' @export
-S7::method(filter_score_cutoff, new_score_obj) <- function(
+S7::method(show_best_score_num, class_score) <- function(
+  x,
+  ...,
+  num_terms,
+  target = NULL
+) {
+  check_num_terms(num_terms)
+
+  if (x@direction == "maximize") {
+    x@results |> dplyr::slice_max(score, n = num_terms)
+  } else if (x@direction == "minimize") {
+    x@results |> dplyr::slice_min(score, n = num_terms)
+  } else if (x@direction == "target") {
+    check_target(target)
+    x@results |>
+      dplyr::arrange(abs(score - target)) |>
+      dplyr::slice_head(n = num_terms)
+  }
+}
+
+# ------------------------------------------------------------------------------
+#' Show best score, based on based on cutoff value *(singular)*
+#'
+#' @param x A score class object.
+#'
+#' @param ... NULL
+#'
+#' @export
+show_best_score_cutoff <- S7::new_generic(
+  "show_best_score_cutoff",
+  dispatch_args = "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, class_score)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
+
+#' @noRd
+#' @export
+S7::method(show_best_score_cutoff, class_score) <- function(
   x,
   ...,
   cutoff,
@@ -230,21 +248,21 @@ S7::method(filter_score_cutoff, new_score_obj) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Filter score result `results` based on number or proportion of predictors with
-#' optional cutoff value
+#' Show best score, based on number or proportion of predictors with
+#' optional cutoff value *(singular)*
 #'
-#' @param x NULL
+#' @param x A score class object.
 #'
 #' @param ... NULL
 #'
 #' @export
-filter_score_auto <- S7::new_generic(
-  "filter_score_auto",
+show_best_score_dual <- S7::new_generic(
+  "show_best_score_dual",
   dispatch_args = "x",
   function(x, ...) {
-    if (!S7::S7_inherits(x, new_score_obj)) {
+    if (!S7::S7_inherits(x, class_score)) {
       cli::cli_abort(
-        "{.arg x} must be a {.cls new_score_obj}, not {.obj_type_friendly {x}}."
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
       )
     }
 
@@ -254,7 +272,7 @@ filter_score_auto <- S7::new_generic(
 
 #' @noRd
 #' @export
-S7::method(filter_score_auto, new_score_obj) <- function(
+S7::method(show_best_score_dual, class_score) <- function(
   x,
   ...,
   num_terms = NULL,
@@ -268,115 +286,181 @@ S7::method(filter_score_auto, new_score_obj) <- function(
   }
 
   if (!is.null(num_terms)) {
-    results <- filter_score_num(x, ..., num_terms = num_terms)
+    results <- show_best_score_num(x, ..., num_terms = num_terms)
   } else if (!is.null(prop_terms)) {
-    results <- filter_score_prop(
+    results <- show_best_score_prop(
       x,
       ...,
       prop_terms = prop_terms
     )
   }
   if (!is.null(cutoff)) {
-    results <- filter_score_cutoff(x, ..., cutoff = cutoff)
+    results <- show_best_score_cutoff(x, ..., cutoff = cutoff)
   }
   results
 }
 
-# Filter score result `results` based on user input TODO
-# filter_score_<>
-
 # ------------------------------------------------------------------------------
-# #' Rank score result `results` based on min_rank (Need a better title) TODO
-# #'
-# #' @param x NULL
-# #'
-# #' @param ... NULL
-# #'
-# #' @export
-# rank_score_min <- function(x, ...) {
-#   UseMethod("rank_score_min")
-# }
-
-# #' @noRd
-# #' @export
-# rank_score_min.default <- function(x, ...) {
-#   cli::cli_abort(
-#     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-#   )
-# }
-
-# #' @noRd
-# #' @export
-# rank_score_min.score_obj <- function(x, ..., target = NULL) {
-#   # TODO Check if direction == target, add "need a target"
-#   if (x$direction == "maximize") {
-#     x$results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
-#   } else if (x$direction == "minimize") {
-#     x$results |> dplyr::mutate(rank = dplyr::min_rank((score)))
-#   } # else if (x$direction == "target") { # TODO
-#   #   x$results |> dplyr::arrange(abs(score - target))
-#   # }
-# }
-
-# ------------------------------------------------------------------------------
-# #' Rank score result `results` based on dense_rank (Need a better title)
-# #'
-# #' @param x NULL
-# #'
-# #' @param ... NULL
-# #'
-# #' @export
-# rank_score_dense <- function(x, ...) {
-#   UseMethod("rank_score_dense")
-# }
-
-# #' @noRd
-# #' @export
-# rank_score_dense.default <- function(x, ...) {
-#   cli::cli_abort(
-#     "{.arg x} must be {.cls score_obj}, not {.obj_type_friendly {x}}."
-#   )
-# }
-
-# #' @noRd
-# #' @export
-# rank_score_dense.score_obj <- function(x, ..., target = NULL) {
-#   # TODO Check if direction == target, add "need a target"
-#   if (x$direction == "maximize") {
-#     x$results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
-#   } else if (x$direction == "minimize") {
-#     x$results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
-#   } # else if (x$direction == "target") { # TODO
-#   #   x$results |> dplyr::arrange(abs(score - target))
-#   # }
-# }
-
-# ------------------------------------------------------------------------------
-#' Construct an S7 subclass of base R's `list`
+#' Rank score based on `dplyr::min_rank()`, where tied values receive the
+#' same rank and ranks are with gaps *(singular)*
 #'
-#' Output an S7 subclass of S3 base R's `list`, used in method dispatch for
+#' @param x A score class object.
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_best_score_min <- S7::new_generic(
+  "rank_best_score_min",
+  dispatch_args = "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, class_score)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
+
+#' @noRd
+#' @export
+S7::method(rank_best_score_min, class_score) <- function(
+  x,
+  ...,
+  target = NULL
+) {
+  # TODO Check if direction == target, add "need a target"
+
+  # TODO Need to deal with NA
+  if (x@direction == "maximize") {
+    x@results |> dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+  } else if (x@direction == "minimize") {
+    x@results |> dplyr::mutate(rank = dplyr::min_rank((score)))
+  } # else if (x@direction == "target") { # TODO
+  #   x@results |> dplyr::arrange(abs(score - target))
+  # }
+}
+
+# ------------------------------------------------------------------------------
+#' Rank score based on `dplyr::dense_rank()`, where tied values receive the
+#' same rank and ranks are with gaps *(singular)*
+#'
+#' @param x A score class object.
+#'
+#' @param ... NULL
+#'
+#' @export
+rank_best_score_dense <- S7::new_generic(
+  "rank_best_score_dense",
+  dispatch_args = "x",
+  function(x, ...) {
+    if (!S7::S7_inherits(x, class_score)) {
+      cli::cli_abort(
+        "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
+      )
+    }
+
+    S7::S7_dispatch()
+  }
+)
+
+#' @noRd
+#' @export
+S7::method(rank_best_score_dense, class_score) <- function(
+  x,
+  ...,
+  target = NULL
+) {
+  # TODO Check if direction == target, add "need a target"
+
+  # TODO Need to deal with NA
+  if (x@direction == "maximize") {
+    x@results |> dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+  } else if (x@direction == "minimize") {
+    x@results |> dplyr::mutate(rank = dplyr::dense_rank((score)))
+  } # else if (x@direction == "target") { # TODO
+  #   x@results |> dplyr::arrange(abs(score - target))
+  # }
+}
+
+# ------------------------------------------------------------------------------
+#' Construct an S7 subclass of base R's `list` for Method Dispatch
+#'
+#' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
 #' [bind_scores()] and [fill_safe_values()].
 #'
 #' @export
-score_list <- S7::new_S3_class("list")
+class_score_list <- S7::new_S3_class("list")
 
-#' Bind all metadata `score_obj` and score result `results`.
+#' Bind all `class_score` objects, including their associated metadata and scores
 #'
-#' @param x A list where each element is a score object of class `score_obj`.
+#' @param x A list.
+#'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # anova pval
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # pearson cor
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # forest imp
+#' score_imp_rf_reg <- score_imp_rf
+#' score_imp_rf_reg@mode <- "regression"
+#' set.seed(42)
+#' ames_imp_rf_reg_res <-
+#'   score_imp_rf_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_imp_rf_reg_res@results
+#'
+#' # info gain
+#' score_info_gain_reg <- score_info_gain
+#' score_info_gain_reg@mode <- "regression"
+#'
+#' ames_info_gain_reg_res <-
+#'   score_info_gain_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_info_gain_reg_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res,
+#'   ames_imp_rf_reg_res,
+#'   ames_info_gain_reg_res
+#' )
+#'
+#' # Bind scores
+#' class_score_list |> bind_scores()
 #' @export
 bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 
 #' @noRd
 #' @export
-#'
-#' @examples
-#' # Create a list of `score_obj`
-#' # Bind scores
-#' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
-#' score_obj_list |> bind_scores()
-S7::method(bind_scores, score_list) <- function(x) {
+S7::method(bind_scores, class_score_list) <- function(x) {
   length_x <- length(x)
   if (length_x < 2) {
     cli::cli_abort(
@@ -396,29 +480,81 @@ S7::method(bind_scores, score_list) <- function(x) {
 
   score_set <- score_set |>
     tidyr::pivot_wider(names_from = name, values_from = score)
-
-  #class(score_set) <- c("score_set", class(score_set)) TODO Check with desirability2
   score_set
 }
 
 # ------------------------------------------------------------------------------
-#' Fill safe values.
+#' Fill safe values *(plural)*
 #'
-#' @param x A list where each element is a score object of class `score_obj`.
+#' Fills in safe values for missing scores, wrapped [bind_scores()].
+#' This is a *plural* scoring method. See [fill_safe_value()] for *singular* scoring method.
+#'
+#' @param x A list.
+#'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # anova pval
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # pearson cor
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # forest imp
+#' score_imp_rf_reg <- score_imp_rf
+#' score_imp_rf_reg@mode <- "regression"
+#' set.seed(42)
+#' ames_imp_rf_reg_res <-
+#'   score_imp_rf_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_imp_rf_reg_res@results
+#'
+#' # info gain
+#' score_info_gain_reg <- score_info_gain
+#' score_info_gain_reg@mode <- "regression"
+#'
+#' ames_info_gain_reg_res <-
+#'   score_info_gain_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_info_gain_reg_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res,
+#'   ames_imp_rf_reg_res,
+#'   ames_info_gain_reg_res
+#' )
+#'
+#' # Fill safe values
+#' class_score_list |> fill_safe_values()
 #' @export
 fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 
 #' @noRd
 #' @export
-#'
-#' @examples
-#' # Create a list of `score_obj`
-#' # Fill in safe values
-#' score_obj_list <- list(score_obj_aov, score_obj_cor, score_obj_imp)
-#' score_obj_list |> fill_safe_values()
-S7::method(fill_safe_values, score_list) <- function(x) {
+S7::method(fill_safe_values, class_score_list) <- function(x) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
@@ -430,8 +566,9 @@ S7::method(fill_safe_values, score_list) <- function(x) {
   score_set
 }
 
+# TODO fill_safe_value()
+# TODO transform_score() and/or transform_scores()
 # TODO Drop outcome column
-# TODO show_best_desirability_score_*
 # TODO rank_desirability_score_*
 # TODO filter_desirability_score_*
 

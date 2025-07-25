@@ -49,5 +49,3 @@ check_cutoff <- function(cutoff) {
     cli::cli_abort("{.arg cutoff} must be specified")
   }
 }
-
-# TODO Check num_items & prop_items

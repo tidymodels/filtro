@@ -1,21 +1,174 @@
-test_that("attach_score() is working for aov", {
-  skip("refactor arrange code for aov objects")
-  ames_subset <- helper_ames()
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
+# Arrange score
 
-  score_obj <- filtro::score_aov()
-  score_res <- filtro::get_scores_aov(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
-  ex.score_obj <- score_obj |> attach_score(score_res)
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  expect_equal(ex.score_obj@results, score_res)
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::arrange_score()
 
-  expect_snapshot(print(ex.score_obj@results)) # TODO Add to pass R CMD check
-})
+ames_aov_fstat_res <-
+  score_aov_fstat |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::arrange_score()
+
+# Fill safe value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::fill_safe_value()
+
+ames_aov_fstat_res <-
+  score_aov_fstat |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::fill_safe_value()
+
+
+# Show best score based on based on proportion of predictors
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_prop(prop_terms = 0.2)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_prop(prop_terms = 0.2)
+
+# Show best score based on number of predictors
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_num(num_terms = 2)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_num(num_terms = 2)
+
+# Show best score based on cutoff value
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_cutoff(cutoff = 130)
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |>
+  filtro::show_best_score_cutoff(cutoff = 94.5)
+
+# Show best score based on proportion of predictors with
+# optional cutoff value
+
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 0.5)
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+
+ames_aov_pval_res@results
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(num_terms = 2)
+ames_aov_pval_res |>
+  filtro::show_best_score_dual(prop_terms = 2, cutoff = 130)
+
+# Rank score based on min_rank()
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |> filtro::rank_best_score_min()
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |> filtro::rank_best_score_min()
+
+# Rank score based on dense_rank()
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res@results
+ames_aov_pval_res |> filtro::rank_best_score_dense()
+
+ames_aov_fstat_res@results
+ames_aov_fstat_res |> filtro::rank_best_score_dense()
+
+# Construct an S7 subclass of base R's `list` for Method Dispatch
+# Bind all `class_score` objects, including their associated metadata and scores
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# forest imp
+score_imp_rf_reg <- score_imp_rf
+score_imp_rf_reg@mode <- "regression"
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+
+# info gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+# Bind scores
+class_score_list |> bind_scores()
+
+# Fill safe values
+class_score_list |> fill_safe_values()
+
+
+skip()
 
 test_that("arrange_score() is working for aov", {
   skip("refactor arrange code for aov objects")

@@ -43,10 +43,10 @@ test_that("computations - class outcome, binary", {
   expect_equal(cells_roc_auc_res@direction, "maximize")
 })
 
-
 test_that("computations - numeric outcome, multiclass predictors", {
   skip_if_not_installed("modeldata")
-  ames_subset <- helper_ames() |> dplyr::select(-Lot_Frontage, -Lot_Area) # Avoid dealing with NA here
+  # Avoid dealing with NA in pROC::multiclass.roc(); Somehow try() doesn't quite work.
+  ames_subset <- helper_ames() |> dplyr::select(-Lot_Frontage, -Lot_Area)
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 

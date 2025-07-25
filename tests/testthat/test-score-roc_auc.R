@@ -5,7 +5,7 @@ test_that("object creation", {
   )
 })
 
-test_that("computations - class outcome", {
+test_that("computations - class outcome, binary", {
   skip_if_not_installed("modeldata")
   cells_subset <- helper_cells()
 
@@ -43,96 +43,51 @@ test_that("computations - class outcome", {
   expect_equal(cells_roc_auc_res@direction, "maximize")
 })
 
-# regression task
-ames_subset <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street
-  )
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-ames_roc_auc_res <- score_roc_auc |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_roc_auc_res@results
-
-skip()
-
-test_that("get_scores_roc_auc() is working", {
+test_that("computations - numeric outcome, multiclass predictors", {
   skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames() |> dplyr::select(-Lot_Frontage, -Lot_Area) # Avoid dealing with NA here
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-  cells_subset <- modeldata::cells |>
-    dplyr::select(
-      class,
-      angle_ch_1,
-      area_ch_1,
-      avg_inten_ch_1,
-      avg_inten_ch_2
+  ames_roc_auc_res <- score_roc_auc |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- ames_roc_auc_res@results$predictor
+  for (predictor in predictors) {
+    tmp_data <- tibble::tibble(
+      y = ames_subset[[predictor]],
+      x = ames_subset$Sale_Price
     )
-
-  score_obj = score_roc_auc()
-  score_res <- get_scores_roc_auc(
-    score_obj,
-    data = cells_subset,
-    outcome = "class"
-  )
-
-  roc <- pROC::roc(
-    cells_subset$class,
-    cells_subset$angle_ch_1,
-    direction = "auto",
-    quiet = TRUE
-  )
-  exp.angle_ch_1 <- pROC::auc(roc) |> as.numeric()
-
-  roc <- pROC::roc(
-    cells_subset$class,
-    cells_subset$area_ch_1,
-    direction = "auto",
-    quiet = TRUE
-  )
-  exp.area_ch_1 <- pROC::auc(roc) |> as.numeric()
-
-  roc <- pROC::roc(
-    cells_subset$class,
-    cells_subset$avg_inten_ch_1,
-    direction = "auto",
-    quiet = TRUE
-  )
-  exp.avg_inten_ch_1 <- pROC::auc(roc) |> as.numeric()
-
-  roc <- pROC::roc(
-    cells_subset$class,
-    cells_subset$avg_inten_ch_2,
-    direction = "auto",
-    quiet = TRUE
-  )
-  exp.avg_inten_ch_2 <- pROC::auc(roc) |> as.numeric()
-
-  expect_true(tibble::is_tibble(score_res))
-
-  expect_identical(nrow(score_res), ncol(cells_subset) - 1L)
-
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-  expect_identical(
-    score_res$score,
-    c(
-      exp.angle_ch_1,
-      exp.area_ch_1,
-      exp.avg_inten_ch_1,
-      exp.avg_inten_ch_2
+    roc <- pROC::multiclass.roc(
+      tmp_data$y,
+      tmp_data$x,
+      direction = "auto",
+      quiet = TRUE
     )
-  )
+    fit_roc_auc <- pROC::auc(roc) |> as.numeric()
 
-  expect_equal(unique(score_res$name), "roc_auc")
+    roc_auc <- ames_roc_auc_res@results[
+      ames_roc_auc_res@results$predictor == predictor,
+    ]
 
-  expect_equal(unique(score_res$outcome), "class")
+    expect_equal(roc_auc$score, fit_roc_auc)
+  }
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_roc_auc_res@range, c(0.0, 1.0))
+  expect_equal(ames_roc_auc_res@inclusive, rep(TRUE, 2))
+  expect_equal(ames_roc_auc_res@fallback_value, 1.0)
+  expect_equal(ames_roc_auc_res@direction, "maximize")
 })
 
-# TODO Test pROC::multiclass.roc
+# TODO computations - wrong variable types
+
+test_that("computations - required packages", {
+  expect_equal(required_pkgs(score_roc_auc), "filtro")
+})
+
 # TODO Test more after we add validators

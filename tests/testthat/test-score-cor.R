@@ -1,51 +1,24 @@
-ames_subset <- helper_ames()
-
-ames_subset <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street
-  )
-
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
-
-ames_cor_spearman_res <-
-  score_cor_spearman |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_spearman_res@results
-
-skip()
-
-test_that("get_scores_cor() is working for pearson", {
+test_that("Pearson correlation filters", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_cor()
-  score_res <- get_scores_cor(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
 
-  expect_true(tibble::is_tibble(score_res))
+  res_1 <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  res_1 <- res_1@results
 
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
+  expect_true(tibble::is_tibble(res_1))
 
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
+  expect_identical(nrow(res_1), ncol(ames_subset) - 1L)
 
-  expect_equal(unique(score_res$name), "pearson")
+  expect_named(res_1, c("name", "score", "outcome", "predictor"))
 
-  expect_equal(unique(score_res$outcome), "Sale_Price")
+  expect_equal(unique(res_1$name), "cor_pearson")
 
-  exp.MS_SubClass <- NA
+  expect_equal(unique(res_1$outcome), "Sale_Price")
 
-  exp.MS_Zoning <- NA
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
 
   exp.Lot_Frontage <- stats::cor(
     ames_subset$Lot_Frontage,
@@ -62,43 +35,150 @@ test_that("get_scores_cor() is working for pearson", {
   exp.Street <- NA
 
   expect_identical(
-    score_res$score,
+    res_1$score,
     c(
       exp.MS_SubClass,
       exp.MS_Zoning,
       exp.Lot_Frontage,
       exp.Lot_Area,
       exp.Street
-    )
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  res_1 <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  res_1 <- res_1@results
+
+  expect_true(tibble::is_tibble(res_1))
+
+  expect_identical(nrow(res_1), ncol(ames_subset) - 1L)
+
+  expect_named(res_1, c("name", "score", "outcome", "predictor"))
+
+  expect_equal(unique(res_1$name), "cor_pearson")
+
+  expect_equal(unique(res_1$outcome), "Sale_Price")
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage,
+    ames_subset$Sale_Price,
+    method = "pearson"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area,
+    ames_subset$Sale_Price,
+    method = "pearson"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    res_1$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # case weights
+
+
+  two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
+
+  res_3 <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+  res_3 <- res_3@results
+
+  expect_true(tibble::is_tibble(res_3))
+
+  expect_identical(nrow(res_3), ncol(ames_subset) - 1L)
+
+  expect_named(res_3, c("name", "score", "outcome", "predictor"))
+
+  expect_equal(unique(res_3$name), "cor_pearson")
+
+  expect_equal(unique(res_3$outcome), "Sale_Price")
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "pearson"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "pearson"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    res_3$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  expect_snapshot(
+    score_cor_pearson |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = 1),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    score_cor_pearson |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = letters),
+    error = TRUE
   )
 })
 
-# TODO Test Reversed stats::lm(x ~ y)
-
-test_that("get_scores_cor() is working for spearman", {
+test_that("Spearman correlation filters", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_cor(score_type = "spearman")
-  score_res <- get_scores_cor(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
 
-  expect_true(tibble::is_tibble(score_res))
+  res_1 <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  res_1 <- res_1@results
 
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
+  expect_true(tibble::is_tibble(res_1))
 
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
+  expect_identical(nrow(res_1), ncol(ames_subset) - 1L)
 
-  expect_equal(unique(score_res$name), "spearman")
+  expect_named(res_1, c("name", "score", "outcome", "predictor"))
 
-  expect_equal(unique(score_res$outcome), "Sale_Price")
+  expect_equal(unique(res_1$name), "cor_spearman")
 
-  exp.MS_SubClass <- NA
+  expect_equal(unique(res_1$outcome), "Sale_Price")
 
-  exp.MS_Zoning <- NA
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
 
   exp.Lot_Frontage <- stats::cor(
     ames_subset$Lot_Frontage,
@@ -115,15 +195,119 @@ test_that("get_scores_cor() is working for spearman", {
   exp.Street <- NA
 
   expect_identical(
-    score_res$score,
+    res_1$score,
     c(
       exp.MS_SubClass,
       exp.MS_Zoning,
       exp.Lot_Frontage,
       exp.Lot_Area,
       exp.Street
-    )
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  res_1 <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  res_1 <- res_1@results
+
+  expect_true(tibble::is_tibble(res_1))
+
+  expect_identical(nrow(res_1), ncol(ames_subset) - 1L)
+
+  expect_named(res_1, c("name", "score", "outcome", "predictor"))
+
+  expect_equal(unique(res_1$name), "cor_spearman")
+
+  expect_equal(unique(res_1$outcome), "Sale_Price")
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage,
+    ames_subset$Sale_Price,
+    method = "spearman"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area,
+    ames_subset$Sale_Price,
+    method = "spearman"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    res_1$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # case weights
+
+
+  two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
+
+  res_3 <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+  res_3 <- res_3@results
+
+  expect_true(tibble::is_tibble(res_3))
+
+  expect_identical(nrow(res_3), ncol(ames_subset) - 1L)
+
+  expect_named(res_3, c("name", "score", "outcome", "predictor"))
+
+  expect_equal(unique(res_3$name), "cor_spearman")
+
+  expect_equal(unique(res_3$outcome), "Sale_Price")
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "spearman"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "spearman"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    res_3$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  expect_snapshot(
+    score_cor_spearman |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = 1),
+    error = TRUE
   )
 })
-
-# TODO Test more after we add validators

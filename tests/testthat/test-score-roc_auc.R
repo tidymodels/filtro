@@ -1,17 +1,47 @@
-# classification task
-cells_subset <- modeldata::cells |>
-  dplyr::select(
-    class,
-    angle_ch_1,
-    area_ch_1,
-    avg_inten_ch_1,
-    avg_inten_ch_2,
-    avg_inten_ch_3
+test_that("object creation", {
+  expect_s3_class(
+    score_roc_auc,
+    c("filtro::class_score_roc_auc", "filtro::class_score", "S7_object")
   )
+})
 
-cells_roc_auc_res <- score_roc_auc |>
-  fit(class ~ ., data = cells_subset)
-cells_roc_auc_res@results
+test_that("computations - class outcome", {
+  skip_if_not_installed("modeldata")
+  cells_subset <- helper_cells()
+
+  cells_roc_auc_res <- score_roc_auc |>
+    fit(class ~ ., data = cells_subset)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- cells_roc_auc_res@results$predictor
+  for (predictor in predictors) {
+    tmp_data <- tibble::tibble(
+      y = cells_subset$class,
+      x = cells_subset[[predictor]]
+    )
+    roc <- pROC::roc(
+      tmp_data$y,
+      tmp_data$x,
+      direction = "auto",
+      quiet = TRUE
+    )
+    fit_roc_auc <- pROC::auc(roc) |> as.numeric()
+
+    roc_auc <- cells_roc_auc_res@results[
+      cells_roc_auc_res@results$predictor == predictor,
+    ]
+
+    expect_equal(roc_auc$score, fit_roc_auc)
+  }
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(cells_roc_auc_res@range, c(0.0, 1.0))
+  expect_equal(cells_roc_auc_res@inclusive, rep(TRUE, 2))
+  expect_equal(cells_roc_auc_res@fallback_value, 1.0)
+  expect_equal(cells_roc_auc_res@direction, "maximize")
+})
 
 # regression task
 ames_subset <- modeldata::ames |>

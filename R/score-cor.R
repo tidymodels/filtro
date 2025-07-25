@@ -124,10 +124,13 @@ S7::method(fit, class_score_cor) <- function(
   if (!is.null(case_weights)) {
     compete_obs <- compete_obs & !is.na(case_weights)
   }
-  analysis_data <- analysis_data[compete_obs,]
+  analysis_data <- analysis_data[compete_obs, ]
 
   if (object@score_type == "cor_spearman") {
-    data <- dplyr::mutate(data, dplyr::across(dplyr::where(is.numeric), rank))
+    analysis_data <- dplyr::mutate(
+      analysis_data,
+      dplyr::across(dplyr::where(is.numeric), ~ rank(.x, na.last = "keep"))
+    )
   }
 
   score <- purrr::map_dbl(

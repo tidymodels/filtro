@@ -33,7 +33,7 @@ score_cor_pearson <-
   class_score_cor(
     outcome_type = "numeric",
     predictor_type = "numeric",
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(-1, 1),
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
@@ -50,7 +50,7 @@ score_cor_spearman <-
   class_score_cor(
     outcome_type = "numeric",
     predictor_type = "numeric",
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(-1, 1),
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
@@ -150,7 +150,7 @@ S7::method(fit, class_score_cor) <- function(
   object
 }
 
-map_score_cor <- function(data, predictor, outcome, type, weights) {
+map_score_cor <- function(data, predictor, outcome, weights) {
   predictor_col <- data[[predictor]]
   outcome_col <- data[[outcome]]
 

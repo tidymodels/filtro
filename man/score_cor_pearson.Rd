@@ -25,6 +25,10 @@ processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
 \item{data}{A data frame containing the relevant columns defined by the
 formula.}
 
+\item{case_weights}{A quantitative vector of case weights that is the same
+length as the number of rows in \code{data}. The default of \code{NULL} indicates that
+there are no case weights.}
+
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
@@ -51,8 +55,7 @@ The function will determine which columns are predictors and outcomes and
 compute correlations; no user intervention is required.
 
 Missing values are removed for each predictor/outcome combination being
-scored.
-In cases where \code{\link[=cor]{cor()}} fail, the scoring proceeds silently, and
+scored. In cases where \code{\link[=cor]{cor()}} fail, the scoring proceeds silently, and
 a missing value is given for the score.
 }
 \examples{

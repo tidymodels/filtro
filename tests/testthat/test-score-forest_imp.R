@@ -1,5 +1,3 @@
-# TODO Revise after we have helpers to change fields such as trees, mtry, min_n
-
 test_that("object creation", {
   expect_s3_class(
     score_imp_rf,
@@ -231,7 +229,12 @@ test_that("computations - regression task via aorsf", {
   expect_equal(ames_imp_rf_oblique_res@direction, "maximize")
 })
 
-# TODO Wrong variable type
-# TODO Required packages
+# TODO computations - wrong variable types
+
+test_that("computations - required packages", {
+  expect_equal(required_pkgs(score_imp_rf), "filtro")
+  expect_equal(required_pkgs(score_imp_rf_conditional), "filtro")
+  expect_equal(required_pkgs(score_imp_rf_oblique), "filtro")
+})
 
 # TODO Test more after we add validators

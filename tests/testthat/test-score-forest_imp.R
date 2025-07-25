@@ -1,26 +1,119 @@
-# classification task
-cells_subset <- modeldata::cells |>
-  dplyr::select(
-    class,
-    angle_ch_1,
-    area_ch_1,
-    avg_inten_ch_1,
-    avg_inten_ch_2,
-    avg_inten_ch_3
+test_that("object creation", {
+  expect_s3_class(
+    score_imp_rf,
+    c("filtro::class_score_imp_rf", "filtro::class_score", "S7_object")
   )
 
-set.seed(42)
-cells_imp_rf_res <- score_imp_rf |>
-  fit(class ~ ., data = cells_subset)
-cells_imp_rf_res@results
+  expect_s3_class(
+    score_imp_rf_conditional,
+    c("filtro::class_score_imp_rf", "filtro::class_score", "S7_object")
+  )
 
-cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-  fit(class ~ ., data = cells_subset)
-cells_imp_rf_conditional_res@results
+  expect_s3_class(
+    score_imp_rf_oblique,
+    c("filtro::class_score_imp_rf", "filtro::class_score", "S7_object")
+  )
+})
 
-cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
-  fit(class ~ ., data = cells_subset)
-cells_imp_rf_oblique_res@results
+test_that("computations - class outcome via ranger", {
+  skip_if_not_installed("modeldata")
+  cells_subset <- helper_cells()
+
+  score_imp_rf@seed = 42
+  cells_imp_rf_res <- score_imp_rf |>
+    fit(class ~ ., data = cells_subset)
+
+  # ----------------------------------------------------------------------------
+
+  y <- cells_subset[["class"]]
+  X <- cells_subset[setdiff(names(cells_subset), "class")]
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 100,
+    mtry = 2,
+    importance = "permutation",
+    min.node.size = 1,
+    classification = TRUE,
+    seed = 42
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(cells_imp_rf_res@results$score, imp_ranger)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(cells_imp_rf_res@range, c(0.0, Inf))
+  expect_equal(cells_imp_rf_res@inclusive, rep(FALSE, 2))
+  expect_equal(cells_imp_rf_res@fallback_value, Inf)
+  expect_equal(cells_imp_rf_res@direction, "maximize")
+})
+
+test_that("computations - class outcome via partykit", {
+  skip_if_not_installed("modeldata")
+  cells_subset <- helper_cells()
+
+  set.seed(42)
+  cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+    fit(class ~ ., data = cells_subset)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_partykit <- partykit::cforest(
+    formula = class ~ .,
+    data = cells_subset,
+    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
+    ntree = 100,
+    mtry = 2,
+  )
+  imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
+  predictors <- setdiff(names(cells_subset), "class")
+  imp_partykit <- imp_partykit_raw[predictors] |> unname()
+  imp_partykit[is.na(imp_partykit)] <- 0
+
+  expect_equal(cells_imp_rf_conditional_res@results$score, imp_partykit)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(cells_imp_rf_conditional_res@range, c(0.0, Inf))
+  expect_equal(cells_imp_rf_conditional_res@inclusive, rep(FALSE, 2))
+  expect_equal(cells_imp_rf_conditional_res@fallback_value, Inf)
+  expect_equal(cells_imp_rf_conditional_res@direction, "maximize")
+})
+
+test_that("computations - class outcome via aorsf", {
+  skip_if_not_installed("modeldata")
+  cells_subset <- helper_cells()
+
+  set.seed(42)
+  cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(class ~ ., data = cells_subset)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = class ~ .,
+    data = cells_subset,
+    n_tree = 100,
+    n_retry = 2,
+    importance = "permute"
+  )
+  imp_raw_aorsf <- fit_aorsf$importance
+  predictors <- setdiff(names(cells_subset), "class")
+  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
+  imp_aorsf[is.na(imp_aorsf)] <- 0
+
+  expect_equal(cells_imp_rf_oblique_res@results$score, imp_aorsf)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(cells_imp_rf_oblique_res@range, c(0.0, Inf))
+  expect_equal(cells_imp_rf_oblique_res@inclusive, rep(FALSE, 2))
+  expect_equal(cells_imp_rf_oblique_res@fallback_value, Inf)
+  expect_equal(cells_imp_rf_oblique_res@direction, "maximize")
+})
 
 # regression task
 ames_subset <- modeldata::ames |>

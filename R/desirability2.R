@@ -3,19 +3,21 @@
 #'
 #' Analogous to, and adapted from [desirability2::show_best_desirability()] that can
 #' simultaneously optimize multiple scores using desirability functions.
-#' See also [show_best_score_prop()] for *singular* scoring method.
+#' See [show_best_score_prop()] for *singular* scoring method.
 #'
-#' @param x A tibble. The results of [fill_safe_values()].
-#'
+#' @param x A tibble or data frame returned by [fill_safe_values()].
+
 #' @param ... NULL
 #' @param prop_terms A numeric value specifying the proportion
 #' of predictors to consider.
 #'
-#' @return [show_best_desirability_prop()] returns a tibble with `prop_terms`
+#' @return Returns a tibble with `prop_terms`
 #' proportion of rows. When showing the results,
 #' the metrics are presented in "wide format" (one column per metric) and there
 #' are new columns for the corresponding desirability values (each starts with
 #' `.d_`).
+#'
+#' @seealso [show_best_desirability_num()], [show_best_desirability_cutoff()]
 #'
 #' @export
 show_best_desirability_prop <- function(
@@ -39,6 +41,27 @@ show_best_desirability_prop <- function(
 }
 
 # ------------------------------------------------------------------------------
+#' Show best desirability scores, based on number of predictors *(plural)*
+#'
+#' Similar to [show_best_desirability_prop()] that can
+#' simultaneously optimize multiple scores using desirability functions.
+#' See [show_best_score_num()] for *singular* scoring method.
+#'
+#' See [show_best_desirability_prop()] for details.
+#'
+#' @inheritParams show_best_desirability_prop
+#' @param num_terms A numeric value specifying the number
+#' of predictors to consider.
+#'
+#' @return Returns a tibble with `num_terms`
+#' number of rows. When showing the results,
+#' the metrics are presented in "wide format" (one column per metric) and there
+#' are new columns for the corresponding desirability values (each starts with
+#' `.d_`).
+#'
+#' @seealso [show_best_desirability_prop()], [show_best_desirability_cutoff()]
+#'
+#' @export
 show_best_desirability_num <- function(
   x,
   ...,

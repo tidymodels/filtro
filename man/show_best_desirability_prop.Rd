@@ -7,7 +7,7 @@
 show_best_desirability_prop(x, ..., prop_terms = 0.99)
 }
 \arguments{
-\item{x}{A tibble. The results of \code{\link[=fill_safe_values]{fill_safe_values()}}.}
+\item{x}{A tibble or data frame returned by \code{\link[=fill_safe_values]{fill_safe_values()}}.}
 
 \item{...}{NULL}
 
@@ -15,7 +15,7 @@ show_best_desirability_prop(x, ..., prop_terms = 0.99)
 of predictors to consider.}
 }
 \value{
-\code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}} returns a tibble with \code{prop_terms}
+Returns a tibble with \code{prop_terms}
 proportion of rows. When showing the results,
 the metrics are presented in "wide format" (one column per metric) and there
 are new columns for the corresponding desirability values (each starts with
@@ -24,5 +24,8 @@ are new columns for the corresponding desirability values (each starts with
 \description{
 Analogous to, and adapted from \code{\link[desirability2:show_best_desirability]{desirability2::show_best_desirability()}} that can
 simultaneously optimize multiple scores using desirability functions.
-See also \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} scoring method.
+See \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} scoring method.
+}
+\seealso{
+\code{\link[=show_best_desirability_num]{show_best_desirability_num()}}, \code{\link[=show_best_desirability_cutoff]{show_best_desirability_cutoff()}}
 }

@@ -61,7 +61,6 @@ test_that("aov computations - class outcome", {
   expect_equal(cell_pval_natrual_res@direction, "minimize")
 })
 
-
 test_that("aov computations - numeric outcome", {
   skip_if_not_installed("modeldata")
   perm_data <- helper_perm_factors()

@@ -583,6 +583,12 @@ flip_if_needed_aov <- function(predictor, outcome) {
   }
 }
 
+# Need to export this
+dont_log_pvalues <- function(x) {
+  x@neg_log10 <- FALSE
+  x
+}
+
 # ------------------------------------------------------------------------------
 # Used with ROC AUC methods
 

@@ -22,8 +22,8 @@ test_that("aov computations - class outcome", {
     score_aov_pval |>
     fit(class ~ ., data = cell_data)
 
-  natrual_units <- score_aov_pval
-  natrual_units@neg_log10 <- FALSE
+  natrual_units <- score_aov_pval |> dont_log_pvalues()
+  #natrual_units@neg_log10 <- FALSE
 
   cell_pval_natrual_res <-
     natrual_units |>
@@ -87,7 +87,9 @@ test_that("aov computations - numeric outcome", {
   for (i in predictors) {
     fstat <- perm_fstat_res@results[perm_fstat_res@results$predictor == i, ]
     lg10 <- perm_pval_res@results[perm_fstat_res@results$predictor == i, ]
-    nat <- perm_pval_natrual_res@results[perm_fstat_res@results$predictor == i,]
+    nat <- perm_pval_natrual_res@results[
+      perm_fstat_res@results$predictor == i,
+    ]
 
     num_x <- length(unique(perm_data[[i]]))
     if (num_x == 1) {
@@ -152,11 +154,8 @@ test_that("aov computations - wrong variable types", {
     fit(Sale_Price ~ ., data = ames_data_chr)
 
   expect_true(all(is.na(ames_chr_res@results$score)))
-
 })
 
 test_that("aov computations - required packages", {
-
   expect_equal(required_pkgs(score_aov_pval), "filtro")
-
 })

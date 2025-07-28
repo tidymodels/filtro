@@ -65,7 +65,7 @@ test_that("computations - required packages", {
   expect_equal(required_pkgs(score_cor_spearman), "filtro")
 })
 
-test_that("Pearson correlation filters", {
+test_that("Pearson correlation filters - adding missing values and case weights", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
@@ -188,7 +188,7 @@ test_that("Pearson correlation filters", {
   )
 })
 
-test_that("Spearman correlation filters", {
+test_that("Spearman correlation filters - adding missing values and case weights", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()

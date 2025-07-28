@@ -33,7 +33,7 @@ score_cor_pearson <-
   class_score_cor(
     outcome_type = "numeric",
     predictor_type = "numeric",
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(-1, 1),
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
@@ -50,7 +50,7 @@ score_cor_spearman <-
   class_score_cor(
     outcome_type = "numeric",
     predictor_type = "numeric",
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(-1, 1),
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
@@ -72,14 +72,16 @@ score_cor_spearman <-
 #' processed via [stats::model.frame()].
 #' @param data A data frame containing the relevant columns defined by the
 #' formula.
+#' @param case_weights A quantitative vector of case weights that is the same
+#' length as the number of rows in `data`. The default of `NULL` indicates that
+#' there are no case weights.
 #' @param ... Further arguments passed to or from other methods.
 #' @details
 #' The function will determine which columns are predictors and outcomes and
 #' compute correlations; no user intervention is required.
 #'
 #' Missing values are removed for each predictor/outcome combination being
-#' scored.
-#' In cases where [cor()] fail, the scoring proceeds silently, and
+#' scored. In cases where [cor()] fail, the scoring proceeds silently, and
 #' a missing value is given for the score.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
@@ -106,24 +108,39 @@ score_cor_spearman <-
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_cor_spearman_res@results
 #' @export
-S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_cor) <- function(
+  object,
+  formula,
+  data,
+  case_weights = NULL,
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+  case_weights <- convert_weights(case_weights, nrow(analysis_data))
 
-  if (object@score_type == "cor_pearson") {
-    object@calculating_fn <- get_single_pearson
-  } else if (object@score_type == "cor_spearman") {
-    object@calculating_fn <- get_single_spearman
+  compete_obs <- !is.na(analysis_data[outcome])
+  if (!is.null(case_weights)) {
+    compete_obs <- compete_obs & !is.na(case_weights)
   }
+  analysis_data <- analysis_data[compete_obs, ]
+
+  if (object@score_type == "cor_spearman") {
+    analysis_data <- dplyr::mutate(
+      analysis_data,
+      dplyr::across(dplyr::where(is.numeric), ~ rank(.x, na.last = "keep"))
+    )
+  }
+
   score <- purrr::map_dbl(
     purrr::set_names(predictors),
     \(x) {
       map_score_cor(
-        data,
+        analysis_data,
         predictor = x,
         outcome = outcome,
-        calculating_fn = object@calculating_fn
+        weights = case_weights
       )
     }
   )
@@ -133,7 +150,7 @@ S7::method(fit, class_score_cor) <- function(object, formula, data, ...) {
   object
 }
 
-map_score_cor <- function(data, predictor, outcome, calculating_fn) {
+map_score_cor <- function(data, predictor, outcome, weights) {
   predictor_col <- data[[predictor]]
   outcome_col <- data[[outcome]]
 
@@ -141,16 +158,30 @@ map_score_cor <- function(data, predictor, outcome, calculating_fn) {
     return(NA_real_)
   }
 
-  res <- calculating_fn(predictor_col, outcome_col)
+  compete_obs <- !is.na(predictor_col)
+  outcome_col <- outcome_col[compete_obs]
+  predictor_col <- predictor_col[compete_obs]
+
+  if (!is.null(weights)) {
+    weights <- weights[compete_obs]
+  } else {
+    weights <- rep(1.0, length(outcome_col))
+  }
+
+  res <- try(
+    stats::cov.wt(
+      cbind(outcome_col, predictor_col),
+      wt = weights,
+      method = "ML",
+      cor = TRUE
+    )$cor,
+    silent = TRUE
+  )
+
+  if (inherits(res, "try-error")) {
+    res <- NA_real_
+  } else {
+    res <- res[1, 2]
+  }
   res
-}
-
-get_single_pearson <- function(predictor, outcome) {
-  res <- stats::cor(predictor, outcome, method = "pearson")
-  return(res)
-}
-
-get_single_spearman <- function(predictor, outcome) {
-  res <- stats::cor(predictor, outcome, method = "spearman")
-  return(res)
 }

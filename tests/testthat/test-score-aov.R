@@ -1,16 +1,16 @@
-test_that("aov object creation", {
-  expect_equal(
-    class(score_aov_fstat),
+test_that("object creation", {
+  expect_s3_class(
+    score_aov_fstat,
     c("filtro::class_score_aov", "filtro::class_score", "S7_object")
   )
 
-  expect_equal(
-    class(score_aov_pval),
+  expect_s3_class(
+    score_aov_pval,
     c("filtro::class_score_aov", "filtro::class_score", "S7_object")
   )
 })
 
-test_that("aov computations - class outcome", {
+test_that("computations - class outcome", {
   skip_if_not_installed("modeldata")
   cell_data <- helper_cells()
 
@@ -32,15 +32,19 @@ test_that("aov computations - class outcome", {
   # ----------------------------------------------------------------------------
 
   predictors <- cell_fstat_res@results$predictor
-  for (i in predictors) {
-    tmp_data <- tibble::tibble(y = cell_data[[i]], x = cell_data$class)
+  for (predictor in predictors) {
+    tmp_data <- tibble::tibble(y = cell_data[[predictor]], x = cell_data$class)
     fit <- lm(y ~ x, data = tmp_data)
     fit_aov <- anova(fit)
 
-    fstat <- cell_fstat_res@results[cell_fstat_res@results$predictor == i, ]
-    lg10 <- cell_pval_res@results[cell_fstat_res@results$predictor == i, ]
+    fstat <- cell_fstat_res@results[
+      cell_fstat_res@results$predictor == predictor,
+    ]
+    lg10 <- cell_pval_res@results[
+      cell_pval_res@results$predictor == predictor,
+    ]
     nat <- cell_pval_natrual_res@results[
-      cell_fstat_res@results$predictor == i,
+      cell_pval_natrual_res@results$predictor == predictor,
     ]
 
     expect_equal(fstat$score, fit_aov[1, "F value"])
@@ -61,8 +65,7 @@ test_that("aov computations - class outcome", {
   expect_equal(cell_pval_natrual_res@direction, "minimize")
 })
 
-
-test_that("aov computations - numeric outcome", {
+test_that("computations - numeric outcome", {
   skip_if_not_installed("modeldata")
   perm_data <- helper_perm_factors()
 
@@ -86,9 +89,9 @@ test_that("aov computations - numeric outcome", {
   predictors <- perm_fstat_res@results$predictor
   for (i in predictors) {
     fstat <- perm_fstat_res@results[perm_fstat_res@results$predictor == i, ]
-    lg10 <- perm_pval_res@results[perm_fstat_res@results$predictor == i, ]
+    lg10 <- perm_pval_res@results[perm_pval_res@results$predictor == i, ]
     nat <- perm_pval_natrual_res@results[
-      perm_fstat_res@results$predictor == i,
+      perm_pval_natrual_res@results$predictor == i,
     ]
 
     num_x <- length(unique(perm_data[[i]]))
@@ -120,7 +123,7 @@ test_that("aov computations - numeric outcome", {
   expect_equal(perm_pval_natrual_res@direction, "minimize")
 })
 
-test_that("aov computations - wrong variable types", {
+test_that("computations - wrong variable types", {
   skip_if_not_installed("modeldata")
 
   perm_data <- helper_perm()
@@ -156,6 +159,7 @@ test_that("aov computations - wrong variable types", {
   expect_true(all(is.na(ames_chr_res@results$score)))
 })
 
-test_that("aov computations - required packages", {
+test_that("computations - required packages", {
+  expect_equal(required_pkgs(score_aov_fstat), "filtro")
   expect_equal(required_pkgs(score_aov_pval), "filtro")
 })

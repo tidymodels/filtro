@@ -103,6 +103,12 @@ processed via <code><a href="https://rdrr.io/r/stats/model.frame.html" class="ex
 formula.</p></dd>
 
 
+<dt id="arg-case-weights">case_weights<a class="anchor" aria-label="anchor" href="#arg-case-weights"></a></dt>
+<dd><p>A quantitative vector of case weights that is the same
+length as the number of rows in <code>data</code>. The default of <code>NULL</code> indicates that
+there are no case weights.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further arguments passed to or from other methods.</p></dd>
 
@@ -112,8 +118,7 @@ formula.</p></dd>
     <p>The function will determine which columns are predictors and outcomes and
 compute correlations; no user intervention is required.</p>
 <p>Missing values are removed for each predictor/outcome combination being
-scored.
-In cases where <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor()</a></code> fail, the scoring proceeds silently, and
+scored. In cases where <code><a href="https://rdrr.io/r/stats/cor.html" class="external-link">cor()</a></code> fail, the scoring proceeds silently, and
 a missing value is given for the score.</p>
     </div>
 

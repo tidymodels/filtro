@@ -99,7 +99,6 @@ test_that("Pearson correlation filters", {
   # ----------------------------------------------------------------------------
   # case weights
 
-
   two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
 
   res_3 <-
@@ -258,7 +257,6 @@ test_that("Spearman correlation filters", {
 
   # ----------------------------------------------------------------------------
   # case weights
-
 
   two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
 

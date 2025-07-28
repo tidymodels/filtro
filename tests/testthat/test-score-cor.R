@@ -65,7 +65,7 @@ test_that("computations - required packages", {
   expect_equal(required_pkgs(score_cor_spearman), "filtro")
 })
 
-skip()
+# TODO Reconsile
 
 test_that("Pearson correlation filters", {
   skip_if_not_installed("modeldata")

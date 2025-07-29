@@ -250,19 +250,6 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   fit <- rlang::eval_tidy(cl)
   imp <- fit$variable.importance
   imp
-
-  # fit <- ranger::ranger(
-  #   x = X,
-  #   y = y,
-  #   num.trees = object@trees,
-  #   mtry = object@mtry,
-  #   importance = importance_type,
-  #   min.node.size = object@min_n,
-  #   classification = object@mode == "classification",
-  #   seed = object@seed
-  # )
-  # imp <- fit$variable.importance
-  # imp
 }
 
 get_imp_rf_partykit <- function(object, data, formula, ...) {
@@ -295,14 +282,6 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
 
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
-
-  # fit <- partykit::cforest(
-  #   formula = formula,
-  #   data = data,
-  #   control = partykit::ctree_control(minsplit = object@min_n), # TODO Eventually have user pass in ctree_control()
-  #   ntree = object@trees,
-  #   mtry = object@mtry,
-  # )
 }
 
 get_imp_rf_aorsf <- function(object, data, formula) {

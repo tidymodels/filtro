@@ -324,14 +324,4 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
 
   imp <- fit$importance
   imp
-
-  # fit <- aorsf::orsf(
-  #   formula = formula,
-  #   data = data,
-  #   n_tree = object@trees,
-  #   n_retry = object@mtry,
-  #   importance = importance_type
-  # )
-  # imp <- fit$importance
-  # imp
 }

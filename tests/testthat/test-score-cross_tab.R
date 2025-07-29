@@ -1,19 +1,58 @@
-library(titanic)
-library(dplyr)
+test_that("object creation", {
+  expect_s3_class(
+    score_xtab_pval_chisq,
+    c("filtro::class_score_xtab", "filtro::class_score", "S7_object")
+  )
 
-titanic_subset <- titanic_train |>
-  mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
-  select(Survived, Pclass, Sex, Age, Fare, Embarked)
+  expect_s3_class(
+    score_xtab_pval_fisher,
+    c("filtro::class_score_xtab", "filtro::class_score", "S7_object")
+  )
+})
 
-titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
-  fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_chisq_res@results
+test_that("computations", {
+  skip_if_not_installed("titanic")
+  titanic_subset <- helper_titanic()
+  titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+    fit(Survived ~ ., data = titanic_subset)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- titanic_xtab_pval_chisq_res@results$predictor
+  for (predictor in predictors) {
+    chisq <- titanic_xtab_pval_chisq_res@results[
+      titanic_xtab_pval_chisq_res@results$predictor == predictor,
+    ]
+
+    tmp_data <- tibble::tibble(
+      x = titanic_subset[[predictor]],
+      y = titanic_subset$Survived
+    )
+
+    if (is.numeric(tmp_data$x)) {
+      fit_chisq <- NA_real_
+    } else {
+      tmp_tab <- table(tmp_data$x, tmp_data$y)
+
+      fit_chisq <- try(
+        suppressWarnings(-log10(stats::chisq.test(tmp_tab)$p.value)),
+        silent = TRUE
+      )
+
+      if (inherits(fit_chisq, "try-error")) {
+        fit_chisq <- NA_real_
+      }
+    }
+
+    expect_equal(chisq$score, fit_chisq)
+  }
+})
+
+skip()
 
 titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
   fit(Survived ~ ., data = titanic_subset)
 titanic_xtab_pval_fisher_res@results
-
-skip()
 
 test_that("get_scores_cross_tab is working for -log10(chisq pval)", {
   if (rlang::is_installed("titanic")) {
@@ -226,3 +265,6 @@ test_that("get_score_cross_tab is working for fisher pval", {
 # TODO Test fdr
 # TODO Test multiclass
 # TODO Test more after we add validators
+
+library(tidymodels)
+hpc_subset <- helper_hpc_data()

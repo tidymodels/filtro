@@ -168,13 +168,18 @@ map_score_cross_tab <- function(data, predictor, outcome, calculating_fn) {
 }
 
 get_single_chisq <- function(predictor, outcome) {
-  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
-  res <- suppressWarnings(stats::chisq.test(tab)$p.value)
+  if (length(levels(outcome)) == 2) {
+    tab <- table(predictor, outcome)
+    res <- suppressWarnings(stats::chisq.test(tab)$p.value)
+  } else {
+    tab <- table(predictor, sample(outcome))
+    res <- suppressWarnings(stats::chisq.test(tab)$p.value)
+  }
   return(res)
 }
 
 get_single_fisher <- function(predictor, outcome) {
-  tab <- table(predictor, outcome) # TODO sample(predictor); Check Slack 06-23
+  tab <- table(predictor, outcome)
   res <- suppressWarnings(stats::fisher.test(tab)$p.value)
   return(res)
 }

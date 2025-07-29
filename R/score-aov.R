@@ -40,7 +40,7 @@ score_aov_pval <-
   class_score_aov(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = TRUE, # TODO
+    case_weights = TRUE,
     range = c(0, Inf),
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,
@@ -79,14 +79,16 @@ score_aov_fstat <-
 #' processed via [stats::model.frame()].
 #' @param data A data frame containing the relevant columns defined by the
 #' formula.
+#' @param case_weights A quantitative vector of case weights that is the same
+#' length as the number of rows in `data`. The default of `NULL` indicates that
+#' there are no case weights.
 #' @param ... Further arguments passed to or from other methods.
 #' @details
 #' The function will determine which columns are predictors and outcomes in the
 #' linear model; no user intervention is required.
 #'
 #' Missing values are removed for each predictor/outcome combination being
-#' scored.
-#' In cases where [lm()] or [anova()] fail, the scoring proceeds silently, and
+#' scored. In cases where [lm()] or [anova()] fail, the scoring proceeds silently, and
 #' a missing value is given for the score.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
@@ -133,13 +135,23 @@ score_aov_fstat <-
 #'   fit(permeability ~ ., data = permeability)
 #' perm_t_stat_res@results
 #' @export
-S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_aov) <- function(
+  object,
+  formula,
+  data,
+  case_weights = NULL,
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
-  # TODO add case weights
-
-  # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+  case_weights <- convert_weights(case_weights, nrow(analysis_data))
+
+  compete_obs <- !is.na(analysis_data[outcome])
+  if (!is.null(case_weights)) {
+    compete_obs <- compete_obs & !is.na(case_weights)
+  }
+  analysis_data <- analysis_data[compete_obs, ]
 
   use_pval <- object@score_type == "aov_pval"
   score <- purrr::map_dbl(
@@ -149,7 +161,8 @@ S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
         analysis_data,
         predictor = x,
         outcome = outcome,
-        pval = use_pval
+        pval = use_pval,
+        weights = case_weights
       )
     }
   )
@@ -171,7 +184,7 @@ S7::method(fit, class_score_aov) <- function(object, formula, data, ...) {
   object
 }
 
-map_score_aov <- function(data, predictor, outcome, pval) {
+map_score_aov <- function(data, predictor, outcome, pval, weights) {
   predictor_col <- data[[predictor]]
   outcome_col <- data[[outcome]]
 
@@ -185,18 +198,33 @@ map_score_aov <- function(data, predictor, outcome, pval) {
     return(NA_real_)
   }
 
-  res <- get_single_aov(predictor_col, outcome_col, pval)
+  compete_obs <- !is.na(predictor_col)
+  outcome_col <- outcome_col[compete_obs]
+  predictor_col <- predictor_col[compete_obs]
+
+  if (!is.null(weights)) {
+    weights <- weights[compete_obs]
+  } else {
+    weights <- rep(1.0, length(outcome_col))
+  }
+
+  res <- get_single_aov(predictor_col, outcome_col, pval, weights)
   res
 }
 
-get_single_aov <- function(predictor, outcome, pval = TRUE) {
+get_single_aov <- function(predictor, outcome, pval = TRUE, weights = NULL) {
   flipped <- flip_if_needed_aov(predictor, outcome)
   outcome <- flipped$outcome
   predictor <- flipped$predictor
   df <- tibble::tibble(outcome = outcome, predictor = predictor)
 
   fit <- try(
-    stats::lm(outcome ~ predictor, data = df, na.action = "na.omit"),
+    stats::lm(
+      outcome ~ predictor,
+      data = df,
+      weights = weights,
+      na.action = "na.omit"
+    ),
     silent = TRUE
   )
   if (inherits(fit, "try-error")) {

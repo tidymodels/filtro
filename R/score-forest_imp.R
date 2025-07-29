@@ -192,7 +192,12 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       ...
     )
   } else if (object@score_type == "imp_rf_conditional") {
-    imp <- get_imp_rf_partykit(object, data = analysis_data, formula = formula)
+    imp <- get_imp_rf_partykit(
+      object,
+      data = analysis_data,
+      formula = formula,
+      ...
+    )
   } else if (object@score_type == "imp_rf_oblique") {
     imp <- get_imp_rf_aorsf(object, data = analysis_data, formula = formula)
   }
@@ -260,16 +265,44 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   # imp
 }
 
-get_imp_rf_partykit <- function(object, data, formula) {
-  fit <- partykit::cforest(
-    formula = formula,
-    data = data,
-    control = partykit::ctree_control(minsplit = object@min_n), # TODO Eventually have user pass in ctree_control()
-    ntree = object@trees,
-    mtry = object@mtry,
+get_imp_rf_partykit <- function(object, data, formula, ...) {
+  cl <- rlang::call2(
+    "cforest",
+    .ns = "partykit",
+    formula = quote(formula),
+    data = quote(data)
   )
+
+  # if (!is.null(case_weights)) {
+  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
+  # }
+
+  opts <- list(...)
+
+  if ("trees" %in% names(opts)) {
+    opts[["ntrees"]] <- opts[["trees"]]
+    opts[["trees"]] <- NULL
+  }
+
+  if ("min_n" %in% names(opts)) {
+    opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
+    opts[["min_n"]] <- NULL
+  }
+
+  cl <- rlang::call_modify(cl, !!!opts)
+
+  fit <- rlang::eval_tidy(cl)
+
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
+
+  # fit <- partykit::cforest(
+  #   formula = formula,
+  #   data = data,
+  #   control = partykit::ctree_control(minsplit = object@min_n), # TODO Eventually have user pass in ctree_control()
+  #   ntree = object@trees,
+  #   mtry = object@mtry,
+  # )
 }
 
 get_imp_rf_aorsf <- function(object, data, formula) {

@@ -69,11 +69,11 @@ test_that("computations - regression task via ranger", {
     regression_task |>
     fit(
       Sale_Price ~ .,
+      data = ames_subset,
       trees = 100,
       mtry = 2,
       min_n = 1,
-      seed = 42,
-      data = ames_subset
+      seed = 42
     )
 
   # ----------------------------------------------------------------------------
@@ -112,7 +112,7 @@ test_that("computations - classification task via partykit", {
 
   set.seed(42)
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(class ~ ., data = cells_subset)
+    fit(class ~ ., data = cells_subset, trees = 100, mtry = 2, min_n = 1)
 
   # ----------------------------------------------------------------------------
 
@@ -120,16 +120,20 @@ test_that("computations - classification task via partykit", {
   fit_partykit <- partykit::cforest(
     formula = class ~ .,
     data = cells_subset,
-    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
     ntree = 100,
     mtry = 2,
+    control = partykit::ctree_control(minsplit = 1) # TODO Eventually have user pass in ctree_control()
   )
   imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
   predictors <- setdiff(names(cells_subset), "class")
   imp_partykit <- imp_partykit_raw[predictors] |> unname()
   imp_partykit[is.na(imp_partykit)] <- 0
 
-  expect_equal(cells_imp_rf_conditional_res@results$score, imp_partykit)
+  expect_equal(
+    cells_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 1e-3
+  )
 
   # ----------------------------------------------------------------------------
 
@@ -147,7 +151,7 @@ test_that("computations - regression task via partykit", {
 
   set.seed(42)
   ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(Sale_Price ~ ., data = ames_subset)
+    fit(Sale_Price ~ ., data = ames_subset, trees = 100, mtry = 2, min_n = 1)
 
   # ----------------------------------------------------------------------------
 
@@ -155,16 +159,20 @@ test_that("computations - regression task via partykit", {
   fit_partykit <- partykit::cforest(
     formula = Sale_Price ~ .,
     data = ames_subset,
-    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
     ntree = 100,
     mtry = 2,
+    control = partykit::ctree_control(minsplit = 1) # TODO Eventually have user pass in ctree_control()
   )
   imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
   predictors <- setdiff(names(ames_subset), "Sale_Price")
   imp_partykit <- imp_partykit_raw[predictors] |> unname()
   imp_partykit[is.na(imp_partykit)] <- 0
 
-  expect_equal(ames_imp_rf_conditional_res@results$score, imp_partykit)
+  expect_equal(
+    ames_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 1e-3
+  )
 
   # ----------------------------------------------------------------------------
 

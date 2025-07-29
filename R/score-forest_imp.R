@@ -199,7 +199,12 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       ...
     )
   } else if (object@score_type == "imp_rf_oblique") {
-    imp <- get_imp_rf_aorsf(object, data = analysis_data, formula = formula)
+    imp <- get_imp_rf_aorsf(
+      object,
+      data = analysis_data,
+      formula = formula,
+      ...
+    )
   }
 
   score <- imp[predictors]
@@ -284,18 +289,49 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   imp
 }
 
-get_imp_rf_aorsf <- function(object, data, formula) {
+get_imp_rf_aorsf <- function(object, data, formula, ...) {
   if (object@score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
-  fit <- aorsf::orsf(
-    formula = formula,
-    data = data,
-    n_tree = object@trees,
-    n_retry = object@mtry,
-    importance = importance_type
+  cl <- rlang::call2(
+    "orsf",
+    .ns = "aorsf",
+    formula = quote(formula),
+    data = quote(data),
+    importance = quote(importance_type)
   )
+
+  # if (!is.null(case_weights)) {
+  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
+  # }
+
+  opts <- list(...)
+
+  if ("trees" %in% names(opts)) {
+    opts[["n_tree"]] <- opts[["trees"]]
+    opts[["trees"]] <- NULL
+  }
+
+  if ("mtry" %in% names(opts)) {
+    opts[["n_retry"]] <- opts[["mtry"]]
+    opts[["mtry"]] <- NULL
+  }
+
+  cl <- rlang::call_modify(cl, !!!opts)
+
+  fit <- rlang::eval_tidy(cl)
+
   imp <- fit$importance
   imp
+
+  # fit <- aorsf::orsf(
+  #   formula = formula,
+  #   data = data,
+  #   n_tree = object@trees,
+  #   n_retry = object@mtry,
+  #   importance = importance_type
+  # )
+  # imp <- fit$importance
+  # imp
 }

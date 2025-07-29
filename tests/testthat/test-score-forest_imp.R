@@ -188,7 +188,7 @@ test_that("computations - classification task via aorsf", {
 
   set.seed(42)
   cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
-    fit(class ~ ., data = cells_subset)
+    fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
 
   # ----------------------------------------------------------------------------
 
@@ -223,7 +223,7 @@ test_that("computations - regression task via aorsf", {
 
   set.seed(42)
   ames_imp_rf_oblique_res <- score_imp_rf_oblique |>
-    fit(Sale_Price ~ ., data = ames_subset)
+    fit(Sale_Price ~ ., data = ames_subset, trees = 100, mtry = 2)
 
   # ----------------------------------------------------------------------------
 

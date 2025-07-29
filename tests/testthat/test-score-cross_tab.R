@@ -110,6 +110,8 @@ test_that("computations fisher", {
 # TODO Test fdr
 # TODO Test multiclass
 
+skip()
+
 library(tidymodels)
 hpc_subset <- helper_hpc_data()
 

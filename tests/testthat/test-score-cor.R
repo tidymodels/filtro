@@ -1,51 +1,116 @@
-ames_subset <- helper_ames()
-
-ames_subset <- modeldata::ames |>
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street
+test_that("object creation", {
+  expect_s3_class(
+    score_cor_pearson,
+    c("filtro::class_score_cor", "filtro::class_score", "S7_object")
   )
 
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
+  expect_s3_class(
+    score_cor_spearman,
+    c("filtro::class_score_cor", "filtro::class_score", "S7_object")
+  )
+})
 
-ames_cor_spearman_res <-
-  score_cor_spearman |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_spearman_res@results
+test_that("computations", {
+  mtcars_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
 
-skip()
+  mtcars_spearman_res <-
+    score_cor_spearman |>
+    fit(mpg ~ ., data = mtcars)
 
-test_that("get_scores_cor() is working for pearson", {
+  # ----------------------------------------------------------------------------
+
+  predictors <- mtcars_pearson_res@results$predictor
+  for (predictor in predictors) {
+    pearson <- mtcars_pearson_res@results[
+      mtcars_pearson_res@results$predictor == predictor,
+    ]
+    spearman <- mtcars_spearman_res@results[
+      mtcars_spearman_res@results$predictor == predictor,
+    ]
+
+    tmp_data <- tibble::tibble(x = mtcars[[predictor]], y = mtcars$mpg)
+    pearson_exp <- stats::cor(tmp_data$x, tmp_data$y, method = "pearson")
+    spearman_exp <- stats::cor(tmp_data$x, tmp_data$y, method = "spearman")
+
+    expect_equal(pearson$score, pearson_exp)
+    expect_equal(spearman$score, spearman_exp)
+  }
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(mtcars_pearson_res@range, c(-1.0, 1.0))
+  expect_equal(mtcars_pearson_res@inclusive, rep(TRUE, 2))
+  expect_equal(mtcars_pearson_res@fallback_value, 1)
+  expect_equal(mtcars_pearson_res@direction, "maximize")
+})
+
+test_that("computations - wrong variable types", {
+  skip_if_not_installed("modeldata")
+
+  perm_data <- helper_perm()
+  perm_data <- perm_data |>
+    dplyr::mutate(dplyr::across(dplyr::starts_with("chem"), as.factor))
+
+  perm_pearson_res <-
+    score_cor_pearson |>
+    fit(permeability ~ ., data = perm_data)
+
+  expect_true(all(is.na(perm_pearson_res@results$score)))
+})
+
+test_that("computations - required packages", {
+  expect_equal(required_pkgs(score_cor_pearson), "filtro")
+  expect_equal(required_pkgs(score_cor_spearman), "filtro")
+})
+
+test_that("Pearson correlation filters - adding missing values and case weights", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_cor()
-  score_res <- get_scores_cor(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
 
-  expect_true(tibble::is_tibble(score_res))
+  ames_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
 
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
+  # ----------------------------------------------------------------------------
 
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
+  predictors <- ames_pearson_res@results$predictor
+  for (predictor in predictors) {
+    pearson <- ames_pearson_res@results[
+      ames_pearson_res@results$predictor == predictor,
+    ]
 
-  expect_equal(unique(score_res$name), "pearson")
+    tmp_data <- tibble::tibble(
+      x = ames_subset[[predictor]],
+      y = ames_subset$Sale_Price
+    )
 
-  expect_equal(unique(score_res$outcome), "Sale_Price")
+    fit_pearson <- try(
+      stats::cor(tmp_data$x, tmp_data$y, method = "pearson"),
+      silent = TRUE
+    )
 
-  exp.MS_SubClass <- NA
+    if (inherits(fit_pearson, "try-error")) {
+      fit_pearson <- NA_real_
+    }
 
-  exp.MS_Zoning <- NA
+    expect_equal(pearson$score, fit_pearson)
+  }
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  ames_missing_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_missing)
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
 
   exp.Lot_Frontage <- stats::cor(
     ames_subset$Lot_Frontage,
@@ -62,43 +127,113 @@ test_that("get_scores_cor() is working for pearson", {
   exp.Street <- NA
 
   expect_identical(
-    score_res$score,
+    ames_missing_pearson_res@results$score,
     c(
       exp.MS_SubClass,
       exp.MS_Zoning,
       exp.Lot_Frontage,
       exp.Lot_Area,
       exp.Street
-    )
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # case weights
+
+  two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
+
+  ames_weights_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "pearson"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "pearson"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    ames_weights_pearson_res@results$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  expect_snapshot(
+    score_cor_pearson |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = 1),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    score_cor_pearson |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = letters),
+    error = TRUE
   )
 })
 
-# TODO Test Reversed stats::lm(x ~ y)
-
-test_that("get_scores_cor() is working for spearman", {
+test_that("Spearman correlation filters - adding missing values and case weights", {
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()
-  score_obj <- score_cor(score_type = "spearman")
-  score_res <- get_scores_cor(
-    score_obj,
-    data = ames_subset,
-    outcome = "Sale_Price"
-  )
 
-  expect_true(tibble::is_tibble(score_res))
+  ames_spearman_res <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset)
 
-  expect_identical(nrow(score_res), ncol(ames_subset) - 1L)
+  # ----------------------------------------------------------------------------
 
-  expect_named(score_res, c("name", "score", "outcome", "predictor"))
+  predictors <- ames_spearman_res@results$predictor
+  for (predictor in predictors) {
+    spearman <- ames_spearman_res@results[
+      ames_spearman_res@results$predictor == predictor,
+    ]
 
-  expect_equal(unique(score_res$name), "spearman")
+    tmp_data <- tibble::tibble(
+      x = ames_subset[[predictor]],
+      y = ames_subset$Sale_Price
+    )
 
-  expect_equal(unique(score_res$outcome), "Sale_Price")
+    fit_spearman <- try(
+      stats::cor(tmp_data$x, tmp_data$y, method = "spearman"),
+      silent = TRUE
+    )
 
-  exp.MS_SubClass <- NA
+    if (inherits(fit_spearman, "try-error")) {
+      fit_spearman <- NA_real_
+    }
 
-  exp.MS_Zoning <- NA
+    expect_equal(spearman$score, fit_spearman)
+  }
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  ames_missing_spearman_res <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_missing)
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
 
   exp.Lot_Frontage <- stats::cor(
     ames_subset$Lot_Frontage,
@@ -115,15 +250,63 @@ test_that("get_scores_cor() is working for spearman", {
   exp.Street <- NA
 
   expect_identical(
-    score_res$score,
+    ames_missing_spearman_res@results$score,
     c(
       exp.MS_SubClass,
       exp.MS_Zoning,
       exp.Lot_Frontage,
       exp.Lot_Area,
       exp.Street
-    )
+    ),
+    tolerance = 0.01
+  )
+
+  # ----------------------------------------------------------------------------
+  # case weights
+
+  two_weights <- c(1, 1, rep(0, nrow(ames_subset) - 2))
+
+  ames_weights_spearman_res <-
+    score_cor_spearman |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+
+  exp.MS_SubClass <- exp.MS_Zoning <- NA
+
+  exp.Lot_Frontage <- stats::cor(
+    ames_subset$Lot_Frontage[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "spearman"
+  )
+
+  exp.Lot_Area <- stats::cor(
+    ames_subset$Lot_Area[1:2],
+    ames_subset$Sale_Price[1:2],
+    method = "spearman"
+  )
+
+  exp.Street <- NA
+
+  expect_identical(
+    ames_weights_spearman_res@results$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
+
+  expect_snapshot(
+    score_cor_spearman |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = 1),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    score_cor_spearman |>
+      fit(Sale_Price ~ ., data = ames_subset, case_weights = letters),
+    error = TRUE
   )
 })
-
-# TODO Test more after we add validators

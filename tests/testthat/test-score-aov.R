@@ -22,8 +22,8 @@ test_that("computations - class outcome", {
     score_aov_pval |>
     fit(class ~ ., data = cell_data)
 
-  natrual_units <- score_aov_pval
-  natrual_units@neg_log10 <- FALSE
+  natrual_units <- score_aov_pval |> dont_log_pvalues()
+  #natrual_units@neg_log10 <- FALSE
 
   cell_pval_natrual_res <-
     natrual_units |>

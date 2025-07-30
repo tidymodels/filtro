@@ -226,6 +226,47 @@ test_that("aov filters - adding missing values and case weights", {
   }
 
   # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  ames_missing_fstat_res <-
+    score_aov_fstat |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  exp.Lot_Frontage <- exp.Lot_Area <- NA
+
+  exp.MS_SubClass <- anova(lm(
+    Sale_Price ~ MS_SubClass,
+    data = ames_missing,
+    na.action = "na.omit"
+  ))[1, "F value"]
+
+  exp.MS_Zoning <- anova(lm(
+    Sale_Price ~ MS_Zoning,
+    data = ames_missing,
+    na.action = "na.omit"
+  ))[1, "F value"]
+
+  exp.Street <- anova(lm(
+    Sale_Price ~ Street,
+    data = ames_missing,
+    na.action = "na.omit"
+  ))[1, "F value"]
+
+  expect_identical(
+    ames_missing_fstat_res@results$score,
+    c(
+      exp.MS_SubClass,
+      exp.MS_Zoning,
+      exp.Lot_Frontage,
+      exp.Lot_Area,
+      exp.Street
+    ),
+    tolerance = 0.01
+  )
 
   # ----------------------------------------------------------------------------
   # case weights

@@ -50,7 +50,7 @@ score_imp_rf <-
   class_score_imp_rf(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(0, Inf),
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,

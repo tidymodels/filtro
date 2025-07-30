@@ -292,7 +292,7 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   }
 
   if ("trees" %in% names(opts)) {
-    opts[["ntrees"]] <- opts[["trees"]]
+    opts[["ntree"]] <- opts[["trees"]]
     opts[["trees"]] <- NULL
   }
 

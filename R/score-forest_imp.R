@@ -188,12 +188,23 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
     imp <- get_imp_rf_ranger(
       object,
       data = analysis_data,
-      outcome = outcome
+      outcome = outcome,
+      ...
     )
   } else if (object@score_type == "imp_rf_conditional") {
-    imp <- get_imp_rf_partykit(object, data = analysis_data, formula = formula)
+    imp <- get_imp_rf_partykit(
+      object,
+      data = analysis_data,
+      formula = formula,
+      ...
+    )
   } else if (object@score_type == "imp_rf_oblique") {
-    imp <- get_imp_rf_aorsf(object, data = analysis_data, formula = formula)
+    imp <- get_imp_rf_aorsf(
+      object,
+      data = analysis_data,
+      formula = formula,
+      ...
+    )
   }
 
   score <- imp[predictors]
@@ -206,51 +217,138 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
   object
 }
 
-get_imp_rf_ranger <- function(object, data, outcome) {
+get_imp_rf_ranger <- function(object, data, outcome, ...) {
   if (object@score_type == "imp_rf") {
     importance_type = "permutation"
   } # TODO Allow option for importance = c("impurity")
 
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
-  fit <- ranger::ranger(
-    x = X,
-    y = y,
-    num.trees = object@trees,
-    mtry = object@mtry,
-    importance = importance_type,
-    min.node.size = object@min_n,
-    classification = object@mode == "classification",
-    seed = object@seed
+
+  cl <- rlang::call2(
+    "ranger",
+    .ns = "ranger",
+    x = quote(X),
+    y = quote(y),
+    importance = quote(importance_type),
+    classification = object@mode == "classification"
   )
+
+  # if (!is.null(case_weights)) {
+  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
+  # }
+
+  opts <- list(...)
+
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
+  if (is.null(opts[["min_n"]])) {
+    opts$min_n <- object@min_n
+  }
+
+  if ("trees" %in% names(opts)) {
+    opts[["num.trees"]] <- opts[["trees"]]
+    opts[["trees"]] <- NULL
+  }
+
+  if ("min_n" %in% names(opts)) {
+    opts[["min.node.size"]] <- opts[["min_n"]]
+    opts[["min_n"]] <- NULL
+  }
+
+  cl <- rlang::call_modify(cl, !!!opts)
+
+  fit <- rlang::eval_tidy(cl)
   imp <- fit$variable.importance
   imp
 }
 
-get_imp_rf_partykit <- function(object, data, formula) {
-  fit <- partykit::cforest(
-    formula = formula,
-    data = data,
-    control = partykit::ctree_control(minsplit = object@min_n), # TODO Eventually have user pass in ctree_control()
-    ntree = object@trees,
-    mtry = object@mtry,
+get_imp_rf_partykit <- function(object, data, formula, ...) {
+  cl <- rlang::call2(
+    "cforest",
+    .ns = "partykit",
+    formula = quote(formula),
+    data = quote(data)
   )
+
+  # if (!is.null(case_weights)) {
+  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
+  # }
+
+  opts <- list(...)
+
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
+  if (is.null(opts[["min_n"]])) {
+    opts$min_n <- object@min_n
+  }
+
+  if ("trees" %in% names(opts)) {
+    opts[["ntree"]] <- opts[["trees"]]
+    opts[["trees"]] <- NULL
+  }
+
+  if ("min_n" %in% names(opts)) {
+    opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
+    opts[["min_n"]] <- NULL
+  }
+
+  cl <- rlang::call_modify(cl, !!!opts)
+
+  fit <- rlang::eval_tidy(cl)
+
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }
 
-get_imp_rf_aorsf <- function(object, data, formula) {
+get_imp_rf_aorsf <- function(object, data, formula, ...) {
   if (object@score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
-  fit <- aorsf::orsf(
-    formula = formula,
-    data = data,
-    n_tree = object@trees,
-    n_retry = object@mtry,
-    importance = importance_type
+  cl <- rlang::call2(
+    "orsf",
+    .ns = "aorsf",
+    formula = quote(formula),
+    data = quote(data),
+    importance = quote(importance_type)
   )
+
+  # if (!is.null(case_weights)) {
+  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
+  # }
+
+  opts <- list(...)
+
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
+
+  if ("trees" %in% names(opts)) {
+    opts[["n_tree"]] <- opts[["trees"]]
+    opts[["trees"]] <- NULL
+  }
+
+  if ("mtry" %in% names(opts)) {
+    opts[["n_retry"]] <- opts[["mtry"]]
+    opts[["mtry"]] <- NULL
+  }
+
+  cl <- rlang::call_modify(cl, !!!opts)
+
+  fit <- rlang::eval_tidy(cl)
+
   imp <- fit$importance
   imp
 }

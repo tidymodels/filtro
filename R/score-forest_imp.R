@@ -257,7 +257,7 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
     y = quote(y),
     importance = quote(importance_type),
     classification = object@mode == "classification",
-    case.weights = weights
+    case.weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {

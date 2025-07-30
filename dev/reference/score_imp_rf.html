@@ -153,13 +153,13 @@ missing predictors.</p>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name      score outcome predictor     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf -<span style="color: #BB0000;">0.003</span><span style="color: #BB0000; text-decoration: underline;">00</span> class   angle_ch_1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf  0.027<span style="text-decoration: underline;">7</span>  class   area_ch_1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf  0.066<span style="text-decoration: underline;">0</span>  class   avg_inten_ch_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf  0.077<span style="text-decoration: underline;">0</span>  class   avg_inten_ch_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf  0.008<span style="text-decoration: underline;">87</span> class   avg_inten_ch_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name       score outcome predictor     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf 0.000<span style="text-decoration: underline;">094</span>7 class   angle_ch_1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf 0.031<span style="text-decoration: underline;">8</span>    class   area_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf 0.067<span style="text-decoration: underline;">2</span>    class   avg_inten_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf 0.083<span style="text-decoration: underline;">8</span>    class   avg_inten_ch_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf 0.010<span style="text-decoration: underline;">4</span>    class   avg_inten_ch_3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Conditional random forest</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_conditional_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_conditional</span> <span class="op">|&gt;</span></span></span>
@@ -168,11 +168,11 @@ missing predictors.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name                 score outcome predictor     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_conditional 0.002<span style="text-decoration: underline;">98</span> class   angle_ch_1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_conditional 0.050<span style="text-decoration: underline;">0</span>  class   area_ch_1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_conditional 0.077<span style="text-decoration: underline;">6</span>  class   avg_inten_ch_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_conditional 0.206   class   avg_inten_ch_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_conditional 0.014<span style="text-decoration: underline;">6</span>  class   avg_inten_ch_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_conditional 0.003<span style="text-decoration: underline;">32</span> class   angle_ch_1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_conditional 0.051<span style="text-decoration: underline;">9</span>  class   area_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_conditional 0.085<span style="text-decoration: underline;">4</span>  class   avg_inten_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_conditional 0.216   class   avg_inten_ch_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_conditional 0.016<span style="text-decoration: underline;">9</span>  class   avg_inten_ch_3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Oblique random forest</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_oblique_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_oblique</span> <span class="op">|&gt;</span></span></span>
@@ -181,11 +181,11 @@ missing predictors.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name              score outcome predictor     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_oblique -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">51</span> class   angle_ch_1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_oblique  0.055<span style="text-decoration: underline;">4</span>  class   area_ch_1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_oblique  0.121   class   avg_inten_ch_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_oblique  0.137   class   avg_inten_ch_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_oblique  0.015<span style="text-decoration: underline;">8</span>  class   avg_inten_ch_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_oblique -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">94</span> class   angle_ch_1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_oblique  0.054<span style="text-decoration: underline;">8</span>  class   area_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_oblique  0.125   class   avg_inten_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_oblique  0.136   class   avg_inten_ch_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_oblique  0.014<span style="text-decoration: underline;">7</span>  class   avg_inten_ch_3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ----------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -214,11 +214,11 @@ missing predictors.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name       score outcome    predictor   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf 0.015<span style="text-decoration: underline;">7</span>    Sale_Price MS_SubClass </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf 0.010<span style="text-decoration: underline;">0</span>    Sale_Price MS_Zoning   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf 0.007<span style="text-decoration: underline;">27</span>   Sale_Price Lot_Frontage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf 0.015<span style="text-decoration: underline;">0</span>    Sale_Price Lot_Area    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf 0.000<span style="text-decoration: underline;">046</span>9 Sale_Price Street      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf 0.014<span style="text-decoration: underline;">9</span>    Sale_Price MS_SubClass </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf 0.011<span style="text-decoration: underline;">2</span>    Sale_Price MS_Zoning   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf 0.006<span style="text-decoration: underline;">93</span>   Sale_Price Lot_Frontage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf 0.014<span style="text-decoration: underline;">3</span>    Sale_Price Lot_Area    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf 0.000<span style="text-decoration: underline;">033</span>6 Sale_Price Street      </span>
 <span class="r-in"><span><span class="co"># TODO Add example of how to change trees, mtry, min_n, seed</span></span></span>
 </code></pre></div>
     </div>

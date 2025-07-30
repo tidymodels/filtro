@@ -15,6 +15,13 @@ class_score_aov <- S7::new_class(
 #'
 #' @description
 #'
+#' These two objects can be used to compute importance scores based on Analysis
+#' of Variance techniques.
+#'
+#' @name score_aov_pval
+#'
+#' @details
+#'
 #' These objects are used when either:
 #'
 #' - The predictors are numeric and the outcome is a factor/category, or
@@ -24,72 +31,27 @@ class_score_aov <- S7::new_class(
 #' variable roles, and the overall p-value for the hypothesis that all means are
 #' equal is computed via the standard F-statistic. The p-value that is returned
 #' is transformed to be `-log10(p_value)` so that larger values are associated
-#' with more important predictors.
+#' with more important predictors. If you would rather have the raw p-values,
+#' the `neg_log10` option can be set to `FALSE`.
 #'
-#' `score_aov_pval` and `score_aov_fstat` are objects that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
+#' @includeRmd man/rmd/score_basics.Rmd details
 #'
-#' \preformatted{
-#'   fit(score_aov_pval, formula, data)
-#' }
+#' @includeRmd man/rmd/case_weights.Rmd details
 #'
-#' See the Examples section below.
-#' @name score_aov_pval
-#' @export
-score_aov_pval <-
-  class_score_aov(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = TRUE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "aov_pval",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "ANOVA p-values"
-  )
-
-#' @name score_aov_pval
-#' @export
-score_aov_fstat <-
-  class_score_aov(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = TRUE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "aov_fstat",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "ANOVA F-statistics"
-  )
-
-# ------------------------------------------------------------------------------
-
-#' Compute analysis of variance scores
-#' @name score_aov_pval
-#' @include class_score.R
-#' @param object A score class object based on `class_score_aov`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param case_weights A quantitative vector of case weights that is the same
-#' length as the number of rows in `data`. The default of `NULL` indicates that
-#' there are no case weights.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#' The function will determine which columns are predictors and outcomes in the
-#' linear model; no user intervention is required.
+#' @includeRmd man/rmd/missing_delete.Rmd details
 #'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored. In cases where [lm()] or [anova()] fail, the scoring proceeds silently, and
-#' a missing value is given for the score.
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `aov_fstat` or `aov_pval`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #' # Analysis of variance where `class` is the class predictor and the numeric
@@ -134,6 +96,41 @@ score_aov_fstat <-
 #'   score_aov_fstat |>
 #'   fit(permeability ~ ., data = permeability)
 #' perm_t_stat_res@results
+#' @export
+score_aov_pval <-
+  class_score_aov(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = TRUE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "aov_pval",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "ANOVA p-values"
+  )
+
+#' @name score_aov_pval
+#' @export
+score_aov_fstat <-
+  class_score_aov(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = TRUE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "aov_fstat",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "ANOVA F-statistics"
+  )
+
+# ------------------------------------------------------------------------------
+
 #' @export
 S7::method(fit, class_score_aov) <- function(
   object,

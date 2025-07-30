@@ -1,0 +1,1 @@
+In cases where the underlying computations fail, the scoring proceeds silently, and a missing value is given for the score.

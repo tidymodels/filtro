@@ -240,6 +240,16 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
 
   opts <- list(...)
 
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
+  if (is.null(opts[["min_n"]])) {
+    opts$min_n <- object@min_n
+  }
+
   if ("trees" %in% names(opts)) {
     opts[["num.trees"]] <- opts[["trees"]]
     opts[["trees"]] <- NULL
@@ -270,6 +280,16 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   # }
 
   opts <- list(...)
+
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
+  if (is.null(opts[["min_n"]])) {
+    opts$min_n <- object@min_n
+  }
 
   if ("trees" %in% names(opts)) {
     opts[["ntrees"]] <- opts[["trees"]]
@@ -307,6 +327,13 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
   # }
 
   opts <- list(...)
+
+  if (is.null(opts[["trees"]])) {
+    opts$trees <- object@trees
+  }
+  if (is.null(opts[["mtry"]])) {
+    opts$mtry <- object@mtry
+  }
 
   if ("trees" %in% names(opts)) {
     opts[["n_tree"]] <- opts[["trees"]]

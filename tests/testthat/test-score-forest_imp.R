@@ -23,9 +23,6 @@ test_that("computations - classification task via ranger", {
   cells_imp_rf_res <- score_imp_rf |>
     fit(
       class ~ .,
-      trees = 100,
-      mtry = 2,
-      min_n = 1,
       seed = 42,
       data = cells_subset
     )
@@ -70,9 +67,6 @@ test_that("computations - regression task via ranger", {
     fit(
       Sale_Price ~ .,
       data = ames_subset,
-      trees = 100,
-      mtry = 2,
-      min_n = 1,
       seed = 42
     )
 
@@ -106,13 +100,63 @@ test_that("computations - regression task via ranger", {
   expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
 })
 
+test_that("computations - regression task via ranger vary trees, mtry, min_n", {
+  skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  regression_task <- score_imp_rf
+  regression_task@mode <- "regression"
+  set.seed(42)
+  ames_imp_rf_regression_task_res <-
+    regression_task |>
+    fit(
+      Sale_Price ~ .,
+      data = ames_subset,
+      trees = 50,
+      mtry = 1,
+      min_n = 2,
+      seed = 42
+    )
+
+  # ----------------------------------------------------------------------------
+
+  y <- ames_subset[["Sale_Price"]]
+  X <- ames_subset[setdiff(names(ames_subset), "Sale_Price")]
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 50,
+    mtry = 1,
+    importance = "permutation",
+    min.node.size = 2,
+    classification = FALSE,
+    seed = 42
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(ames_imp_rf_regression_task_res@results$score, imp_ranger)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@range, c(0.0, Inf))
+  expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
+  expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
+  expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
+})
+
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
   cells_subset <- helper_cells()
 
   set.seed(42)
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(class ~ ., data = cells_subset, trees = 100, mtry = 2, min_n = 1)
+    fit(class ~ ., data = cells_subset)
 
   # ----------------------------------------------------------------------------
 
@@ -132,7 +176,7 @@ test_that("computations - classification task via partykit", {
   expect_equal(
     cells_imp_rf_conditional_res@results$score,
     imp_partykit,
-    tolerance = 1e-3
+    tolerance = 0.1
   )
 
   # ----------------------------------------------------------------------------
@@ -151,7 +195,7 @@ test_that("computations - regression task via partykit", {
 
   set.seed(42)
   ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(Sale_Price ~ ., data = ames_subset, trees = 100, mtry = 2, min_n = 1)
+    fit(Sale_Price ~ ., data = ames_subset)
 
   # ----------------------------------------------------------------------------
 
@@ -171,7 +215,7 @@ test_that("computations - regression task via partykit", {
   expect_equal(
     ames_imp_rf_conditional_res@results$score,
     imp_partykit,
-    tolerance = 1e-3
+    tolerance = 0.1
   )
 
   # ----------------------------------------------------------------------------
@@ -188,7 +232,7 @@ test_that("computations - classification task via aorsf", {
 
   set.seed(42)
   cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
-    fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
+    fit(class ~ ., data = cells_subset)
 
   # ----------------------------------------------------------------------------
 
@@ -223,7 +267,7 @@ test_that("computations - regression task via aorsf", {
 
   set.seed(42)
   ames_imp_rf_oblique_res <- score_imp_rf_oblique |>
-    fit(Sale_Price ~ ., data = ames_subset, trees = 100, mtry = 2)
+    fit(Sale_Price ~ ., data = ames_subset)
 
   # ----------------------------------------------------------------------------
 

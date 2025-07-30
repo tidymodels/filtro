@@ -234,7 +234,7 @@ test_that("aov filters - adding missing values and case weights", {
 
   ames_missing_fstat_res <-
     score_aov_fstat |>
-    fit(Sale_Price ~ ., data = ames_subset)
+    fit(Sale_Price ~ ., data = ames_missing)
 
   exp.Lot_Frontage <- exp.Lot_Area <- NA
 

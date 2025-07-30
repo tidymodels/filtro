@@ -108,6 +108,9 @@ score_imp_rf_oblique <-
 #' processed via [stats::model.frame()].
 #' @param data A data frame containing the relevant columns defined by the
 #' formula.
+#' @param case_weights A quantitative vector of case weights that is the same
+#' length as the number of rows in `data`. The default of `NULL` indicates that
+#' there are no case weights.
 #' @param ... Further arguments passed to or from other methods.
 #' @details
 #' The function will determine which columns are predictors and outcomes in the
@@ -177,18 +180,30 @@ score_imp_rf_oblique <-
 #' ames_imp_rf_regression_task_res@results
 #' # TODO Add example of how to change trees, mtry, min_n, seed
 #' @export
-S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_imp_rf) <- function(
+  object,
+  formula,
+  data,
+  case_weights = NULL,
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
-
-  # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+  case_weights <- convert_weights(case_weights, nrow(analysis_data))
+
+  compete_obs <- !is.na(analysis_data[outcome])
+  if (!is.null(case_weights)) {
+    compete_obs <- compete_obs & !is.na(case_weights)
+  }
+  analysis_data <- analysis_data[compete_obs, ]
 
   if (object@score_type == "imp_rf") {
     imp <- get_imp_rf_ranger(
       object,
       data = analysis_data,
       outcome = outcome,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_conditional") {
@@ -217,7 +232,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
   object
 }
 
-get_imp_rf_ranger <- function(object, data, outcome, ...) {
+get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   if (object@score_type == "imp_rf") {
     importance_type = "permutation"
   } # TODO Allow option for importance = c("impurity")
@@ -225,13 +240,24 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
 
+  compete_obs <- stats::complete.cases(X, y)
+  y <- y[compete_obs]
+  X <- X[compete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[compete_obs]
+  } else {
+    weights <- rep(1.0, length(y))
+  }
+
   cl <- rlang::call2(
     "ranger",
     .ns = "ranger",
     x = quote(X),
     y = quote(y),
     importance = quote(importance_type),
-    classification = object@mode == "classification"
+    classification = object@mode == "classification",
+    case.weights = weights
   )
 
   # if (!is.null(case_weights)) {

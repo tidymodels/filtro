@@ -100,6 +100,90 @@ test_that("computations - regression task via ranger", {
   expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
 })
 
+test_that("computations - regression task via ranger - adding missing values and case weights", {
+  skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  regression_task <- score_imp_rf
+  regression_task@mode <- "regression"
+  set.seed(42)
+  ames_missing_imp_rf_res <-
+    regression_task |>
+    fit(
+      Sale_Price ~ .,
+      data = ames_missing,
+      seed = 42
+    )
+
+  # ----------------------------------------------------------------------------
+
+  y <- ames_missing[["Sale_Price"]]
+  X <- ames_missing[setdiff(names(ames_missing), "Sale_Price")]
+
+  compete_obs <- stats::complete.cases(X, y)
+  y <- y[compete_obs]
+  X <- X[compete_obs, , drop = FALSE]
+
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 100,
+    mtry = 2,
+    importance = "permutation",
+    min.node.size = 1,
+    classification = FALSE,
+    seed = 42
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(ames_missing_imp_rf_res@results$score, imp_ranger)
+
+  # ----------------------------------------------------------------------------
+  # case weights
+
+  two_weights <- c(rep(1, 10), rep(0, nrow(ames_subset) - 10))
+
+  regression_task <- score_imp_rf
+  regression_task@mode <- "regression"
+  set.seed(42)
+  ames_weights_imp_rf_res <-
+    regression_task |>
+    fit(
+      Sale_Price ~ .,
+      data = ames_subset,
+      seed = 42,
+      case_weights = two_weights
+    )
+  # ----------------------------------------------------------------------------
+
+  y <- ames_subset[["Sale_Price"]]
+  X <- ames_subset[setdiff(names(ames_missing), "Sale_Price")]
+
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 100,
+    mtry = 2,
+    importance = "permutation",
+    min.node.size = 1,
+    classification = FALSE,
+    seed = 42,
+    case.weights = two_weights
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(ames_weights_imp_rf_res@results$score, imp_ranger)
+})
+
 test_that("computations - regression task via ranger vary trees, mtry, min_n", {
   skip_if_not_installed("modeldata")
   ames_subset <- helper_ames()

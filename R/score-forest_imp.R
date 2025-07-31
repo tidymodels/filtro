@@ -211,6 +211,7 @@ S7::method(fit, class_score_imp_rf) <- function(
       object,
       data = analysis_data,
       formula = formula,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_oblique") {
@@ -293,12 +294,23 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   imp
 }
 
-get_imp_rf_partykit <- function(object, data, formula, ...) {
+get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
+  mf <- stats::model.frame(formula, data = data)
+  complete_obs <- stats::complete.cases(mf)
+  data <- data[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[compete_obs]
+  } else {
+    weights <- rep(1.0, nrow(data))
+  }
+
   cl <- rlang::call2(
     "cforest",
     .ns = "partykit",
-    formula = quote(formula),
-    data = quote(data)
+    formula = quote(formula), # Do we want rlang::expr() instead?
+    data = quote(data),
+    weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {
@@ -323,6 +335,7 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   }
 
   if ("min_n" %in% names(opts)) {
+    # TODO Check parsnip's partykit.R
     opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
     opts[["min_n"]] <- NULL
   }
@@ -330,7 +343,6 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }

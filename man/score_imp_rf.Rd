@@ -30,6 +30,10 @@ processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
 \item{data}{A data frame containing the relevant columns defined by the
 formula.}
 
+\item{case_weights}{A quantitative vector of case weights that is the same
+length as the number of rows in \code{data}. The default of \code{NULL} indicates that
+there are no case weights.}
+
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{

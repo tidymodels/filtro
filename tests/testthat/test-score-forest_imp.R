@@ -285,7 +285,7 @@ test_that("computations - regression task via partykit", {
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   set.seed(42)
-  ames_missing_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
     fit(Sale_Price ~ ., data = ames_subset)
 
   # ----------------------------------------------------------------------------

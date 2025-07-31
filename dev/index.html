@@ -59,7 +59,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p><code>filtro</code> is tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, importance scores, and more.</p>
-<p><code>filtro</code> provides functions to rank and select a top number or proportion of features using built-in methods and the <a href="https://desirability2.tidymodels.org" class="external-link">desirability2</a> package, and supports streamlined preprocessing, either standalone or within tidymodels workflows such as the <a href="https://recipes.tidymodels.org" class="external-link">recipes</a> package.</p>
+<p>The package provides functions to rank and select a top proportion or number of features using built-in methods and the <a href="https://desirability2.tidymodels.org" class="external-link">desirability2</a> package, and supports streamlined preprocessing, either standalone or within tidymodels workflows such as the <a href="https://recipes.tidymodels.org" class="external-link">recipes</a> package.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -75,19 +75,14 @@
 <div class="section level2">
 <h2 id="feature-selection-methods">Feature selection methods<a class="anchor" aria-label="anchor" href="#feature-selection-methods"></a>
 </h2>
+<p>Currently, the implemented filters include:</p>
 <ol style="list-style-type: decimal">
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
-<li>
-</li>
+<li><p>ANOVA F-test</p></li>
+<li><p>Correlation</p></li>
+<li><p>Cross tabulation (chi-squared test and Fisher’s exact test) p-value</p></li>
+<li><p>Random forest feature importance score</p></li>
+<li><p>Information gain</p></li>
+<li><p>Area under the ROC curve</p></li>
 </ol>
 </div>
 <div class="section level2">

@@ -242,7 +242,7 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
 
-  complete_obs <- stats::complete.cases(X, y)
+  complete_obs <- complete.cases(X) & !is.na(y)
   y <- y[complete_obs]
   X <- X[complete_obs, , drop = FALSE]
 
@@ -297,7 +297,7 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
 
 get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
   complete_obs <- stats::complete.cases(data)
-  data <- data[complete_obs, ]
+  data <- data[complete_obs, , drop = FALSE]
 
   if (!is.null(weights)) {
     weights <- weights[complete_obs]
@@ -353,7 +353,7 @@ get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
   complete_obs <- stats::complete.cases(data)
-  data <- data[complete_obs, ]
+  data <- data[complete_obs, , drop = FALSE]
 
   if (!is.null(weights)) {
     weights <- weights[complete_obs]
@@ -396,7 +396,6 @@ get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- fit$importance
   imp
 }

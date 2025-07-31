@@ -296,9 +296,8 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
 }
 
 get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
-  mf <- stats::model.frame(formula, data = data)
-  complete_obs <- stats::complete.cases(mf)
-  data <- data[complete_obs, , drop = FALSE]
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, ]
 
   if (!is.null(weights)) {
     weights <- weights[complete_obs]
@@ -353,9 +352,8 @@ get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
 
-  mf <- stats::model.frame(formula, data = data)
-  complete_obs <- stats::complete.cases(mf)
-  data <- data[complete_obs, , drop = FALSE]
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, ]
 
   if (!is.null(weights)) {
     weights <- weights[complete_obs]

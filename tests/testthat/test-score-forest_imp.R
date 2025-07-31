@@ -423,6 +423,32 @@ test_that("computations - regression task via aorsf - adding missing values and 
   imp_aorsf[is.na(imp_aorsf)] <- 0
 
   expect_equal(ames_missing_imp_rf_oblique_res@results$score, imp_aorsf)
+
+  # ----------------------------------------------------------------------------
+  # case weights
+  two_weights <- c(rep(1, 10), rep(0, nrow(ames_subset) - 10))
+
+  set.seed(42)
+  ames_weights_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = Sale_Price ~ .,
+    data = ames_subset,
+    n_tree = 100,
+    n_retry = 2,
+    importance = "permute",
+    weights = two_weights
+  )
+  imp_raw_aorsf <- fit_aorsf$importance
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
+  imp_aorsf[is.na(imp_aorsf)] <- 0
+
+  expect_equal(ames_weights_imp_rf_oblique_res@results$score, imp_aorsf)
 })
 
 # TODO computations - wrong variable types

@@ -387,6 +387,44 @@ test_that("computations - regression task via aorsf", {
   expect_equal(ames_imp_rf_oblique_res@direction, "maximize")
 })
 
+test_that("computations - regression task via aorsf - adding missing values and case weights", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  set.seed(42)
+  ames_missing_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(Sale_Price ~ ., data = ames_missing)
+
+  # ----------------------------------------------------------------------------
+
+  ames_missing <- ames_missing[stats::complete.cases(ames_missing), ]
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = Sale_Price ~ .,
+    data = ames_missing,
+    n_tree = 100,
+    n_retry = 2,
+    importance = "permute"
+  )
+  imp_raw_aorsf <- fit_aorsf$importance
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
+  imp_aorsf[is.na(imp_aorsf)] <- 0
+
+  expect_equal(ames_missing_imp_rf_oblique_res@results$score, imp_aorsf)
+})
+
 # TODO computations - wrong variable types
 
 test_that("computations - required packages", {

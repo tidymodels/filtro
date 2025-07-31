@@ -285,7 +285,7 @@ test_that("computations - regression task via partykit", {
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   set.seed(42)
-  ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  ames_missing_imp_rf_conditional_res <- score_imp_rf_conditional |>
     fit(Sale_Price ~ ., data = ames_subset)
 
   # ----------------------------------------------------------------------------
@@ -315,6 +315,78 @@ test_that("computations - regression task via partykit", {
   expect_equal(ames_imp_rf_conditional_res@inclusive, rep(FALSE, 2))
   expect_equal(ames_imp_rf_conditional_res@fallback_value, Inf)
   expect_equal(ames_imp_rf_conditional_res@direction, "maximize")
+})
+
+test_that("computations - regression task via partykit - adding missing values and case weights", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  set.seed(42)
+  ames_missing_imp_rf_conditional_res <- score_imp_rf_conditional |>
+    fit(Sale_Price ~ ., data = ames_missing)
+
+  # ----------------------------------------------------------------------------
+
+  ames_missing <- ames_missing[stats::complete.cases(ames_missing), ]
+
+  set.seed(42)
+  fit_partykit <- partykit::cforest(
+    formula = Sale_Price ~ .,
+    data = ames_missing,
+    ntree = 100,
+    mtry = 2,
+    control = partykit::ctree_control(minsplit = 1) # TODO Eventually have user pass in ctree_control()
+  )
+  imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_partykit <- imp_partykit_raw[predictors] |> unname()
+  imp_partykit[is.na(imp_partykit)] <- 0
+
+  expect_equal(
+    ames_missing_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 0.1
+  )
+
+  # ----------------------------------------------------------------------------
+  # case weights
+  two_weights <- c(rep(1, 2000), rep(0, nrow(ames_subset) - 2000)) # TODO Throw error if the probability is too low
+
+  set.seed(42)
+  ames_weights_imp_rf_conditional_res <- score_imp_rf_conditional |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_partykit <- partykit::cforest(
+    formula = Sale_Price ~ .,
+    data = ames_subset,
+    ntree = 100,
+    mtry = 2,
+    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
+    weights = two_weights
+  )
+  imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_partykit <- imp_partykit_raw[predictors] |> unname()
+  imp_partykit[is.na(imp_partykit)] <- 0
+
+  expect_equal(
+    ames_weights_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 0.1
+  )
 })
 
 test_that("computations - classification task via aorsf", {

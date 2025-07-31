@@ -147,11 +147,11 @@ S7::method(fit, class_score_aov) <- function(
   outcome <- names(analysis_data)[1]
   case_weights <- convert_weights(case_weights, nrow(analysis_data))
 
-  compete_obs <- !is.na(analysis_data[outcome])
+  complete_obs <- !is.na(analysis_data[outcome])
   if (!is.null(case_weights)) {
-    compete_obs <- compete_obs & !is.na(case_weights)
+    complete_obs <- complete_obs & !is.na(case_weights)
   }
-  analysis_data <- analysis_data[compete_obs, ]
+  analysis_data <- analysis_data[complete_obs, ]
 
   use_pval <- object@score_type == "aov_pval"
   score <- purrr::map_dbl(
@@ -198,12 +198,12 @@ map_score_aov <- function(data, predictor, outcome, pval, weights) {
     return(NA_real_)
   }
 
-  compete_obs <- !is.na(predictor_col)
-  outcome_col <- outcome_col[compete_obs]
-  predictor_col <- predictor_col[compete_obs]
+  complete_obs <- !is.na(predictor_col)
+  outcome_col <- outcome_col[complete_obs]
+  predictor_col <- predictor_col[complete_obs]
 
   if (!is.null(weights)) {
-    weights <- weights[compete_obs]
+    weights <- weights[complete_obs]
   } else {
     weights <- rep(1.0, length(outcome_col))
   }

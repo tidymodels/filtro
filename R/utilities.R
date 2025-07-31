@@ -638,18 +638,19 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
   if (!is.numeric(weights)) {
     cli::cli_abort(
       "{.arg case_weights} should be a numeric or case weight vector, not
-      {.obj_type_friendly {weights}}", call = call)
+      {.obj_type_friendly {weights}}",
+      call = call
+    )
   }
 
   if (length(weights) != num_rows) {
     cli::cli_abort(
       "There should be asvalues in {.arg case_weights} ({length(weights)}) as
       there are rows in `data` ({num_rows}).",
-      call = call)
+      call = call
+    )
   }
   # in case the class is importance_weights or frequency weights, strip their
   # extra class(es) and attributes
   as.numeric(weights)
 }
-
-

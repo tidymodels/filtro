@@ -34,9 +34,20 @@ class_score_aov <- S7::new_class(
 #' with more important predictors. If you would rather have the raw p-values,
 #' the `neg_log10` option can be set to `FALSE`.
 #'
-#' @includeRmd man/rmd/score_basics.Rmd details
+#' ## Estimating the scores
 #'
-#' @includeRmd man/rmd/case_weights.Rmd details
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
+#'
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_aov_pval`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
+#'   }
 #'
 #' @includeRmd man/rmd/missing_delete.Rmd details
 #'

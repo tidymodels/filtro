@@ -17,6 +17,12 @@ class_score_xtab <- S7::new_class(
 #'
 #' @description
 #'
+#' When both predictors and outcomes are numeric, importances scores can be
+#' computed via the correlation statistic.
+#'
+#' @name score_xtab_pval_chisq
+#' @details
+#'
 #' These objects are used when:
 #'
 #' - The predictors are factors and the outcome is a factor.
@@ -28,15 +34,43 @@ class_score_xtab <- S7::new_class(
 #' be `-log10(p_value)` so that larger values are associated with more important
 #' predictors.
 #'
-#' `score_xtab_pval_chisq` and `score_xtab_pval_fisher` are objects that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
+#' ## Estimating the scores
 #'
-#' \preformatted{
-#'   fit(score_xtab_pval_chisq, formula, data)
-#' }
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
 #'
-#' See the Examples section below.
-#' @name score_xtab_pval_chisq
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_cor_pearson`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
+#'   }
+#'
+#' @includeRmd man/rmd/missing_delete.Rmd details
+#'
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @examplesIf rlang::is_installed("titanic")
+#' # Binary factor example
+#'
+#' library(titanic)
+#' library(dplyr)
+#'
+#' titanic_subset <- titanic_train |>
+#'   mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
+#'   select(Survived, Pclass, Sex, Age, Fare, Embarked)
+#'
+#' titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+#'   fit(Survived ~ ., data = titanic_subset)
+#' titanic_xtab_pval_chisq_res
+#'
+#' titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
+#'   fit(Survived ~ ., data = titanic_subset)
+#' titanic_xtab_pval_fisher_res
+#' # TODO Add multiclass example
 #' @export
 score_xtab_pval_chisq <-
   class_score_xtab(
@@ -72,44 +106,6 @@ score_xtab_pval_fisher <-
 
 # ------------------------------------------------------------------------------
 
-#' Compute cross tabulation p-value scores
-#' @name score_xtab_pval_chisq
-#' @include class_score.R
-#' @param object A score class object based on `class_score_xtab`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#' The function will determine which columns are predictors and outcomes in the
-#' contingency table; no user intervention is required.
-#'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored.
-#' In cases where [stats::chisq.test()] or [stats::fisher.test()] fail, the scoring proceeds
-#' silently, and a missing value is given for the score.
-#'
-#' @examplesIf rlang::is_installed("titanic")
-#'
-#' # Binary factor example
-#'
-#' library(titanic)
-#' library(dplyr)
-#'
-#' titanic_subset <- titanic_train |>
-#'   mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
-#'   select(Survived, Pclass, Sex, Age, Fare, Embarked)
-#'
-#' titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
-#'   fit(Survived ~ ., data = titanic_subset)
-#' titanic_xtab_pval_chisq_res@results
-#'
-#' titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
-#'   fit(Survived ~ ., data = titanic_subset)
-#' titanic_xtab_pval_fisher_res@results
-#' # TODO Add multiclass example
 #' @export
 S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

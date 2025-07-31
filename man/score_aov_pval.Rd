@@ -45,30 +45,20 @@ equal is computed via the standard F-statistic. The p-value that is returned
 is transformed to be \code{-log10(p_value)} so that larger values are associated
 with more important predictors. If you would rather have the raw p-values,
 the \code{neg_log10} option can be set to \code{FALSE}.
-
 \subsection{Estimating the scores}{
 
-In , the \verb{score_*} objects define a scoring method (e.g., data input
-requirements, package dependencies, etc). To compute the scores for a
-specific data set, the \code{fit()} method is used. The main arguments for
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
 these functions are:
-\itemize{
-\item \code{object}: A score class object based (e.g., \code{scale_forest_imp}).
-\item \code{formula}: A standard R formula with a single outcome on the
-right-hand side and one or more predictors (or \code{.}) on the left-hand
-side. The data are processed via
-\code{\link[stats:model.frame]{stats::model.frame()}}.
-\item \code{data}: A data frame containing the relevant columns defined by the
-formula.
-\item \code{...}: Further arguments passed to or from other methods.
-}
-}
 
-For this particular method, there is an additional argument:
-\itemize{
-\item \code{case_weights}: A quantitative vector of case weights that is the same
-length as the number of rows in \code{data}. The default of \code{NULL}
-indicates that there are no case weights.
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_aov_pval}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
+}
 }
 
 Missing values are removed for each predictor/outcome combination being

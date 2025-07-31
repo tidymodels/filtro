@@ -15,19 +15,11 @@ score_xtab_pval_chisq
 
 score_xtab_pval_fisher
 }
-\arguments{
-\item{object}{A score class object based on \code{class_score_xtab}.}
-
-\item{formula}{A standard R formula with a single outcome on the right-hand
-side and one or more predictors (or \code{.}) on the left-hand side. The data are
-processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
-
-\item{data}{A data frame containing the relevant columns defined by the
-formula.}
-
-\item{...}{Further arguments passed to or from other methods.}
-}
 \description{
+When both predictors and outcomes are numeric, importances scores can be
+computed via the correlation statistic.
+}
+\details{
 These objects are used when:
 \itemize{
 \item The predictors are factors and the outcome is a factor.
@@ -39,28 +31,30 @@ the chi-squared test (via \code{\link[stats:chisq.test]{stats::chisq.test()}}) o
 (via \code{\link[stats:fisher.test]{stats::fisher.test()}}). The p-value that is returned is transformed to
 be \code{-log10(p_value)} so that larger values are associated with more important
 predictors.
+\subsection{Estimating the scores}{
 
-\code{score_xtab_pval_chisq} and \code{score_xtab_pval_fisher} are objects that define the technique.
-To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
+these functions are:
 
-\preformatted{
-  fit(score_xtab_pval_chisq, formula, data)
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_cor_pearson}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
 }
-
-See the Examples section below.
 }
-\details{
-The function will determine which columns are predictors and outcomes in the
-contingency table; no user intervention is required.
 
 Missing values are removed for each predictor/outcome combination being
 scored.
-In cases where \code{\link[stats:chisq.test]{stats::chisq.test()}} or \code{\link[stats:fisher.test]{stats::fisher.test()}} fail, the scoring proceeds
+
+In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.
 }
 \examples{
 \dontshow{if (rlang::is_installed("titanic")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-
 # Binary factor example
 
 library(titanic)
@@ -72,11 +66,11 @@ titanic_subset <- titanic_train |>
 
 titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
   fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_chisq_res@results
+titanic_xtab_pval_chisq_res
 
 titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
   fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_fisher_res@results
+titanic_xtab_pval_fisher_res
 # TODO Add multiclass example
 \dontshow{\}) # examplesIf}
 }

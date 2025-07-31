@@ -15,52 +15,55 @@ score_cor_pearson
 
 score_cor_spearman
 }
-\arguments{
-\item{object}{A score class object based on \code{class_score_cor}.}
+\value{
+An S7 object. The primary property of interest is in \code{results}. This
+is a data frame of results that is populated by the \code{fit()} method and has
+columns:
+\itemize{
+\item \code{name}: The name of the score (e.g., \code{score_cor_pearson} or \code{score_cor_spearman}).
+\item \code{score}: The estimates for each predictor.
+\item \code{outcome}: The name of the outcome column.
+\item \code{predictor}: The names of the predictor inputs.
+}
 
-\item{formula}{A standard R formula with a single outcome on the right-hand
-side and one or more predictors (or \code{.}) on the left-hand side. The data are
-processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
-
-\item{data}{A data frame containing the relevant columns defined by the
-formula.}
-
-\item{case_weights}{A quantitative vector of case weights that is the same
-length as the number of rows in \code{data}. The default of \code{NULL} indicates that
-there are no case weights.}
-
-\item{...}{Further arguments passed to or from other methods.}
+These data are accessed using \code{object@results} (see examples below).
 }
 \description{
+Scoring via correlation coefficient
+}
+\details{
 These objects are used when:
 \itemize{
 \item The predictors are numeric and the outcome is numeric.
 }
 
-In this case, a correlation coefficient (via \code{\link[stats:cor]{stats::cor()}}) is computed with
+In this case, a correlation coefficient (via \code{\link[stats:cov.wt]{stats::cov.wt()}}) is computed with
 the proper variable roles. Values closer to 1 or -1 (i.e., \code{abs(cor_pearson)}
 closer to 1) are associated with more important predictors.
+\subsection{Estimating the scores}{
 
-\code{score_cor_pearson} and \code{score_cor_spearman} are objects that define the technique.
-To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
+these functions are:
 
-\preformatted{
-  fit(score_cor_pearson, formula, data)
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_cor_pearson}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
 }
-
-See the Examples section below.
 }
-\details{
-The function will determine which columns are predictors and outcomes and
-compute correlations; no user intervention is required.
 
 Missing values are removed for each predictor/outcome combination being
-scored. In cases where \code{\link[=cor]{cor()}} fail, the scoring proceeds silently, and
-a missing value is given for the score.
+scored.
+
+In cases where the underlying computations fail, the scoring proceeds
+silently, and a missing value is given for the score.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-
 library(dplyr)
 
 ames_subset <- modeldata::ames |>
@@ -76,12 +79,12 @@ ames_subset <- modeldata::ames |>
 ames_cor_pearson_res <-
   score_cor_pearson |>
   fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
+ames_cor_pearson_res
 
 ames_cor_spearman_res <-
   score_cor_spearman |>
   fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_spearman_res@results
+ames_cor_spearman_res
 \dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

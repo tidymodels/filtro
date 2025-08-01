@@ -116,8 +116,8 @@ score_imp_rf_oblique <-
 #' The function will determine which columns are predictors and outcomes in the
 #' random forest; no user intervention is required.
 #'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored.
+#' Missing values are removed by case-wise deletion.
+#'
 #' When a predictor's importance score is 0, [partykit::cforest()] may omit its
 #' name from the results. In cases like these, a score of 0 is assigned to the
 #' missing predictors.
@@ -262,10 +262,6 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
     case.weights = quote(weights)
   )
 
-  # if (!is.null(case_weights)) {
-  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
-  # }
-
   opts <- list(...)
 
   if (is.null(opts[["trees"]])) {
@@ -336,6 +332,8 @@ get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
 
   if ("min_n" %in% names(opts)) {
     # TODO Check parsnip's partykit.R
+    # TODO see if there is already a control object and update that; if not
+    # to this:
     opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
     opts[["min_n"]] <- NULL
   }

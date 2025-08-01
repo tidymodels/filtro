@@ -62,8 +62,8 @@ See the Examples section below.
 The function will determine which columns are predictors and outcomes in the
 random forest; no user intervention is required.
 
-Missing values are removed for each predictor/outcome combination being
-scored.
+Missing values are removed by case-wise deletion.
+
 When a predictor's importance score is 0, \code{\link[partykit:cforest]{partykit::cforest()}} may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.

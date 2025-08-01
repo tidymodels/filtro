@@ -115,6 +115,12 @@ processed via <code><a href="https://rdrr.io/r/stats/model.frame.html" class="ex
 formula.</p></dd>
 
 
+<dt id="arg-case-weights">case_weights<a class="anchor" aria-label="anchor" href="#arg-case-weights"></a></dt>
+<dd><p>A quantitative vector of case weights that is the same
+length as the number of rows in <code>data</code>. The default of <code>NULL</code> indicates that
+there are no case weights.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further arguments passed to or from other methods.</p></dd>
 
@@ -123,9 +129,8 @@ formula.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The function will determine which columns are predictors and outcomes in the
 random forest; no user intervention is required.</p>
-<p>Missing values are removed for each predictor/outcome combination being
-scored.
-When a predictor's importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may omit its
+<p>Missing values are removed by case-wise deletion.</p>
+<p>When a predictor's importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.</p>
     </div>
@@ -166,26 +171,26 @@ missing predictors.</p>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_conditional_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name                 score outcome predictor     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_conditional 0.003<span style="text-decoration: underline;">32</span> class   angle_ch_1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_conditional 0.051<span style="text-decoration: underline;">9</span>  class   area_ch_1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_conditional 0.085<span style="text-decoration: underline;">4</span>  class   avg_inten_ch_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_conditional 0.216   class   avg_inten_ch_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_conditional 0.016<span style="text-decoration: underline;">9</span>  class   avg_inten_ch_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name                  score outcome predictor     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_conditional -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">03</span> class   angle_ch_1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_conditional  0.052<span style="text-decoration: underline;">6</span>  class   area_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_conditional  0.082<span style="text-decoration: underline;">2</span>  class   avg_inten_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_conditional  0.192   class   avg_inten_ch_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_conditional  0.017<span style="text-decoration: underline;">6</span>  class   avg_inten_ch_3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Oblique random forest</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_oblique_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_oblique</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cells_imp_rf_oblique_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   name              score outcome predictor     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_oblique -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">94</span> class   angle_ch_1    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_oblique  0.054<span style="text-decoration: underline;">8</span>  class   area_ch_1     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_oblique  0.125   class   avg_inten_ch_1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_oblique  0.136   class   avg_inten_ch_2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_oblique  0.014<span style="text-decoration: underline;">7</span>  class   avg_inten_ch_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name             score outcome predictor     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf_oblique 0.001<span style="text-decoration: underline;">22</span> class   angle_ch_1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf_oblique 0.055<span style="text-decoration: underline;">5</span>  class   area_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf_oblique 0.121   class   avg_inten_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf_oblique 0.134   class   avg_inten_ch_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf_oblique 0.021<span style="text-decoration: underline;">3</span>  class   avg_inten_ch_3</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ----------------------------------------------------------------------------</span></span></span>
 <span class="r-in"><span></span></span>

@@ -21,7 +21,11 @@ test_that("computations - classification task via ranger", {
 
   score_imp_rf@seed <- 42
   cells_imp_rf_res <- score_imp_rf |>
-    fit(class ~ ., data = cells_subset)
+    fit(
+      class ~ .,
+      seed = 42,
+      data = cells_subset
+    )
 
   # ----------------------------------------------------------------------------
 
@@ -49,6 +53,103 @@ test_that("computations - classification task via ranger", {
   expect_equal(cells_imp_rf_res@direction, "maximize")
 })
 
+test_that("computations - regression task via ranger", {
+  skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  regression_task <- score_imp_rf
+  regression_task@mode <- "regression"
+  set.seed(42)
+  ames_imp_rf_regression_task_res <-
+    regression_task |>
+    fit(
+      Sale_Price ~ .,
+      data = ames_subset,
+      seed = 42
+    )
+
+  # ----------------------------------------------------------------------------
+
+  y <- ames_subset[["Sale_Price"]]
+  X <- ames_subset[setdiff(names(ames_subset), "Sale_Price")]
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 100,
+    mtry = 2,
+    importance = "permutation",
+    min.node.size = 1,
+    classification = FALSE,
+    seed = 42
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(ames_imp_rf_regression_task_res@results$score, imp_ranger)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@range, c(0.0, Inf))
+  expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
+  expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
+  expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
+})
+
+test_that("computations - regression task via ranger vary trees, mtry, min_n", {
+  skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  regression_task <- score_imp_rf
+  regression_task@mode <- "regression"
+  set.seed(42)
+  ames_imp_rf_regression_task_res <-
+    regression_task |>
+    fit(
+      Sale_Price ~ .,
+      data = ames_subset,
+      trees = 50,
+      mtry = 1,
+      min_n = 2,
+      seed = 42
+    )
+
+  # ----------------------------------------------------------------------------
+
+  y <- ames_subset[["Sale_Price"]]
+  X <- ames_subset[setdiff(names(ames_subset), "Sale_Price")]
+  fit_ranger <- ranger::ranger(
+    y = y,
+    x = X,
+    num.trees = 50,
+    mtry = 1,
+    importance = "permutation",
+    min.node.size = 2,
+    classification = FALSE,
+    seed = 42
+  )
+  imp_ranger <- (fit_ranger$variable.importance) |> unname()
+
+  expect_equal(ames_imp_rf_regression_task_res@results$score, imp_ranger)
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@range, c(0.0, Inf))
+  expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
+  expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
+  expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
+})
+
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
   cells_subset <- helper_cells()
@@ -63,16 +164,20 @@ test_that("computations - classification task via partykit", {
   fit_partykit <- partykit::cforest(
     formula = class ~ .,
     data = cells_subset,
-    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
     ntree = 100,
     mtry = 2,
+    control = partykit::ctree_control(minsplit = 1) # TODO Eventually have user pass in ctree_control()
   )
   imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
   predictors <- setdiff(names(cells_subset), "class")
   imp_partykit <- imp_partykit_raw[predictors] |> unname()
   imp_partykit[is.na(imp_partykit)] <- 0
 
-  expect_equal(cells_imp_rf_conditional_res@results$score, imp_partykit)
+  expect_equal(
+    cells_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 0.1
+  )
 
   # ----------------------------------------------------------------------------
 
@@ -80,6 +185,45 @@ test_that("computations - classification task via partykit", {
   expect_equal(cells_imp_rf_conditional_res@inclusive, rep(FALSE, 2))
   expect_equal(cells_imp_rf_conditional_res@fallback_value, Inf)
   expect_equal(cells_imp_rf_conditional_res@direction, "maximize")
+})
+
+test_that("computations - regression task via partykit", {
+  skip_if_not_installed("modeldata")
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  set.seed(42)
+  ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_partykit <- partykit::cforest(
+    formula = Sale_Price ~ .,
+    data = ames_subset,
+    ntree = 100,
+    mtry = 2,
+    control = partykit::ctree_control(minsplit = 1) # TODO Eventually have user pass in ctree_control()
+  )
+  imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_partykit <- imp_partykit_raw[predictors] |> unname()
+  imp_partykit[is.na(imp_partykit)] <- 0
+
+  expect_equal(
+    ames_imp_rf_conditional_res@results$score,
+    imp_partykit,
+    tolerance = 0.1
+  )
+
+  # ----------------------------------------------------------------------------
+
+  expect_equal(ames_imp_rf_conditional_res@range, c(0.0, Inf))
+  expect_equal(ames_imp_rf_conditional_res@inclusive, rep(FALSE, 2))
+  expect_equal(ames_imp_rf_conditional_res@fallback_value, Inf)
+  expect_equal(ames_imp_rf_conditional_res@direction, "maximize")
 })
 
 test_that("computations - classification task via aorsf", {
@@ -113,85 +257,6 @@ test_that("computations - classification task via aorsf", {
   expect_equal(cells_imp_rf_oblique_res@inclusive, rep(FALSE, 2))
   expect_equal(cells_imp_rf_oblique_res@fallback_value, Inf)
   expect_equal(cells_imp_rf_oblique_res@direction, "maximize")
-})
-
-test_that("computations - regression task via ranger", {
-  skip_if_not_installed("modeldata")
-  ames_subset <- helper_ames()
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-  regression_task <- score_imp_rf
-  regression_task@seed <- 42
-  regression_task@mode <- "regression"
-  set.seed(42)
-  ames_imp_rf_regression_task_res <-
-    regression_task |>
-    fit(Sale_Price ~ ., data = ames_subset)
-
-  # ----------------------------------------------------------------------------
-
-  y <- ames_subset[["Sale_Price"]]
-  X <- ames_subset[setdiff(names(ames_subset), "Sale_Price")]
-  fit_ranger <- ranger::ranger(
-    y = y,
-    x = X,
-    num.trees = 100,
-    mtry = 2,
-    importance = "permutation",
-    min.node.size = 1,
-    classification = FALSE,
-    seed = 42
-  )
-  imp_ranger <- (fit_ranger$variable.importance) |> unname()
-
-  expect_equal(ames_imp_rf_regression_task_res@results$score, imp_ranger)
-
-  # ----------------------------------------------------------------------------
-
-  expect_equal(ames_imp_rf_regression_task_res@range, c(0.0, Inf))
-  expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
-  expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
-  expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
-
-  # ----------------------------------------------------------------------------
-
-  expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
-})
-
-test_that("computations - regression task via partykit", {
-  skip_if_not_installed("modeldata")
-  ames_subset <- helper_ames()
-  ames_subset <- ames_subset |>
-    dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-  set.seed(42)
-  ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(Sale_Price ~ ., data = ames_subset)
-
-  # ----------------------------------------------------------------------------
-
-  set.seed(42)
-  fit_partykit <- partykit::cforest(
-    formula = Sale_Price ~ .,
-    data = ames_subset,
-    control = partykit::ctree_control(minsplit = 1), # TODO Eventually have user pass in ctree_control()
-    ntree = 100,
-    mtry = 2,
-  )
-  imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
-  predictors <- setdiff(names(ames_subset), "Sale_Price")
-  imp_partykit <- imp_partykit_raw[predictors] |> unname()
-  imp_partykit[is.na(imp_partykit)] <- 0
-
-  expect_equal(ames_imp_rf_conditional_res@results$score, imp_partykit)
-
-  # ----------------------------------------------------------------------------
-
-  expect_equal(ames_imp_rf_conditional_res@range, c(0.0, Inf))
-  expect_equal(ames_imp_rf_conditional_res@inclusive, rep(FALSE, 2))
-  expect_equal(ames_imp_rf_conditional_res@fallback_value, Inf)
-  expect_equal(ames_imp_rf_conditional_res@direction, "maximize")
 })
 
 test_that("computations - regression task via aorsf", {

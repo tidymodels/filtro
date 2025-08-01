@@ -1,228 +1,165 @@
-library(titanic)
-library(dplyr)
+test_that("object creation", {
+  expect_s3_class(
+    score_xtab_pval_chisq,
+    c("filtro::class_score_xtab", "filtro::class_score", "S7_object")
+  )
 
-titanic_subset <- titanic_train |>
-  mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
-  select(Survived, Pclass, Sex, Age, Fare, Embarked)
+  expect_s3_class(
+    score_xtab_pval_fisher,
+    c("filtro::class_score_xtab", "filtro::class_score", "S7_object")
+  )
+})
 
-titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
-  fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_chisq_res@results
+test_that("computations chisq test", {
+  skip_if_not_installed("titanic")
+  titanic_subset <- helper_titanic()
 
-titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
-  fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_fisher_res@results
+  titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+    fit(Survived ~ ., data = titanic_subset)
 
-skip()
+  natrual_units <- score_xtab_pval_chisq |> dont_log_pvalues()
 
-test_that("get_scores_cross_tab is working for -log10(chisq pval)", {
-  if (rlang::is_installed("titanic")) {
-    library(titanic)
+  titanic_xtab_pval_natrual_res <-
+    natrual_units |>
+    fit(Survived ~ ., data = titanic_subset)
 
-    titanic_train <- titanic_train |>
-      dplyr::mutate(dplyr::across(
-        c(Survived, Pclass, Sex, Embarked),
-        as.factor
-      ))
-    titanic_subset <- titanic_train |>
-      dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
+  # ----------------------------------------------------------------------------
 
-    score_obj <- score_cross_tab(score_type = "pval_chisq")
-    score_res <- get_scores_cross_tab(
-      score_obj,
-      data = titanic_subset,
-      outcome = "Survived"
+  predictors <- titanic_xtab_pval_chisq_res@results$predictor
+  for (predictor in predictors) {
+    chisq <- titanic_xtab_pval_chisq_res@results[
+      titanic_xtab_pval_chisq_res@results$predictor == predictor,
+    ]
+    nat <- titanic_xtab_pval_natrual_res@results[
+      titanic_xtab_pval_natrual_res@results$predictor == predictor,
+    ]
+
+    tmp_data <- tibble::tibble(
+      x = titanic_subset[[predictor]],
+      y = titanic_subset$Survived
     )
 
-    exp.Pclass <- get_single_chisq(
-      titanic_subset$Pclass,
-      titanic_subset$Survived
-    )
-    exp.Pclass <- -log10(exp.Pclass)
-    exp.Sex <- get_single_chisq(titanic_subset$Sex, titanic_subset$Survived)
-    exp.Sex <- -log10(exp.Sex)
-    exp.Age <- NA
-    exp.Fare <- NA
-    exp.Embarked <- get_single_chisq(
-      titanic_subset$Embarked,
-      titanic_subset$Survived
-    )
-    exp.Embarked <- -log10(exp.Embarked)
+    if (is.numeric(tmp_data$x)) {
+      fit_chisq <- NA_real_
+    } else {
+      tmp_tab <- table(tmp_data$x, tmp_data$y)
 
-    expect_true(tibble::is_tibble(score_res))
+      fit_chisq <- try(
+        suppressWarnings(stats::chisq.test(tmp_tab)$p.value),
+        silent = TRUE
+      )
 
-    expect_identical(nrow(score_res), ncol(titanic_subset) - 1L)
+      if (inherits(fit_chisq, "try-error")) {
+        fit_chisq <- NA_real_
+      }
+    }
 
-    expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-    expect_identical(
-      score_res$score,
-      c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
-    )
-
-    expect_equal(unique(score_res$name), "pval_chisq")
-
-    expect_equal(unique(score_res$outcome), "Survived")
+    expect_equal(chisq$score, -log10(fit_chisq))
+    expect_equal(nat$score, fit_chisq)
   }
 })
 
-test_that("get_scores_cross_tab is working for chisq pval", {
-  if (rlang::is_installed("titanic")) {
-    library(titanic)
+test_that("computations fisher", {
+  skip_if_not_installed("titanic")
+  titanic_subset <- helper_titanic()
 
-    titanic_train <- titanic_train |>
-      dplyr::mutate(dplyr::across(
-        c(Survived, Pclass, Sex, Embarked),
-        as.factor
-      ))
-    titanic_subset <- titanic_train |>
-      dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
+  titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
+    fit(Survived ~ ., data = titanic_subset)
 
-    score_obj <- score_cross_tab(
-      score_type = "pval_chisq",
-      neg_log10 = FALSE,
-      direction = "minimize",
-      fallback_value = 0
-    )
-    score_res <- get_scores_cross_tab(
-      score_obj,
-      data = titanic_subset,
-      outcome = "Survived"
-    )
+  natrual_units <- score_xtab_pval_fisher |> dont_log_pvalues()
 
-    exp.Pclass <- get_single_chisq(
-      titanic_subset$Pclass,
-      titanic_subset$Survived
-    )
-    exp.Sex <- get_single_chisq(titanic_subset$Sex, titanic_subset$Survived)
-    exp.Age <- NA
-    exp.Fare <- NA
-    exp.Embarked <- get_single_chisq(
-      titanic_subset$Embarked,
-      titanic_subset$Survived
+  titanic_xtab_pval_natrual_res <-
+    natrual_units |>
+    fit(Survived ~ ., data = titanic_subset)
+  # ----------------------------------------------------------------------------
+
+  predictors <- titanic_xtab_pval_fisher_res@results$predictor
+  for (predictor in predictors) {
+    fisher <- titanic_xtab_pval_fisher_res@results[
+      titanic_xtab_pval_fisher_res@results$predictor == predictor,
+    ]
+    nat <- titanic_xtab_pval_natrual_res@results[
+      titanic_xtab_pval_natrual_res@results$predictor == predictor,
+    ]
+
+    tmp_data <- tibble::tibble(
+      x = titanic_subset[[predictor]],
+      y = titanic_subset$Survived
     )
 
-    expect_true(tibble::is_tibble(score_res))
+    if (is.numeric(tmp_data$x)) {
+      fit_fisher <- NA_real_
+    } else {
+      tmp_tab <- table(tmp_data$x, tmp_data$y)
 
-    expect_identical(nrow(score_res), ncol(titanic_subset) - 1L)
+      fit_fisher <- try(
+        suppressWarnings(stats::fisher.test(tmp_tab)$p.value),
+        silent = TRUE
+      )
 
-    expect_named(score_res, c("name", "score", "outcome", "predictor"))
+      if (inherits(fit_fisher, "try-error")) {
+        fit_fisher <- NA_real_
+      }
+    }
 
-    expect_identical(
-      score_res$score,
-      c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
-    )
-
-    expect_equal(unique(score_res$name), "pval_chisq")
-
-    expect_equal(unique(score_res$outcome), "Survived")
-  }
-})
-
-test_that("get_score_cross_tab is working for -log10(fisher pval)", {
-  if (rlang::is_installed("titanic")) {
-    library(titanic)
-
-    titanic_train <- titanic_train |>
-      dplyr::mutate(dplyr::across(
-        c(Survived, Pclass, Sex, Embarked),
-        as.factor
-      ))
-    titanic_subset <- titanic_train |>
-      dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
-
-    score_obj <- score_cross_tab(score_type = "pval_fisher")
-    score_res <- get_scores_cross_tab(
-      score_obj,
-      data = titanic_subset,
-      outcome = "Survived"
-    )
-
-    exp.Pclass <- get_single_fisher(
-      titanic_subset$Pclass,
-      titanic_subset$Survived
-    )
-    exp.Pclass <- -log10(exp.Pclass)
-    exp.Sex <- get_single_fisher(titanic_subset$Sex, titanic_subset$Survived)
-    exp.Sex <- -log10(exp.Sex)
-    exp.Age <- NA
-    exp.Fare <- NA
-    exp.Embarked <- get_single_fisher(
-      titanic_subset$Embarked,
-      titanic_subset$Survived
-    )
-    exp.Embarked <- -log10(exp.Embarked)
-
-    expect_true(tibble::is_tibble(score_res))
-
-    expect_identical(nrow(score_res), ncol(titanic_subset) - 1L)
-
-    expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-    expect_identical(
-      score_res$score,
-      c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
-    )
-
-    expect_equal(unique(score_res$name), "pval_fisher")
-
-    expect_equal(unique(score_res$outcome), "Survived")
-  }
-})
-
-test_that("get_score_cross_tab is working for fisher pval", {
-  if (rlang::is_installed("titanic")) {
-    library(titanic)
-
-    titanic_train <- titanic_train |>
-      dplyr::mutate(dplyr::across(
-        c(Survived, Pclass, Sex, Embarked),
-        as.factor
-      ))
-    titanic_subset <- titanic_train |>
-      dplyr::select(Survived, Pclass, Sex, Age, Fare, Embarked)
-
-    score_obj <- score_cross_tab(
-      score_type = "pval_fisher",
-      neg_log10 = FALSE,
-      direction = "minimize",
-      fallback_value = 0
-    )
-    score_res <- get_scores_cross_tab(
-      score_obj,
-      data = titanic_subset,
-      outcome = "Survived"
-    )
-
-    exp.Pclass <- get_single_fisher(
-      titanic_subset$Pclass,
-      titanic_subset$Survived
-    )
-    exp.Sex <- get_single_fisher(titanic_subset$Sex, titanic_subset$Survived)
-    exp.Age <- NA
-    exp.Fare <- NA
-    exp.Embarked <- get_single_fisher(
-      titanic_subset$Embarked,
-      titanic_subset$Survived
-    )
-
-    expect_true(tibble::is_tibble(score_res))
-
-    expect_identical(nrow(score_res), ncol(titanic_subset) - 1L)
-
-    expect_named(score_res, c("name", "score", "outcome", "predictor"))
-
-    expect_identical(
-      score_res$score,
-      c(exp.Pclass, exp.Sex, exp.Age, exp.Fare, exp.Embarked)
-    )
-
-    expect_equal(unique(score_res$name), "pval_fisher")
-
-    expect_equal(unique(score_res$outcome), "Survived")
+    expect_equal(fisher$score, -log10(fit_fisher))
+    expect_equal(nat$score, fit_fisher)
   }
 })
 
 # TODO Test fdr
-# TODO Test multiclass
+
+test_that("computations chisq test - multiclass outcome", {
+  skip_if_not_installed("tidymodels")
+
+  hpc_subset <- helper_hpc_data()
+
+  set.seed(42)
+  hpc_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+    fit(class ~ ., data = hpc_subset)
+
+  natrual_units <- score_xtab_pval_chisq |> dont_log_pvalues()
+
+  set.seed(42)
+  hpc_xtab_pval_natrual_res <-
+    natrual_units |>
+    fit(class ~ ., data = hpc_subset)
+
+  # ----------------------------------------------------------------------------
+
+  predictors <- hpc_xtab_pval_chisq_res@results$predictor
+  for (predictor in predictors) {
+    chisq <- hpc_xtab_pval_chisq_res@results[
+      hpc_xtab_pval_chisq_res@results$predictor == predictor,
+    ]
+    nat <- hpc_xtab_pval_natrual_res@results[
+      hpc_xtab_pval_natrual_res@results$predictor == predictor,
+    ]
+
+    tmp_data <- tibble::tibble(
+      x = hpc_subset[[predictor]],
+      y = hpc_subset$class
+    )
+
+    if (is.numeric(tmp_data$x)) {
+      fit_chisq <- NA_real_
+    } else {
+      set.seed(42)
+      tmp_tab <- table(tmp_data$x, sample(tmp_data$y))
+
+      fit_chisq <- try(
+        suppressWarnings(stats::chisq.test(tmp_tab)$p.value),
+        silent = TRUE
+      )
+
+      if (inherits(fit_chisq, "try-error")) {
+        fit_chisq <- NA_real_
+      }
+    }
+
+    expect_equal(chisq$score, -log10(fit_chisq))
+    expect_equal(nat$score, fit_chisq)
+  }
+})
+
 # TODO Test more after we add validators

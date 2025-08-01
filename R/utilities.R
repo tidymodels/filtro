@@ -79,38 +79,6 @@ S7::method(fill_safe_value, class_score) <- function(x) {
   x@results
 }
 
-# # ------------------------------------------------------------------------------
-# #' Transform score
-# #'
-# #' @param x A score class object.
-# #'
-# #' @param ... NULL
-# #'
-# #' @export
-# transform_score <- S7::new_generic(
-#   "transform_score",
-#   dispatch_args = "x",
-#   function(x, ...) {
-#     if (!S7::S7_inherits(x, class_score)) {
-#       cli::cli_abort(
-#         "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
-#       )
-#     }
-
-#     S7::S7_dispatch()
-#   }
-# )
-
-# S7::method(transform_score, class_score) <- function(x, ...) {
-#   if (is.null(x@trans)) {
-#     trans <- scales::transform_identity()
-#   } else {
-#     trans <- x@trans
-#   }
-#   x@results |>
-#     dplyr::mutate(score = trans$transform(score))
-# }
-
 # ------------------------------------------------------------------------------
 #' Show best score, based on proportion of predictors *(singular)*
 #'
@@ -638,18 +606,19 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
   if (!is.numeric(weights)) {
     cli::cli_abort(
       "{.arg case_weights} should be a numeric or case weight vector, not
-      {.obj_type_friendly {weights}}", call = call)
+      {.obj_type_friendly {weights}}",
+      call = call
+    )
   }
 
   if (length(weights) != num_rows) {
     cli::cli_abort(
       "There should be asvalues in {.arg case_weights} ({length(weights)}) as
       there are rows in `data` ({num_rows}).",
-      call = call)
+      call = call
+    )
   }
   # in case the class is importance_weights or frequency weights, strip their
   # extra class(es) and attributes
   as.numeric(weights)
 }
-
-

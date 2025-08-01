@@ -396,11 +396,9 @@ class_score_list <- S7::new_S3_class("list")
 #' ames_cor_pearson_res@results
 #'
 #' # forest imp
-#' score_imp_rf_reg <- score_imp_rf
-#' score_imp_rf_reg@mode <- "regression"
 #' set.seed(42)
 #' ames_imp_rf_reg_res <-
-#'   score_imp_rf_reg |>
+#'   score_imp_rf |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_imp_rf_reg_res@results
 #'
@@ -490,11 +488,9 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 #' ames_cor_pearson_res@results
 #'
 #' # forest imp
-#' score_imp_rf_reg <- score_imp_rf
-#' score_imp_rf_reg@mode <- "regression"
 #' set.seed(42)
 #' ames_imp_rf_reg_res <-
-#'   score_imp_rf_reg |>
+#'   score_imp_rf |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_imp_rf_reg_res@results
 #'
@@ -535,7 +531,6 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
 }
 
 # TODO fill_safe_value()
-# TODO transform_score() and/or transform_scores()
 # TODO Drop outcome column
 # TODO rank_desirability_score_*
 # TODO filter_desirability_score_*
@@ -613,10 +608,9 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
 
   if (length(weights) != num_rows) {
     cli::cli_abort(
-      "There should be asvalues in {.arg case_weights} ({length(weights)}) as
-      there are rows in `data` ({num_rows}).",
-      call = call
-    )
+      "There should be as many values in {.arg case_weights} ({length(weights)})
+      as there are rows in `data` ({num_rows}).",
+      call = call)
   }
   # in case the class is importance_weights or frequency weights, strip their
   # extra class(es) and attributes

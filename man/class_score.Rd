@@ -103,12 +103,7 @@ class_score_imp_rf(
   label = character(0),
   packages = character(0),
   results = data.frame(),
-  engine = "ranger",
-  trees = 100,
-  mtry = 2,
-  min_n = 1,
-  mode = "classification",
-  seed = 42
+  engine = "ranger"
 )
 
 class_score_info_gain(

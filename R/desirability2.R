@@ -34,7 +34,7 @@ show_best_desirability_prop <- function(
   mtr <-
     mtr |>
     dplyr::mutate(
-      .d_overall = d_overall(dplyr::across(dplyr::starts_with(".d_")))
+      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(".d_")))
     ) |>
     dplyr::slice_max(.d_overall, prop = prop_terms, with_ties = TRUE)
   mtr
@@ -76,7 +76,7 @@ show_best_desirability_num <- function(
   mtr <-
     mtr |>
     dplyr::mutate(
-      .d_overall = d_overall(dplyr::across(dplyr::starts_with(".d_")))
+      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(".d_")))
     ) |>
     dplyr::slice_max(.d_overall, n = num_terms, with_ties = TRUE)
   mtr

@@ -531,7 +531,6 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
 }
 
 # TODO fill_safe_value()
-# TODO transform_score() and/or transform_scores()
 # TODO Drop outcome column
 # TODO rank_desirability_score_*
 # TODO filter_desirability_score_*

@@ -188,18 +188,30 @@ score_imp_rf_oblique <-
 # ------------------------------------------------------------------------------
 
 #' @export
-S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_imp_rf) <- function(
+  object,
+  formula,
+  data,
+  case_weights = NULL,
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
-
-  # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+  case_weights <- convert_weights(case_weights, nrow(analysis_data))
+
+  complete_obs <- !is.na(analysis_data[outcome])
+  if (!is.null(case_weights)) {
+    complete_obs <- complete_obs & !is.na(case_weights)
+  }
+  analysis_data <- analysis_data[complete_obs, ]
 
   if (object@score_type == "imp_rf") {
     imp <- get_imp_rf_ranger(
       object,
       data = analysis_data,
       outcome = outcome,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_conditional") {
@@ -207,6 +219,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       object,
       data = analysis_data,
       formula = formula,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_oblique") {
@@ -214,6 +227,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       object,
       data = analysis_data,
       formula = formula,
+      weights = case_weights,
       ...
     )
   }
@@ -228,7 +242,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
   object
 }
 
-get_imp_rf_ranger <- function(object, data, outcome, ...) {
+get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   if (object@score_type == "imp_rf") {
     importance_type = "permutation"
   } # TODO Allow option for importance = c("impurity")
@@ -236,18 +250,25 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
 
+  complete_obs <- complete.cases(X) & !is.na(y)
+  y <- y[complete_obs]
+  X <- X[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, length(y))
+  }
+
   cl <- rlang::call2(
     "ranger",
     .ns = "ranger",
     x = quote(X),
     y = quote(y),
     importance = quote(importance_type),
-    classification = object@mode == "classification"
+    classification = object@mode == "classification",
+    case.weights = quote(weights)
   )
-
-  # if (!is.null(case_weights)) {
-  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
-  # }
 
   opts <- list(...)
 
@@ -278,12 +299,22 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   imp
 }
 
-get_imp_rf_partykit <- function(object, data, formula, ...) {
+get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, nrow(data))
+  }
+
   cl <- rlang::call2(
     "cforest",
     .ns = "partykit",
-    formula = quote(formula),
-    data = quote(data)
+    formula = quote(formula), # Do we want rlang::expr() instead?
+    data = quote(data),
+    weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {
@@ -308,6 +339,9 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   }
 
   if ("min_n" %in% names(opts)) {
+    # TODO Check parsnip's partykit.R
+    # TODO see if there is already a control object and update that; if not
+    # to this:
     opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
     opts[["min_n"]] <- NULL
   }
@@ -315,22 +349,31 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }
 
-get_imp_rf_aorsf <- function(object, data, formula, ...) {
+get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
   if (object@score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
+
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, nrow(data))
+  }
 
   cl <- rlang::call2(
     "orsf",
     .ns = "aorsf",
     formula = quote(formula),
     data = quote(data),
-    importance = quote(importance_type)
+    importance = quote(importance_type),
+    weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {
@@ -359,7 +402,6 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- fit$importance
   imp
 }

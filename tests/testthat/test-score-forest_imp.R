@@ -91,6 +91,7 @@ test_that("updating with default args", {
 
 test_that("computations - classification task via ranger", {
   skip_if_not_installed("modeldata")
+
   cells_subset <- helper_cells()
 
   cells_imp_rf_res <- score_imp_rf |>
@@ -128,6 +129,7 @@ test_that("computations - classification task via ranger", {
 
 test_that("computations - regression task via ranger", {
   skip_if_not_installed("modeldata")
+
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -169,6 +171,7 @@ test_that("computations - regression task via ranger", {
 
 test_that("computations - regression task via ranger vary trees, mtry, min_n", {
   skip_if_not_installed("modeldata")
+
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -250,6 +253,7 @@ test_that("computations - classification task via partykit", {
 
 test_that("computations - regression task via partykit", {
   skip_if_not_installed("modeldata")
+
   set.seed(1)
   ames_subset <-
     helper_ames() |>
@@ -294,6 +298,7 @@ test_that("computations - regression task via partykit", {
 
 test_that("computations - classification task via aorsf", {
   skip_if_not_installed("modeldata")
+
   cells_subset <- helper_cells()
 
   set.seed(42)
@@ -327,6 +332,7 @@ test_that("computations - classification task via aorsf", {
 
 test_that("computations - regression task via aorsf", {
   skip_if_not_installed("modeldata")
+
   ames_subset <- helper_ames()
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -358,6 +364,70 @@ test_that("computations - regression task via aorsf", {
   expect_equal(ames_imp_rf_oblique_res@inclusive, rep(FALSE, 2))
   expect_equal(ames_imp_rf_oblique_res@fallback_value, Inf)
   expect_equal(ames_imp_rf_oblique_res@direction, "maximize")
+})
+
+test_that("computations - regression task via aorsf - adding missing values and case weights", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # ----------------------------------------------------------------------------
+  # missing values
+
+  ames_missing <- ames_subset
+  ames_missing$Sale_Price[1] <- NA_real_
+  ames_missing$Lot_Frontage[2] <- NA_real_
+
+  set.seed(42)
+  ames_missing_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(Sale_Price ~ ., data = ames_missing)
+
+  # ----------------------------------------------------------------------------
+
+  ames_missing <- ames_missing[stats::complete.cases(ames_missing), ]
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = Sale_Price ~ .,
+    data = ames_missing,
+    n_tree = 100,
+    n_retry = 2,
+    importance = "permute"
+  )
+  imp_raw_aorsf <- fit_aorsf$importance
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
+  imp_aorsf[is.na(imp_aorsf)] <- 0
+
+  expect_equal(ames_missing_imp_rf_oblique_res@results$score, imp_aorsf)
+
+  # ----------------------------------------------------------------------------
+  # case weights
+  two_weights <- c(rep(1, 10), rep(0, nrow(ames_subset) - 10))
+
+  set.seed(42)
+  ames_weights_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(Sale_Price ~ ., data = ames_subset, case_weights = two_weights)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = Sale_Price ~ .,
+    data = ames_subset,
+    n_tree = 100,
+    n_retry = 2,
+    importance = "permute",
+    weights = two_weights
+  )
+  imp_raw_aorsf <- fit_aorsf$importance
+  predictors <- setdiff(names(ames_subset), "Sale_Price")
+  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
+  imp_aorsf[is.na(imp_aorsf)] <- 0
+
+  expect_equal(ames_weights_imp_rf_oblique_res@results$score, imp_aorsf)
 })
 
 # TODO computations - wrong variable types

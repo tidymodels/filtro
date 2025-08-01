@@ -40,7 +40,7 @@ score_imp_rf <-
   class_score_imp_rf(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
+    case_weights = TRUE,
     range = c(0, Inf),
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,
@@ -98,13 +98,16 @@ score_imp_rf_oblique <-
 #' processed via [stats::model.frame()].
 #' @param data A data frame containing the relevant columns defined by the
 #' formula.
+#' @param case_weights A quantitative vector of case weights that is the same
+#' length as the number of rows in `data`. The default of `NULL` indicates that
+#' there are no case weights.
 #' @param ... Further arguments passed to or from other methods.
 #' @details
 #' The function will determine which columns are predictors and outcomes in the
 #' random forest; no user intervention is required.
 #'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored.
+#' Missing values are removed by case-wise deletion.
+#'
 #' When a predictor's importance score is 0, [partykit::cforest()] may omit its
 #' name from the results. In cases like these, a score of 0 is assigned to the
 #' missing predictors.
@@ -167,18 +170,30 @@ score_imp_rf_oblique <-
 #' ames_imp_rf_regression_task_res@results
 #' # TODO Add example of how to change trees, mtry, min_n, seed
 #' @export
-S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_imp_rf) <- function(
+  object,
+  formula,
+  data,
+  case_weights = NULL,
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
-
-  # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+  case_weights <- convert_weights(case_weights, nrow(analysis_data))
+
+  complete_obs <- !is.na(analysis_data[outcome])
+  if (!is.null(case_weights)) {
+    complete_obs <- complete_obs & !is.na(case_weights)
+  }
+  analysis_data <- analysis_data[complete_obs, ]
 
   if (object@score_type == "imp_rf") {
     imp <- get_imp_rf_ranger(
       object,
       data = analysis_data,
       outcome = outcome,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_conditional") {
@@ -186,6 +201,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       object,
       data = analysis_data,
       formula = formula,
+      weights = case_weights,
       ...
     )
   } else if (object@score_type == "imp_rf_oblique") {
@@ -193,6 +209,7 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
       object,
       data = analysis_data,
       formula = formula,
+      weights = case_weights,
       ...
     )
   }
@@ -207,13 +224,23 @@ S7::method(fit, class_score_imp_rf) <- function(object, formula, data, ...) {
   object
 }
 
-get_imp_rf_ranger <- function(object, data, outcome, ...) {
+get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   if (object@score_type == "imp_rf") {
     importance_type = "permutation"
   } # TODO Allow option for importance = c("impurity")
 
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
+
+  complete_obs <- complete.cases(X) & !is.na(y)
+  y <- y[complete_obs]
+  X <- X[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, length(y))
+  }
 
   cl <- rlang::call2(
     "ranger",
@@ -222,10 +249,6 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
     y = quote(y),
     importance = quote(importance_type)
   )
-
-  # if (!is.null(case_weights)) {
-  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
-  # }
 
   opts <- list(...)
 
@@ -242,12 +265,22 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
   imp
 }
 
-get_imp_rf_partykit <- function(object, data, formula, ...) {
+get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, nrow(data))
+  }
+
   cl <- rlang::call2(
     "cforest",
     .ns = "partykit",
-    formula = quote(formula),
-    data = quote(data)
+    formula = quote(formula), # Do we want rlang::expr() instead?
+    data = quote(data),
+    weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {
@@ -255,6 +288,7 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   # }
 
   opts <- list(...)
+
   has_control <- any(names(opts) == "control")
   has_min_n <- any(names(opts) == "min_n")
 
@@ -272,22 +306,31 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- partykit::varimp(fit, conditional = TRUE)
   imp
 }
 
-get_imp_rf_aorsf <- function(object, data, formula, ...) {
+get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
   if (object@score_type == "imp_rf_oblique") {
     importance_type = "permute"
   } # TODO Allow option for importance = c("none", "anova", "negate")
+
+  complete_obs <- stats::complete.cases(data)
+  data <- data[complete_obs, , drop = FALSE]
+
+  if (!is.null(weights)) {
+    weights <- weights[complete_obs]
+  } else {
+    weights <- rep(1.0, nrow(data))
+  }
 
   cl <- rlang::call2(
     "orsf",
     .ns = "aorsf",
     formula = quote(formula),
     data = quote(data),
-    importance = quote(importance_type)
+    importance = quote(importance_type),
+    weights = quote(weights)
   )
 
   # if (!is.null(case_weights)) {
@@ -303,7 +346,6 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)
-
   imp <- fit$importance
   imp
 }

@@ -46,7 +46,7 @@ test_that("computations - class outcome, binary", {
 test_that("computations - class outcome, multiclass", {
   skip_if_not_installed("modeldata")
   # Avoid dealing with NA in pROC::multiclass.roc(); Somehow try() doesn't quite work.
-  hpc_data <- helper_hpc_data() |> dplyr::select(-protocol, -day)
+  hpc_data <- helper_hpc_data() |> dplyr::select(-protocol)
 
   hpc_roc_auc_res <- score_roc_auc |>
     fit(class ~ ., data = hpc_data)

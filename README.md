@@ -22,8 +22,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 selection methods. These methods score and rank feature relevance using
 metrics such as p-values, correlation, importance scores, and more.
 
-`filtro` provides functions to rank and select a top number or
-proportion of features using built-in methods and the
+The package provides functions to rank and select a top proportion or
+number of features using built-in methods and the
 [desirability2](https://desirability2.tidymodels.org) package, and
 supports streamlined preprocessing, either standalone or within
 tidymodels workflows such as the
@@ -47,12 +47,19 @@ pak::pak("tidymodels/filtro")
 
 ## Feature selection methods
 
-1.  
-2.  
-3.  
-4.  
-5.  
-6.  
+Currently, the implemented filters include:
+
+1.  ANOVA F-test
+
+2.  Correlation
+
+3.  Cross tabulation (chi-squared test and Fisher’s exact test) p-value
+
+4.  Random forest feature importance score
+
+5.  Information gain
+
+6.  Area under the ROC curve
 
 ## A scoring example
 

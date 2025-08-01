@@ -3,6 +3,7 @@
 
 ## usethis namespace: start
 #' @import rlang
+#' @importFrom tidyr pivot_wider
 ## usethis namespace: end
 NULL
 

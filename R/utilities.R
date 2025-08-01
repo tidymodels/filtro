@@ -79,38 +79,6 @@ S7::method(fill_safe_value, class_score) <- function(x) {
   x@results
 }
 
-# # ------------------------------------------------------------------------------
-# #' Transform score
-# #'
-# #' @param x A score class object.
-# #'
-# #' @param ... NULL
-# #'
-# #' @export
-# transform_score <- S7::new_generic(
-#   "transform_score",
-#   dispatch_args = "x",
-#   function(x, ...) {
-#     if (!S7::S7_inherits(x, class_score)) {
-#       cli::cli_abort(
-#         "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
-#       )
-#     }
-
-#     S7::S7_dispatch()
-#   }
-# )
-
-# S7::method(transform_score, class_score) <- function(x, ...) {
-#   if (is.null(x@trans)) {
-#     trans <- scales::transform_identity()
-#   } else {
-#     trans <- x@trans
-#   }
-#   x@results |>
-#     dplyr::mutate(score = trans$transform(score))
-# }
-
 # ------------------------------------------------------------------------------
 #' Show best score, based on proportion of predictors *(singular)*
 #'

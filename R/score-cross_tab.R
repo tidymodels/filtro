@@ -42,7 +42,7 @@ class_score_xtab <- S7::new_class(
 #' these functions are:
 #'
 #'   \describe{
-#'     \item{`object`}{A score class object based (e.g., `score_cor_pearson`).}
+#'     \item{`object`}{A score class object based (e.g., `score_xtab_pval_chisq`).}
 #'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
 #'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
 #'     \item{`...`}{Further arguments passed to or from other methods.}
@@ -52,6 +52,17 @@ class_score_xtab <- S7::new_class(
 #' @includeRmd man/rmd/missing_delete.Rmd details
 #'
 #' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `pval_chisq`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
 #'
 #' @examplesIf rlang::is_installed("titanic")
 #' # Binary factor example

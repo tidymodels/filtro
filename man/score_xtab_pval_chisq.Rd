@@ -15,6 +15,19 @@ score_xtab_pval_chisq
 
 score_xtab_pval_fisher
 }
+\value{
+An S7 object. The primary property of interest is in \code{results}. This
+is a data frame of results that is populated by the \code{fit()} method and has
+columns:
+\itemize{
+\item \code{name}: The name of the score (e.g., \code{pval_chisq}).
+\item \code{score}: The estimates for each predictor.
+\item \code{outcome}: The name of the outcome column.
+\item \code{predictor}: The names of the predictor inputs.
+}
+
+These data are accessed using \code{object@results} (see examples below).
+}
 \description{
 When both predictors and outcomes are numeric, importances scores can be
 computed via the correlation statistic.
@@ -39,7 +52,7 @@ a specific data set, the \code{fit()} method is used. The main arguments for
 these functions are:
 
 \describe{
-\item{\code{object}}{A score class object based (e.g., \code{score_cor_pearson}).}
+\item{\code{object}}{A score class object based (e.g., \code{score_xtab_pval_chisq}).}
 \item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
 \item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
 \item{\code{...}}{Further arguments passed to or from other methods.}

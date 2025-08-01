@@ -7,9 +7,7 @@ class_score_imp_rf <- S7::new_class(
   parent = class_score,
   properties = list(
     # What is the random forest engine to use for fitting?
-    engine = S7::new_property(S7::class_character, default = "ranger"),
-    # What is the random seed?
-    seed = S7::new_property(S7::class_numeric, default = 42)
+    engine = S7::new_property(S7::class_character, default = "ranger")
   )
 )
 
@@ -233,8 +231,10 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
 
   opts <- convert_rf_args(opts, "ranger")
   # Keep consistent with parsnip
-  opts <- update_defaults(opts, list(verbose = FALSE, num.threads = 1))
-
+  opts <- update_defaults(
+    opts,
+    list(verbose = FALSE, num.threads = 1, seed = sample.int(1000, 1))
+  )
   cl <- rlang::call_modify(cl, !!!opts)
 
   fit <- rlang::eval_tidy(cl)

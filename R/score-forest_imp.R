@@ -24,6 +24,11 @@ class_score_imp_rf <- S7::new_class(
 #' Scoring via random forests
 #'
 #' @description
+#' Different random forest models can be used to measure importance.
+#'
+#' @name score_imp_rf
+#'
+#' @details
 #'
 #' These objects are used when either:
 #'
@@ -35,84 +40,6 @@ class_score_imp_rf <- S7::new_class(
 #' the proper variable roles, and the feature importance scores are computed. Larger
 #' values are associated with more important predictors.
 #'
-#' `score_imp_rf`, `score_imp_rf_conditional` and `score_imp_rf_oblique` are
-#' objects that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
-#'
-#' \preformatted{
-#'   fit(score_imp_rf, formula, data)
-#' }
-#'
-#' See the Examples section below.
-#' @name score_imp_rf
-#' @export
-score_imp_rf <-
-  class_score_imp_rf(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = TRUE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "imp_rf",
-    direction = "maximize",
-    deterministic = FALSE,
-    tuning = TRUE,
-    label = "Random forest importance scores"
-  )
-
-#' @name score_imp_rf
-#' @export
-score_imp_rf_conditional <-
-  class_score_imp_rf(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "imp_rf_conditional",
-    direction = "maximize",
-    deterministic = FALSE,
-    tuning = TRUE,
-    label = "Random forest importance scores",
-    engine = "partykit"
-  )
-
-#' @name score_imp_rf
-#' @export
-score_imp_rf_oblique <-
-  class_score_imp_rf(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "imp_rf_oblique",
-    direction = "maximize",
-    deterministic = FALSE,
-    tuning = TRUE,
-    label = "Random forest importance scores",
-    engine = "aorsf"
-  )
-
-# ------------------------------------------------------------------------------
-
-#' Compute random forest feature importance scores
-#' @name score_imp_rf
-#' @include class_score.R
-#' @param object A score class object based on `class_score_imp_rf`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param case_weights A quantitative vector of case weights that is the same
-#' length as the number of rows in `data`. The default of `NULL` indicates that
-#' there are no case weights.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
 #' The function will determine which columns are predictors and outcomes in the
 #' random forest; no user intervention is required.
 #'
@@ -121,6 +48,34 @@ score_imp_rf_oblique <-
 #' When a predictor's importance score is 0, [partykit::cforest()] may omit its
 #' name from the results. In cases like these, a score of 0 is assigned to the
 #' missing predictors.
+#'
+#' ## Estimating the scores
+#'
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
+#'
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_imp_rf`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
+#'   }
+#'
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `imp_rf`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -178,7 +133,60 @@ score_imp_rf_oblique <-
 #'   regression_task |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_imp_rf_regression_task_res@results
-#' # TODO Add example of how to change trees, mtry, min_n, seed
+#' @export
+score_imp_rf <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf",
+    direction = "maximize",
+    deterministic = FALSE,
+    tuning = TRUE,
+    label = "Random forest importance scores"
+  )
+
+#' @name score_imp_rf
+#' @export
+score_imp_rf_conditional <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf_conditional",
+    direction = "maximize",
+    deterministic = FALSE,
+    tuning = TRUE,
+    label = "Random forest importance scores",
+    engine = "partykit"
+  )
+
+#' @name score_imp_rf
+#' @export
+score_imp_rf_oblique <-
+  class_score_imp_rf(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "imp_rf_oblique",
+    direction = "maximize",
+    deterministic = FALSE,
+    tuning = TRUE,
+    label = "Random forest importance scores",
+    engine = "aorsf"
+  )
+
+# ------------------------------------------------------------------------------
+
 #' @export
 S7::method(fit, class_score_imp_rf) <- function(
   object,

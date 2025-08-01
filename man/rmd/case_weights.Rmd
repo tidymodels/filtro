@@ -1,0 +1,4 @@
+For this particular method, there is an additional argument: 
+
+- `case_weights`: A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.
+

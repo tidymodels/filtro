@@ -15,97 +15,52 @@ class_score_info_gain <- S7::new_class(
 #'
 #' @description
 #'
+#' Three different information theory scores can be computed.
+#'
+#' @name score_info_gain
+#'
+#' @details
+#'
 #' These objects are used when either:
 #'
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
 #'
-#' In either case, an entropy-based filter (via [FSelectorRcpp::information_gain()])
-#' is applied with the proper variable roles. Depending on the chosen method, information
-#' gain, gain ratio, or symmetrical uncertainty is computed. Larger values are associated
-#' with more important predictors.
+#' In either case, an entropy-based filter (via
+#' [FSelectorRcpp::information_gain()]) is applied with the proper variable
+#' roles. Depending on the chosen method, information gain, gain ratio, or
+#' symmetrical uncertainty is computed. Larger values are associated with more
+#' important predictors.
 #'
-#' `score_info_gain`, `score_gain_ratio` and `score_sym_uncert` are
-#' objects that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
+#' ## Estimating the scores
 #'
-#' \preformatted{
-#' fit(score_info_gain, formula, data)
-#' }
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
 #'
-#' See the Examples section below.
-#' @name score_info_gain
-#' @export
-score_info_gain <-
-  class_score_info_gain(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = c(0, Inf),
-    inclusive = c(FALSE, FALSE),
-    fallback_value = Inf,
-    score_type = "infogain",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "Entropy-based information gain"
-  )
-
-#' @name score_info_gain
-#' @export
-score_gain_ratio <-
-  class_score_info_gain(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = c(0, 1),
-    inclusive = c(TRUE, TRUE),
-    fallback_value = 1,
-    score_type = "gainratio",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "Entropy-based gain ratio"
-  )
-
-#' @name score_info_gain
-#' @export
-score_sym_uncert <-
-  class_score_info_gain(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = FALSE,
-    range = c(0, 1),
-    inclusive = c(TRUE, TRUE),
-    fallback_value = 1,
-    score_type = "symuncert",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "Entropy-based symmetrical uncertainty"
-  )
-
-# ------------------------------------------------------------------------------
-
-#' Compute entropy-based filter information gain
-#' @name score_info_gain
-#' @include class_score.R
-#' @param object A score class object based on `score_info_gain`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#' The function will determine which columns are predictors and outcomes in the
-#' filter; no user intervention is required.
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_info_gain`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
+#'   }
 #'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored.
-#' When a predictor's importance score is 0, the gain ratio method may omit its
-#' name from the results. In cases like these, a score of 0 is assigned to the
-#' missing predictors.
+#' @includeRmd man/rmd/missing_delete.Rmd details
+#'
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `info_gain`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
 #'
 #' @examples rlang::is_installed("modeldata")
 #'
@@ -161,6 +116,58 @@ score_sym_uncert <-
 #'   regression_task |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_info_gain_regression_task_res@results
+#' @export
+score_info_gain <-
+  class_score_info_gain(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, Inf),
+    inclusive = c(FALSE, FALSE),
+    fallback_value = Inf,
+    score_type = "infogain",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Entropy-based information gain"
+  )
+
+#' @name score_info_gain
+#' @export
+score_gain_ratio <-
+  class_score_info_gain(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, 1),
+    inclusive = c(TRUE, TRUE),
+    fallback_value = 1,
+    score_type = "gainratio",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Entropy-based gain ratio"
+  )
+
+#' @name score_info_gain
+#' @export
+score_sym_uncert <-
+  class_score_info_gain(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = FALSE,
+    range = c(0, 1),
+    inclusive = c(TRUE, TRUE),
+    fallback_value = 1,
+    score_type = "symuncert",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Entropy-based symmetrical uncertainty"
+  )
+
+# ------------------------------------------------------------------------------
+
 #' @export
 S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

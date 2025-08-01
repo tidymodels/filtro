@@ -20,49 +20,55 @@ score_gain_ratio
 
 score_sym_uncert
 }
-\arguments{
-\item{object}{A score class object based on \code{score_info_gain}.}
+\value{
+An S7 object. The primary property of interest is in \code{results}. This
+is a data frame of results that is populated by the \code{fit()} method and has
+columns:
+\itemize{
+\item \code{name}: The name of the score (e.g., \code{info_gain}).
+\item \code{score}: The estimates for each predictor.
+\item \code{outcome}: The name of the outcome column.
+\item \code{predictor}: The names of the predictor inputs.
+}
 
-\item{formula}{A standard R formula with a single outcome on the right-hand
-side and one or more predictors (or \code{.}) on the left-hand side. The data are
-processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
-
-\item{data}{A data frame containing the relevant columns defined by the
-formula.}
-
-\item{...}{Further arguments passed to or from other methods.}
+These data are accessed using \code{object@results} (see examples below).
 }
 \description{
+Three different information theory scores can be computed.
+}
+\details{
 These objects are used when either:
 \itemize{
 \item The predictors are numeric and the outcome is a factor/category, or
 \item The predictors are factors and the outcome is numeric.
 }
 
-In either case, an entropy-based filter (via \code{\link[FSelectorRcpp:information_gain]{FSelectorRcpp::information_gain()}})
-is applied with the proper variable roles. Depending on the chosen method, information
-gain, gain ratio, or symmetrical uncertainty is computed. Larger values are associated
-with more important predictors.
+In either case, an entropy-based filter (via
+\code{\link[FSelectorRcpp:information_gain]{FSelectorRcpp::information_gain()}}) is applied with the proper variable
+roles. Depending on the chosen method, information gain, gain ratio, or
+symmetrical uncertainty is computed. Larger values are associated with more
+important predictors.
+\subsection{Estimating the scores}{
 
-\code{score_info_gain}, \code{score_gain_ratio} and \code{score_sym_uncert} are
-objects that define the technique.
-To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
+these functions are:
 
-\preformatted{
-fit(score_info_gain, formula, data)
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_info_gain}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
 }
-
-See the Examples section below.
 }
-\details{
-The function will determine which columns are predictors and outcomes in the
-filter; no user intervention is required.
 
 Missing values are removed for each predictor/outcome combination being
 scored.
-When a predictor's importance score is 0, the gain ratio method may omit its
-name from the results. In cases like these, a score of 0 is assigned to the
-missing predictors.
+
+In cases where the underlying computations fail, the scoring proceeds
+silently, and a missing value is given for the score.
 }
 \examples{
 rlang::is_installed("modeldata")

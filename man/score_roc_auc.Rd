@@ -10,20 +10,11 @@ An object of class \code{filtro::class_score_roc_auc} (inherits from \code{filtr
 \usage{
 score_roc_auc
 }
-\arguments{
-\item{object}{A score class object based on \code{class_score_roc_auc}.}
-
-\item{formula}{A standard R formula with a single outcome on the right-hand
-side and one or more predictors (or \code{.}) on the left-hand side. The data are
-processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
-
-\item{data}{A data frame containing the relevant columns defined by the
-formula.}
-
-\item{...}{Further arguments passed to or from other methods.}
-}
 \description{
-These objects are used when either:
+The area under the ROC curves can be used to measure predictor importance.
+}
+\details{
+This objects are used when either:
 \itemize{
 \item The predictors are numeric and the outcome is a factor/category, or
 \item The predictors are factors and the outcome is numeric.
@@ -33,28 +24,30 @@ In either case, a ROC curve (via \code{\link[pROC:roc]{pROC::roc()}}) is created
 variable roles, and the area under the ROC curve is computed (via \code{\link[pROC:auc]{pROC::auc()}}).
 Values higher than 0.5 (i.e., \code{max(roc_auc, 1 - roc_auc)} > 0.5) are associated with
 more important predictors.
+\subsection{Estimating the scores}{
 
-\code{score_roc_auc} is object that define the technique.
-To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
+these functions are:
 
-\preformatted{
-  fit(score_roc_auc, formula, data)
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_cor_pearson}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights. NOTE case weights cannot be used when a multiclass ROC is computed.}
 }
-
-See the Examples section below.
 }
-\details{
-The function will determine which columns are predictors and outcomes for the
-ROC analysis; no user intervention is required.
 
 Missing values are removed for each predictor/outcome combination being
 scored.
-In cases where \code{\link[pROC:roc]{pROC::roc()}} fail, the scoring proceeds silently, and
-a missing value is given for the score.
+
+In cases where the underlying computations fail, the scoring proceeds
+silently, and a missing value is given for the score.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-
 library(dplyr)
 
 # ROC AUC where the numeric predictors are the predictors and

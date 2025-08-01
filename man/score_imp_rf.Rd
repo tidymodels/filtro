@@ -20,23 +20,23 @@ score_imp_rf_conditional
 
 score_imp_rf_oblique
 }
-\arguments{
-\item{object}{A score class object based on \code{class_score_imp_rf}.}
+\value{
+An S7 object. The primary property of interest is in \code{results}. This
+is a data frame of results that is populated by the \code{fit()} method and has
+columns:
+\itemize{
+\item \code{name}: The name of the score (e.g., \code{imp_rf}).
+\item \code{score}: The estimates for each predictor.
+\item \code{outcome}: The name of the outcome column.
+\item \code{predictor}: The names of the predictor inputs.
+}
 
-\item{formula}{A standard R formula with a single outcome on the right-hand
-side and one or more predictors (or \code{.}) on the left-hand side. The data are
-processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
-
-\item{data}{A data frame containing the relevant columns defined by the
-formula.}
-
-\item{case_weights}{A quantitative vector of case weights that is the same
-length as the number of rows in \code{data}. The default of \code{NULL} indicates that
-there are no case weights.}
-
-\item{...}{Further arguments passed to or from other methods.}
+These data are accessed using \code{object@results} (see examples below).
 }
 \description{
+Different random forest models can be used to measure importance.
+}
+\details{
 These objects are used when either:
 \itemize{
 \item The predictors are numeric and the outcome is a factor/category, or
@@ -48,17 +48,6 @@ In either case, a random forest, conditional random forest, or oblique random fo
 the proper variable roles, and the feature importance scores are computed. Larger
 values are associated with more important predictors.
 
-\code{score_imp_rf}, \code{score_imp_rf_conditional} and \code{score_imp_rf_oblique} are
-objects that define the technique.
-To apply the filter on data, you would use the \code{\link[=fit]{fit()}} method:
-
-\preformatted{
-  fit(score_imp_rf, formula, data)
-}
-
-See the Examples section below.
-}
-\details{
 The function will determine which columns are predictors and outcomes in the
 random forest; no user intervention is required.
 
@@ -67,6 +56,24 @@ Missing values are removed by case-wise deletion.
 When a predictor's importance score is 0, \code{\link[partykit:cforest]{partykit::cforest()}} may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.
+\subsection{Estimating the scores}{
+
+In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data
+input requirements, package dependencies, etc). To compute the scores for
+a specific data set, the \code{fit()} method is used. The main arguments for
+these functions are:
+
+\describe{
+\item{\code{object}}{A score class object based (e.g., \code{score_imp_rf}).}
+\item{\code{formula}}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or \code{.}) on the left-hand side. The data are processed via \code{\link[stats:model.frame]{stats::model.frame()}}}
+\item{\code{data}}{A data frame containing the relevant columns defined by the formula.}
+\item{\code{...}}{Further arguments passed to or from other methods.}
+\item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
+}
+}
+
+In cases where the underlying computations fail, the scoring proceeds
+silently, and a missing value is given for the score.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -125,7 +132,6 @@ ames_imp_rf_regression_task_res <-
   regression_task |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_imp_rf_regression_task_res@results
-# TODO Add example of how to change trees, mtry, min_n, seed
 \dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

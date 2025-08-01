@@ -9,25 +9,66 @@ class_score_cor <- S7::new_class(
 
 #' Scoring via correlation coefficient
 #'
-#' @description
-#'
+#' @name score_cor_pearson
+#' @details
 #' These objects are used when:
 #'
 #' - The predictors are numeric and the outcome is numeric.
 #'
-#' In this case, a correlation coefficient (via [stats::cor()]) is computed with
+#' In this case, a correlation coefficient (via [stats::cov.wt()]) is computed with
 #' the proper variable roles. Values closer to 1 or -1 (i.e., `abs(cor_pearson)`
 #' closer to 1) are associated with more important predictors.
 #'
-#' `score_cor_pearson` and `score_cor_spearman` are objects that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
+#' ## Estimating the scores
 #'
-#' \preformatted{
-#'   fit(score_cor_pearson, formula, data)
-#' }
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
 #'
-#' See the Examples section below.
-#' @name score_cor_pearson
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_cor_pearson`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
+#'   }
+#'
+#' @includeRmd man/rmd/missing_delete.Rmd details
+#'
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
+#' @examplesIf rlang::is_installed("modeldata")
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#'
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res
+#'
+#' ames_cor_spearman_res <-
+#'   score_cor_spearman |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_spearman_res
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `score_cor_pearson` or `score_cor_spearman`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
 #' @export
 score_cor_pearson <-
   class_score_cor(
@@ -63,50 +104,6 @@ score_cor_spearman <-
 
 # ------------------------------------------------------------------------------
 
-#' Compute correlation coefficients
-#' @name score_cor_pearson
-#' @include class_score.R
-#' @param object A score class object based on `class_score_cor`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param case_weights A quantitative vector of case weights that is the same
-#' length as the number of rows in `data`. The default of `NULL` indicates that
-#' there are no case weights.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#' The function will determine which columns are predictors and outcomes and
-#' compute correlations; no user intervention is required.
-#'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored. In cases where [cor()] fail, the scoring proceeds silently, and
-#' a missing value is given for the score.
-#'
-#' @examplesIf rlang::is_installed("modeldata")
-#'
-#' library(dplyr)
-#'
-#' ames_subset <- modeldata::ames |>
-#'   select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
-#'
-#' ames_cor_pearson_res <-
-#'   score_cor_pearson |>
-#'   fit(Sale_Price ~ ., data = ames_subset)
-#' ames_cor_pearson_res@results
-#'
-#' ames_cor_spearman_res <-
-#'   score_cor_spearman |>
-#'   fit(Sale_Price ~ ., data = ames_subset)
-#' ames_cor_spearman_res@results
 #' @export
 S7::method(fit, class_score_cor) <- function(
   object,

@@ -227,39 +227,6 @@ test_that("arrange_score() is working for aov", {
   expect_equal(ex.target2, score_res |> dplyr::arrange(abs(score - 22.8)))
 })
 
-# test_that("trans_score() is working for aov", {
-#   # skip_if_not_installed("modeldata")
-#   # data(ames, package = "modeldata")
-#   # data <- modeldata::ames |>
-#   #   dplyr::select(
-#   #     Sale_Price,
-#   #     MS_SubClass,
-#   #     MS_Zoning,
-#   #     Lot_Frontage,
-#   #     Lot_Area,
-#   #     Street
-#   #   )
-#   # outcome <- "Sale_Price"
-#   # score_obj = score_aov()
-#   # score_res <- get_scores_aov(score_obj, data, outcome)
-#   # score_obj <- score_obj |> attach_score(score_res)
-
-#   score_obj <- ames_score_obj()
-#   score_res <- score_obj$results
-
-#   score_obj$trans <- NULL # Default
-#   ex.identity <- score_obj |> trans_score()
-
-#   score_obj$trans <- scales::transform_log()
-#   ex.log <- score_obj |> trans_score()
-
-#   # TODO Add a couple more scales::transform_*()
-
-#   expect_equal(ex.identity, score_res)
-
-#   expect_equal(ex.log, score_res |> dplyr::mutate(score = log(score)))
-# })
-
 test_that("filter_score_num() is working for aov", {
   skip("refactor arrange code for aov objects")
   ames_subset <- helper_ames()

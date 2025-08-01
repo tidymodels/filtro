@@ -8,12 +8,6 @@ class_score_imp_rf <- S7::new_class(
   properties = list(
     # What is the random forest engine to use for fitting?
     engine = S7::new_property(S7::class_character, default = "ranger"),
-    # What is the number of trees contained in the ensemble?
-    trees = S7::new_property(S7::class_numeric, default = 100), # TODO May need to set other default
-    # What is the number of predictors that will be randomly sampled at each split when creating the tree models?
-    mtry = S7::new_property(S7::class_numeric, default = 2),
-    # What is the minimum number of data points in a node that are required for the node to be split further?
-    min_n = S7::new_property(S7::class_numeric, default = 1),
     # What is the task type? Relevant only for ranger.
     mode = S7::new_property(S7::class_character, default = "classification"), # TODO True, False?
     # What is the random seed?
@@ -143,7 +137,7 @@ score_imp_rf_oblique <-
 #'
 #' # Conditional random forest
 #' cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-#'   fit(class ~ ., data = cells_subset)
+#'   fit(class ~ ., data = cells_subset, trees = 10)
 #' cells_imp_rf_conditional_res@results
 #'
 #' # Oblique random forest
@@ -240,25 +234,9 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
 
   opts <- list(...)
 
-  if (is.null(opts[["trees"]])) {
-    opts$trees <- object@trees
-  }
-  if (is.null(opts[["mtry"]])) {
-    opts$mtry <- object@mtry
-  }
-  if (is.null(opts[["min_n"]])) {
-    opts$min_n <- object@min_n
-  }
-
-  if ("trees" %in% names(opts)) {
-    opts[["num.trees"]] <- opts[["trees"]]
-    opts[["trees"]] <- NULL
-  }
-
-  if ("min_n" %in% names(opts)) {
-    opts[["min.node.size"]] <- opts[["min_n"]]
-    opts[["min_n"]] <- NULL
-  }
+  opts <- convert_rf_args(opts, "ranger")
+  # Keep consistent with parsnip
+  opts <- update_defaults(opts, list(verbose = FALSE, num.threads = 1))
 
   cl <- rlang::call_modify(cl, !!!opts)
 
@@ -280,25 +258,18 @@ get_imp_rf_partykit <- function(object, data, formula, ...) {
   # }
 
   opts <- list(...)
+  has_control <- any(names(opts) == "control")
+  has_min_n <- any(names(opts) == "min_n")
 
-  if (is.null(opts[["trees"]])) {
-    opts$trees <- object@trees
-  }
-  if (is.null(opts[["mtry"]])) {
-    opts$mtry <- object@mtry
-  }
-  if (is.null(opts[["min_n"]])) {
-    opts$min_n <- object@min_n
-  }
+  opts <- convert_rf_args(opts, "partykit")
 
-  if ("trees" %in% names(opts)) {
-    opts[["ntree"]] <- opts[["trees"]]
-    opts[["trees"]] <- NULL
-  }
-
-  if ("min_n" %in% names(opts)) {
-    opts[["control"]] <- partykit::ctree_control(minsplit = opts[["min_n"]])
-    opts[["min_n"]] <- NULL
+  if (has_min_n) {
+    if (has_control) {
+      opts$control$minsplit <- opts$minsplit
+    } else {
+      opts$control <- partykit::ctree_control(minsplit = opts$minsplit)
+    }
+    opts$minsplit <- NULL
   }
 
   cl <- rlang::call_modify(cl, !!!opts)
@@ -328,22 +299,9 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
 
   opts <- list(...)
 
-  if (is.null(opts[["trees"]])) {
-    opts$trees <- object@trees
-  }
-  if (is.null(opts[["mtry"]])) {
-    opts$mtry <- object@mtry
-  }
-
-  if ("trees" %in% names(opts)) {
-    opts[["n_tree"]] <- opts[["trees"]]
-    opts[["trees"]] <- NULL
-  }
-
-  if ("mtry" %in% names(opts)) {
-    opts[["n_retry"]] <- opts[["mtry"]]
-    opts[["mtry"]] <- NULL
-  }
+  opts <- convert_rf_args(opts, "aorsf")
+  # Keep consistent with parsnip
+  opts <- update_defaults(opts, list(verbose_progress = FALSE, n_thread = 1))
 
   cl <- rlang::call_modify(cl, !!!opts)
 
@@ -351,4 +309,42 @@ get_imp_rf_aorsf <- function(object, data, formula, ...) {
 
   imp <- fit$importance
   imp
+}
+
+# ------------------------------------------------------------------------------
+# Enable users to specific tuning parameters / args with parsnip argument names
+# or the original engine names
+convert_rf_args <- function(args, method) {
+  if (length(args) == 0) {
+    return(args)
+  }
+
+  tbl <- tibble::as_tibble(args)
+  f_args <- names(tbl)
+  # get_from_env("rand_forest_args") in parsnip
+  # skip: fmt
+  arg_data <-
+    tibble::tribble(
+      ~engine,     ~parsnip,       ~original,
+      "ranger",         "mtry",          "mtry",
+      "ranger",        "trees",     "num.trees",
+      "ranger",        "min_n", "min.node.size",
+      "partykit",      "min_n",      "minsplit",
+      "partykit",       "mtry",          "mtry",
+      "partykit",      "trees",         "ntree",
+      "partykit", "tree_depth",      "maxdepth",
+      "aorsf",          "mtry",          "mtry",
+      "aorsf",         "trees",        "n_tree",
+      "aorsf",         "min_n",  "leaf_min_obs"
+    ) |>
+    dplyr::filter(engine == method & parsnip %in% f_args)
+
+  rnm <- arg_data$parsnip
+  names(rnm) <- arg_data$original
+  tbl <- dplyr::rename(tbl, !!rnm)
+  as.list(tbl)
+}
+
+update_defaults <- function(args, defaults = list()) {
+  purrr::list_modify(defaults, !!!args)
 }

@@ -15,6 +15,80 @@ test_that("object creation", {
   )
 })
 
+# ------------------------------------------------------------------------------
+
+test_that("updating ranger args", {
+
+  before_1 <- list()
+  after_1 <- convert_rf_args(before_1, method = "ranger")
+  expect_equal(before_1, after_1)
+
+  before_2 <- list(mtry = 5)
+  after_2 <- convert_rf_args(before_2, method = "ranger")
+  expect_equal(after_2, before_2)
+
+  # leave engine/original args alone
+  before_3 <- list(trees = 5, regularization.factor = 1/2, min.node.size = 1)
+  after_3 <- convert_rf_args(before_3, method = "ranger")
+  expect_equal(
+    after_3,
+    list(num.trees = 5, regularization.factor = 0.5, min.node.size = 1)
+  )
+
+  # All conversions
+  before_4 <- list(trees = 5, min_n = 1, mtry = 3)
+  after_4 <- convert_rf_args(before_4, method = "ranger")
+  expect_equal(
+    after_4,
+    list(num.trees = 5, min.node.size = 1, mtry = 3)
+  )
+})
+
+test_that("updating cforest args", {
+
+  # All conversions
+  before_1 <- list(trees = 5, min_n = 1, mtry = 3)
+  after_1 <- convert_rf_args(before_1, method = "partykit")
+  expect_equal(
+    after_1,
+    list(ntree = 5, minsplit = 1, mtry = 3)
+  )
+
+})
+
+test_that("updating cforest args", {
+
+  # All conversions
+  before_1 <- list(trees = 5, min_n = 1, mtry = 3)
+  after_1 <- convert_rf_args(before_1, method = "aorsf")
+  expect_equal(
+    after_1,
+    list(n_tree = 5, leaf_min_obs = 1, mtry = 3)
+  )
+
+})
+
+test_that("updating with default args", {
+
+  expect_equal(
+    update_defaults(list(a = 1, b = 2), list()),
+    list(a = 1, b = 2)
+  )
+
+  expect_equal(
+    update_defaults(list(a = 1, b = 2), list(a = 3)),
+    list(a = 1, b = 2)
+  )
+
+  expect_equal(
+    update_defaults(list(a = 1, b = 2), list(c = 3)),
+    list(c = 3, a = 1, b = 2)
+  )
+
+})
+
+# ------------------------------------------------------------------------------
+
 test_that("computations - classification task via ranger", {
   skip_if_not_installed("modeldata")
   cells_subset <- helper_cells()
@@ -150,6 +224,8 @@ test_that("computations - regression task via ranger vary trees, mtry, min_n", {
   expect_equal(ames_imp_rf_regression_task_res@mode, "regression")
 })
 
+# ------------------------------------------------------------------------------
+
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
   cells_subset <- helper_cells()
@@ -225,6 +301,8 @@ test_that("computations - regression task via partykit", {
   expect_equal(ames_imp_rf_conditional_res@fallback_value, Inf)
   expect_equal(ames_imp_rf_conditional_res@direction, "maximize")
 })
+
+# ------------------------------------------------------------------------------
 
 test_that("computations - classification task via aorsf", {
   skip_if_not_installed("modeldata")

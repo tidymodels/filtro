@@ -71,6 +71,7 @@ library(dplyr)
 
 # Random forests for classification task
 
+# small example for efficiency
 cells_subset <- modeldata::cells |>
   dplyr::select(
     class,
@@ -79,7 +80,8 @@ cells_subset <- modeldata::cells |>
     avg_inten_ch_1,
     avg_inten_ch_2,
     avg_inten_ch_3
-  )
+  ) |>
+  slice(1:50)
 
 # Random forest
 set.seed(42)
@@ -109,16 +111,14 @@ ames_subset <- modeldata::ames |>
     Lot_Frontage,
     Lot_Area,
     Street
-  )
+  ) |>
+  slice(1:50)
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-regression_task <- score_imp_rf
-regression_task@mode <- "regression"
-
 set.seed(42)
 ames_imp_rf_regression_task_res <-
-  regression_task |>
+  score_imp_rf |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_imp_rf_regression_task_res@results
 # TODO Add example of how to change trees, mtry, min_n, seed

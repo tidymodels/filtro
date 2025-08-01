@@ -44,11 +44,9 @@ ames_cor_pearson_res <-
 ames_cor_pearson_res@results
 
 # forest imp
-score_imp_rf_reg <- score_imp_rf
-score_imp_rf_reg@mode <- "regression"
 set.seed(42)
 ames_imp_rf_reg_res <-
-  score_imp_rf_reg |>
+  score_imp_rf |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_imp_rf_reg_res@results
 

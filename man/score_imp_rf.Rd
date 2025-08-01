@@ -30,6 +30,10 @@ processed via \code{\link[stats:model.frame]{stats::model.frame()}}.}
 \item{data}{A data frame containing the relevant columns defined by the
 formula.}
 
+\item{case_weights}{A quantitative vector of case weights that is the same
+length as the number of rows in \code{data}. The default of \code{NULL} indicates that
+there are no case weights.}
+
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
@@ -58,8 +62,8 @@ See the Examples section below.
 The function will determine which columns are predictors and outcomes in the
 random forest; no user intervention is required.
 
-Missing values are removed for each predictor/outcome combination being
-scored.
+Missing values are removed by case-wise deletion.
+
 When a predictor's importance score is 0, \code{\link[partykit:cforest]{partykit::cforest()}} may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.

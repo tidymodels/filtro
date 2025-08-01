@@ -89,7 +89,7 @@ cells_imp_rf_res@results
 
 # Conditional random forest
 cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-  fit(class ~ ., data = cells_subset)
+  fit(class ~ ., data = cells_subset, trees = 10)
 cells_imp_rf_conditional_res@results
 
 # Oblique random forest

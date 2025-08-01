@@ -8,8 +8,6 @@ class_score_imp_rf <- S7::new_class(
   properties = list(
     # What is the random forest engine to use for fitting?
     engine = S7::new_property(S7::class_character, default = "ranger"),
-    # What is the task type? Relevant only for ranger.
-    mode = S7::new_property(S7::class_character, default = "classification"), # TODO True, False?
     # What is the random seed?
     seed = S7::new_property(S7::class_numeric, default = 42)
   )
@@ -224,8 +222,7 @@ get_imp_rf_ranger <- function(object, data, outcome, ...) {
     .ns = "ranger",
     x = quote(X),
     y = quote(y),
-    importance = quote(importance_type),
-    classification = object@mode == "classification"
+    importance = quote(importance_type)
   )
 
   # if (!is.null(case_weights)) {

@@ -1,10 +1,5 @@
 # ------------------------------------------------------------------------------
-#' Arrange score
-#'
-#' @param x A score class object.
-#'
-#' @param ... NULL
-#'
+#' @keywords internal
 #' @export
 arrange_score <- S7::new_generic(
   "arrange_score",
@@ -20,7 +15,41 @@ arrange_score <- S7::new_generic(
   }
 )
 
-#' @noRd
+#' Arrange score
+#'
+#' @name arrange_score
+#'
+#' @param x A score class object.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @param target A scalar value.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Arrange score
+#' ames_aov_pval_res |>
+#'   arrange_score()
+#'
 #' @export
 S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
   if (x@direction == "maximize") {
@@ -34,10 +63,16 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 }
 
 # ------------------------------------------------------------------------------
+#' @keywords internal
+#' @export
+fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
+
 #' Fill safe value *(singular)*
 #'
 #' Fills in safe value for missing score. This is a *singular* scoring method.
 #' See [fill_safe_values()] for *plural* scoring method.
+#'
+#' @name fill_safe_value
 #'
 #' @param x A score class object.
 #'
@@ -62,14 +97,11 @@ S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
 #' ames_aov_pval_res <-
 #'   score_aov_pval |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
 #'
 #' # Fill safe value
 #' ames_aov_pval_res |>
-#'   filtro::fill_safe_value()
-#' @export
-fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
-
-#' @noRd
+#'   fill_safe_value()
 #' @export
 S7::method(fill_safe_value, class_score) <- function(x) {
   results <- x@results
@@ -102,7 +134,7 @@ show_best_score_prop <- S7::new_generic(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
 #' of predictors to consider.
 #'
@@ -151,7 +183,7 @@ show_best_score_num <- S7::new_generic(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 S7::method(show_best_score_num, class_score) <- function(
@@ -179,7 +211,7 @@ S7::method(show_best_score_num, class_score) <- function(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 show_best_score_cutoff <- S7::new_generic(
@@ -224,7 +256,7 @@ S7::method(show_best_score_cutoff, class_score) <- function(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 show_best_score_dual <- S7::new_generic(
@@ -277,7 +309,7 @@ S7::method(show_best_score_dual, class_score) <- function(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 rank_best_score_min <- S7::new_generic(
@@ -319,7 +351,7 @@ S7::method(rank_best_score_min, class_score) <- function(
 #'
 #' @param x A score class object.
 #'
-#' @param ... NULL
+#' @param ... Further arguments passed to or from other methods.
 #'
 #' @export
 rank_best_score_dense <- S7::new_generic(

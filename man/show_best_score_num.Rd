@@ -6,7 +6,7 @@
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Show best score, based on number of predictors \emph{(singular)}

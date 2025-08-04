@@ -3,9 +3,6 @@
 \name{fill_safe_value}
 \alias{fill_safe_value}
 \title{Fill safe value \emph{(singular)}}
-\usage{
-fill_safe_value(x, ...)
-}
 \arguments{
 \item{x}{A score class object.}
 
@@ -35,9 +32,10 @@ ames_subset <- ames_subset |>
 ames_aov_pval_res <-
   score_aov_pval |>
   fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
 
 # Fill safe value
 ames_aov_pval_res |>
-  filtro::fill_safe_value()
+  fill_safe_value()
 \dontshow{\}) # examplesIf}
 }

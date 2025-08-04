@@ -6,7 +6,7 @@
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
 
 \item{prop_terms}{A numeric value specifying the proportion
 of predictors to consider.}

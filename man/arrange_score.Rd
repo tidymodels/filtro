@@ -3,14 +3,40 @@
 \name{arrange_score}
 \alias{arrange_score}
 \title{Arrange score}
-\usage{
-arrange_score(x, ...)
-}
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
+
+\item{target}{A scalar value.}
 }
 \description{
 Arrange score
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# Arrange score
+ames_aov_pval_res |>
+  arrange_score()
+\dontshow{\}) # examplesIf}
 }

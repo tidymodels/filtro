@@ -19,11 +19,11 @@ arrange_score <- S7::new_generic(
 #'
 #' @name arrange_score
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
-#'
-#' @param target A scalar value.
+#' @param target A numeric value specifying the target value. The default
+#' of `NULL` indicates that there is no target value.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -47,8 +47,7 @@ arrange_score <- S7::new_generic(
 #' ames_aov_pval_res@results
 #'
 #' # Arrange score
-#' ames_aov_pval_res |>
-#'   arrange_score()
+#' ames_aov_pval_res |> arrange_score()
 #'
 #' @export
 S7::method(arrange_score, class_score) <- function(x, ..., target = NULL) {
@@ -74,7 +73,7 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #'
 #' @name fill_safe_value
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -100,8 +99,8 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' ames_aov_pval_res@results
 #'
 #' # Fill safe value
-#' ames_aov_pval_res |>
-#'   fill_safe_value()
+#' ames_aov_pval_res |> fill_safe_value()
+#'
 #' @export
 S7::method(fill_safe_value, class_score) <- function(x) {
   results <- x@results
@@ -132,11 +131,34 @@ show_best_score_prop <- S7::new_generic(
 #'
 #' @name show_best_score_prop
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
 #' of predictors to consider.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #'
 #' @export
 S7::method(show_best_score_prop, class_score) <- function(
@@ -181,9 +203,34 @@ show_best_score_num <- S7::new_generic(
 #'
 #' @name show_best_score_num
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
+#' @param num_terms An integer value specifying the number
+#' of predictors to consider.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 #'
 #' @export
 S7::method(show_best_score_num, class_score) <- function(
@@ -207,12 +254,7 @@ S7::method(show_best_score_num, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Show best score, based on based on cutoff value *(singular)*
-#'
-#' @param x A score class object.
-#'
-#' @param ... Further arguments passed to or from other methods.
-#'
+#' @keywords internal
 #' @export
 show_best_score_cutoff <- S7::new_generic(
   "show_best_score_cutoff",
@@ -228,7 +270,40 @@ show_best_score_cutoff <- S7::new_generic(
   }
 )
 
-#' @noRd
+#' Show best score, based on based on cutoff value *(singular)*
+#'
+#' @name show_best_score_cutoff
+#'
+#' @param x A score class object.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#' @param cutoff A numeric value specifying the cutoff value.
+#' @param target A numeric value specifying the target value. The default
+#' of `NULL` indicates that there is no target value.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+#'
 #' @export
 S7::method(show_best_score_cutoff, class_score) <- function(
   x,
@@ -251,13 +326,7 @@ S7::method(show_best_score_cutoff, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Show best score, based on number or proportion of predictors with
-#' optional cutoff value *(singular)*
-#'
-#' @param x A score class object.
-#'
-#' @param ... Further arguments passed to or from other methods.
-#'
+#' @keywords internal
 #' @export
 show_best_score_dual <- S7::new_generic(
   "show_best_score_dual",
@@ -273,7 +342,47 @@ show_best_score_dual <- S7::new_generic(
   }
 )
 
-#' @noRd
+#' Show best score, based on number or proportion of predictors with
+#' optional cutoff value *(singular)*
+#'
+#' @name show_best_score_dual
+#'
+#' @param x A score class object, i.e., `score_*`.
+#'
+#' @param ... Further arguments passed to or from other methods.
+#' @param prop_terms A numeric value specifying the proportion
+#' of predictors to consider.
+#' @param num_terms An integer value specifying the number
+#' of predictors to consider.
+#' @param cutoff A numeric value specifying the cutoff value.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
+#' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+#'
+#' ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
+#' ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+#'
 #' @export
 S7::method(show_best_score_dual, class_score) <- function(
   x,
@@ -307,7 +416,7 @@ S7::method(show_best_score_dual, class_score) <- function(
 #' Rank score based on `dplyr::min_rank()`, where tied values receive the
 #' same rank and ranks are with gaps *(singular)*
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -349,7 +458,7 @@ S7::method(rank_best_score_min, class_score) <- function(
 #' Rank score based on `dplyr::dense_rank()`, where tied values receive the
 #' same rank and ranks are with gaps *(singular)*
 #'
-#' @param x A score class object.
+#' @param x A score class object, i.e., `score_*`.
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'

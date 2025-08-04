@@ -3,14 +3,41 @@
 \name{show_best_score_cutoff}
 \alias{show_best_score_cutoff}
 \title{Show best score, based on based on cutoff value \emph{(singular)}}
-\usage{
-show_best_score_cutoff(x, ...)
-}
 \arguments{
 \item{x}{A score class object.}
 
 \item{...}{Further arguments passed to or from other methods.}
+
+\item{cutoff}{A numeric value specifying the cutoff value.}
+
+\item{target}{A numeric value specifying the target value. The default
+of \code{NULL} indicates that there is no target value.}
 }
 \description{
 Show best score, based on based on cutoff value \emph{(singular)}
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+\dontshow{\}) # examplesIf}
 }

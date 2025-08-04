@@ -8,7 +8,7 @@ same rank and ranks are with gaps \emph{(singular)}}
 rank_best_score_min(x, ...)
 }
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A score class object, i.e., \verb{score_*}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

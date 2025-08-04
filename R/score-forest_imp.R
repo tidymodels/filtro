@@ -197,29 +197,42 @@ S7::method(fit, class_score_imp_rf) <- function(
   analysis_data <- analysis_data[complete_obs, ]
 
   if (object@score_type == "imp_rf") {
-    imp <- get_imp_rf_ranger(
-      object,
-      data = analysis_data,
-      outcome = outcome,
-      weights = case_weights,
-      ...
+    imp <- try(
+      get_imp_rf_ranger(
+        object,
+        data = analysis_data,
+        outcome = outcome,
+        weights = case_weights,
+        ...
+      ),
+      silent = TRUE
     )
   } else if (object@score_type == "imp_rf_conditional") {
-    imp <- get_imp_rf_partykit(
-      object,
-      data = analysis_data,
-      formula = formula,
-      weights = case_weights,
-      ...
+    imp <- try(
+      get_imp_rf_partykit(
+        object,
+        data = analysis_data,
+        formula = formula,
+        weights = case_weights,
+        ...
+      ),
+      silent = TRUE
     )
   } else if (object@score_type == "imp_rf_oblique") {
-    imp <- get_imp_rf_aorsf(
-      object,
-      data = analysis_data,
-      formula = formula,
-      weights = case_weights,
-      ...
+    imp <- try(
+      get_imp_rf_aorsf(
+        object,
+        data = analysis_data,
+        formula = formula,
+        weights = case_weights,
+        ...
+      ),
+      silent = TRUE
     )
+  }
+
+  if (inherits(imp, "try-error")) {
+    imp <- NA_real_
   }
 
   score <- imp[predictors]

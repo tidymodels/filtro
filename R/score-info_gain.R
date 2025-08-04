@@ -201,7 +201,7 @@ get_info_gain <- function(object, data, outcome) {
     silent = TRUE
   )
   if (inherits(imp, "try-error")) {
-    res <- NA_real_
+    imp <- NA_real_
   }
   return(imp)
 }

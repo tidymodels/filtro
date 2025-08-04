@@ -4,11 +4,12 @@
 \alias{arrange_score}
 \title{Arrange score}
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A score class object, i.e., \verb{score_*}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
-\item{target}{A scalar value.}
+\item{target}{A numeric value specifying the target value. The default
+of \code{NULL} indicates that there is no target value.}
 }
 \description{
 Arrange score
@@ -36,7 +37,6 @@ ames_aov_pval_res <-
 ames_aov_pval_res@results
 
 # Arrange score
-ames_aov_pval_res |>
-  arrange_score()
+ames_aov_pval_res |> arrange_score()
 \dontshow{\}) # examplesIf}
 }

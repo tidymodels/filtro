@@ -4,7 +4,7 @@
 \alias{show_best_score_prop}
 \title{Show best score, based on proportion of predictors \emph{(singular)}}
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A score class object, i.e., \verb{score_*}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 
@@ -13,4 +13,29 @@ of predictors to consider.}
 }
 \description{
 Show best score, based on proportion of predictors \emph{(singular)}
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+\dontshow{\}) # examplesIf}
 }

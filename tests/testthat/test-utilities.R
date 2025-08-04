@@ -8,30 +8,26 @@ ames_aov_pval_res <-
   score_aov_pval |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::arrange_score()
+ames_aov_pval_res |> arrange_score()
 
 ames_aov_fstat_res <-
   score_aov_fstat |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_fstat_res@results
-ames_aov_fstat_res |>
-  filtro::arrange_score()
+ames_aov_fstat_res |> arrange_score()
 
 # Fill safe value
 ames_aov_pval_res <-
   score_aov_pval |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::fill_safe_value()
+ames_aov_pval_res |> fill_safe_value()
 
 ames_aov_fstat_res <-
   score_aov_fstat |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_fstat_res@results
-ames_aov_fstat_res |>
-  filtro::fill_safe_value()
+ames_aov_fstat_res |> fill_safe_value()
 
 
 # Show best score based on based on proportion of predictors
@@ -41,12 +37,10 @@ ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::show_best_score_prop(prop_terms = 0.2)
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 
 ames_aov_fstat_res@results
-ames_aov_fstat_res |>
-  filtro::show_best_score_prop(prop_terms = 0.2)
+ames_aov_fstat_res |> show_best_score_prop(prop_terms = 0.2)
 
 # Show best score based on number of predictors
 
@@ -55,12 +49,10 @@ ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::show_best_score_num(num_terms = 2)
+ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 
 ames_aov_fstat_res@results
-ames_aov_fstat_res |>
-  filtro::show_best_score_num(num_terms = 2)
+ames_aov_fstat_res |> show_best_score_num(num_terms = 2)
 
 # Show best score based on cutoff value
 
@@ -69,12 +61,10 @@ ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::show_best_score_cutoff(cutoff = 130)
+ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 
 ames_aov_fstat_res@results
-ames_aov_fstat_res |>
-  filtro::show_best_score_cutoff(cutoff = 94.5)
+ames_aov_fstat_res |> show_best_score_cutoff(cutoff = 94.5)
 
 # Show best score based on proportion of predictors with
 # optional cutoff value
@@ -84,16 +74,12 @@ ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::show_best_score_dual(prop_terms = 0.5)
-ames_aov_pval_res |>
-  filtro::show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 
 ames_aov_pval_res@results
-ames_aov_pval_res |>
-  filtro::show_best_score_dual(num_terms = 2)
-ames_aov_pval_res |>
-  filtro::show_best_score_dual(prop_terms = 2, cutoff = 130)
+ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
 
 # Rank score based on min_rank()
 ames_subset <- helper_ames()

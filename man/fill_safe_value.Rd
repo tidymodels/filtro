@@ -4,7 +4,7 @@
 \alias{fill_safe_value}
 \title{Fill safe value \emph{(singular)}}
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A score class object, i.e., \verb{score_*}.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
@@ -35,7 +35,6 @@ ames_aov_pval_res <-
 ames_aov_pval_res@results
 
 # Fill safe value
-ames_aov_pval_res |>
-  fill_safe_value()
+ames_aov_pval_res |> fill_safe_value()
 \dontshow{\}) # examplesIf}
 }

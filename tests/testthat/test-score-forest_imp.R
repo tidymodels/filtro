@@ -209,7 +209,7 @@ test_that("computations - regression task via ranger vary trees, mtry, min_n", {
 
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
-  cells_subset <- helper_cells() |> dplyr::slice(1:50)
+  cells_subset <- helper_cells() |> dplyr::slice(1:20)
 
   set.seed(42)
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>

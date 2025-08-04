@@ -9,7 +9,7 @@ show_best_score_cutoff(x, ...)
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Show best score, based on based on cutoff value \emph{(singular)}

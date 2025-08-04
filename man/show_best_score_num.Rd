@@ -3,13 +3,10 @@
 \name{show_best_score_num}
 \alias{show_best_score_num}
 \title{Show best score, based on number of predictors \emph{(singular)}}
-\usage{
-show_best_score_num(x, ...)
-}
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Show best score, based on number of predictors \emph{(singular)}

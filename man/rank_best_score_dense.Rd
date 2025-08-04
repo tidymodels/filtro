@@ -10,7 +10,7 @@ rank_best_score_dense(x, ...)
 \arguments{
 \item{x}{A score class object.}
 
-\item{...}{NULL}
+\item{...}{Further arguments passed to or from other methods.}
 }
 \description{
 Rank score based on \code{dplyr::dense_rank()}, where tied values receive the

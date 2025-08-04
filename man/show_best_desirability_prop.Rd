@@ -26,6 +26,3 @@ Analogous to, and adapted from \code{\link[desirability2:show_best_desirability]
 simultaneously optimize multiple scores using desirability functions.
 See \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} scoring method.
 }
-\seealso{
-\code{\link[=show_best_desirability_num]{show_best_desirability_num()}}, \code{\link[=show_best_desirability_cutoff]{show_best_desirability_cutoff()}}
-}

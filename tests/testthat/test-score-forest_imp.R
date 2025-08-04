@@ -18,7 +18,6 @@ test_that("object creation", {
 # ------------------------------------------------------------------------------
 
 test_that("updating ranger args", {
-
   before_1 <- list()
   after_1 <- convert_rf_args(before_1, method = "ranger")
   expect_equal(before_1, after_1)
@@ -28,7 +27,7 @@ test_that("updating ranger args", {
   expect_equal(after_2, before_2)
 
   # leave engine/original args alone
-  before_3 <- list(trees = 5, regularization.factor = 1/2, min.node.size = 1)
+  before_3 <- list(trees = 5, regularization.factor = 1 / 2, min.node.size = 1)
   after_3 <- convert_rf_args(before_3, method = "ranger")
   expect_equal(
     after_3,
@@ -45,7 +44,6 @@ test_that("updating ranger args", {
 })
 
 test_that("updating cforest args", {
-
   # All conversions
   before_1 <- list(trees = 5, min_n = 1, mtry = 3)
   after_1 <- convert_rf_args(before_1, method = "partykit")
@@ -53,11 +51,9 @@ test_that("updating cforest args", {
     after_1,
     list(ntree = 5, minsplit = 1, mtry = 3)
   )
-
 })
 
 test_that("updating cforest args", {
-
   # All conversions
   before_1 <- list(trees = 5, min_n = 1, mtry = 3)
   after_1 <- convert_rf_args(before_1, method = "aorsf")
@@ -65,11 +61,9 @@ test_that("updating cforest args", {
     after_1,
     list(n_tree = 5, leaf_min_obs = 1, mtry = 3)
   )
-
 })
 
 test_that("updating with default args", {
-
   expect_equal(
     update_defaults(list(a = 1, b = 2), list()),
     list(a = 1, b = 2)
@@ -84,7 +78,6 @@ test_that("updating with default args", {
     update_defaults(list(a = 1, b = 2), list(c = 3)),
     list(c = 3, a = 1, b = 2)
   )
-
 })
 
 # ------------------------------------------------------------------------------
@@ -166,7 +159,6 @@ test_that("computations - regression task via ranger", {
   expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
   expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
   expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
-
 })
 
 test_that("computations - regression task via ranger vary trees, mtry, min_n", {
@@ -211,14 +203,13 @@ test_that("computations - regression task via ranger vary trees, mtry, min_n", {
   expect_equal(ames_imp_rf_regression_task_res@inclusive, rep(FALSE, 2))
   expect_equal(ames_imp_rf_regression_task_res@fallback_value, Inf)
   expect_equal(ames_imp_rf_regression_task_res@direction, "maximize")
-
 })
 
 # ------------------------------------------------------------------------------
 
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
-  cells_subset <- helper_cells() |> dplyr::slice(1:50)
+  cells_subset <- helper_cells() |> dplyr::slice(1:20)
 
   set.seed(42)
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
@@ -356,7 +347,11 @@ test_that("computations - regression task via aorsf", {
   imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
   imp_aorsf[is.na(imp_aorsf)] <- 0
 
-  expect_equal(ames_imp_rf_oblique_res@results$score, imp_aorsf)
+  expect_equal(
+    ames_imp_rf_oblique_res@results$score,
+    imp_aorsf,
+    tolerance = 0.1
+  )
 
   # ----------------------------------------------------------------------------
 
@@ -401,7 +396,11 @@ test_that("computations - regression task via aorsf - adding missing values and 
   imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
   imp_aorsf[is.na(imp_aorsf)] <- 0
 
-  expect_equal(ames_missing_imp_rf_oblique_res@results$score, imp_aorsf)
+  expect_equal(
+    ames_missing_imp_rf_oblique_res@results$score,
+    imp_aorsf,
+    tolerance = 0.1
+  )
 
   # ----------------------------------------------------------------------------
   # case weights

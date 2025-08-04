@@ -142,15 +142,27 @@ get_single_roc_auc <- function(predictor, outcome, ...) {
 
   if (length(levels(outcome)) == 2) {
     # TODO if else will change once we pass case_weights = in later
-    roc <- pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE, ...)
-  } else {
-    roc <- pROC::multiclass.roc(
-      outcome,
-      predictor,
-      direction = "auto",
-      quiet = TRUE,
-      ...
+    roc <- try(
+      pROC::roc(outcome, predictor, direction = "auto", quiet = TRUE, ...),
+      silent = TRUE
     )
+    if (inherits(roc, "try-error")) {
+      roc <- NA_real_
+    }
+  } else {
+    roc <- try(
+      pROC::multiclass.roc(
+        outcome,
+        predictor,
+        direction = "auto",
+        quiet = TRUE,
+        ...
+      ),
+      silent = TRUE
+    )
+    if (inherits(roc, "try-error")) {
+      roc <- NA_real_
+    }
   }
   res <- pROC::auc(roc) |> as.numeric()
   return(res)

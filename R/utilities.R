@@ -79,15 +79,7 @@ S7::method(fill_safe_value, class_score) <- function(x) {
   x@results
 }
 
-# ------------------------------------------------------------------------------
-#' Show best score, based on proportion of predictors *(singular)*
-#'
-#' @param x A score class object.
-#'
-#' @param ... NULL
-#' @param prop_terms A numeric value specifying the proportion
-#' of predictors to consider.
-#'
+#' @keywords internal
 #' @export
 show_best_score_prop <- S7::new_generic(
   "show_best_score_prop",
@@ -103,7 +95,17 @@ show_best_score_prop <- S7::new_generic(
   }
 )
 
-#' @noRd
+# ------------------------------------------------------------------------------
+#' Show best score, based on proportion of predictors *(singular)*
+#'
+#' @name show_best_score_prop
+#'
+#' @param x A score class object.
+#'
+#' @param ... NULL
+#' @param prop_terms A numeric value specifying the proportion
+#' of predictors to consider.
+#'
 #' @export
 S7::method(show_best_score_prop, class_score) <- function(
   x,
@@ -610,7 +612,8 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
     cli::cli_abort(
       "There should be as many values in {.arg case_weights} ({length(weights)})
       as there are rows in `data` ({num_rows}).",
-      call = call)
+      call = call
+    )
   }
   # in case the class is importance_weights or frequency weights, strip their
   # extra class(es) and attributes

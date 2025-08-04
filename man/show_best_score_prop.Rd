@@ -3,9 +3,6 @@
 \name{show_best_score_prop}
 \alias{show_best_score_prop}
 \title{Show best score, based on proportion of predictors \emph{(singular)}}
-\usage{
-show_best_score_prop(x, ...)
-}
 \arguments{
 \item{x}{A score class object.}
 

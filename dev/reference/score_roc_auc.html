@@ -47,11 +47,21 @@
     <p>An object of class <code><a href="class_score.html">filtro::class_score_roc_auc</a></code> (inherits from <code><a href="class_score.html">filtro::class_score</a></code>, <code>S7_object</code>) of length 1.</p>
     </div>
     <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>An S7 object. The primary property of interest is in <code>results</code>. This
+is a data frame of results that is populated by the <code>fit()</code> method and has
+columns:</p><ul><li><p><code>name</code>: The name of the score (e.g., <code>roc_auc</code>).</p></li>
+<li><p><code>score</code>: The estimates for each predictor.</p></li>
+<li><p><code>outcome</code>: The name of the outcome column.</p></li>
+<li><p><code>predictor</code>: The names of the predictor inputs.</p></li>
+</ul><p>These data are accessed using <code>object@results</code> (see examples below).</p>
+    </div>
+    <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>This objects are used when either:</p><ul><li><p>The predictors are numeric and the outcome is a factor/category, or</p></li>
 <li><p>The predictors are factors and the outcome is numeric.</p></li>
-</ul><p>In either case, a ROC curve (via <code><a href="https://rdrr.io/pkg/pROC/man/roc.html" class="external-link">pROC::roc()</a></code>) is created with the proper
-variable roles, and the area under the ROC curve is computed (via <code><a href="https://rdrr.io/pkg/pROC/man/auc.html" class="external-link">pROC::auc()</a></code>).
+</ul><p>In either case, a ROC curve (via <code><a href="https://rdrr.io/pkg/pROC/man/roc.html" class="external-link">pROC::roc()</a></code> or <code><a href="https://rdrr.io/pkg/pROC/man/multiclass.html" class="external-link">pROC::multiclass.roc()</a></code>) is created
+with the proper variable roles, and the area under the ROC curve is computed (via <code><a href="https://rdrr.io/pkg/pROC/man/auc.html" class="external-link">pROC::auc()</a></code>).
 Values higher than 0.5 (i.e., <code>max(roc_auc, 1 - roc_auc)</code> &gt; 0.5) are associated with
 more important predictors.</p><div class="section">
 <h3 id="estimating-the-scores">Estimating the scores<a class="anchor" aria-label="anchor" href="#estimating-the-scores"></a></h3>

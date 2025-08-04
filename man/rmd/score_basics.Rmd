@@ -1,0 +1,9 @@
+## Estimating the scores
+
+In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data input requirements, package dependencies, etc). To compute the scores for a specific data set, the `fit()` method is used. The main arguments for these functions are: 
+
+- `object`: A score class object based (e.g., `scale_forest_imp`).
+- `formula`: A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()].
+- `data`: A data frame containing the relevant columns defined by the formula.
+- `...`:  Further arguments passed to or from other methods.
+

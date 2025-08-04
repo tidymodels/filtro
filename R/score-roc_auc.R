@@ -10,8 +10,10 @@ class_score_roc_auc <- S7::new_class(
 #' Scoring via area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' @description
-#'
-#' These objects are used when either:
+#' The area under the ROC curves can be used to measure predictor importance.
+#' @name score_roc_auc
+#' @details
+#' This objects are used when either:
 #'
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
@@ -21,54 +23,25 @@ class_score_roc_auc <- S7::new_class(
 #' Values higher than 0.5 (i.e., `max(roc_auc, 1 - roc_auc)` > 0.5) are associated with
 #' more important predictors.
 #'
-#' `score_roc_auc` is object that define the technique.
-#' To apply the filter on data, you would use the [fit()] method:
+#' ## Estimating the scores
 #'
-#' \preformatted{
-#'   fit(score_roc_auc, formula, data)
-#' }
+#' In \pkg{filtro}, the `score_*` objects define a scoring method (e.g., data
+#' input requirements, package dependencies, etc). To compute the scores for
+#' a specific data set, the `fit()` method is used. The main arguments for
+#' these functions are:
 #'
-#' See the Examples section below.
-#' @name score_roc_auc
-#' @export
-score_roc_auc <-
-  class_score_roc_auc(
-    outcome_type = c("numeric", "factor"),
-    predictor_type = c("numeric", "factor"),
-    case_weights = TRUE, # TODO
-    range = c(0, 1),
-    inclusive = c(TRUE, TRUE),
-    fallback_value = 1,
-    score_type = "roc_auc",
-    direction = "maximize",
-    deterministic = TRUE,
-    tuning = FALSE,
-    label = "Area under the Receiver Operating Characteristic curve (ROC AUC)"
-  )
-
-# ------------------------------------------------------------------------------
-
-#' Compute area under the Receiver Operating Characteristic curve (ROC AUC)
-#' @name score_roc_auc
-#' @include class_score.R
-#' @param object A score class object based on `class_score_roc_auc`.
-#' @param formula A standard R formula with a single outcome on the right-hand
-#' side and one or more predictors (or `.`) on the left-hand side. The data are
-#' processed via [stats::model.frame()].
-#' @param data A data frame containing the relevant columns defined by the
-#' formula.
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#' The function will determine which columns are predictors and outcomes for the
-#' ROC analysis; no user intervention is required.
+#'   \describe{
+#'     \item{`object`}{A score class object based (e.g., `score_cor_pearson`).}
+#'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
+#'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
+#'     \item{`...`}{Further arguments passed to or from other methods.}
+#'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights. NOTE case weights cannot be used when a multiclass ROC is computed.}
+#'   }
 #'
-#' Missing values are removed for each predictor/outcome combination being
-#' scored.
-#' In cases where [pROC::roc()] fail, the scoring proceeds silently, and
-#' a missing value is given for the score.
+#' @includeRmd man/rmd/missing_delete.Rmd details
 #'
+#' @includeRmd man/rmd/fault_tolerant.Rmd details
 #' @examplesIf rlang::is_installed("modeldata")
-#'
 #' library(dplyr)
 #'
 #' # ROC AUC where the numeric predictors are the predictors and
@@ -109,6 +82,24 @@ score_roc_auc <-
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_roc_auc_res@results
 #' # TODO Add multiclass example
+#' @export
+score_roc_auc <-
+  class_score_roc_auc(
+    outcome_type = c("numeric", "factor"),
+    predictor_type = c("numeric", "factor"),
+    case_weights = TRUE, # TODO
+    range = c(0, 1),
+    inclusive = c(TRUE, TRUE),
+    fallback_value = 1,
+    score_type = "roc_auc",
+    direction = "maximize",
+    deterministic = TRUE,
+    tuning = FALSE,
+    label = "Area under the Receiver Operating Characteristic curve (ROC AUC)"
+  )
+
+# ------------------------------------------------------------------------------
+
 #' @export
 S7::method(fit, class_score_roc_auc) <- function(object, formula, data, ...) {
   analysis_data <- process_all_data(formula, data = data)

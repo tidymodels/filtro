@@ -191,10 +191,17 @@ S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
 get_info_gain <- function(object, data, outcome) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
-  imp <- FSelectorRcpp::information_gain(
-    x = X,
-    y = y,
-    type = object@score_type,
-    equal = object@mode == "regression" # Set = TRUE for numeric outcome
+  imp <- try(
+    FSelectorRcpp::information_gain(
+      x = X,
+      y = y,
+      type = object@score_type,
+      equal = object@mode == "regression" # Set = TRUE for numeric outcome
+    ),
+    silent = TRUE
   )
+  if (inherits(imp, "try-error")) {
+    res <- NA_real_
+  }
+  return(imp)
 }

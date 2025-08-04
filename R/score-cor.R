@@ -9,7 +9,13 @@ class_score_cor <- S7::new_class(
 
 #' Scoring via correlation coefficient
 #'
+#' @description
+#'
+#' These two objects can be used to compute importance scores based on
+#' correlation coefficient.
+#'
 #' @name score_cor_pearson
+#'
 #' @details
 #' These objects are used when:
 #'
@@ -37,6 +43,18 @@ class_score_cor <- S7::new_class(
 #' @includeRmd man/rmd/missing_delete.Rmd details
 #'
 #' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `score_cor_pearson` or `score_cor_spearman`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #' library(dplyr)
 #'
@@ -53,22 +71,12 @@ class_score_cor <- S7::new_class(
 #' ames_cor_pearson_res <-
 #'   score_cor_pearson |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
-#' ames_cor_pearson_res
+#' ames_cor_pearson_res@results
 #'
 #' ames_cor_spearman_res <-
 #'   score_cor_spearman |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
-#' ames_cor_spearman_res
-#' @return An S7 object. The primary property of interest is in `results`. This
-#' is a data frame of results that is populated by the `fit()` method and has
-#' columns:
-#'
-#' - `name`: The name of the score (e.g., `score_cor_pearson` or `score_cor_spearman`).
-#' - `score`: The estimates for each predictor.
-#' - `outcome`: The name of the outcome column.
-#' - `predictor`: The names of the predictor inputs.
-#'
-#' These data are accessed using `object@results` (see examples below).
+#' ames_cor_spearman_res@results
 #' @export
 score_cor_pearson <-
   class_score_cor(

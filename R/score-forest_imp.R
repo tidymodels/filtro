@@ -14,6 +14,7 @@ class_score_imp_rf <- S7::new_class(
 #' Scoring via random forests
 #'
 #' @description
+#'
 #' Different random forest models can be used to measure importance.
 #'
 #' @name score_imp_rf

@@ -10,6 +10,19 @@ An object of class \code{filtro::class_score_roc_auc} (inherits from \code{filtr
 \usage{
 score_roc_auc
 }
+\value{
+An S7 object. The primary property of interest is in \code{results}. This
+is a data frame of results that is populated by the \code{fit()} method and has
+columns:
+\itemize{
+\item \code{name}: The name of the score (e.g., \code{roc_auc}).
+\item \code{score}: The estimates for each predictor.
+\item \code{outcome}: The name of the outcome column.
+\item \code{predictor}: The names of the predictor inputs.
+}
+
+These data are accessed using \code{object@results} (see examples below).
+}
 \description{
 The area under the ROC curves can be used to measure predictor importance.
 }
@@ -20,8 +33,8 @@ This objects are used when either:
 \item The predictors are factors and the outcome is numeric.
 }
 
-In either case, a ROC curve (via \code{\link[pROC:roc]{pROC::roc()}}) is created with the proper
-variable roles, and the area under the ROC curve is computed (via \code{\link[pROC:auc]{pROC::auc()}}).
+In either case, a ROC curve (via \code{\link[pROC:roc]{pROC::roc()}} or \code{\link[pROC:multiclass]{pROC::multiclass.roc()}}) is created
+with the proper variable roles, and the area under the ROC curve is computed (via \code{\link[pROC:auc]{pROC::auc()}}).
 Values higher than 0.5 (i.e., \code{max(roc_auc, 1 - roc_auc)} > 0.5) are associated with
 more important predictors.
 \subsection{Estimating the scores}{

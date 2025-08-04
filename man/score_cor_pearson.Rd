@@ -29,7 +29,8 @@ columns:
 These data are accessed using \code{object@results} (see examples below).
 }
 \description{
-Scoring via correlation coefficient
+These two objects can be used to compute importance scores based on
+correlation coefficient.
 }
 \details{
 These objects are used when:
@@ -79,12 +80,12 @@ ames_subset <- modeldata::ames |>
 ames_cor_pearson_res <-
   score_cor_pearson |>
   fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res
+ames_cor_pearson_res@results
 
 ames_cor_spearman_res <-
   score_cor_spearman |>
   fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_spearman_res
+ames_cor_spearman_res@results
 \dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

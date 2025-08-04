@@ -109,21 +109,19 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> cor_pearson <span style="color: #BB0000;">NA</span>     Sale_Price Street      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># forest imp</span></span></span>
-<span class="r-in"><span><span class="va">score_imp_rf_reg</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span></span></span>
-<span class="r-in"><span><span class="va">score_imp_rf_reg</span><span class="op">@</span><span class="va">mode</span> <span class="op">&lt;-</span> <span class="st">"regression"</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>  <span class="va">score_imp_rf_reg</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ames_imp_rf_reg_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name       score outcome    predictor   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf 0.014<span style="text-decoration: underline;">9</span>    Sale_Price MS_SubClass </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf 0.011<span style="text-decoration: underline;">2</span>    Sale_Price MS_Zoning   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf 0.006<span style="text-decoration: underline;">93</span>   Sale_Price Lot_Frontage</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf 0.014<span style="text-decoration: underline;">3</span>    Sale_Price Lot_Area    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf 0.000<span style="text-decoration: underline;">033</span>6 Sale_Price Street      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> imp_rf 0.014<span style="text-decoration: underline;">7</span>    Sale_Price MS_SubClass </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> imp_rf 0.010<span style="text-decoration: underline;">5</span>    Sale_Price MS_Zoning   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> imp_rf 0.006<span style="text-decoration: underline;">91</span>   Sale_Price Lot_Frontage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> imp_rf 0.014<span style="text-decoration: underline;">2</span>    Sale_Price Lot_Area    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> imp_rf 0.000<span style="text-decoration: underline;">034</span>7 Sale_Price Street      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># info gain</span></span></span>
 <span class="r-in"><span><span class="va">score_info_gain_reg</span> <span class="op">&lt;-</span> <span class="va">score_info_gain</span></span></span>
@@ -155,11 +153,11 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   outcome    predictor    aov_pval cor_pearson    imp_rf infogain</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Sale_Price MS_SubClass    237.        <span style="color: #BB0000;">NA</span>     0.014<span style="text-decoration: underline;">9</span>     0.266  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Sale_Price MS_Zoning      130.        <span style="color: #BB0000;">NA</span>     0.011<span style="text-decoration: underline;">2</span>     0.113  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Sale_Price Lot_Frontage    <span style="color: #BB0000;">NA</span>          0.165 0.006<span style="text-decoration: underline;">93</span>    0.146  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Sale_Price Lot_Area        <span style="color: #BB0000;">NA</span>          0.255 0.014<span style="text-decoration: underline;">3</span>     0.140  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Sale_Price Street           5.75      <span style="color: #BB0000;">NA</span>     0.000<span style="text-decoration: underline;">033</span>6  0.003<span style="text-decoration: underline;">65</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Sale_Price MS_SubClass    237.        <span style="color: #BB0000;">NA</span>     0.014<span style="text-decoration: underline;">7</span>     0.266  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> Sale_Price MS_Zoning      130.        <span style="color: #BB0000;">NA</span>     0.010<span style="text-decoration: underline;">5</span>     0.113  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Sale_Price Lot_Frontage    <span style="color: #BB0000;">NA</span>          0.165 0.006<span style="text-decoration: underline;">91</span>    0.146  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Sale_Price Lot_Area        <span style="color: #BB0000;">NA</span>          0.255 0.014<span style="text-decoration: underline;">2</span>     0.140  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Sale_Price Street           5.75      <span style="color: #BB0000;">NA</span>     0.000<span style="text-decoration: underline;">034</span>7  0.003<span style="text-decoration: underline;">65</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

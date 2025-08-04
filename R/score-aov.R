@@ -31,8 +31,7 @@ class_score_aov <- S7::new_class(
 #' variable roles, and the overall p-value for the hypothesis that all means are
 #' equal is computed via the standard F-statistic. The p-value that is returned
 #' is transformed to be `-log10(p_value)` so that larger values are associated
-#' with more important predictors. If you would rather have the raw p-values,
-#' the `neg_log10` option can be set to `FALSE`.
+#' with more important predictors.
 #'
 #' ## Estimating the scores
 #'

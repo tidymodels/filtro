@@ -43,8 +43,7 @@ In either case, a linear model (via \code{\link[stats:lm]{stats::lm()}}) is crea
 variable roles, and the overall p-value for the hypothesis that all means are
 equal is computed via the standard F-statistic. The p-value that is returned
 is transformed to be \code{-log10(p_value)} so that larger values are associated
-with more important predictors. If you would rather have the raw p-values,
-the \code{neg_log10} option can be set to \code{FALSE}.
+with more important predictors.
 \subsection{Estimating the scores}{
 
 In \pkg{filtro}, the \verb{score_*} objects define a scoring method (e.g., data

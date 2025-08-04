@@ -3,16 +3,13 @@
 \name{fill_safe_values}
 \alias{fill_safe_values}
 \title{Fill safe values \emph{(plural)}}
-\usage{
-fill_safe_values(x, ...)
-}
 \arguments{
 \item{x}{A list.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Fills in safe values for missing scores, wrapped \code{\link[=bind_scores]{bind_scores()}}.
+Wraps \code{\link[=bind_scores]{bind_scores()}}, and fills in safe values for missing scores.
 This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.
 }
 \examples{

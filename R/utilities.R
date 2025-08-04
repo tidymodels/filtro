@@ -497,15 +497,22 @@ S7::method(rank_best_score_dense, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Construct an S7 subclass of base R's `list` for Method Dispatch
-#'
-#' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
-#' [bind_scores()] and [fill_safe_values()].
-#'
+#' S7 subclass for method dispatch in `bind_scores()` and `fill_safe_values()`
+#' @noRd
 #' @export
 class_score_list <- S7::new_S3_class("list")
 
-#' Bind all `class_score` objects, including their associated metadata and scores
+# ------------------------------------------------------------------------------
+#' @keywords internal
+#' @export
+bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
+
+#' Bind score class object, including their associated metadata and scores
+#'
+#' Binds multiple score class objects (e.g., `score_*`), including their associated metadata and scores.
+#' See [fill_safe_values()] for binding with safe-value handling.
+#'
+#' @name bind_scores
 #'
 #' @param x A list.
 #'
@@ -566,10 +573,6 @@ class_score_list <- S7::new_S3_class("list")
 #' # Bind scores
 #' class_score_list |> bind_scores()
 #' @export
-bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
-
-#' @noRd
-#' @export
 S7::method(bind_scores, class_score_list) <- function(x) {
   length_x <- length(x)
   if (length_x < 2) {
@@ -594,10 +597,16 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 }
 
 # ------------------------------------------------------------------------------
+#' @keywords internal
+#' @export
+fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
+
 #' Fill safe values *(plural)*
 #'
-#' Fills in safe values for missing scores, wrapped [bind_scores()].
+#' Wraps [bind_scores()], and fills in safe values for missing scores.
 #' This is a *plural* scoring method. See [fill_safe_value()] for *singular* scoring method.
+#'
+#' @name fill_safe_values
 #'
 #' @param x A list.
 #'
@@ -657,10 +666,7 @@ S7::method(bind_scores, class_score_list) <- function(x) {
 #'
 #' # Fill safe values
 #' class_score_list |> fill_safe_values()
-#' @export
-fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
-
-#' @noRd
+#'
 #' @export
 S7::method(fill_safe_values, class_score_list) <- function(x) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)

@@ -253,7 +253,7 @@ get_imp_rf_ranger <- function(object, data, outcome, weights, ...) {
   y <- data[[outcome]]
   X <- data[setdiff(names(data), outcome)]
 
-  complete_obs <- complete.cases(X) & !is.na(y)
+  complete_obs <- stats::complete.cases(X) & !is.na(y)
   y <- y[complete_obs]
   X <- X[complete_obs, , drop = FALSE]
 

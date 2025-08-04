@@ -291,10 +291,6 @@ get_imp_rf_partykit <- function(object, data, formula, weights, ...) {
     weights = quote(weights)
   )
 
-  # if (!is.null(case_weights)) {
-  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
-  # }
-
   opts <- list(...)
 
   has_control <- any(names(opts) == "control")
@@ -341,10 +337,6 @@ get_imp_rf_aorsf <- function(object, data, formula, weights, ...) {
     weights = quote(weights)
   )
 
-  # if (!is.null(case_weights)) {
-  #   cl <- rlang::call_modify(cl, case.weights = quote(case_weights))
-  # }
-
   opts <- list(...)
 
   opts <- convert_rf_args(opts, "aorsf")
@@ -372,17 +364,39 @@ convert_rf_args <- function(args, method) {
   # skip: fmt
   arg_data <-
     tibble::tribble(
-      ~engine,     ~parsnip,       ~original,
-      "ranger",         "mtry",          "mtry",
-      "ranger",        "trees",     "num.trees",
-      "ranger",        "min_n", "min.node.size",
-      "partykit",      "min_n",      "minsplit",
-      "partykit",       "mtry",          "mtry",
-      "partykit",      "trees",         "ntree",
-      "partykit", "tree_depth",      "maxdepth",
-      "aorsf",          "mtry",          "mtry",
-      "aorsf",         "trees",        "n_tree",
-      "aorsf",         "min_n",  "leaf_min_obs"
+      ~engine,
+      ~parsnip,
+      ~original,
+      "ranger",
+      "mtry",
+      "mtry",
+      "ranger",
+      "trees",
+      "num.trees",
+      "ranger",
+      "min_n",
+      "min.node.size",
+      "partykit",
+      "min_n",
+      "minsplit",
+      "partykit",
+      "mtry",
+      "mtry",
+      "partykit",
+      "trees",
+      "ntree",
+      "partykit",
+      "tree_depth",
+      "maxdepth",
+      "aorsf",
+      "mtry",
+      "mtry",
+      "aorsf",
+      "trees",
+      "n_tree",
+      "aorsf",
+      "min_n",
+      "leaf_min_obs"
     ) |>
     dplyr::filter(engine == method & parsnip %in% f_args)
 

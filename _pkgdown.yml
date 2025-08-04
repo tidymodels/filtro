@@ -1,7 +1,22 @@
 url: https://filtro.tidymodels.org
-template:
-  bootstrap: 5
 
 development:
   mode: auto
 
+template:
+  package: tidytemplate
+  bootstrap: 5
+  bslib:
+    danger: "#CA225E"
+    primary: "#CA225E"
+
+  includes:
+      in_header: |
+        <script defer data-domain="filtro.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
+
+development:
+  mode: auto
+
+figures:
+  fig.width: 8
+  fig.height: 5.75

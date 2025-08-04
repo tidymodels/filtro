@@ -5,6 +5,8 @@
 #' simultaneously optimize multiple scores using desirability functions.
 #' See [show_best_score_prop()] for *singular* scoring method.
 #'
+#' @name show_best_desirability_prop
+#'
 #' @param x A tibble or data frame returned by [fill_safe_values()].
 
 #' @param ... NULL
@@ -16,8 +18,6 @@
 #' the metrics are presented in "wide format" (one column per metric) and there
 #' are new columns for the corresponding desirability values (each starts with
 #' `.d_`).
-#'
-#' @seealso [show_best_desirability_num()], [show_best_desirability_cutoff()]
 #'
 #' @export
 show_best_desirability_prop <- function(
@@ -34,7 +34,9 @@ show_best_desirability_prop <- function(
   mtr <-
     mtr |>
     dplyr::mutate(
-      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(".d_")))
+      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(
+        ".d_"
+      )))
     ) |>
     dplyr::slice_max(.d_overall, prop = prop_terms, with_ties = TRUE)
   mtr
@@ -49,6 +51,8 @@ show_best_desirability_prop <- function(
 #'
 #' See [show_best_desirability_prop()] for details.
 #'
+#' @name show_best_desirability_num
+#'
 #' @inheritParams show_best_desirability_prop
 #' @param num_terms A numeric value specifying the number
 #' of predictors to consider.
@@ -58,8 +62,6 @@ show_best_desirability_prop <- function(
 #' the metrics are presented in "wide format" (one column per metric) and there
 #' are new columns for the corresponding desirability values (each starts with
 #' `.d_`).
-#'
-#' @seealso [show_best_desirability_prop()], [show_best_desirability_cutoff()]
 #'
 #' @export
 show_best_desirability_num <- function(
@@ -76,7 +78,9 @@ show_best_desirability_num <- function(
   mtr <-
     mtr |>
     dplyr::mutate(
-      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(".d_")))
+      .d_overall = desirability2::d_overall(dplyr::across(dplyr::starts_with(
+        ".d_"
+      )))
     ) |>
     dplyr::slice_max(.d_overall, n = num_terms, with_ties = TRUE)
   mtr

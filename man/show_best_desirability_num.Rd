@@ -29,6 +29,3 @@ See \code{\link[=show_best_score_num]{show_best_score_num()}} for \emph{singular
 \details{
 See \code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}} for details.
 }
-\seealso{
-\code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}}, \code{\link[=show_best_desirability_cutoff]{show_best_desirability_cutoff()}}
-}

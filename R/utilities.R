@@ -128,14 +128,7 @@ S7::method(show_best_score_prop, class_score) <- function(
   }
 }
 
-
-# ------------------------------------------------------------------------------
-#' Show best score, based on number of predictors *(singular)*
-#'
-#' @param x A score class object.
-#'
-#' @param ... NULL
-#'
+#' @keywords internal
 #' @export
 show_best_score_num <- S7::new_generic(
   "show_best_score_num",
@@ -151,7 +144,15 @@ show_best_score_num <- S7::new_generic(
   }
 )
 
-#' @noRd
+# ------------------------------------------------------------------------------
+#' Show best score, based on number of predictors *(singular)*
+#'
+#' @name show_best_score_num
+#'
+#' @param x A score class object.
+#'
+#' @param ... NULL
+#'
 #' @export
 S7::method(show_best_score_num, class_score) <- function(
   x,

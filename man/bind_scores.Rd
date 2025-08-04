@@ -2,17 +2,15 @@
 % Please edit documentation in R/utilities.R
 \name{bind_scores}
 \alias{bind_scores}
-\title{Bind all \code{class_score} objects, including their associated metadata and scores}
-\usage{
-bind_scores(x, ...)
-}
+\title{Bind score class object, including their associated metadata and scores}
 \arguments{
 \item{x}{A list.}
 
 \item{...}{Further arguments passed to or from other methods.}
 }
 \description{
-Bind all \code{class_score} objects, including their associated metadata and scores
+Binds multiple score class objects (e.g., \verb{score_*}), including their associated metadata and scores.
+See \code{\link[=fill_safe_values]{fill_safe_values()}} for binding with safe-value handling.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

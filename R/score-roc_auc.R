@@ -10,16 +10,19 @@ class_score_roc_auc <- S7::new_class(
 #' Scoring via area under the Receiver Operating Characteristic curve (ROC AUC)
 #'
 #' @description
+#'
 #' The area under the ROC curves can be used to measure predictor importance.
+#'
 #' @name score_roc_auc
+#'
 #' @details
 #' This objects are used when either:
 #'
 #' - The predictors are numeric and the outcome is a factor/category, or
 #' - The predictors are factors and the outcome is numeric.
 #'
-#' In either case, a ROC curve (via [pROC::roc()]) is created with the proper
-#' variable roles, and the area under the ROC curve is computed (via [pROC::auc()]).
+#' In either case, a ROC curve (via [pROC::roc()] or [pROC::multiclass.roc()]) is created
+#' with the proper variable roles, and the area under the ROC curve is computed (via [pROC::auc()]).
 #' Values higher than 0.5 (i.e., `max(roc_auc, 1 - roc_auc)` > 0.5) are associated with
 #' more important predictors.
 #'
@@ -41,6 +44,18 @@ class_score_roc_auc <- S7::new_class(
 #' @includeRmd man/rmd/missing_delete.Rmd details
 #'
 #' @includeRmd man/rmd/fault_tolerant.Rmd details
+#'
+#' @return An S7 object. The primary property of interest is in `results`. This
+#' is a data frame of results that is populated by the `fit()` method and has
+#' columns:
+#'
+#' - `name`: The name of the score (e.g., `roc_auc`).
+#' - `score`: The estimates for each predictor.
+#' - `outcome`: The name of the outcome column.
+#' - `predictor`: The names of the predictor inputs.
+#'
+#' These data are accessed using `object@results` (see examples below).
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #' library(dplyr)
 #'

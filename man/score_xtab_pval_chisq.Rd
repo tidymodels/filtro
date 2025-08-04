@@ -29,8 +29,8 @@ columns:
 These data are accessed using \code{object@results} (see examples below).
 }
 \description{
-When both predictors and outcomes are numeric, importances scores can be
-computed via the correlation statistic.
+These two objects can be used to compute importance scores based on
+chi-squared test or Fisher's exact test.
 }
 \details{
 These objects are used when:
@@ -79,11 +79,11 @@ titanic_subset <- titanic_train |>
 
 titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
   fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_chisq_res
+titanic_xtab_pval_chisq_res@results
 
 titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
   fit(Survived ~ ., data = titanic_subset)
-titanic_xtab_pval_fisher_res
+titanic_xtab_pval_fisher_res@results
 # TODO Add multiclass example
 \dontshow{\}) # examplesIf}
 }

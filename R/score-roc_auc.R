@@ -71,6 +71,7 @@ class_score_roc_auc <- S7::new_class(
 #'     avg_inten_ch_2,
 #'     avg_inten_ch_3
 #'   )
+#' cells_subset$case <- NULL
 #'
 #' cells_roc_auc_res <- score_roc_auc |>
 #'   fit(class ~ ., data = cells_subset)

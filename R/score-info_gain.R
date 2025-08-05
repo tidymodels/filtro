@@ -62,7 +62,7 @@ class_score_info_gain <- S7::new_class(
 #'
 #' These data are accessed using `object@results` (see examples below).
 #'
-#' @examples rlang::is_installed("modeldata")
+#' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
 #'
@@ -77,6 +77,7 @@ class_score_info_gain <- S7::new_class(
 #'     avg_inten_ch_2,
 #'     avg_inten_ch_3
 #'   )
+#' cells_subset$case <- NULL
 #'
 #' # Information gain
 #' cells_info_gain_res <- score_info_gain |>

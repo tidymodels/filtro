@@ -47,59 +47,12 @@ desirable.
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
-# Prep data
-
-ames_subset <- modeldata::ames |>
-  # small example for efficiency
-  dplyr::select(
-    Sale_Price,
-    MS_SubClass,
-    MS_Zoning,
-    Lot_Frontage,
-    Lot_Area,
-    Street
-  )
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-# anova pval
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# cor
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# forest imp
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# info gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
-ames_info_gain_reg_res <-
-  score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# Create a list
-class_score_list <- list(
-  ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
-
-# Fill safe values
-scores_combined <- class_score_list |>
-  filtro::fill_safe_values() |>
-  dplyr::select(-outcome)
-
 library(desirability2)
+library(dplyr)
+
+# Remove outcome
+scores_combined <- ames_scores_results |>
+  dplyr::select(-outcome)
 
 show_best_desirability_prop(
   scores_combined,

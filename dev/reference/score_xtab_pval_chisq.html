@@ -113,6 +113,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Survived</span>, <span class="va">Pclass</span>, <span class="va">Sex</span>, <span class="va">Embarked</span><span class="op">)</span>, <span class="va">as.factor</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">Survived</span>, <span class="va">Pclass</span>, <span class="va">Sex</span>, <span class="va">Age</span>, <span class="va">Fare</span>, <span class="va">Embarked</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Chi-squared</span></span></span>
 <span class="r-in"><span><span class="va">titanic_xtab_pval_chisq_res</span> <span class="op">&lt;-</span> <span class="va">score_xtab_pval_chisq</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Survived</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">titanic_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">titanic_xtab_pval_chisq_res</span><span class="op">@</span><span class="va">results</span></span></span>
@@ -125,6 +126,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> xtab_pval_chisq <span style="color: #BB0000;">NA</span>    Survived Fare     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> xtab_pval_chisq  5.79 Survived Embarked </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fisher's</span></span></span>
 <span class="r-in"><span><span class="va">titanic_xtab_pval_fisher_res</span> <span class="op">&lt;-</span> <span class="va">score_xtab_pval_fisher</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Survived</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">titanic_subset</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">titanic_xtab_pval_fisher_res</span><span class="op">@</span><span class="va">results</span></span></span>
@@ -136,7 +138,24 @@ silently, and a missing value is given for the score.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> xtab_pval_fisher <span style="color: #BB0000;">NA</span>    Survived Age      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> xtab_pval_fisher <span style="color: #BB0000;">NA</span>    Survived Fare     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> xtab_pval_fisher  5.99 Survived Embarked </span>
-<span class="r-in"><span><span class="co"># TODO Add multiclass example</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Chi-squared where `class` is the multiclass outcome/response</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">hpc_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/hpc_data.html" class="external-link">hpc_data</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">class</span>,</span></span>
+<span class="r-in"><span>    <span class="va">protocol</span>,</span></span>
+<span class="r-in"><span>    <span class="va">hour</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">hpc_xtab_pval_chisq_res</span> <span class="op">&lt;-</span> <span class="va">score_xtab_pval_chisq</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>    <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">hpc_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">hpc_xtab_pval_chisq_res</span><span class="op">@</span><span class="va">results</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name             score outcome predictor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> xtab_pval_chisq  0.246 class   protocol </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> xtab_pval_chisq <span style="color: #BB0000;">NA</span>     class   hour     </span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

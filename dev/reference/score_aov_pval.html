@@ -110,6 +110,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span><span class="va">cell_data</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/cells.html" class="external-link">cells</a></span></span></span>
 <span class="r-in"><span><span class="va">cell_data</span><span class="op">$</span><span class="va">case</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># p-value</span></span></span>
 <span class="r-in"><span><span class="va">cell_p_val_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
@@ -129,6 +130,17 @@ silently, and a missing value is given for the score.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> aov_pval  1.51   class   diff_inten_density_ch_3     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 46 more rows</span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># raw p-value</span></span></span>
+<span class="r-in"><span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu">dont_log_pvalues</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dont_log_pvalues(score_aov_pval):</span> could not find function "dont_log_pvalues"</span>
+<span class="r-in"><span><span class="va">cell_pval_natrual_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">natrual_units</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'natrual_units' not found</span>
+<span class="r-in"><span><span class="va">cell_pval_natrual_res</span><span class="op">@</span><span class="va">results</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'cell_pval_natrual_res' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># t/F-statistic</span></span></span>
 <span class="r-in"><span><span class="va">cell_t_stat_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_fstat</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>

@@ -70,9 +70,6 @@ columns:</p><ul><li><p><code>name</code>: The name of the score (e.g., <code>imp
 (via <code><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger::ranger()</a></code>, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code>, or <code><a href="https://docs.ropensci.org/aorsf/reference/orsf.html" class="external-link">aorsf::orsf()</a></code>) is created with
 the proper variable roles, and the feature importance scores are computed. Larger
 values are associated with more important predictors.</p>
-<p>The function will determine which columns are predictors and outcomes in the
-random forest; no user intervention is required.</p>
-<p>Missing values are removed by case-wise deletion.</p>
 <p>When a predictor's importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.</p><div class="section">
@@ -99,7 +96,8 @@ these functions are:</p>
 <dd><p>A quantitative vector of case weights that is the same length as the number of rows in <code>data</code>. The default of <code>NULL</code> indicates that there are no case weights.</p></dd>
 
 
-</dl></div>
+</dl><p>Missing values are removed by case-wise deletion.</p>
+</div>
 
 <p>In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.</p>
@@ -112,8 +110,8 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Random forests for classification task</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># small example for efficiency</span></span></span>
 <span class="r-in"><span><span class="va">cells_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/cells.html" class="external-link">cells</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="co"># small example for efficiency</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">class</span>,</span></span>
 <span class="r-in"><span>    <span class="va">angle_ch_1</span>,</span></span>
@@ -169,6 +167,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span><span class="co"># Random forests for regression task</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="co"># small example for efficiency</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">Sale_Price</span>,</span></span>
 <span class="r-in"><span>    <span class="va">MS_SubClass</span>,</span></span>

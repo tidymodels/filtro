@@ -82,7 +82,6 @@ class_score_imp_rf <- S7::new_class(
 #'     avg_inten_ch_3
 #'   ) |>
 #'   slice(1:50)
-#' cells_subset$case <- NULL
 #'
 #' # Random forest
 #' set.seed(42)

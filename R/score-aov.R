@@ -70,11 +70,20 @@ class_score_aov <- S7::new_class(
 #' cell_data <- modeldata::cells
 #' cell_data$case <- NULL
 #'
+#' # p-value
 #' cell_p_val_res <-
 #'   score_aov_pval |>
 #'   fit(class ~ ., data = cell_data)
 #' cell_p_val_res@results
 #'
+#' # raw p-value
+#' natrual_units <- score_aov_pval |> dont_log_pvalues()
+#' cell_pval_natrual_res <-
+#'   natrual_units |>
+#'   fit(class ~ ., data = cell_data)
+#' cell_pval_natrual_res@results
+#'
+#' # t/F-statistic
 #' cell_t_stat_res <-
 #'   score_aov_fstat |>
 #'   fit(class ~ ., data = cell_data)

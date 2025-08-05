@@ -31,11 +31,6 @@ class_score_imp_rf <- S7::new_class(
 #' the proper variable roles, and the feature importance scores are computed. Larger
 #' values are associated with more important predictors.
 #'
-#' The function will determine which columns are predictors and outcomes in the
-#' random forest; no user intervention is required.
-#'
-#' Missing values are removed by case-wise deletion.
-#'
 #' When a predictor's importance score is 0, [partykit::cforest()] may omit its
 #' name from the results. In cases like these, a score of 0 is assigned to the
 #' missing predictors.
@@ -54,6 +49,8 @@ class_score_imp_rf <- S7::new_class(
 #'     \item{`...`}{Further arguments passed to or from other methods.}
 #'     \item{`case_weights`}{A quantitative vector of case weights that is the same length as the number of rows in `data`. The default of `NULL` indicates that there are no case weights.}
 #'   }
+#'
+#' Missing values are removed by case-wise deletion.
 #'
 #' @includeRmd man/rmd/fault_tolerant.Rmd details
 #'
@@ -74,8 +71,8 @@ class_score_imp_rf <- S7::new_class(
 #'
 #' # Random forests for classification task
 #'
-#' # small example for efficiency
 #' cells_subset <- modeldata::cells |>
+#'   # small example for efficiency
 #'   dplyr::select(
 #'     class,
 #'     angle_ch_1,
@@ -107,6 +104,7 @@ class_score_imp_rf <- S7::new_class(
 #' # Random forests for regression task
 #'
 #' ames_subset <- modeldata::ames |>
+#'   # small example for efficiency
 #'   dplyr::select(
 #'     Sale_Price,
 #'     MS_SubClass,

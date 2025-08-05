@@ -45,7 +45,7 @@ See <code><a href="show_best_score_prop.html">show_best_score_prop()</a></code> 
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, prop_terms <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, prop_terms <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,6 +74,152 @@ are new columns for the corresponding desirability values (each starts with
 <code>.d_</code>).</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Prep data</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="co"># small example for efficiency</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">Sale_Price</span>,</span></span>
+<span class="r-in"><span>    <span class="va">MS_SubClass</span>,</span></span>
+<span class="r-in"><span>    <span class="va">MS_Zoning</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Lot_Frontage</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Lot_Area</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Street</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="va">ames_subset</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># anova pval</span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cor</span></span></span>
+<span class="r-in"><span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># forest imp</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># info gain</span></span></span>
+<span class="r-in"><span><span class="va">score_info_gain_reg</span> <span class="op">&lt;-</span> <span class="va">score_info_gain</span></span></span>
+<span class="r-in"><span><span class="va">score_info_gain_reg</span><span class="op">@</span><span class="va">mode</span> <span class="op">&lt;-</span> <span class="st">"regression"</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">score_info_gain_reg</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Create a list</span></span></span>
+<span class="r-in"><span><span class="va">class_score_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">ames_aov_pval_res</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_cor_pearson_res</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_imp_rf_reg_res</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_info_gain_reg_res</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Fill safe values</span></span></span>
+<span class="r-in"><span><span class="va">scores_combined</span> <span class="op">&lt;-</span> <span class="va">class_score_list</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">filtro</span><span class="fu">::</span><span class="fu"><a href="fill_safe_values.html">fill_safe_values</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">outcome</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://desirability2.tidymodels.org" class="external-link">desirability2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor    aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass    237.         1     1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.266                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_Zoning      130.         1     1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.113                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Street           5.75       1     3.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  0.003<span style="text-decoration: underline;">65</span>              1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Lot_Area       <span style="color: #BB0000;">Inf</span>          0.255 1.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.140                0.255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Lot_Frontage   <span style="color: #BB0000;">Inf</span>          0.165 6.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  0.146                0.165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor    aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass    237.         1     1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.266                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_Zoning      130.         1     1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.113                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Lot_Area       <span style="color: #BB0000;">Inf</span>          0.255 1.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.140                0.255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Lot_Frontage   <span style="color: #BB0000;">Inf</span>          0.165 6.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  0.146                0.165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Street           5.75       1     3.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  0.003<span style="text-decoration: underline;">65</span>              1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor    aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass    237.         1     1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.266                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_Zoning      130.         1     1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.113                1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Lot_Area       <span style="color: #BB0000;">Inf</span>          0.255 1.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.140                0.255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Lot_Frontage   <span style="color: #BB0000;">Inf</span>          0.165 6.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  0.146                0.165</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Street           5.75       1     3.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  0.003<span style="text-decoration: underline;">65</span>              1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_max_infogain &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .d_overall &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  prop_terms <span class="op">=</span> <span class="fl">0.2</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 9</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor   aov_pval cor_pearson imp_rf infogain .d_max_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass     237.           1 0.014<span style="text-decoration: underline;">7</span>    0.266                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 3 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_max_infogain &lt;dbl&gt;,</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .d_overall &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor aov_pval cor_pearson  imp_rf infogain .d_target_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> Lot_Area    <span style="color: #BB0000;">Inf</span>          0.255 1.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.140                   1.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_SubCl…   237.         1     1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.266                   0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> MS_Zoning   130.         1     1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.113                   0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Lot_Fron…   <span style="color: #BB0000;">Inf</span>          0.165 6.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  0.146                   0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Street        5.75       1     3.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  0.003<span style="text-decoration: underline;">65</span>                 0    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor    aov_pval cor_pearson  imp_rf infogain .d_box_cor_pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass    237.         1     1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.266                    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_Zoning      130.         1     1.05<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.113                    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Lot_Area       <span style="color: #BB0000;">Inf</span>          0.255 1.42<span style="color: #949494;">e</span><span style="color: #BB0000;">-2</span>  0.140                    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Street           5.75       1     3.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-5</span>  0.003<span style="text-decoration: underline;">65</span>                  1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Lot_Frontage   <span style="color: #BB0000;">Inf</span>          0.165 6.91<span style="color: #949494;">e</span><span style="color: #BB0000;">-3</span>  0.146                    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

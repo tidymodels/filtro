@@ -29,8 +29,16 @@ arrange_score <- S7::new_generic(
 #'
 #' library(dplyr)
 #'
-#' ames <- modeldata::ames
-#' ames <- ames |>
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
 #'   dplyr::mutate(Sale_Price = log10(Sale_Price))
 #'
 #' ames_aov_pval_res <-

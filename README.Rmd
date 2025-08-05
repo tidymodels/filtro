@@ -70,42 +70,138 @@ Currently, the implemented filters include:
 
 ## A scoring example
 
-## A filtering exmple for *singular* score
-
-## A filtering example for *plural* scores
+```{r, start, include = FALSE}
+library(filtro)
+library(desirability2)
+library(dplyr)
+library(modeldata)
+```
 
 ```{r}
 library(filtro)
 library(desirability2)
 library(dplyr)
+library(modeldata)
+```
+
+```{r}
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+```
+
+```{r}
+# ANOVA p-value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+```
+
+```{r}
+# Pearson correlation
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+```
+
+```{r}
+# Forest importance
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+```
+
+```{r}
+# Information gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+```
+
+## A filtering exmple for *singular* score
+
+```{r}
+ames_aov_pval_res@results
+```
+
+```{r}
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+```
+
+```{r}
+ames_aov_pval_res |> show_best_score_num(num_terms = 2)
+```
+
+```{r}
+ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+```
+
+```{r}
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+
+ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+```
+
+## A filtering example for *plural* scores
+
+```{r}
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+```
+
+```{r}
+ames_scores_results <- class_score_list |>
+  # Fill safe values
+  fill_safe_values() |>
+  # Remove outcome
+  dplyr::select(-outcome)
 ames_scores_results
 ```
 
 ```{r}
-scores_combined <- ames_scores_results |> dplyr::select(-outcome)
-```
-
-```{r}
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1)
 )
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain)
 )
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
@@ -113,12 +209,12 @@ show_best_desirability_prop(
 )
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
 )
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   constrain(cor_pearson, low = 0.2, high = 1)
 )
 ```

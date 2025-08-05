@@ -41,29 +41,30 @@
 #' library(dplyr)
 #'
 #' # Remove outcome
-#' scores_combined <- ames_scores_results |>
+#' ames_scores_results <- ames_scores_results |>
 #'   dplyr::select(-outcome)
+#' ames_scores_results
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   maximize(cor_pearson, low = 0, high = 1)
 #' )
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   maximize(cor_pearson, low = 0, high = 1),
 #'   maximize(imp_rf)
 #' )
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   maximize(cor_pearson, low = 0, high = 1),
 #'   maximize(imp_rf),
 #'   maximize(infogain)
 #' )
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   maximize(cor_pearson, low = 0, high = 1),
 #'   maximize(imp_rf),
 #'   maximize(infogain),
@@ -71,12 +72,12 @@
 #' )
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
 #' )
 #'
 #' show_best_desirability_prop(
-#'   scores_combined,
+#'   ames_scores_results,
 #'   constrain(cor_pearson, low = 0.2, high = 1)
 #' )
 #' @export
@@ -123,6 +124,51 @@ show_best_desirability_prop <- function(
 #' are new columns for the corresponding desirability values (each starts with
 #' `.d_`).
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(desirability2)
+#' library(dplyr)
+#'
+#' # Remove outcome
+#' ames_scores_results <- ames_scores_results |>
+#'   dplyr::select(-outcome)
+#' ames_scores_results
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   maximize(cor_pearson, low = 0, high = 1)
+#' )
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf)
+#' )
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf),
+#'   maximize(infogain)
+#' )
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf),
+#'   maximize(infogain),
+#'   num_terms = 2
+#' )
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+#' )
+#'
+#' show_best_desirability_num(
+#'   ames_scores_results,
+#'   constrain(cor_pearson, low = 0.2, high = 1)
+#' )
 #' @export
 show_best_desirability_num <- function(
   x,

@@ -63,40 +63,192 @@ Currently, the implemented filters include:
 
 ## A scoring example
 
-## A filtering exmple for *singular* score
-
-## A filtering example for *plural* scores
-
 ``` r
 library(filtro)
 library(desirability2)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-ames_scores_results
-#> # A tibble: 5 × 6
-#>   outcome    predictor    aov_pval cor_pearson    imp_rf infogain
-#>   <chr>      <chr>           <dbl>       <dbl>     <dbl>    <dbl>
-#> 1 Sale_Price MS_SubClass    237.         1     0.0148     0.266  
-#> 2 Sale_Price MS_Zoning      130.         1     0.00997    0.113  
-#> 3 Sale_Price Lot_Frontage   Inf          0.165 0.00668    0.146  
-#> 4 Sale_Price Lot_Area       Inf          0.255 0.0137     0.140  
-#> 5 Sale_Price Street           5.75       1     0.0000455  0.00365
+library(modeldata)
 ```
 
 ``` r
-scores_combined <- ames_scores_results |> dplyr::select(-outcome)
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+```
+
+``` r
+# ANOVA p-value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+#> # A tibble: 5 × 4
+#>   name      score outcome    predictor   
+#>   <chr>     <dbl> <chr>      <chr>       
+#> 1 aov_pval 237.   Sale_Price MS_SubClass 
+#> 2 aov_pval 130.   Sale_Price MS_Zoning   
+#> 3 aov_pval  NA    Sale_Price Lot_Frontage
+#> 4 aov_pval  NA    Sale_Price Lot_Area    
+#> 5 aov_pval   5.75 Sale_Price Street
+```
+
+``` r
+# Pearson correlation
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+#> # A tibble: 5 × 4
+#>   name         score outcome    predictor   
+#>   <chr>        <dbl> <chr>      <chr>       
+#> 1 cor_pearson NA     Sale_Price MS_SubClass 
+#> 2 cor_pearson NA     Sale_Price MS_Zoning   
+#> 3 cor_pearson  0.165 Sale_Price Lot_Frontage
+#> 4 cor_pearson  0.255 Sale_Price Lot_Area    
+#> 5 cor_pearson NA     Sale_Price Street
+```
+
+``` r
+# Forest importance
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+#> # A tibble: 5 × 4
+#>   name       score outcome    predictor   
+#>   <chr>      <dbl> <chr>      <chr>       
+#> 1 imp_rf 0.0148    Sale_Price MS_SubClass 
+#> 2 imp_rf 0.00997   Sale_Price MS_Zoning   
+#> 3 imp_rf 0.00668   Sale_Price Lot_Frontage
+#> 4 imp_rf 0.0137    Sale_Price Lot_Area    
+#> 5 imp_rf 0.0000455 Sale_Price Street
+```
+
+``` r
+# Information gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+#> # A tibble: 5 × 4
+#>   name       score outcome    predictor   
+#>   <chr>      <dbl> <chr>      <chr>       
+#> 1 infogain 0.266   Sale_Price MS_SubClass 
+#> 2 infogain 0.113   Sale_Price MS_Zoning   
+#> 3 infogain 0.146   Sale_Price Lot_Frontage
+#> 4 infogain 0.140   Sale_Price Lot_Area    
+#> 5 infogain 0.00365 Sale_Price Street
+```
+
+## A filtering exmple for *singular* score
+
+``` r
+ames_aov_pval_res@results
+#> # A tibble: 5 × 4
+#>   name      score outcome    predictor   
+#>   <chr>     <dbl> <chr>      <chr>       
+#> 1 aov_pval 237.   Sale_Price MS_SubClass 
+#> 2 aov_pval 130.   Sale_Price MS_Zoning   
+#> 3 aov_pval  NA    Sale_Price Lot_Frontage
+#> 4 aov_pval  NA    Sale_Price Lot_Area    
+#> 5 aov_pval   5.75 Sale_Price Street
+```
+
+``` r
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+#> # A tibble: 1 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+```
+
+``` r
+ames_aov_pval_res |> show_best_score_num(num_terms = 2)
+#> # A tibble: 2 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+#> 2 aov_pval  130. Sale_Price MS_Zoning
+```
+
+``` r
+ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+#> # A tibble: 1 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+```
+
+``` r
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
+#> # A tibble: 2 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+#> 2 aov_pval  130. Sale_Price MS_Zoning
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+#> # A tibble: 1 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+
+ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
+#> # A tibble: 2 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+#> 2 aov_pval  130. Sale_Price MS_Zoning
+ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+#> # A tibble: 1 × 4
+#>   name     score outcome    predictor  
+#>   <chr>    <dbl> <chr>      <chr>      
+#> 1 aov_pval  237. Sale_Price MS_SubClass
+```
+
+## A filtering example for *plural* scores
+
+``` r
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+```
+
+``` r
+ames_scores_results <- class_score_list |>
+  # Fill safe values
+  fill_safe_values() |>
+  # Remove outcome
+  dplyr::select(-outcome)
+ames_scores_results
+#> # A tibble: 5 × 5
+#>   predictor    aov_pval cor_pearson    imp_rf infogain
+#>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>
+#> 1 MS_SubClass    237.         1     0.0148     0.266  
+#> 2 MS_Zoning      130.         1     0.00997    0.113  
+#> 3 Lot_Frontage   Inf          0.165 0.00668    0.146  
+#> 4 Lot_Area       Inf          0.255 0.0137     0.140  
+#> 5 Street           5.75       1     0.0000455  0.00365
 ```
 
 ``` r
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1)
 )
 #> # A tibble: 5 × 7
@@ -109,7 +261,7 @@ show_best_desirability_prop(
 #> 5 Lot_Front…   Inf          0.165 6.68e-3  0.146                0.165      0.165
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
@@ -124,7 +276,7 @@ show_best_desirability_prop(
 #> # ℹ 2 more variables: .d_max_imp_rf <dbl>, .d_overall <dbl>
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain)
@@ -141,7 +293,7 @@ show_best_desirability_prop(
 #> #   .d_overall <dbl>
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
@@ -155,7 +307,7 @@ show_best_desirability_prop(
 #> #   .d_overall <dbl>
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
 )
 #> # A tibble: 5 × 7
@@ -169,7 +321,7 @@ show_best_desirability_prop(
 #> # ℹ 1 more variable: .d_overall <dbl>
 
 show_best_desirability_prop(
-  scores_combined,
+  ames_scores_results,
   constrain(cor_pearson, low = 0.2, high = 1)
 )
 #> # A tibble: 5 × 7

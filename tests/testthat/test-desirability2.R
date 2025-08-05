@@ -1,5 +1,7 @@
 skip()
 
+# Prep data
+
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
@@ -50,69 +52,62 @@ scores_combined <- class_score_list |>
 scores_combined
 
 # show_best_desirability_prop
-# Default prop_terms = 0.99. Change it later.
-# TODO Output for aov_pval is weird. Inf is probably not a good idea for safe value.
-show_best_desirability_prop(scores_combined, prop_terms = 1, maximize(aov_pval))
+# TODO Default prop_terms = 1. Can change later.
+
+library(desirability2)
 
 show_best_desirability_prop(
   scores_combined,
-  prop_terms = 1,
   maximize(cor_pearson, low = 0, high = 1)
 )
 
 show_best_desirability_prop(
   scores_combined,
-  prop_terms = 1,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain),
+  prop_terms = 0.2
+)
+
+show_best_desirability_prop(
+  scores_combined,
   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
 )
 
 show_best_desirability_prop(
   scores_combined,
-  prop_terms = 1,
   constrain(cor_pearson, low = 0.2, high = 1)
 )
 
-show_best_desirability_prop(
-  scores_combined,
-  #maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1)
-)
-
-show_best_desirability_prop(
-  scores_combined,
-  #maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
-
-show_best_desirability_prop(
-  scores_combined,
-  #maximize(aov_pval),
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain)
-)
-
 # show_best_desirability_num
-# Default num_terms = 5. Change it later.
-show_best_desirability_num(scores_combined, maximize(aov_pval))
+# TODO Default num_terms = 5. Can change later.
 
 show_best_desirability_num(
   scores_combined,
-  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1)
 )
 
 show_best_desirability_num(
   scores_combined,
-  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf)
 )
 
 show_best_desirability_num(
   scores_combined,
-  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain)
@@ -120,9 +115,8 @@ show_best_desirability_num(
 
 show_best_desirability_num(
   scores_combined,
-  num_terms = 2,
-  #maximize(aov_pval),
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
+  num_terms = 2
 )

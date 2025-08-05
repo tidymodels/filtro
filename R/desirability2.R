@@ -19,11 +19,102 @@
 #' are new columns for the corresponding desirability values (each starts with
 #' `.d_`).
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' # Prep data
+#'
+#' ames_subset <- modeldata::ames |>
+#'   # small example for efficiency
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # anova pval
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # cor
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # forest imp
+#' set.seed(42)
+#' ames_imp_rf_reg_res <-
+#'   score_imp_rf |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # info gain
+#' score_info_gain_reg <- score_info_gain
+#' score_info_gain_reg@mode <- "regression"
+#'
+#' ames_info_gain_reg_res <-
+#'   score_info_gain_reg |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res,
+#'   ames_imp_rf_reg_res,
+#'   ames_info_gain_reg_res
+#' )
+#'
+#' # Fill safe values
+#' scores_combined <- class_score_list |>
+#'   filtro::fill_safe_values() |>
+#'   dplyr::select(-outcome)
+#'
+#' library(desirability2)
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   maximize(cor_pearson, low = 0, high = 1)
+#' )
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf)
+#' )
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf),
+#'   maximize(infogain)
+#' )
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   maximize(cor_pearson, low = 0, high = 1),
+#'   maximize(imp_rf),
+#'   maximize(infogain),
+#'   prop_terms = 0.2
+#' )
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+#' )
+#'
+#' show_best_desirability_prop(
+#'   scores_combined,
+#'   constrain(cor_pearson, low = 0.2, high = 1)
+#' )
 #' @export
 show_best_desirability_prop <- function(
   x,
   ...,
-  prop_terms = 0.99
+  prop_terms = 1
 ) {
   mtr <- x
   all_vars <- names(mtr)

@@ -9,13 +9,13 @@ show_best_desirability_prop(x, ..., prop_terms = 1)
 \arguments{
 \item{x}{A tibble or data frame returned by \code{\link[=fill_safe_values]{fill_safe_values()}}.}
 
-\item{...}{NULL}
+\item{...}{One or more desirability selectors to configure the optimization.}
 
 \item{prop_terms}{A numeric value specifying the proportion
 of predictors to consider.}
 }
 \value{
-Returns a tibble with \code{prop_terms}
+A tibble with \code{prop_terms}
 proportion of rows. When showing the results,
 the metrics are presented in "wide format" (one column per metric) and there
 are new columns for the corresponding desirability values (each starts with
@@ -24,7 +24,25 @@ are new columns for the corresponding desirability values (each starts with
 \description{
 Analogous to, and adapted from \code{\link[desirability2:show_best_desirability]{desirability2::show_best_desirability()}} that can
 simultaneously optimize multiple scores using desirability functions.
-See \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} scoring method.
+See \code{\link[=show_best_score_prop]{show_best_score_prop()}} for \emph{singular} filtering method.
+}
+\details{
+Desirability functions might help when selecting the best model
+based on more than one performance metric. The user creates a desirability
+function to map values of a metric to a \verb{[0, 1]} range where 1.0 is most
+desirable and zero is unacceptable. After constructing these for the metric
+of interest, the overall desirability is computed using the geometric mean
+of the individual desirabilities.
+
+The verbs that can be used in \code{...} (and their arguments) are:
+\itemize{
+\item \code{maximize()} when larger values are better, such as the area under the ROC
+score.
+\item \code{minimize()} for metrics such as RMSE or the Brier score.
+\item \code{target()} for cases when a specific value of the metric is important.
+\item \code{constrain()} is used when there is a range of values that are equally
+desirable.
+}
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}

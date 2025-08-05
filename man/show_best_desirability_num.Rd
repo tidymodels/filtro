@@ -9,13 +9,13 @@ show_best_desirability_num(x, ..., num_terms = 5)
 \arguments{
 \item{x}{A tibble or data frame returned by \code{\link[=fill_safe_values]{fill_safe_values()}}.}
 
-\item{...}{NULL}
+\item{...}{One or more desirability selectors to configure the optimization.}
 
-\item{num_terms}{A numeric value specifying the number
+\item{num_terms}{An integer value specifying the number
 of predictors to consider.}
 }
 \value{
-Returns a tibble with \code{num_terms}
+A tibble with \code{num_terms}
 number of rows. When showing the results,
 the metrics are presented in "wide format" (one column per metric) and there
 are new columns for the corresponding desirability values (each starts with

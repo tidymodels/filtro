@@ -74,6 +74,55 @@ Currently, the implemented filters include:
 
 ## A filtering example for *plural* scores
 
+```{r}
+library(filtro)
+library(desirability2)
+library(dplyr)
+ames_scores_results
+```
+
+```{r}
+scores_combined <- ames_scores_results |> dplyr::select(-outcome)
+```
+
+```{r}
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain),
+  prop_terms = 0.2
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+)
+
+show_best_desirability_prop(
+  scores_combined,
+  constrain(cor_pearson, low = 0.2, high = 1)
+)
+```
+
 ## Contributing
 
 Please note that the filtro project is released with a [Contributor Code of Conduct](https://filtro.tidymodels.org/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

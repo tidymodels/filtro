@@ -47,6 +47,7 @@ RoxygenNote: 7.3.2
 Collate: 
     'aaa.R'
     'class_score.R'
+    'data.R'
     'desirability2.R'
     'filtro-package.R'
     'import-standalone-obj-type.R'
@@ -60,3 +61,4 @@ Collate:
     'score-roc_auc.R'
     'utilities.R'
     'zzz.R'
+LazyData: true

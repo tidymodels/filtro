@@ -96,11 +96,20 @@ desirable.</p></li>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Remove outcome</span></span></span>
-<span class="r-in"><span><span class="va">scores_combined</span> <span class="op">&lt;-</span> <span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">ames_scores_results</span> <span class="op">&lt;-</span> <span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">outcome</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_scores_results</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   predictor    aov_pval cor_pearson    imp_rf infogain</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> MS_SubClass    237.         1     0.014<span style="text-decoration: underline;">8</span>     0.266  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> MS_Zoning      130.         1     0.009<span style="text-decoration: underline;">97</span>    0.113  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> Lot_Frontage   <span style="color: #BB0000;">Inf</span>          0.165 0.006<span style="text-decoration: underline;">68</span>    0.146  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> Lot_Area       <span style="color: #BB0000;">Inf</span>          0.255 0.013<span style="text-decoration: underline;">7</span>     0.140  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> Street           5.75       1     0.000<span style="text-decoration: underline;">045</span>5  0.003<span style="text-decoration: underline;">65</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
@@ -114,7 +123,7 @@ desirable.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -129,7 +138,7 @@ desirable.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span></span>
@@ -146,7 +155,7 @@ desirable.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .d_overall &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span></span>
@@ -160,7 +169,7 @@ desirable.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   .d_overall &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>
@@ -174,7 +183,7 @@ desirable.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">show_best_desirability_prop</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">scores_combined</span>,</span></span>
+<span class="r-in"><span>  <span class="va">ames_scores_results</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 7</span></span>

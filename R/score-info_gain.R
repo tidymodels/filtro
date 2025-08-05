@@ -62,7 +62,7 @@ class_score_info_gain <- S7::new_class(
 #'
 #' These data are accessed using `object@results` (see examples below).
 #'
-#' @examples rlang::is_installed("modeldata")
+#' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
 #'

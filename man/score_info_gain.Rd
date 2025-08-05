@@ -71,7 +71,7 @@ In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.
 }
 \examples{
-rlang::is_installed("modeldata")
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 library(dplyr)
 
@@ -125,5 +125,6 @@ ames_info_gain_regression_task_res <-
   regression_task |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_regression_task_res@results
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

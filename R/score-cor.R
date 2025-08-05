@@ -58,24 +58,18 @@ class_score_cor <- S7::new_class(
 #' @examplesIf rlang::is_installed("modeldata")
 #' library(dplyr)
 #'
-#' ames_subset <- modeldata::ames |>
-#'   select(
-#'     Sale_Price,
-#'     MS_SubClass,
-#'     MS_Zoning,
-#'     Lot_Frontage,
-#'     Lot_Area,
-#'     Street
-#'   )
+#' ames <- modeldata::ames
 #'
+#' # Pearson
 #' ames_cor_pearson_res <-
 #'   score_cor_pearson |>
-#'   fit(Sale_Price ~ ., data = ames_subset)
+#'   fit(Sale_Price ~ ., data = ames)
 #' ames_cor_pearson_res@results
 #'
+#' # Spearman
 #' ames_cor_spearman_res <-
 #'   score_cor_spearman |>
-#'   fit(Sale_Price ~ ., data = ames_subset)
+#'   fit(Sale_Price ~ ., data = ames)
 #' ames_cor_spearman_res@results
 #' @export
 score_cor_pearson <-

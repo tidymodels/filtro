@@ -48,11 +48,6 @@ In either case, a random forest, conditional random forest, or oblique random fo
 the proper variable roles, and the feature importance scores are computed. Larger
 values are associated with more important predictors.
 
-The function will determine which columns are predictors and outcomes in the
-random forest; no user intervention is required.
-
-Missing values are removed by case-wise deletion.
-
 When a predictor's importance score is 0, \code{\link[partykit:cforest]{partykit::cforest()}} may omit its
 name from the results. In cases like these, a score of 0 is assigned to the
 missing predictors.
@@ -70,6 +65,8 @@ these functions are:
 \item{\code{...}}{Further arguments passed to or from other methods.}
 \item{\code{case_weights}}{A quantitative vector of case weights that is the same length as the number of rows in \code{data}. The default of \code{NULL} indicates that there are no case weights.}
 }
+
+Missing values are removed by case-wise deletion.
 }
 
 In cases where the underlying computations fail, the scoring proceeds
@@ -82,8 +79,8 @@ library(dplyr)
 
 # Random forests for classification task
 
-# small example for efficiency
 cells_subset <- modeldata::cells |>
+  # small example for efficiency
   dplyr::select(
     class,
     angle_ch_1,
@@ -115,6 +112,7 @@ cells_imp_rf_oblique_res@results
 # Random forests for regression task
 
 ames_subset <- modeldata::ames |>
+  # small example for efficiency
   dplyr::select(
     Sale_Price,
     MS_SubClass,

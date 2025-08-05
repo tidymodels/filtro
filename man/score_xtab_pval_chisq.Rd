@@ -67,7 +67,7 @@ In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.
 }
 \examples{
-\dontshow{if (rlang::is_installed("titanic")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("titanic", "modeldata"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Binary factor example
 
 library(titanic)
@@ -77,14 +77,28 @@ titanic_subset <- titanic_train |>
   mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
   select(Survived, Pclass, Sex, Age, Fare, Embarked)
 
+# Chi-squared
 titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
   fit(Survived ~ ., data = titanic_subset)
 titanic_xtab_pval_chisq_res@results
 
+# Fisher's
 titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
   fit(Survived ~ ., data = titanic_subset)
 titanic_xtab_pval_fisher_res@results
-# TODO Add multiclass example
+
+# Chi-squared where `class` is the multiclass outcome/response
+
+hpc_subset <- modeldata::hpc_data |>
+  dplyr::select(
+    class,
+    protocol,
+    hour
+  )
+
+hpc_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
+    fit(class ~ ., data = hpc_subset)
+hpc_xtab_pval_chisq_res@results
 \dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

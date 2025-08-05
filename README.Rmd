@@ -60,9 +60,9 @@ Currently, the implemented filters include:
 
 2. Correlation
 
-3. Cross tabulation (chi-squared test and Fisher's exact test) p-value 
+3. Cross tabulation (Chi-squared test and Fisher's exact test) 
 
-4. Random forest feature importance score
+4. Random forest feature importance 
 
 5. Information gain
 

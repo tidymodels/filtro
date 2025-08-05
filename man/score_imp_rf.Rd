@@ -34,7 +34,7 @@ columns:
 These data are accessed using \code{object@results} (see examples below).
 }
 \description{
-Different random forest models can be used to measure importance.
+Three different random forest models can be used to measure predictor importance.
 }
 \details{
 These objects are used when either:
@@ -80,7 +80,7 @@ library(dplyr)
 # Random forests for classification task
 
 cells_subset <- modeldata::cells |>
-  # small example for efficiency
+  # Use a small example for efficiency
   dplyr::select(
     class,
     angle_ch_1,
@@ -112,7 +112,7 @@ cells_imp_rf_oblique_res@results
 # Random forests for regression task
 
 ames_subset <- modeldata::ames |>
-  # small example for efficiency
+  # Use a small example for efficiency
   dplyr::select(
     Sale_Price,
     MS_SubClass,

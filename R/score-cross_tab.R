@@ -74,17 +74,17 @@ class_score_xtab <- S7::new_class(
 #'   mutate(across(c(Survived, Pclass, Sex, Embarked), as.factor)) |>
 #'   select(Survived, Pclass, Sex, Age, Fare, Embarked)
 #'
-#' # Chi-squared
+#' # Chi-squared test
 #' titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
 #'   fit(Survived ~ ., data = titanic_subset)
 #' titanic_xtab_pval_chisq_res@results
 #'
-#' # Fisher's
+#' # Fisher's exact test
 #' titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
 #'   fit(Survived ~ ., data = titanic_subset)
 #' titanic_xtab_pval_fisher_res@results
 #'
-#' # Chi-squared where `class` is the multiclass outcome/response
+#' # Chi-squared test where `class` is the multiclass outcome/response
 #'
 #' hpc_subset <- modeldata::hpc_data |>
 #'   dplyr::select(

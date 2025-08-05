@@ -34,7 +34,7 @@ columns:
 These data are accessed using \code{object@results} (see examples below).
 }
 \description{
-Three different information theory scores can be computed.
+Three different information theory (entropy) scores can be computed.
 }
 \details{
 These objects are used when either:

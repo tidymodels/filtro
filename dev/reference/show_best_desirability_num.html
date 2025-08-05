@@ -57,17 +57,17 @@ See <code><a href="show_best_score_num.html">show_best_score_num()</a></code> fo
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>NULL</p></dd>
+<dd><p>One or more desirability selectors to configure the optimization.</p></dd>
 
 
 <dt id="arg-num-terms">num_terms<a class="anchor" aria-label="anchor" href="#arg-num-terms"></a></dt>
-<dd><p>A numeric value specifying the number
+<dd><p>An integer value specifying the number
 of predictors to consider.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Returns a tibble with <code>num_terms</code>
+    <p>A tibble with <code>num_terms</code>
 number of rows. When showing the results,
 the metrics are presented in "wide format" (one column per metric) and there
 are new columns for the corresponding desirability values (each starts with

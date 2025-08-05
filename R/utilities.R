@@ -43,7 +43,7 @@ arrange_score <- S7::new_generic(
 #'
 #' ames_aov_pval_res <-
 #'   score_aov_pval |>
-#'   fit(Sale_Price ~ ., data = ames)
+#'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
 #' # Arrange score
@@ -534,26 +534,26 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' ames_subset <- ames_subset |>
 #'   dplyr::mutate(Sale_Price = log10(Sale_Price))
 #'
-#' # anova pval
+#' # Anova pval
 #' ames_aov_pval_res <-
 #'   score_aov_pval |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
-#' # pearson cor
+#' # Pearson cor
 #' ames_cor_pearson_res <-
 #'   score_cor_pearson |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_cor_pearson_res@results
 #'
-#' # forest imp
+#' # Forest imp
 #' set.seed(42)
 #' ames_imp_rf_reg_res <-
 #'   score_imp_rf |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_imp_rf_reg_res@results
 #'
-#' # info gain
+#' # Info gain
 #' score_info_gain_reg <- score_info_gain
 #' score_info_gain_reg@mode <- "regression"
 #'

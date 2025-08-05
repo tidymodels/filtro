@@ -29,3 +29,7 @@ helper_ames_v2 <- function() {
     )
   data
 }
+
+helper_ames_full <- function() {
+  data <- modeldata::ames
+}

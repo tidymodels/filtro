@@ -37,7 +37,14 @@
       <ul class="navbar-nav me-auto">
 <li class="active nav-item"><a class="nav-link" href="../articles/filtro.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/forestimp.html">Scoring via random forests</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../articles/index.html">More articles...</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -69,7 +76,7 @@
 
 
     <blockquote>
-<p>⚠️ <strong>WIP</strong></p>
+<p>⚠️ <strong>work-in-progress</strong></p>
 </blockquote>
 <p>This document demonstrates some basic uses of filtro.</p>
 <div class="cell">
@@ -79,16 +86,10 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span></span>
-<span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="va">ames_subset</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-</div>
 <section class="level2"><h2 id="a-score-class-object">A score class object<a class="anchor" aria-label="anchor" href="#a-score-class-object"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
 <span><span class="co">#&gt; &lt;filtro::class_score_aov&gt;</span></span>
 <span><span class="co">#&gt;  @ outcome_type  : chr [1:2] "numeric" "factor"</span></span>
@@ -108,14 +109,39 @@
 <span><span class="co">#&gt;  @ results       :'data.frame':  0 obs. of  0 variables</span></span>
 <span><span class="co">#&gt;  @ neg_log10     : logi TRUE</span></span></code></pre></div>
 </div>
+<p>Currently, the available score class objects include:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
+<span><span class="va">score_aov_fstat</span></span>
+<span><span class="va">score_cor_pearson</span></span>
+<span><span class="va">score_cor_spearman</span></span>
+<span><span class="va">score_imp_rf</span></span>
+<span><span class="va">score_imp_rf_conditional</span></span>
+<span><span class="va">score_imp_rf_oblique</span></span>
+<span><span class="va">score_info_gain</span></span>
+<span><span class="va">score_gain_ratio</span></span>
+<span><span class="va">score_sym_uncert</span></span>
+<span><span class="va">score_roc_auc</span></span>
+<span><span class="va">score_xtab_pval_chisq</span></span>
+<span><span class="va">score_xtab_pval_fisher</span></span></code></pre></div>
+</div>
 </section><section class="level2"><h2 id="a-scoring-example">A scoring example<a class="anchor" aria-label="anchor" href="#a-scoring-example"></a>
 </h2>
+<p>The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable <code>Sale_Price</code> (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># ANOVA p-value</span></span>
-<span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
+<code class="sourceCode R"><span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span></span>
+<span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>First, we will create a score class object to define the scoring method, and then use the <code>fit()</code> method with the standard formula method to compute the scores.</p>
+<p>The data frame of results can be accessed via <code>object@results</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name      score outcome    predictor   </span></span>
@@ -132,35 +158,44 @@
 <span><span class="co">#&gt; 10 aov_pval  12.0  Sale_Price Lot_Config  </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
+<p>For this specific scoring method:</p>
+<ul>
+<li><p>Since the outcome is numeric, any predictor that is not a factor will result in <code>NA</code>.</p></li>
+<li><p>In case where <code>NA</code> is produced, a safe value (can be accessed via <code>object@fallback_value</code>) can be used to retain the predictor.</p></li>
+<li><p>By default, it computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors.</p></li>
+<li><p>Case weights are supported.</p></li>
+</ul></section><section class="level2"><h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show best score, based on proportion of predictors</span></span>
-<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
+<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 14 × 4</span></span>
 <span><span class="co">#&gt;    name     score outcome    predictor     </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;         </span></span>
-<span><span class="co">#&gt;  1 aov_pval  Inf  Sale_Price Neighborhood  </span></span>
-<span><span class="co">#&gt;  2 aov_pval  288. Sale_Price Garage_Finish </span></span>
-<span><span class="co">#&gt;  3 aov_pval  243. Sale_Price Garage_Type   </span></span>
-<span><span class="co">#&gt;  4 aov_pval  242. Sale_Price Foundation    </span></span>
-<span><span class="co">#&gt;  5 aov_pval  237. Sale_Price MS_SubClass   </span></span>
-<span><span class="co">#&gt;  6 aov_pval  183. Sale_Price Heating_QC    </span></span>
-<span><span class="co">#&gt;  7 aov_pval  173. Sale_Price BsmtFin_Type_1</span></span>
-<span><span class="co">#&gt;  8 aov_pval  132. Sale_Price Mas_Vnr_Type  </span></span>
-<span><span class="co">#&gt;  9 aov_pval  130. Sale_Price Overall_Cond  </span></span>
-<span><span class="co">#&gt; 10 aov_pval  130. Sale_Price MS_Zoning     </span></span>
-<span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1 aov_pval Inf   Sale_Price Neighborhood  </span></span>
+<span><span class="co">#&gt;  2 aov_pval 288.  Sale_Price Garage_Finish </span></span>
+<span><span class="co">#&gt;  3 aov_pval 243.  Sale_Price Garage_Type   </span></span>
+<span><span class="co">#&gt;  4 aov_pval 242.  Sale_Price Foundation    </span></span>
+<span><span class="co">#&gt;  5 aov_pval 237.  Sale_Price MS_SubClass   </span></span>
+<span><span class="co">#&gt;  6 aov_pval 183.  Sale_Price Heating_QC    </span></span>
+<span><span class="co">#&gt;  7 aov_pval 173.  Sale_Price BsmtFin_Type_1</span></span>
+<span><span class="co">#&gt;  8 aov_pval 132.  Sale_Price Mas_Vnr_Type  </span></span>
+<span><span class="co">#&gt;  9 aov_pval 130.  Sale_Price Overall_Cond  </span></span>
+<span><span class="co">#&gt; 10 aov_pval 130.  Sale_Price MS_Zoning     </span></span>
+<span><span class="co">#&gt; 11 aov_pval 127.  Sale_Price Exterior_1st  </span></span>
+<span><span class="co">#&gt; 12 aov_pval 116.  Sale_Price Exterior_2nd  </span></span>
+<span><span class="co">#&gt; 13 aov_pval 116.  Sale_Price Bsmt_Exposure </span></span>
+<span><span class="co">#&gt; 14 aov_pval 100.0 Sale_Price Garage_Cond</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="a-filtering-example-for-plural-scores">A filtering example for <em>plural</em> scores<a class="anchor" aria-label="anchor" href="#a-filtering-example-for-plural-scores"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Pearson correlation</span></span>
 <span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_cor_pearson_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name         score outcome    predictor   </span></span>
@@ -178,12 +213,12 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Forest importance</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name           score outcome    predictor   </span></span>
@@ -201,14 +236,14 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Information gain</span></span>
 <span><span class="va">score_info_gain_reg</span> <span class="op">&lt;-</span> <span class="va">score_info_gain</span></span>
 <span><span class="va">score_info_gain_reg</span><span class="op">@</span><span class="va">mode</span> <span class="op">&lt;-</span> <span class="st">"regression"</span></span>
 <span></span>
 <span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_info_gain_reg</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_info_gain_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name       score outcome    predictor   </span></span>
@@ -226,7 +261,7 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a list</span></span>
 <span><span class="va">class_score_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="va">ames_cor_pearson_res</span>,</span>
@@ -235,7 +270,7 @@
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fill safe values</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">&lt;-</span> <span class="va">class_score_list</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fill_safe_values.html">fill_safe_values</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -258,7 +293,7 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
 <span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>  <span class="va">ames_scores_results</span>,</span>
@@ -327,22 +362,25 @@
 <span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span>
-<span>  prop_terms <span class="op">=</span> <span class="fl">0.8</span></span>
+<span>  prop_terms <span class="op">=</span> <span class="fl">0.2</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 58 × 8</span></span>
+<span><span class="co">#&gt; # A tibble: 14 × 8</span></span>
 <span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Gr_Liv_Area          0.696 0.00443     0.384              0.696         1    </span></span>
-<span><span class="co">#&gt;  2 Year_Built           0.615 0.00356     0.327              0.615         0.805</span></span>
-<span><span class="co">#&gt;  3 Total_Bsmt_SF        0.626 0.00248     0.288              0.626         0.562</span></span>
-<span><span class="co">#&gt;  4 Garage_Cars          0.675 0.00187     0.327              0.675         0.424</span></span>
-<span><span class="co">#&gt;  5 Garage_Area          0.651 0.00180     0.316              0.651         0.408</span></span>
-<span><span class="co">#&gt;  6 First_Flr_SF         0.603 0.00219     0.254              0.603         0.497</span></span>
-<span><span class="co">#&gt;  7 Garage_Type          1     0.00146     0.209              1             0.330</span></span>
-<span><span class="co">#&gt;  8 Year_Remod_Add       0.586 0.00195     0.237              0.586         0.442</span></span>
-<span><span class="co">#&gt;  9 Neighborhood         1     0.000443    0.462              1             0.102</span></span>
-<span><span class="co">#&gt; 10 Full_Bath            0.577 0.00123     0.243              0.577         0.278</span></span>
-<span><span class="co">#&gt; # ℹ 48 more rows</span></span>
+<span><span class="co">#&gt;  1 Gr_Liv_Area          0.696 0.00443     0.384              0.696        1     </span></span>
+<span><span class="co">#&gt;  2 Year_Built           0.615 0.00356     0.327              0.615        0.805 </span></span>
+<span><span class="co">#&gt;  3 Total_Bsmt_SF        0.626 0.00248     0.288              0.626        0.562 </span></span>
+<span><span class="co">#&gt;  4 Garage_Cars          0.675 0.00187     0.327              0.675        0.424 </span></span>
+<span><span class="co">#&gt;  5 Garage_Area          0.651 0.00180     0.316              0.651        0.408 </span></span>
+<span><span class="co">#&gt;  6 First_Flr_SF         0.603 0.00219     0.254              0.603        0.497 </span></span>
+<span><span class="co">#&gt;  7 Garage_Type          1     0.00146     0.209              1            0.330 </span></span>
+<span><span class="co">#&gt;  8 Year_Remod_Add       0.586 0.00195     0.237              0.586        0.442 </span></span>
+<span><span class="co">#&gt;  9 Neighborhood         1     0.000443    0.462              1            0.102 </span></span>
+<span><span class="co">#&gt; 10 Full_Bath            0.577 0.00123     0.243              0.577        0.278 </span></span>
+<span><span class="co">#&gt; 11 Foundation           1     0.000758    0.210              1            0.173 </span></span>
+<span><span class="co">#&gt; 12 MS_SubClass          1     0.000471    0.266              1            0.108 </span></span>
+<span><span class="co">#&gt; 13 Garage_Finish        1     0.000349    0.231              1            0.0805</span></span>
+<span><span class="co">#&gt; 14 Fireplaces           0.489 0.000925    0.153              0.489        0.210 </span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>

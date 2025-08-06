@@ -37,7 +37,14 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="articles/filtro.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="articles/index.html">Articles</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/forestimp.html">Scoring via random forests</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="articles/index.html">More articles...</a></li>
+  </ul>
+</li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -63,7 +70,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><code>filtro</code> is tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, importance scores, and more.</p>
+<p><code>filtro</code> is tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, feature importance, information gain, and more.</p>
 <p>The package provides functions to rank and select a top proportion or number of features using built-in methods and the <a href="https://desirability2.tidymodels.org" class="external-link">desirability2</a> package, and supports streamlined preprocessing, either standalone or within tidymodels workflows such as the <a href="https://recipes.tidymodels.org" class="external-link">recipes</a> package.</p>
 </div>
 <div class="section level2">
@@ -84,10 +91,10 @@
 <ol style="list-style-type: decimal">
 <li><p>ANOVA F-test</p></li>
 <li><p>Correlation</p></li>
-<li><p>Cross tabulation (Chi-squared test and Fisher’s exact test)</p></li>
 <li><p>Random forest feature importance</p></li>
 <li><p>Information gain</p></li>
 <li><p>Area under the ROC curve</p></li>
+<li><p>Cross tabulation (Chi-squared test and Fisher’s exact test)</p></li>
 </ol>
 </div>
 <div class="section level2">
@@ -261,7 +268,8 @@
 <span><span class="co">#&gt; 4 Lot_Area       Inf          0.255 0.0137     0.140  </span></span>
 <span><span class="co">#&gt; 5 Street           5.75       1     0.0000455  0.00365</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
+<span><span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>  <span class="va">ames_scores_results</span>,</span>
 <span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>

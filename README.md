@@ -20,7 +20,8 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 `filtro` is tidy tools to apply filter-based supervised feature
 selection methods. These methods score and rank feature relevance using
-metrics such as p-values, correlation, importance scores, and more.
+metrics such as p-values, correlation, feature importance, information
+gain, and more.
 
 The package provides functions to rank and select a top proportion or
 number of features using built-in methods and the
@@ -53,13 +54,13 @@ Currently, the implemented filters include:
 
 2.  Correlation
 
-3.  Cross tabulation (Chi-squared test and Fisher’s exact test)
+3.  Random forest feature importance
 
-4.  Random forest feature importance
+4.  Information gain
 
-5.  Information gain
+5.  Area under the ROC curve
 
-6.  Area under the ROC curve
+6.  Cross tabulation (Chi-squared test and Fisher’s exact test)
 
 ## A scoring example
 
@@ -253,6 +254,7 @@ ames_scores_results
 ```
 
 ``` r
+# Single and multi-parameter optimization using desirability functions
 show_best_desirability_prop(
   ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1)

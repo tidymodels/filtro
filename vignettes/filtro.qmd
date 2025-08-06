@@ -29,28 +29,67 @@ library(dplyr)
 library(modeldata)
 ```
 
-```{r}
-ames_subset <- modeldata::ames
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-```
-
-
 ## A score class object
 
 ```{r}
 score_aov_pval
 ```
 
+Currently, the available score class objects include:
+
+```{r eval = FALSE}
+score_aov_pval
+score_aov_fstat
+score_cor_pearson
+score_cor_spearman
+score_imp_rf
+score_imp_rf_conditional
+score_imp_rf_oblique
+score_info_gain
+score_gain_ratio
+score_sym_uncert
+score_roc_auc
+score_xtab_pval_chisq
+score_xtab_pval_fisher
+```
+
 ## A scoring example
 
+The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable `Sale_Price` (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation. 
+
 ```{r}
-# ANOVA p-value
+ames_subset <- modeldata::ames
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+```
+
+First, we will create a score class object to define the scoring method, and then use the `fit()` method with the standard formula method to compute the scores:
+
+```{r eval = FALSE}
+score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+```
+
+The data frame of results can be accessed via `@results`. 
+
+```{r}
 ames_aov_pval_res <-
   score_aov_pval |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
 ```
+
+For general scoring method: 
+
+- `NA`
+
+- In case of `NA`, a safe value (via `@fallback_value`) can be filled in later stage. 
+
+For this specific scoring method: 
+
+- By default, it turns `-log10(p_value)`, so that larger values are associated with more important predictors.
+
+- case weights
 
 ## A filtering exmple for *singular* score
 

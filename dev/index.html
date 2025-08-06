@@ -100,6 +100,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span> <span class="op">|&gt;</span></span>
+<span>  <span class="co"># Use a subset of data</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
 <span>    <span class="va">Sale_Price</span>,</span>
 <span>    <span class="va">MS_SubClass</span>,</span>
@@ -185,26 +186,31 @@
 <span><span class="co">#&gt; 4 aov_pval  NA    Sale_Price Lot_Area    </span></span>
 <span><span class="co">#&gt; 5 aov_pval   5.75 Sale_Price Street</span></span></code></pre></div>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Show best score, based on proportion of predictors</span></span>
+<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
 <span><span class="co">#&gt;   name     score outcome    predictor  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      </span></span>
 <span><span class="co">#&gt; 1 aov_pval  237. Sale_Price MS_SubClass</span></span></code></pre></div>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_num.html">show_best_score_num</a></span><span class="op">(</span>num_terms <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Show best score, based on number of predictors</span></span>
+<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_num.html">show_best_score_num</a></span><span class="op">(</span>num_terms <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   name     score outcome    predictor  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      </span></span>
 <span><span class="co">#&gt; 1 aov_pval  237. Sale_Price MS_SubClass</span></span>
 <span><span class="co">#&gt; 2 aov_pval  130. Sale_Price MS_Zoning</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_cutoff.html">show_best_score_cutoff</a></span><span class="op">(</span>cutoff <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Show best score, based on based on cutoff value</span></span>
+<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_cutoff.html">show_best_score_cutoff</a></span><span class="op">(</span>cutoff <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
 <span><span class="co">#&gt;   name     score outcome    predictor  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      </span></span>
 <span><span class="co">#&gt; 1 aov_pval  237. Sale_Price MS_SubClass</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_dual.html">show_best_score_dual</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Show best score, based on number or proportion of predictors with</span></span>
+<span><span class="co"># optional cutoff value </span></span>
+<span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="reference/show_best_score_dual.html">show_best_score_dual</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 4</span></span>
 <span><span class="co">#&gt;   name     score outcome    predictor  </span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      </span></span>
@@ -240,8 +246,8 @@
 <span>  <span class="va">ames_info_gain_reg_res</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ames_scores_results</span> <span class="op">&lt;-</span> <span class="va">class_score_list</span> <span class="op">|&gt;</span></span>
-<span>  <span class="co"># Fill safe values</span></span>
+<code class="sourceCode R"><span><span class="co"># Fill safe values</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">&lt;-</span> <span class="va">class_score_list</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/fill_safe_values.html">fill_safe_values</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Remove outcome</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">outcome</span><span class="op">)</span></span>

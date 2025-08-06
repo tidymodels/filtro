@@ -133,14 +133,25 @@ silently, and a missing value is given for the score.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 46 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ANOVA raw p-value</span></span></span>
-<span class="r-in"><span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu">dont_log_pvalues</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in dont_log_pvalues(score_aov_pval):</span> could not find function "dont_log_pvalues"</span>
+<span class="r-in"><span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu"><a href="dont_log_pvalues.html">dont_log_pvalues</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cell_pval_natrual_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">natrual_units</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'natrual_units' not found</span>
 <span class="r-in"><span><span class="va">cell_pval_natrual_res</span><span class="op">@</span><span class="va">results</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'cell_pval_natrual_res' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 56 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    name        score outcome predictor                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> aov_pval 8.76<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span> class   angle_ch_1                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> aov_pval 9.05<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span> class   area_ch_1                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> aov_pval 6.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-74</span> class   avg_inten_ch_1              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> aov_pval 3.02<span style="color: #949494;">e</span><span style="color: #BB0000;">-89</span> class   avg_inten_ch_2              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> aov_pval 9.45<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span> class   avg_inten_ch_3              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> aov_pval 1.47<span style="color: #949494;">e</span><span style="color: #BB0000;">-28</span> class   avg_inten_ch_4              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> aov_pval 2.63<span style="color: #949494;">e</span><span style="color: #BB0000;">-53</span> class   convex_hull_area_ratio_ch_1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> aov_pval 1.08<span style="color: #949494;">e</span><span style="color: #BB0000;">-60</span> class   convex_hull_perim_ratio_ch_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> aov_pval 1.90<span style="color: #949494;">e</span><span style="color: #BB0000;">-51</span> class   diff_inten_density_ch_1     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> aov_pval 3.07<span style="color: #949494;">e</span><span style="color: #BB0000;">- 2</span> class   diff_inten_density_ch_3     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 46 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ANOVA t/F-statistic</span></span></span>
 <span class="r-in"><span><span class="va">cell_t_stat_res</span> <span class="op">&lt;-</span></span></span>

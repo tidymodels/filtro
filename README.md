@@ -255,10 +255,10 @@ ames_scores_results
 
 ``` r
 # Single and multi-parameter optimization using desirability functions
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1)
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1)
+  )
 #> # A tibble: 5 × 7
 #>   predictor  aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson .d_overall
 #>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>
@@ -268,11 +268,11 @@ show_best_desirability_prop(
 #> 4 Lot_Area     Inf          0.255 1.37e-2  0.140                0.255      0.255
 #> 5 Lot_Front…   Inf          0.165 6.68e-3  0.146                0.165      0.165
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf)
+  )
 #> # A tibble: 5 × 8
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
@@ -283,12 +283,12 @@ show_best_desirability_prop(
 #> 5 Street           5.75       1     0.0000455  0.00365              1    
 #> # ℹ 2 more variables: .d_max_imp_rf <dbl>, .d_overall <dbl>
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain)
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf),
+    maximize(infogain)
+  )
 #> # A tibble: 5 × 9
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
@@ -300,13 +300,13 @@ show_best_desirability_prop(
 #> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
 #> #   .d_overall <dbl>
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain),
-  prop_terms = 0.2
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf),
+    maximize(infogain),
+    prop_terms = 0.2
+  )
 #> # A tibble: 1 × 9
 #>   predictor   aov_pval cor_pearson imp_rf infogain .d_max_cor_pearson
 #>   <chr>          <dbl>       <dbl>  <dbl>    <dbl>              <dbl>
@@ -314,10 +314,10 @@ show_best_desirability_prop(
 #> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
 #> #   .d_overall <dbl>
 
-show_best_desirability_prop(
-  ames_scores_results,
-  target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+  )
 #> # A tibble: 5 × 7
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_target_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>                 <dbl>
@@ -328,10 +328,10 @@ show_best_desirability_prop(
 #> 5 Street           5.75       1     0.0000455  0.00365                  0   
 #> # ℹ 1 more variable: .d_overall <dbl>
 
-show_best_desirability_prop(
-  ames_scores_results,
-  constrain(cor_pearson, low = 0.2, high = 1)
-)
+ames_scores_results |>
+  show_best_desirability_prop(
+    constrain(cor_pearson, low = 0.2, high = 1)
+  )
 #> # A tibble: 5 × 7
 #>   predictor  aov_pval cor_pearson  imp_rf infogain .d_box_cor_pearson .d_overall
 #>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>

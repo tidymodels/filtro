@@ -18,6 +18,12 @@ figures:
   fig.width: 8
   fig.height: 5.75
 
+reference:
+  - title: Score class
+    contents:
+    - score_aov_pval
+    - score_aov_fstat
+
 articles:
   - title: Get started
     contents:

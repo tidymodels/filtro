@@ -1,0 +1,16 @@
+---
+title: "filtro"
+vignette: >
+  %\VignetteIndexEntry{filtro}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
+---
+
+```{r}
+#| label: setup
+library(filtro)
+```

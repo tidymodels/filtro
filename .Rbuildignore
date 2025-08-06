@@ -11,3 +11,5 @@
 ^docs$
 ^pkgdown$
 ^CRAN-SUBMISSION$
+^vignettes/\.quarto$
+^vignettes/*_files$

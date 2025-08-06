@@ -15,7 +15,7 @@ class_score_imp_rf <- S7::new_class(
 #'
 #' @description
 #'
-#' Different random forest models can be used to measure importance.
+#' Three different random forest models can be used to measure predictor importance.
 #'
 #' @name score_imp_rf
 #'
@@ -72,7 +72,7 @@ class_score_imp_rf <- S7::new_class(
 #' # Random forests for classification task
 #'
 #' cells_subset <- modeldata::cells |>
-#'   # small example for efficiency
+#'   # Use a small example for efficiency
 #'   dplyr::select(
 #'     class,
 #'     angle_ch_1,
@@ -104,7 +104,7 @@ class_score_imp_rf <- S7::new_class(
 #' # Random forests for regression task
 #'
 #' ames_subset <- modeldata::ames |>
-#'   # small example for efficiency
+#'   # Use a small example for efficiency
 #'   dplyr::select(
 #'     Sale_Price,
 #'     MS_SubClass,

@@ -15,7 +15,7 @@ class_score_info_gain <- S7::new_class(
 #'
 #' @description
 #'
-#' Three different information theory scores can be computed.
+#' Three different information theory (entropy) scores can be computed.
 #'
 #' @name score_info_gain
 #'

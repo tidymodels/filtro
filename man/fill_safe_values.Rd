@@ -29,26 +29,26 @@ ames_subset <- modeldata::ames |>
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-# anova pval
+# ANOVA p-value
 ames_aov_pval_res <-
   score_aov_pval |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
 
-# pearson cor
+# Pearson correlation
 ames_cor_pearson_res <-
   score_cor_pearson |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_cor_pearson_res@results
 
-# forest imp
+# Forest importance
 set.seed(42)
 ames_imp_rf_reg_res <-
   score_imp_rf |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_imp_rf_reg_res@results
 
-# info gain
+# Information gain
 score_info_gain_reg <- score_info_gain
 score_info_gain_reg@mode <- "regression"
 

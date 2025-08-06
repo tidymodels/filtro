@@ -69,13 +69,13 @@ library(dplyr)
 
 ames <- modeldata::ames
 
-# Pearson
+# Pearson correlation
 ames_cor_pearson_res <-
   score_cor_pearson |>
   fit(Sale_Price ~ ., data = ames)
 ames_cor_pearson_res@results
 
-# Spearman
+# Spearman correlation
 ames_cor_spearman_res <-
   score_cor_spearman |>
   fit(Sale_Price ~ ., data = ames)

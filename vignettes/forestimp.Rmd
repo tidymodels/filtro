@@ -1,0 +1,25 @@
+---
+title: "forestimp"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{forestimp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> ⚠️ **work-in-progress**
+
+```{r}
+#| label: setup
+library(filtro)
+library(dplyr)
+library(modeldata)
+```
+

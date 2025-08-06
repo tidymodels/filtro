@@ -22,4 +22,7 @@ articles:
   - title: Get started
     contents:
       - filtro
-
+  - title: Learn more
+    navbar: ~
+    contents:
+      - forestimp

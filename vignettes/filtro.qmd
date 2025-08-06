@@ -10,6 +10,13 @@ knitr:
     comment: '#>'
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
 > ⚠️ **work-in-progress**
 
 This document demonstrates some basic uses of filtro. 

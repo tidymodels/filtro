@@ -65,8 +65,8 @@ score_xtab_pval_fisher
 The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable `Sale_Price` (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation. 
 
 ```{r}
-ames_subset <- modeldata::ames
-ames_subset <- ames_subset |>
+ames <- modeldata::ames
+ames <- ames |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 ```
 
@@ -77,7 +77,7 @@ The data frame of results can be accessed via `object@results`.
 ```{r}
 ames_aov_pval_res <-
   score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_aov_pval_res@results
 ```
 
@@ -104,7 +104,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 # Pearson correlation
 ames_cor_pearson_res <-
   score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_cor_pearson_res@results
 ```
 
@@ -113,7 +113,7 @@ ames_cor_pearson_res@results
 set.seed(42)
 ames_imp_rf_reg_res <-
   score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_imp_rf_reg_res@results
 ```
 
@@ -124,7 +124,7 @@ score_info_gain_reg@mode <- "regression"
 
 ames_info_gain_reg_res <-
   score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_info_gain_reg_res@results
 ```
 

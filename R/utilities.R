@@ -696,7 +696,15 @@ flip_if_needed_aov <- function(predictor, outcome) {
   }
 }
 
-# Need to export this
+#' Disable -log10 Transformation of P-values
+#'
+#' @name dont_log_pvalues
+#'
+#' @param x A score class object.
+#'
+#' @return The modified score class object with `neg_log10` set to `FALSE`.
+#'
+#' @export
 dont_log_pvalues <- function(x) {
   x@neg_log10 <- FALSE
   x

@@ -72,6 +72,7 @@ library(modeldata)
 
 ``` r
 ames_subset <- modeldata::ames |>
+  # Use a subset of data
   dplyr::select(
     Sale_Price,
     MS_SubClass,
@@ -167,6 +168,7 @@ ames_aov_pval_res@results
 ```
 
 ``` r
+# Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> # A tibble: 1 × 4
 #>   name     score outcome    predictor  
@@ -175,6 +177,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
 ``` r
+# Show best score, based on number of predictors
 ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 #> # A tibble: 2 × 4
 #>   name     score outcome    predictor  
@@ -184,6 +187,7 @@ ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 ```
 
 ``` r
+# Show best score, based on based on cutoff value
 ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 #> # A tibble: 1 × 4
 #>   name     score outcome    predictor  
@@ -192,6 +196,8 @@ ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 ```
 
 ``` r
+# Show best score, based on number or proportion of predictors with
+# optional cutoff value 
 ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
 #> # A tibble: 2 × 4
 #>   name     score outcome    predictor  
@@ -230,8 +236,8 @@ class_score_list <- list(
 ```
 
 ``` r
+# Fill safe values
 ames_scores_results <- class_score_list |>
-  # Fill safe values
   fill_safe_values() |>
   # Remove outcome
   dplyr::select(-outcome)

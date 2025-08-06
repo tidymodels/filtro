@@ -1,7 +1,7 @@
 ---
-title: "filtro"
+title: "Introduction to filtro"
 vignette: >
-  %\VignetteIndexEntry{filtro}
+  %\VignetteIndexEntry{Introduction to filtro}
   %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
 knitr:
@@ -10,7 +10,138 @@ knitr:
     comment: '#>'
 ---
 
+> ⚠️ **WIP**
+
+This document demonstrates some basic uses of filtro. 
+
+```{r, start, include = FALSE}
+library(filtro)
+library(desirability2)
+library(dplyr)
+library(modeldata)
+```
+
 ```{r}
 #| label: setup
 library(filtro)
+library(desirability2)
+library(dplyr)
+library(modeldata)
+```
+
+```{r}
+ames_subset <- modeldata::ames
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+```
+
+
+## A score class object
+
+```{r}
+score_aov_pval
+```
+
+## A scoring example
+
+```{r}
+# ANOVA p-value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+```
+
+## A filtering exmple for *singular* score
+
+```{r}
+# Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.8)
+```
+
+## A filtering example for *plural* scores
+
+```{r}
+# Pearson correlation
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+```
+
+```{r}
+# Forest importance
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+```
+
+```{r}
+# Information gain
+score_info_gain_reg <- score_info_gain
+score_info_gain_reg@mode <- "regression"
+
+ames_info_gain_reg_res <-
+  score_info_gain_reg |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+```
+
+```{r}
+# Create a list
+class_score_list <- list(
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+```
+
+```{r}
+# Fill safe values
+ames_scores_results <- class_score_list |>
+  fill_safe_values() |>
+  # Remove outcome
+  dplyr::select(-outcome)
+ames_scores_results
+```
+
+```{r}
+# Single and multi-parameter optimization using desirability functions
+show_best_desirability_prop(
+  ames_scores_results,
+  maximize(cor_pearson, low = 0, high = 1)
+)
+
+show_best_desirability_prop(
+  ames_scores_results,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf)
+)
+
+show_best_desirability_prop(
+  ames_scores_results,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain)
+)
+
+show_best_desirability_prop(
+  ames_scores_results,
+  maximize(cor_pearson, low = 0, high = 1),
+  maximize(imp_rf),
+  maximize(infogain),
+  prop_terms = 0.8
+)
+
+show_best_desirability_prop(
+  ames_scores_results,
+  target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+)
+
+show_best_desirability_prop(
+  ames_scores_results,
+  constrain(cor_pearson, low = 0.2, high = 1)
+)
 ```

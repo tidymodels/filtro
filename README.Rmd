@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 
 `filtro` is tidy tools to apply filter-based supervised feature
 selection methods. These methods score and rank feature relevance
-using metrics such as p-values, correlation, importance scores,
+using metrics such as p-values, correlation, feature importance, information gain, 
 and more.
 
 The package provides functions to rank and select a top proportion or number 
@@ -188,6 +188,7 @@ ames_scores_results
 ```
 
 ```{r}
+# Single and multi-parameter optimization using desirability functions
 show_best_desirability_prop(
   ames_scores_results,
   maximize(cor_pearson, low = 0, high = 1)

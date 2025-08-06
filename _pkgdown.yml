@@ -17,3 +17,8 @@ template:
 figures:
   fig.width: 8
   fig.height: 5.75
+
+articles:
+  - title: Get started
+    contents:
+      - filtro

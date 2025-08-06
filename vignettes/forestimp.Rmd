@@ -1,0 +1,104 @@
+---
+title: "Scoring via random forests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Scoring via random forests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> ⚠️ **work-in-progress**
+
+```{r, start, include = FALSE}
+library(filtro)
+library(dplyr)
+library(modeldata)
+```
+
+```{r}
+#| label: setup
+library(filtro)
+library(dplyr)
+library(modeldata)
+```
+
+## A score class object
+
+Three different random forest models can be used to assess predictor importance:
+
+```{r eval = FALSE}
+score_imp_rf
+score_imp_rf_conditional
+score_imp_rf_oblique
+```
+
+These models are provided by the following packages:
+
+```{r}
+score_imp_rf@engine
+score_imp_rf_conditional@engine
+score_imp_rf_oblique@engine
+```
+
+## A random forest scoring example
+
+The package contains a data set used to predict which cells in a high content screen were well segmented. It has 57 predictor columns and a factor variable `class` (the outcome). 
+
+Since `case` is only used to indicate Train/Test, not for data analysis, it will be set to `NULL`. Furthermore, for efficiency, we will use a small sample of 50 from the original 2019 observations.
+
+```{r}
+cells_subset <- modeldata::cells |> 
+  # Use a small example for efficiency
+  dplyr::slice(1:50)
+cells_subset$case <- NULL
+```
+
+First, we will create a score class object to define the scoring method, and then use the `fit()` method with the standard formula method to compute the scores.
+
+The data frame of results can be accessed via `object@results`. 
+
+```{r}
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset,
+    trees = 100,
+    mtry = 2,
+    min_n = 1, 
+    seed = 42
+  )
+cells_imp_rf_res@results
+```
+
+For general scoring method via random forests: 
+
+For the scoring method specific to `ranger`: 
+
+## A conditional random forest scoring example
+
+```{r}
+set.seed(42)
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset, trees = 3)
+cells_imp_rf_conditional_res@results
+```
+
+For the scoring method specific to `partykit`: 
+
+## An oblique random forest scoring example
+
+```{r}
+set.seed(42)
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
+cells_imp_rf_oblique_res@results
+```
+
+For the scoring method specific to `aorsf`: 

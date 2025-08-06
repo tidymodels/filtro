@@ -10,7 +10,14 @@ knitr:
     comment: '#>'
 ---
 
-> ⚠️ **WIP**
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+> ⚠️ **work-in-progress**
 
 This document demonstrates some basic uses of filtro. 
 
@@ -29,34 +36,66 @@ library(dplyr)
 library(modeldata)
 ```
 
-```{r}
-ames_subset <- modeldata::ames
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-```
-
-
 ## A score class object
 
 ```{r}
 score_aov_pval
 ```
 
+Currently, the available score class objects include:
+
+```{r eval = FALSE}
+score_aov_pval
+score_aov_fstat
+score_cor_pearson
+score_cor_spearman
+score_imp_rf
+score_imp_rf_conditional
+score_imp_rf_oblique
+score_info_gain
+score_gain_ratio
+score_sym_uncert
+score_roc_auc
+score_xtab_pval_chisq
+score_xtab_pval_fisher
+```
+
 ## A scoring example
 
+The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable `Sale_Price` (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation. 
+
 ```{r}
-# ANOVA p-value
+ames <- modeldata::ames
+ames <- ames |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+```
+
+First, we will create a score class object to define the scoring method, and then use the `fit()` method with the standard formula method to compute the scores.
+
+The data frame of results can be accessed via `object@results`. 
+
+```{r}
 ames_aov_pval_res <-
   score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_aov_pval_res@results
 ```
+
+For this specific scoring method: 
+
+- Since the outcome is numeric, any predictor that is not a factor will result in `NA`. 
+
+- In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
+
+- By default, it computes `-log10(p_value)`, so that larger values indicate more important predictors.
+
+- Case weights are supported.
 
 ## A filtering exmple for *singular* score
 
 ```{r}
 # Show best score, based on proportion of predictors
-ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.8)
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
 ## A filtering example for *plural* scores
@@ -65,7 +104,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.8)
 # Pearson correlation
 ames_cor_pearson_res <-
   score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_cor_pearson_res@results
 ```
 
@@ -74,7 +113,7 @@ ames_cor_pearson_res@results
 set.seed(42)
 ames_imp_rf_reg_res <-
   score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_imp_rf_reg_res@results
 ```
 
@@ -85,7 +124,7 @@ score_info_gain_reg@mode <- "regression"
 
 ames_info_gain_reg_res <-
   score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames)
 ames_info_gain_reg_res@results
 ```
 
@@ -132,7 +171,7 @@ show_best_desirability_prop(
   maximize(cor_pearson, low = 0, high = 1),
   maximize(imp_rf),
   maximize(infogain),
-  prop_terms = 0.8
+  prop_terms = 0.2
 )
 
 show_best_desirability_prop(

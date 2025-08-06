@@ -60,13 +60,13 @@ Currently, the implemented filters include:
 
 2. Correlation
 
-3. Cross tabulation (Chi-squared test and Fisher's exact test) 
+3. Random forest feature importance 
 
-4. Random forest feature importance 
+4. Information gain
 
-5. Information gain
+5. Area under the ROC curve 
 
-6. Area under the ROC curve 
+6. Cross tabulation (Chi-squared test and Fisher's exact test) 
 
 ## A scoring example
 

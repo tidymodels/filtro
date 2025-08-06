@@ -1,8 +1,8 @@
 ---
-title: "forestimp"
+title: "Scoring via random forests"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{forestimp}
+  %\VignetteIndexEntry{Scoring via random forests}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,6 +16,12 @@ knitr::opts_chunk$set(
 
 > ⚠️ **work-in-progress**
 
+```{r, start, include = FALSE}
+library(filtro)
+library(dplyr)
+library(modeldata)
+```
+
 ```{r}
 #| label: setup
 library(filtro)
@@ -23,3 +29,58 @@ library(dplyr)
 library(modeldata)
 ```
 
+## A score class object
+
+Three random forest models can be used to measure predictor importance:
+
+```{r eval = FALSE}
+score_imp_rf
+score_imp_rf_conditional
+score_imp_rf_oblique
+```
+
+```{r}
+score_imp_rf@engine
+score_imp_rf_conditional@engine
+score_imp_rf_oblique@engine
+```
+
+## A random forest scoring example
+
+```{r}
+cells_subset <- modeldata::cells |> 
+  # Use a small example for efficiency
+  dplyr::slice(1:50)
+cells_subset$case <- NULL
+```
+
+```{r}
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset,
+    trees = 100,
+    mtry = 2,
+    min_n = 1, 
+    seed = 42
+  )
+cells_imp_rf_res@results
+```
+
+## A conditional random forest scoring example
+
+```{r}
+set.seed(42)
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset, trees = 3)
+cells_imp_rf_conditional_res@results
+```
+
+## An oblique random forest scoring example
+
+```{r}
+set.seed(42)
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
+cells_imp_rf_oblique_res@results
+```

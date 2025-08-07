@@ -23,8 +23,6 @@ test_that("computations chisq test - adding adjusted p-values", {
     natrual_units |>
     fit(Survived ~ ., data = titanic_subset)
 
-  natrual_units <- score_xtab_pval_chisq |> dont_log_pvalues()
-
   # ----------------------------------------------------------------------------
 
   predictors <- titanic_xtab_pval_chisq_res@results$predictor

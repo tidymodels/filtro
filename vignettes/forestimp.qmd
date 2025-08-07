@@ -20,11 +20,8 @@ knitr::opts_chunk$set(
 > ⚠️ **work-in-progress**
 
 ```{r, start, include = FALSE}
-if (requireNamespace("filtro", quietly = TRUE)) {
-  library(filtro)
-} else if (requireNamespace("devtools", quietly = TRUE)) {
-  devtools::load_all(".")
-}
+pak::pak("tidymodels/filtro")
+library(filtro)
 library(dplyr)
 library(modeldata)
 ```

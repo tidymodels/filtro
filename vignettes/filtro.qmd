@@ -22,11 +22,8 @@ knitr::opts_chunk$set(
 This document demonstrates some basic uses of filtro. 
 
 ```{r, start, include = FALSE}
-if (requireNamespace("filtro", quietly = TRUE)) {
-  library(filtro)
-} else if (requireNamespace("devtools", quietly = TRUE)) {
-  devtools::load_all(".")
-}
+pak::pak("tidymodels/filtro")
+library(filtro)
 library(desirability2)
 library(dplyr)
 library(modeldata)

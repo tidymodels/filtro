@@ -696,7 +696,7 @@ flip_if_needed_aov <- function(predictor, outcome) {
   }
 }
 
-#' Disable -log10 Transformation of P-values
+#' Disable -log10 transformation of p-values
 #'
 #' @name dont_log_pvalues
 #'
@@ -707,6 +707,23 @@ flip_if_needed_aov <- function(predictor, outcome) {
 #' @export
 dont_log_pvalues <- function(x) {
   x@neg_log10 <- FALSE
+  x
+}
+
+# ------------------------------------------------------------------------------
+# Used with cross tab methods
+
+#' Enable the fdr (false discovery rate) adjusted p-values, using the Benjamini-Hochberg (BH) procedure
+#'
+#' @name enable_fdr()
+#'
+#' @param x A score class object.
+#'
+#' @return The modified score class object with `neg_log10` set to `FALSE`.
+#'
+#' @export
+enable_fdr <- function(x) {
+  x@fdr <- TRUE
   x
 }
 

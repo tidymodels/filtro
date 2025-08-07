@@ -18,6 +18,7 @@ class_score_info_gain <- S7::new_class(
 #' Three different information theory (entropy) scores can be computed.
 #'
 #' @name score_info_gain
+#' @family class score metrics
 #'
 #' @details
 #'
@@ -40,7 +41,7 @@ class_score_info_gain <- S7::new_class(
 #' these functions are:
 #'
 #'   \describe{
-#'     \item{`object`}{A score class object based (e.g., `score_info_gain`).}
+#'     \item{`object`}{A score class object (e.g., `score_info_gain`).}
 #'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
 #'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
 #'     \item{`...`}{Further arguments passed to or from other methods.}

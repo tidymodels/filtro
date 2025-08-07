@@ -14,7 +14,7 @@ class_score_roc_auc <- S7::new_class(
 #' The area under the ROC curves can be used to measure predictor importance.
 #'
 #' @name score_roc_auc
-#'
+#' @family class score metrics
 #' @details
 #' This objects are used when either:
 #'
@@ -34,7 +34,7 @@ class_score_roc_auc <- S7::new_class(
 #' these functions are:
 #'
 #'   \describe{
-#'     \item{`object`}{A score class object based (e.g., `score_cor_pearson`).}
+#'     \item{`object`}{A score class object (e.g., `score_cor_pearson`).}
 #'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
 #'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
 #'     \item{`...`}{Further arguments passed to or from other methods.}

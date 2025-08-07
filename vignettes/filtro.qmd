@@ -22,7 +22,11 @@ knitr::opts_chunk$set(
 This document demonstrates some basic uses of filtro. 
 
 ```{r, start, include = FALSE}
-library(filtro)
+if (requireNamespace("filtro", quietly = TRUE)) {
+  library(filtro)
+} else if (requireNamespace("devtools", quietly = TRUE)) {
+  devtools::load_all(".")
+}
 library(desirability2)
 library(dplyr)
 library(modeldata)

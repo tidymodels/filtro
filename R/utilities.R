@@ -725,7 +725,7 @@ dont_log_pvalues <- function(x) {
 # #' @return The modified score class object with `adjustment` set to `BH`.
 # #'
 # #' @export
-# enable_fdr <- function(x) {
+# enable_adj_pvalues <- function(x) {
 #   x@adjustment <- "BH"
 #   x
 # }

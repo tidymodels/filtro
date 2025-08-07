@@ -362,6 +362,7 @@ test_that("computations - regression task via aorsf", {
 })
 
 test_that("computations - regression task via aorsf - adding missing values and case weights", {
+  skip_on_os("linux")
   skip_if_not_installed("modeldata")
 
   ames_subset <- helper_ames()

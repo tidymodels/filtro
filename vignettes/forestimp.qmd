@@ -20,7 +20,6 @@ knitr::opts_chunk$set(
 > ⚠️ **work-in-progress**
 
 ```{r, start, include = FALSE}
-pak::pak("tidymodels/filtro")
 library(filtro)
 library(dplyr)
 library(modeldata)

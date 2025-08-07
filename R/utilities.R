@@ -497,8 +497,11 @@ S7::method(rank_best_score_dense, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' S7 subclass for method dispatch in `bind_scores()` and `fill_safe_values()`
-#' @noRd
+#' Construct an S7 subclass of base R's `list` for Method Dispatch
+#'
+#' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
+#' [bind_scores()] and [fill_safe_values()].
+#'
 #' @export
 class_score_list <- S7::new_S3_class("list")
 

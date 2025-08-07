@@ -18,6 +18,8 @@ class_score_imp_rf <- S7::new_class(
 #' Three different random forest models can be used to measure predictor importance.
 #'
 #' @name score_imp_rf
+#' @aliases score_imp_rf_conditional score_imp_rf_oblique
+#' @family class score metrics
 #'
 #' @details
 #'
@@ -43,7 +45,7 @@ class_score_imp_rf <- S7::new_class(
 #' these functions are:
 #'
 #'   \describe{
-#'     \item{`object`}{A score class object based (e.g., `score_imp_rf`).}
+#'     \item{`object`}{A score class object (e.g., `score_imp_rf`).}
 #'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
 #'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
 #'     \item{`...`}{Further arguments passed to or from other methods.}

@@ -1,10 +1,13 @@
 ---
 title: "Scoring via random forests"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Scoring via random forests}
-  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEngine{quarto::html}
   %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: '#>'
 ---
 
 ```{r, include = FALSE}
@@ -17,7 +20,11 @@ knitr::opts_chunk$set(
 > ⚠️ **work-in-progress**
 
 ```{r, start, include = FALSE}
-library(filtro)
+if (requireNamespace("filtro", quietly = TRUE)) {
+  library(filtro)
+} else if (requireNamespace("devtools", quietly = TRUE)) {
+  devtools::load_all(".")
+}
 library(dplyr)
 library(modeldata)
 ```

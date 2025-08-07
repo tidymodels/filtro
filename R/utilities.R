@@ -716,19 +716,19 @@ dont_log_pvalues <- function(x) {
 # ------------------------------------------------------------------------------
 # Used with cross tab methods
 
-#' Enable the fdr (false discovery rate) adjusted p-values, using the Benjamini-Hochberg (BH) procedure
-#'
-#' @name enable_fdr()
-#'
-#' @param x A score class object.
-#'
-#' @return The modified score class object with `neg_log10` set to `FALSE`.
-#'
-#' @export
-enable_fdr <- function(x) {
-  x@fdr <- TRUE
-  x
-}
+# #' Enable the adjusted p-values, using the Benjamini-Hochberg (BH) procedure
+# #'
+# #' @name enable_adj_pvalues
+# #'
+# #' @param x A score class object.
+# #'
+# #' @return The modified score class object with `adjustment` set to `BH`.
+# #'
+# #' @export
+# enable_fdr <- function(x) {
+#   x@adjustment <- "BH"
+#   x
+# }
 
 # ------------------------------------------------------------------------------
 # Used with ROC AUC methods

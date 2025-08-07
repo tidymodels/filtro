@@ -10,7 +10,7 @@ test_that("object creation", {
   )
 })
 
-test_that("computations chisq test", {
+test_that("computations chisq test - adding adjusted p-values", {
   skip_if_not_installed("titanic")
   titanic_subset <- helper_titanic()
 
@@ -23,6 +23,8 @@ test_that("computations chisq test", {
     natrual_units |>
     fit(Survived ~ ., data = titanic_subset)
 
+  natrual_units <- score_xtab_pval_chisq |> dont_log_pvalues()
+
   # ----------------------------------------------------------------------------
 
   predictors <- titanic_xtab_pval_chisq_res@results$predictor
@@ -31,6 +33,9 @@ test_that("computations chisq test", {
       titanic_xtab_pval_chisq_res@results$predictor == predictor,
     ]
     nat <- titanic_xtab_pval_natrual_res@results[
+      titanic_xtab_pval_natrual_res@results$predictor == predictor,
+    ]
+    nat_p_adj <- titanic_xtab_pval_natrual_res@results[
       titanic_xtab_pval_natrual_res@results$predictor == predictor,
     ]
 
@@ -57,6 +62,27 @@ test_that("computations chisq test", {
     expect_equal(chisq$score, -log10(fit_chisq))
     expect_equal(nat$score, fit_chisq)
   }
+
+  # ----------------------------------------------------------------------------
+  # adjusted p-values
+
+  titanic_xtab_pval_chisq_p_adj_res <- score_xtab_pval_chisq |>
+    fit(Survived ~ ., data = titanic_subset, adjustment = "BH")
+
+  titanic_xtab_pval_natrual_p_adj_res <-
+    natrual_units |>
+    fit(Survived ~ ., data = titanic_subset, adjustment = "BH")
+
+  expect_equal(
+    titanic_xtab_pval_chisq_p_adj_res@results$score,
+    titanic_xtab_pval_chisq_res@results$score |> stats::p.adjust(method = "BH")
+  )
+
+  expect_equal(
+    titanic_xtab_pval_natrual_p_adj_res@results$score,
+    titanic_xtab_pval_natrual_res@results$score |>
+      stats::p.adjust(method = "BH")
+  )
 })
 
 test_that("computations fisher", {
@@ -106,8 +132,6 @@ test_that("computations fisher", {
     expect_equal(nat$score, fit_fisher)
   }
 })
-
-# TODO Test fdr
 
 test_that("computations chisq test - multiclass outcome", {
   skip_if_not_installed("tidymodels")

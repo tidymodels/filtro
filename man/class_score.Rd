@@ -83,8 +83,7 @@ class_score_xtab(
   label = character(0),
   packages = character(0),
   results = data.frame(),
-  neg_log10 = TRUE,
-  fdr = FALSE
+  neg_log10 = TRUE
 )
 
 class_score_imp_rf(

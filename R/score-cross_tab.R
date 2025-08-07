@@ -21,6 +21,8 @@ class_score_xtab <- S7::new_class(
 #' chi-squared test or Fisher's exact test.
 #'
 #' @name score_xtab_pval_chisq
+#' @family class score metrics
+#'
 #' @details
 #'
 #' These objects are used when:
@@ -42,7 +44,7 @@ class_score_xtab <- S7::new_class(
 #' these functions are:
 #'
 #'   \describe{
-#'     \item{`object`}{A score class object based (e.g., `score_xtab_pval_chisq`).}
+#'     \item{`object`}{A score class object (e.g., `score_xtab_pval_chisq`).}
 #'     \item{`formula`}{A standard R formula with a single outcome on the right-hand side and one or more predictors (or `.`) on the left-hand side. The data are processed via [stats::model.frame()]}
 #'     \item{`data`}{A data frame containing the relevant columns defined by the formula.}
 #'     \item{`...`}{Further arguments passed to or from other methods.}

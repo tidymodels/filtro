@@ -18,10 +18,10 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 ## Overview
 
-`filtro` is tidy tools to apply filter-based supervised feature
-selection methods. These methods score and rank feature relevance using
-metrics such as p-values, correlation, feature importance, information
-gain, and more.
+filtro is tidy tools to apply filter-based supervised feature selection
+methods. These methods score and rank feature relevance using metrics
+such as p-values, correlation, feature importance, information gain, and
+more.
 
 The package provides functions to rank and select a top proportion or
 number of features using built-in methods and the
@@ -73,7 +73,7 @@ library(modeldata)
 
 ``` r
 ames_subset <- modeldata::ames |>
-  # Use a subset of data
+  # use a subset of data for demonstration
   dplyr::select(
     Sale_Price,
     MS_SubClass,
@@ -120,28 +120,24 @@ ames_cor_pearson_res@results
 
 ``` r
 # Forest importance
-set.seed(42)
 ames_imp_rf_reg_res <-
   score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames_subset, seed = 42)
 ames_imp_rf_reg_res@results
 #> # A tibble: 5 × 4
 #>   name       score outcome    predictor   
 #>   <chr>      <dbl> <chr>      <chr>       
-#> 1 imp_rf 0.0148    Sale_Price MS_SubClass 
-#> 2 imp_rf 0.00997   Sale_Price MS_Zoning   
-#> 3 imp_rf 0.00668   Sale_Price Lot_Frontage
-#> 4 imp_rf 0.0137    Sale_Price Lot_Area    
-#> 5 imp_rf 0.0000455 Sale_Price Street
+#> 1 imp_rf 0.0144    Sale_Price MS_SubClass 
+#> 2 imp_rf 0.0102    Sale_Price MS_Zoning   
+#> 3 imp_rf 0.00693   Sale_Price Lot_Frontage
+#> 4 imp_rf 0.0144    Sale_Price Lot_Area    
+#> 5 imp_rf 0.0000308 Sale_Price Street
 ```
 
 ``` r
 # Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
 ames_info_gain_reg_res <-
-  score_info_gain_reg |>
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_reg_res@results
 #> # A tibble: 5 × 4
@@ -246,11 +242,11 @@ ames_scores_results
 #> # A tibble: 5 × 5
 #>   predictor    aov_pval cor_pearson    imp_rf infogain
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>
-#> 1 MS_SubClass    237.         1     0.0148     0.266  
-#> 2 MS_Zoning      130.         1     0.00997    0.113  
-#> 3 Lot_Frontage   Inf          0.165 0.00668    0.146  
-#> 4 Lot_Area       Inf          0.255 0.0137     0.140  
-#> 5 Street           5.75       1     0.0000455  0.00365
+#> 1 MS_SubClass    237.         1     0.0144     0.266  
+#> 2 MS_Zoning      130.         1     0.0102     0.113  
+#> 3 Lot_Frontage   Inf          0.165 0.00693    0.146  
+#> 4 Lot_Area       Inf          0.255 0.0144     0.140  
+#> 5 Street           5.75       1     0.0000308  0.00365
 ```
 
 ``` r
@@ -262,11 +258,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 7
 #>   predictor  aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson .d_overall
 #>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>
-#> 1 MS_SubCla…   237.         1     1.48e-2  0.266                1          1    
-#> 2 MS_Zoning    130.         1     9.97e-3  0.113                1          1    
-#> 3 Street         5.75       1     4.55e-5  0.00365              1          1    
-#> 4 Lot_Area     Inf          0.255 1.37e-2  0.140                0.255      0.255
-#> 5 Lot_Front…   Inf          0.165 6.68e-3  0.146                0.165      0.165
+#> 1 MS_SubCla…   237.         1     1.44e-2  0.266                1          1    
+#> 2 MS_Zoning    130.         1     1.02e-2  0.113                1          1    
+#> 3 Street         5.75       1     3.08e-5  0.00365              1          1    
+#> 4 Lot_Area     Inf          0.255 1.44e-2  0.140                0.255      0.255
+#> 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                0.165      0.165
 
 ames_scores_results |>
   show_best_desirability_prop(
@@ -276,11 +272,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 8
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass    237.         1     0.0148     0.266                1    
-#> 2 MS_Zoning      130.         1     0.00997    0.113                1    
-#> 3 Lot_Area       Inf          0.255 0.0137     0.140                0.255
-#> 4 Lot_Frontage   Inf          0.165 0.00668    0.146                0.165
-#> 5 Street           5.75       1     0.0000455  0.00365              1    
+#> 1 MS_SubClass    237.         1     0.0144     0.266                1    
+#> 2 MS_Zoning      130.         1     0.0102     0.113                1    
+#> 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255
+#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165
+#> 5 Street           5.75       1     0.0000308  0.00365              1    
 #> # ℹ 2 more variables: .d_max_imp_rf <dbl>, .d_overall <dbl>
 
 ames_scores_results |>
@@ -292,11 +288,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 9
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass    237.         1     0.0148     0.266                1    
-#> 2 MS_Zoning      130.         1     0.00997    0.113                1    
-#> 3 Lot_Area       Inf          0.255 0.0137     0.140                0.255
-#> 4 Lot_Frontage   Inf          0.165 0.00668    0.146                0.165
-#> 5 Street           5.75       1     0.0000455  0.00365              1    
+#> 1 MS_SubClass    237.         1     0.0144     0.266                1    
+#> 2 MS_Zoning      130.         1     0.0102     0.113                1    
+#> 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255
+#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165
+#> 5 Street           5.75       1     0.0000308  0.00365              1    
 #> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
 #> #   .d_overall <dbl>
 
@@ -310,7 +306,7 @@ ames_scores_results |>
 #> # A tibble: 1 × 9
 #>   predictor   aov_pval cor_pearson imp_rf infogain .d_max_cor_pearson
 #>   <chr>          <dbl>       <dbl>  <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass     237.           1 0.0148    0.266                  1
+#> 1 MS_SubClass     237.           1 0.0144    0.266                  1
 #> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
 #> #   .d_overall <dbl>
 
@@ -321,11 +317,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 7
 #>   predictor    aov_pval cor_pearson    imp_rf infogain .d_target_cor_pearson
 #>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>                 <dbl>
-#> 1 Lot_Area       Inf          0.255 0.0137     0.140                    1.00
-#> 2 MS_SubClass    237.         1     0.0148     0.266                    0   
-#> 3 MS_Zoning      130.         1     0.00997    0.113                    0   
-#> 4 Lot_Frontage   Inf          0.165 0.00668    0.146                    0   
-#> 5 Street           5.75       1     0.0000455  0.00365                  0   
+#> 1 Lot_Area       Inf          0.255 0.0144     0.140                    1.00
+#> 2 MS_SubClass    237.         1     0.0144     0.266                    0   
+#> 3 MS_Zoning      130.         1     0.0102     0.113                    0   
+#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                    0   
+#> 5 Street           5.75       1     0.0000308  0.00365                  0   
 #> # ℹ 1 more variable: .d_overall <dbl>
 
 ames_scores_results |>
@@ -335,11 +331,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 7
 #>   predictor  aov_pval cor_pearson  imp_rf infogain .d_box_cor_pearson .d_overall
 #>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>
-#> 1 MS_SubCla…   237.         1     1.48e-2  0.266                    1          1
-#> 2 MS_Zoning    130.         1     9.97e-3  0.113                    1          1
-#> 3 Lot_Area     Inf          0.255 1.37e-2  0.140                    1          1
-#> 4 Street         5.75       1     4.55e-5  0.00365                  1          1
-#> 5 Lot_Front…   Inf          0.165 6.68e-3  0.146                    0          0
+#> 1 MS_SubCla…   237.         1     1.44e-2  0.266                    1          1
+#> 2 MS_Zoning    130.         1     1.02e-2  0.113                    1          1
+#> 3 Lot_Area     Inf          0.255 1.44e-2  0.140                    1          1
+#> 4 Street         5.75       1     3.08e-5  0.00365                  1          1
+#> 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                    0          0
 ```
 
 ## Contributing

@@ -7,7 +7,7 @@ class_score_info_gain <- S7::new_class(
   parent = class_score,
   properties = list(
     # What is the task type?
-    mode = S7::new_property(S7::class_character, default = "classification") # TODO True, False?
+    mode = S7::new_property(S7::class_character, default = "classification")
   )
 )
 
@@ -176,6 +176,10 @@ S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
   # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
+
+  if (is.numeric(analysis_data[[outcome]])) {
+    object@mode <- "regression"
+  }
 
   imp <- get_info_gain(object, data = analysis_data, outcome = outcome)
 

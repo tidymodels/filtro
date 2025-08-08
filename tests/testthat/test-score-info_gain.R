@@ -82,17 +82,14 @@ test_that("computations - numeric outcome", {
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   regression_task <- score_info_gain
-  regression_task@mode <- "regression"
   ames_info_gain_res <- regression_task |>
     fit(Sale_Price ~ ., data = ames_subset)
 
   regression_task <- score_gain_ratio
-  regression_task@mode <- "regression"
   ames_gain_ratio_res <- regression_task |>
     fit(Sale_Price ~ ., data = ames_subset)
 
   regression_task <- score_sym_uncert
-  regression_task@mode <- "regression"
   ames_sym_uncert_res <- regression_task |>
     fit(Sale_Price ~ ., data = ames_subset)
 

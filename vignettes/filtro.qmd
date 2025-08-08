@@ -68,9 +68,11 @@ The package contains a data set used to predict housing sale price. It has 73 pr
 ames <- modeldata::ames
 ames <- ames |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# ames |> str() # uncomment to see the structure of the data
 ```
 
-First, we will create a score class object to define the scoring method, and then use the `fit()` method with the standard formula method to compute the scores.
+First, we create a score class object to define the scoring method, and then use the `fit()` method with the standard formula to compute the scores.
 
 The data frame of results can be accessed via `object@results`. 
 
@@ -81,15 +83,11 @@ ames_aov_pval_res <-
 ames_aov_pval_res@results
 ```
 
-For this specific scoring method: 
+Since the outcome is numeric, any predictor that is not a factor will result in `NA`. In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
 
-- Since the outcome is numeric, any predictor that is not a factor will result in `NA`. 
+By default, it computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
-- In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
-
-- By default, it computes `-log10(p_value)`, so that larger values indicate more important predictors.
-
-- Case weights are supported.
+For this specific scoring method, i.e., `score_aov_*`, case weights are supported. 
 
 ## A filtering exmple for *singular* score
 

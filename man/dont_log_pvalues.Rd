@@ -2,7 +2,7 @@
 % Please edit documentation in R/utilities.R
 \name{dont_log_pvalues}
 \alias{dont_log_pvalues}
-\title{Disable -log10 Transformation of P-values}
+\title{Disable -log10 transformation of p-values}
 \usage{
 dont_log_pvalues(x)
 }
@@ -13,5 +13,5 @@ dont_log_pvalues(x)
 The modified score class object with \code{neg_log10} set to \code{FALSE}.
 }
 \description{
-Disable -log10 Transformation of P-values
+Disable -log10 transformation of p-values
 }

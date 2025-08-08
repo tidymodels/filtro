@@ -699,7 +699,7 @@ flip_if_needed_aov <- function(predictor, outcome) {
   }
 }
 
-#' Disable -log10 Transformation of P-values
+#' Disable -log10 transformation of p-values
 #'
 #' @name dont_log_pvalues
 #'
@@ -712,6 +712,23 @@ dont_log_pvalues <- function(x) {
   x@neg_log10 <- FALSE
   x
 }
+
+# ------------------------------------------------------------------------------
+# Used with cross tab methods
+
+# #' Enable the adjusted p-values, using the Benjamini-Hochberg (BH) procedure
+# #'
+# #' @name enable_adj_pvalues
+# #'
+# #' @param x A score class object.
+# #'
+# #' @return The modified score class object with `adjustment` set to `BH`.
+# #'
+# #' @export
+# enable_adj_pvalues <- function(x) {
+#   x@adjustment <- "BH"
+#   x
+# }
 
 # ------------------------------------------------------------------------------
 # Used with ROC AUC methods

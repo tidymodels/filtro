@@ -7,9 +7,7 @@ class_score_xtab <- S7::new_class(
   parent = class_score,
   properties = list(
     # Represent the score as -log10(p_value)?
-    neg_log10 = S7::new_property(S7::class_logical, default = TRUE),
-    # Control for the false discovery rate?
-    fdr = S7::new_property(S7::class_logical, default = FALSE)
+    neg_log10 = S7::new_property(S7::class_logical, default = TRUE)
   )
 )
 
@@ -134,11 +132,14 @@ score_xtab_pval_fisher <-
 # ------------------------------------------------------------------------------
 
 #' @export
-S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
+S7::method(fit, class_score_xtab) <- function(
+  object,
+  formula,
+  data,
+  adjustment = "none",
+  ...
+) {
   analysis_data <- process_all_data(formula, data = data)
-  # TODO add case weights
-
-  # Note that model.frame() places the outcome(s) as the first column(s)
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
 
@@ -160,6 +161,10 @@ S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
   )
   res <- named_vec_to_tibble(score, object@score_type, outcome)
 
+  if (length(adjustment) > 0 && adjustment != "none") {
+    res$score <- stats::p.adjust(res$score, method = adjustment)
+  }
+
   if (object@neg_log10) {
     res$score <- -log10(res$score)
   } else {
@@ -168,10 +173,6 @@ S7::method(fit, class_score_xtab) <- function(object, formula, data, ...) {
     object@fallback_value <- .Machine$double.neg.eps
     object@sorts <- function(x) x
     object@direction <- "minimize"
-  }
-
-  if (object@fdr) {
-    res$score <- stats::p.adjust(res$score, method = "BH")
   }
 
   object@results <- res

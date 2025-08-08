@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-`filtro` is tidy tools to apply filter-based supervised feature
+filtro is tidy tools to apply filter-based supervised feature
 selection methods. These methods score and rank feature relevance
 using metrics such as p-values, correlation, feature importance, information gain, 
 and more.
@@ -86,7 +86,7 @@ library(modeldata)
 
 ```{r}
 ames_subset <- modeldata::ames |>
-  # Use a subset of data
+  # use a subset of data for demonstration
   dplyr::select(
     Sale_Price,
     MS_SubClass,
@@ -117,20 +117,16 @@ ames_cor_pearson_res@results
 
 ```{r}
 # Forest importance
-set.seed(42)
 ames_imp_rf_reg_res <-
   score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
+  fit(Sale_Price ~ ., data = ames_subset, seed = 42)
 ames_imp_rf_reg_res@results
 ```
 
 ```{r}
 # Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
 ames_info_gain_reg_res <-
-  score_info_gain_reg |>
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_reg_res@results
 ```

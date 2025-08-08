@@ -51,6 +51,14 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
+      - name: Temp install devel versions
+        run: |
+          # from most dependency-heavy to least
+          # see https://github.com/r-lib/rcmdcheck/issues/236
+          install.packages("pak")
+          try(pak::pkg_install("tidymodels/filtro"))
+        shell: Rscript {0}
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck

@@ -34,7 +34,7 @@ library(modeldata)
 
 ## A score class object
 
-Predictor importance can be assessed using three different random forest models:
+Predictor importance can be assessed using three different random forest models via the following objects:
 
 ```{r eval = FALSE}
 score_imp_rf
@@ -118,7 +118,7 @@ cells_imp_rf_res <- score_imp_rf |>
   )
 ```
 
-If users use the argument names from {ranger}, that’s fine. We’ve handled the necessary adjustments for them. Users can proceed with the following to obtain the same fitted score: 
+If users use the argument names from {ranger}, that’s fine. We’ve handled the necessary adjustments for them. The following code chunk can be used to obtain the same fitted score: 
 
 ```{r eval = FALSE}
 cells_imp_rf_res <- score_imp_rf |>

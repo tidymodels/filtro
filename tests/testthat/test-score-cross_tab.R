@@ -110,7 +110,7 @@ test_that("computations fisher", {
 # TODO Test fdr
 
 test_that("computations chisq test - multiclass outcome", {
-  skip_if_not_installed("tidymodels")
+  skip_if_not_installed("modeldata")
 
   hpc_subset <- helper_hpc_data()
 

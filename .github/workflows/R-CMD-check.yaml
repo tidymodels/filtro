@@ -55,6 +55,7 @@ jobs:
         run: |
           # from most dependency-heavy to least
           # see https://github.com/r-lib/rcmdcheck/issues/236
+          install.packages("pak")
           try(pak::pkg_install("tidymodels/filtro"))
         shell: Rscript {0}
 

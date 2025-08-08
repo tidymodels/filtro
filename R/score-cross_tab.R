@@ -161,6 +161,10 @@ S7::method(fit, class_score_xtab) <- function(
   )
   res <- named_vec_to_tibble(score, object@score_type, outcome)
 
+  if (length(adjustment) > 0 && adjustment != "none") {
+    res$score <- stats::p.adjust(res$score, method = adjustment)
+  }
+
   if (object@neg_log10) {
     res$score <- -log10(res$score)
   } else {
@@ -169,10 +173,6 @@ S7::method(fit, class_score_xtab) <- function(
     object@fallback_value <- .Machine$double.neg.eps
     object@sorts <- function(x) x
     object@direction <- "minimize"
-  }
-
-  if (length(adjustment) > 0 && adjustment != "none") {
-    res$score <- stats::p.adjust(res$score, method = adjustment)
   }
 
   object@results <- res

@@ -73,7 +73,10 @@ test_that("computations chisq test - adding adjusted p-values", {
 
   expect_equal(
     titanic_xtab_pval_chisq_p_adj_res@results$score,
-    titanic_xtab_pval_chisq_res@results$score |> stats::p.adjust(method = "BH")
+    -log10(
+      10^(-titanic_xtab_pval_chisq_res@results$score) |>
+        stats::p.adjust(method = "BH")
+    )
   )
 
   expect_equal(

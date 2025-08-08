@@ -11,13 +11,16 @@
 <url><loc>https://filtro.tidymodels.org/dev/reference/arrange_score.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/bind_scores.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/class_score.html</loc></url>
+<url><loc>https://filtro.tidymodels.org/dev/reference/class_score_list.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/dont_log_pvalues.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/fill_safe_value.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/fill_safe_values.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/filtro-package.html</loc></url>
+<url><loc>https://filtro.tidymodels.org/dev/reference/fit.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/index.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/rank_best_score_dense.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/rank_best_score_min.html</loc></url>
+<url><loc>https://filtro.tidymodels.org/dev/reference/required_pkgs.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/score_aov_pval.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/score_cor_pearson.html</loc></url>
 <url><loc>https://filtro.tidymodels.org/dev/reference/score_imp_rf.html</loc></url>

@@ -135,13 +135,13 @@
 <span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>First, we will create a score class object to define the scoring method, and then use the <code>fit()</code> method with the standard formula method to compute the scores.</p>
+<p>First, we will create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula method to compute the scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name      score outcome    predictor   </span></span>
@@ -195,7 +195,7 @@
 <code class="sourceCode R"><span><span class="co"># Pearson correlation</span></span>
 <span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_cor_pearson_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name         score outcome    predictor   </span></span>
@@ -218,7 +218,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name           score outcome    predictor   </span></span>
@@ -243,7 +243,7 @@
 <span></span>
 <span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_info_gain_reg</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span><span class="va">ames_info_gain_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name       score outcome    predictor   </span></span>
@@ -295,10 +295,10 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
 <span><span class="co">#&gt;    predictor    cor_pearson        imp_rf infogain .d_max_cor_pearson .d_overall</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
@@ -314,11 +314,11 @@
 <span><span class="co">#&gt; 10 Neighborhood           1 0.000443       0.462                    1          1</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 7</span></span>
 <span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
@@ -335,12 +335,12 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 8</span></span>
 <span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
@@ -357,13 +357,13 @@
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span>
-<span>  prop_terms <span class="op">=</span> <span class="fl">0.2</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span>
+<span>    prop_terms <span class="op">=</span> <span class="fl">0.2</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 14 × 8</span></span>
 <span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
@@ -383,10 +383,10 @@
 <span><span class="co">#&gt; 14 Fireplaces           0.489 0.000925    0.153              0.489        0.210 </span></span>
 <span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
 <span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_target_cor_pearson .d_overall</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;                 &lt;dbl&gt;      &lt;dbl&gt;</span></span>
@@ -402,10 +402,10 @@
 <span><span class="co">#&gt; 10 TotRms_AbvGrd        0.493 0.000520   0.148                  0.632      0.632</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_scores_results</span>,</span>
-<span>  <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
 <span><span class="co">#&gt;    predictor    cor_pearson        imp_rf infogain .d_box_cor_pearson .d_overall</span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>

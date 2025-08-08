@@ -12,7 +12,9 @@
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scoring via random forests">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="forestimp_files/libs/quarto-html/popper.min.js"></script><script src="forestimp_files/libs/quarto-html/tippy.umd.min.js"></script><link href="forestimp_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="forestimp_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Scoring via random forests">
 <meta name="robots" content="noindex">
 <script defer data-domain="filtro.tidymodels.org,all.tidymodels.org" src="https://plausible.io/js/plausible.js"></script>
 </head>
@@ -55,41 +57,45 @@
 
 
   </div>
-</nav><div class="container template-article" id="container">
-
-
-
-
+</nav><div class="container template-quarto" id="container">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Scoring via random forests</h1>
-            
-      
-      <small class="dont-index">Source: <a href="https://github.com/tidymodels/filtro/blob/main/vignettes/forestimp.Rmd" class="external-link"><code>vignettes/forestimp.Rmd</code></a></small>
-      <div class="d-none name"><code>forestimp.Rmd</code></div>
+
+
+
+
+      <small class="dont-index">Source: <a href="https://github.com/tidymodels/filtro/blob/main/vignettes/forestimp.qmd" class="external-link"><code>vignettes/forestimp.qmd</code></a></small>
+      <div class="d-none name"><code></code></div>
     </div>
 
-    
-    
-<blockquote>
+
+
+
+
+
+    <blockquote>
 <p>⚠️ <strong>work-in-progress</strong></p>
 </blockquote>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/filtro" class="external-link">filtro</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level2">
-<h2 id="a-score-class-object">A score class object<a class="anchor" aria-label="anchor" href="#a-score-class-object"></a>
+</div>
+<section class="level2"><h2 id="a-score-class-object">A score class object<a class="anchor" aria-label="anchor" href="#a-score-class-object"></a>
 </h2>
-<p>Three different random forest models can be used to assess predictor
-importance:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>Three different random forest models can be used to assess predictor importance:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">score_imp_rf</span></span>
 <span><span class="va">score_imp_rf_conditional</span></span>
 <span><span class="va">score_imp_rf_oblique</span></span></code></pre></div>
+</div>
 <p>These models are provided by the following packages:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">score_imp_rf</span><span class="op">@</span><span class="va">engine</span></span>
 <span><span class="co">#&gt; [1] "ranger"</span></span>
 <span><span class="va">score_imp_rf_conditional</span><span class="op">@</span><span class="va">engine</span></span>
@@ -97,29 +103,23 @@ importance:</p>
 <span><span class="va">score_imp_rf_oblique</span><span class="op">@</span><span class="va">engine</span></span>
 <span><span class="co">#&gt; [1] "aorsf"</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="a-random-forest-scoring-example">A random forest scoring example<a class="anchor" aria-label="anchor" href="#a-random-forest-scoring-example"></a>
+</section><section class="level2"><h2 id="a-random-forest-scoring-example">A random forest scoring example<a class="anchor" aria-label="anchor" href="#a-random-forest-scoring-example"></a>
 </h2>
-<p>The package contains a data set used to predict which cells in a high
-content screen were well segmented. It has 57 predictor columns and a
-factor variable <code>class</code> (the outcome).</p>
-<p>Since <code>case</code> is only used to indicate Train/Test, not for
-data analysis, it will be set to <code>NULL</code>. Furthermore, for
-efficiency, we will use a small sample of 50 from the original 2019
-observations.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The package contains a data set used to predict which cells in a high content screen were well segmented. It has 57 predictor columns and a factor variable <code>class</code> (the outcome).</p>
+<p>Since <code>case</code> is only used to indicate Train/Test, not for data analysis, it will be set to <code>NULL</code>. Furthermore, for efficiency, we will use a small sample of 50 from the original 2019 observations.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/cells.html" class="external-link">cells</a></span> <span class="op">|&gt;</span> </span>
 <span>  <span class="co"># Use a small example for efficiency</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">cells_subset</span><span class="op">$</span><span class="va">case</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
-<p>First, we will create a score class object to define the scoring
-method, and then use the <code>fit()</code> method with the standard
-formula method to compute the scores.</p>
-<p>The data frame of results can be accessed via
-<code>object@results</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+</div>
+<p>First, we will create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula method to compute the scores.</p>
+<p>The data frame of results can be accessed via <code>object@results</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>,</span>
 <span>    trees <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -128,75 +128,157 @@ formula method to compute the scores.</p>
 <span>    seed <span class="op">=</span> <span class="fl">42</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name       score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> imp_rf -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">59</span>  class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> imp_rf  0.002<span style="text-decoration: underline;">61</span>  class   area_ch_1                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> imp_rf  0.010<span style="text-decoration: underline;">0</span>   class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> imp_rf -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">803</span> class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> imp_rf  0.000<span style="text-decoration: underline;">801</span> class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> imp_rf  0.000<span style="text-decoration: underline;">823</span> class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> imp_rf  0.004<span style="text-decoration: underline;">10</span>  class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> imp_rf  0.005<span style="text-decoration: underline;">77</span>  class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> imp_rf  0.002<span style="text-decoration: underline;">55</span>  class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> imp_rf -<span style="color: #BB0000;">0.002</span><span style="color: #BB0000; text-decoration: underline;">63</span>  class   diff_inten_density_ch_3     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 46 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
+<span><span class="co">#&gt;  1 imp_rf -0.00159  class   angle_ch_1                  </span></span>
+<span><span class="co">#&gt;  2 imp_rf  0.00261  class   area_ch_1                   </span></span>
+<span><span class="co">#&gt;  3 imp_rf  0.0100   class   avg_inten_ch_1              </span></span>
+<span><span class="co">#&gt;  4 imp_rf -0.000803 class   avg_inten_ch_2              </span></span>
+<span><span class="co">#&gt;  5 imp_rf  0.000801 class   avg_inten_ch_3              </span></span>
+<span><span class="co">#&gt;  6 imp_rf  0.000823 class   avg_inten_ch_4              </span></span>
+<span><span class="co">#&gt;  7 imp_rf  0.00410  class   convex_hull_area_ratio_ch_1 </span></span>
+<span><span class="co">#&gt;  8 imp_rf  0.00577  class   convex_hull_perim_ratio_ch_1</span></span>
+<span><span class="co">#&gt;  9 imp_rf  0.00255  class   diff_inten_density_ch_1     </span></span>
+<span><span class="co">#&gt; 10 imp_rf -0.00263  class   diff_inten_density_ch_3     </span></span>
+<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
+</div>
 <p>For general scoring method via random forests:</p>
 <p>For the scoring method specific to <code>ranger</code>:</p>
-</div>
-<div class="section level2">
-<h2 id="a-conditional-random-forest-scoring-example">A conditional random forest scoring example<a class="anchor" aria-label="anchor" href="#a-conditional-random-forest-scoring-example"></a>
+</section><section class="level2"><h2 id="a-conditional-random-forest-scoring-example">A conditional random forest scoring example<a class="anchor" aria-label="anchor" href="#a-conditional-random-forest-scoring-example"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_conditional</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name                score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> imp_rf_conditional 0      class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> imp_rf_conditional 0      class   area_ch_1                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> imp_rf_conditional 0.082<span style="text-decoration: underline;">6</span> class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> imp_rf_conditional 0      class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> imp_rf_conditional 0      class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> imp_rf_conditional 0      class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> imp_rf_conditional 0      class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> imp_rf_conditional 0      class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> imp_rf_conditional 0      class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> imp_rf_conditional 0      class   diff_inten_density_ch_3     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 46 more rows</span></span></span></code></pre></div>
-<p>For the scoring method specific to <code>partykit</code>:</p>
+<span><span class="co">#&gt;    &lt;chr&gt;               &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
+<span><span class="co">#&gt;  1 imp_rf_conditional 0      class   angle_ch_1                  </span></span>
+<span><span class="co">#&gt;  2 imp_rf_conditional 0      class   area_ch_1                   </span></span>
+<span><span class="co">#&gt;  3 imp_rf_conditional 0.0826 class   avg_inten_ch_1              </span></span>
+<span><span class="co">#&gt;  4 imp_rf_conditional 0      class   avg_inten_ch_2              </span></span>
+<span><span class="co">#&gt;  5 imp_rf_conditional 0      class   avg_inten_ch_3              </span></span>
+<span><span class="co">#&gt;  6 imp_rf_conditional 0      class   avg_inten_ch_4              </span></span>
+<span><span class="co">#&gt;  7 imp_rf_conditional 0      class   convex_hull_area_ratio_ch_1 </span></span>
+<span><span class="co">#&gt;  8 imp_rf_conditional 0      class   convex_hull_perim_ratio_ch_1</span></span>
+<span><span class="co">#&gt;  9 imp_rf_conditional 0      class   diff_inten_density_ch_1     </span></span>
+<span><span class="co">#&gt; 10 imp_rf_conditional 0      class   diff_inten_density_ch_3     </span></span>
+<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="an-oblique-random-forest-scoring-example">An oblique random forest scoring example<a class="anchor" aria-label="anchor" href="#an-oblique-random-forest-scoring-example"></a>
+<p>For the scoring method specific to <code>partykit</code>:</p>
+</section><section class="level2"><h2 id="an-oblique-random-forest-scoring-example">An oblique random forest scoring example<a class="anchor" aria-label="anchor" href="#an-oblique-random-forest-scoring-example"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_oblique</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fit</span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 56 × 4</span></span></span>
+<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name               score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                       </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> imp_rf_oblique -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">40</span>  class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> imp_rf_oblique  0.003<span style="text-decoration: underline;">34</span>  class   area_ch_1                   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> imp_rf_oblique  0.003<span style="text-decoration: underline;">44</span>  class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> imp_rf_oblique  0.005<span style="text-decoration: underline;">16</span>  class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> imp_rf_oblique -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">35</span>  class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> imp_rf_oblique -<span style="color: #BB0000;">0.000</span><span style="color: #BB0000; text-decoration: underline;">552</span> class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> imp_rf_oblique  0.001<span style="text-decoration: underline;">59</span>  class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> imp_rf_oblique  0.004<span style="text-decoration: underline;">06</span>  class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> imp_rf_oblique  0.005<span style="text-decoration: underline;">26</span>  class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> imp_rf_oblique  0.002<span style="text-decoration: underline;">84</span>  class   diff_inten_density_ch_3     </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 46 more rows</span></span></span></code></pre></div>
-<p>For the scoring method specific to <code>aorsf</code>:</p>
+<span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
+<span><span class="co">#&gt;  1 imp_rf_oblique -0.00140  class   angle_ch_1                  </span></span>
+<span><span class="co">#&gt;  2 imp_rf_oblique  0.00334  class   area_ch_1                   </span></span>
+<span><span class="co">#&gt;  3 imp_rf_oblique  0.00344  class   avg_inten_ch_1              </span></span>
+<span><span class="co">#&gt;  4 imp_rf_oblique  0.00516  class   avg_inten_ch_2              </span></span>
+<span><span class="co">#&gt;  5 imp_rf_oblique -0.00135  class   avg_inten_ch_3              </span></span>
+<span><span class="co">#&gt;  6 imp_rf_oblique -0.000552 class   avg_inten_ch_4              </span></span>
+<span><span class="co">#&gt;  7 imp_rf_oblique  0.00159  class   convex_hull_area_ratio_ch_1 </span></span>
+<span><span class="co">#&gt;  8 imp_rf_oblique  0.00406  class   convex_hull_perim_ratio_ch_1</span></span>
+<span><span class="co">#&gt;  9 imp_rf_oblique  0.00526  class   diff_inten_density_ch_1     </span></span>
+<span><span class="co">#&gt; 10 imp_rf_oblique  0.00284  class   diff_inten_density_ch_3     </span></span>
+<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+<p>For the scoring method specific to <code>aorsf</code>:</p>
+</section><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'light-border',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config);
+    }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script></main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
-
 
 
    </div>

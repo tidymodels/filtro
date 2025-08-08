@@ -133,9 +133,11 @@
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span></span>
 <span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># ames |&gt; str() # uncomment to see the structure of the data</span></span></code></pre></div>
 </div>
-<p>First, we will create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula method to compute the scores.</p>
+<p>First, we create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
@@ -158,13 +160,10 @@
 <span><span class="co">#&gt; 10 aov_pval  12.0  Sale_Price Lot_Config  </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-<p>For this specific scoring method:</p>
-<ul>
-<li><p>Since the outcome is numeric, any predictor that is not a factor will result in <code>NA</code>.</p></li>
-<li><p>In case where <code>NA</code> is produced, a safe value (can be accessed via <code>object@fallback_value</code>) can be used to retain the predictor.</p></li>
-<li><p>By default, it computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors.</p></li>
-<li><p>Case weights are supported.</p></li>
-</ul></section><section class="level2"><h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
+<p>Since the outcome is numeric, any predictor that is not a factor will result in <code>NA</code>. In case where <code>NA</code> is produced, a safe value (can be accessed via <code>object@fallback_value</code>) can be used to retain the predictor.</p>
+<p>By default, it computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function <code><a href="../reference/dont_log_pvalues.html">dont_log_pvalues()</a></code> is available.</p>
+<p>For this specific scoring method, i.e., <code>score_aov_*</code>, case weights are supported.</p>
+</section><section class="level2"><h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
 </h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">

@@ -144,7 +144,7 @@ set.seed(42)
 
 # specify conditional random forest and fit score
 cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-  fit(class ~ ., data = cells_subset, trees = 3)
+  fit(class ~ ., data = cells_subset, trees = 100)
 cells_imp_rf_conditional_res@results
 ```
 

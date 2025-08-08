@@ -177,7 +177,7 @@ S7::method(fit, class_score_info_gain) <- function(object, formula, data, ...) {
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
 
-  if (is.numeric(analysis_data[outcome])) {
+  if (is.numeric(analysis_data[[outcome]])) {
     object@mode <- "regression"
   }
 

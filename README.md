@@ -30,6 +30,9 @@ supports streamlined preprocessing, either standalone or within
 tidymodels workflows such as the
 [recipes](https://recipes.tidymodels.org) package.
 
+For a detailed introduction, please see
+[vignette(“filtro”)](https://filtro.tidymodels.org/dev/articles/filtro.html).
+
 ## Installation
 
 Install the released version of filtro from
@@ -152,7 +155,7 @@ ames_info_gain_reg_res@results
 
 ## A filtering exmple for score *singular*
 
-There are several methods for score *singular*:
+Methods for score *singular*:
 
 - `show_best_score_prop()` shows best score, based on proportion of
   predictors.
@@ -206,10 +209,9 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 
 ## A filtering example for scores *plural*
 
-There are several methods for score *plural*:
+Methods for score *plural*:
 
 - `show_best_desirability_prop()`
-
 
 - `show_best_desirability_num()`
 

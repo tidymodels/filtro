@@ -53,6 +53,8 @@ ames_aov_fstat_res <-
   score_aov_fstat |>
   fit(Sale_Price ~ ., data = ames_subset)
 
+# START HERE
+
 ames_aov_pval_res@results
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 

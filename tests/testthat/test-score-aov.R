@@ -78,8 +78,7 @@ test_that("computations - numeric outcome", {
     score_aov_pval |>
     fit(permeability ~ ., data = perm_data)
 
-  natrual_units <- score_aov_pval
-  natrual_units@neg_log10 <- FALSE
+  natrual_units <- score_aov_pval |> dont_log_pvalues()
 
   perm_pval_natrual_res <-
     natrual_units |>

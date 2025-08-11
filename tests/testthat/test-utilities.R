@@ -1,5 +1,16 @@
 skip()
 
+
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf),
+    maximize(infogain),
+    prop_terms = 0.2
+  ) |>
+  dplyr::select(starts_with(".d_"))
+
+
 # Arrange score
 
 ames_subset <- helper_ames()

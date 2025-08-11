@@ -64,28 +64,30 @@ ames_aov_pval_res@results
 
 A copule of notes here: 
 
-1. Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:
+Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:
 
-  - The predictors are numeric and the outcome is categorical, or
+- The predictors are numeric and the outcome is categorical, or
 
-  - The predictors are categorical and the outcome is numeric.
+- The predictors are categorical and the outcome is numeric.
 
-2. Because `Sale_Price` (the outcome) is numeric, any predictor that is not a factor will result in an `NA`. In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
+Because the outcome is numeric, any predictor that is not a factor will result in an `NA`. In case where `NA` is produced, a safe value can be used to retain the predictor, and can be accessed via `object@fallback_value`. 
 
-3. By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
+By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
-4. For this specific filter, i.e., `score_aov_*`, case weights are supported. 
+For this specific filter, i.e., `score_aov_*`, case weights are supported. 
 
 ## Ranking and filtering
 
 There are two ways to rank and select a top proportion or number 
 of features
 
-1. For a single score, built-in methods are available. 
+For a single score, built-in methods are available. 
 
 `show_best_score_*()`
 
-2. For multiple scores, users can use API calls from {desirability} for multi-parameter optimization.
+`rank_best_score_*()`
+
+For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.
 
 `show_best_desirability_*()`
 
@@ -98,7 +100,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 
 ## A filtering example for scores *plural*
 
-To handle multiple scores, we first create multiple score class objects, and then again use the `fit()` method with the standard formula to compute the scores. 
+To handle multiple scores, we first create multiple score class objects, and then use the `fit()` method with the standard formula to compute the scores. 
 
 ```{r}
 # ANOVA raw p-value 
@@ -146,19 +148,20 @@ ames_scores_results <- class_score_list |>
 ames_scores_results
 ```
 
-Analogs to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
+Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
 
 A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples: 
 
 ```{r}
-# Single parameter optimization as a start
+# Single and multi-parameter optimization using desirability functions
+# Optimize correlation
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   ) |> 
   dplyr::select(predictor, starts_with(".d_"))
 
-# Multi-parameter optimization using desirability functions
+# Optimize correlation and forest importance
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -166,6 +169,7 @@ ames_scores_results |>
   ) |> 
   dplyr::select(predictor, starts_with(".d_"))
 
+# Optimize correlation, forest importance and information gain
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -175,10 +179,10 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control how the proportion of predictors to keep.
+Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control the proportion of predictors to keep.
 
 ```{r}
-# Same as above but retain only a proportion of predictors
+# Same as above, but retain only a proportion of predictors
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -189,7 +193,7 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-Besides `maximize()`, additional verbs that are available are: `minimize()`, `target()`, and `constrain()`. They apply in different situations:
+Besides `maximize()`, additional verbs that are available are: `minimize()`, `target()`, and `constrain()`. They are used in different situations:
 
 - `maximize()` when larger values are better.
 

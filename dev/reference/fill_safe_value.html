@@ -56,8 +56,8 @@ See <code><a href="fill_safe_values.html">fill_safe_values()</a></code> for <em>
 <dd><p>A score class object, i.e., <code>score_*</code>.</p></dd>
 
 
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Further arguments passed to or from other methods.</p></dd>
+<dt id="arg-return-results">return_results<a class="anchor" aria-label="anchor" href="#arg-return-results"></a></dt>
+<dd><p>A logical value indicating whether to return results.</p></dd>
 
 </dl></div>
 
@@ -92,7 +92,7 @@ See <code><a href="fill_safe_values.html">fill_safe_values()</a></code> for <em>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> aov_pval   5.75 Sale_Price Street      </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Fill safe value</span></span></span>
-<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">fill_safe_value</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">fill_safe_value</span><span class="op">(</span>return_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name      score outcome    predictor   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>

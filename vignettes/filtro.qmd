@@ -146,23 +146,19 @@ ames_scores_results <- class_score_list |>
 ames_scores_results
 ```
 
-Recall earlier that a safe value can be used to retain the predictor. Here we show examples, but note that the safe value differs from the individual score object: 
+Analogs to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
+
+A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples: 
 
 ```{r}
-ames_aov_pval_natrual_res@fallback_value
-ames_cor_pearson_res@fallback_value
-ames_imp_rf_reg_res@fallback_value
-ames_info_gain_reg_res@fallback_value
-```
-
-```{r}
-# Single and multi-parameter optimization using desirability functions
+# Single parameter optimization as a start
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   ) |> 
   dplyr::select(predictor, starts_with(".d_"))
 
+# Multi-parameter optimization using desirability functions
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -177,7 +173,12 @@ ames_scores_results |>
     maximize(infogain)
   ) |> 
   dplyr::select(predictor, starts_with(".d_"))
+```
 
+Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control how the proportion of predictors to keep.
+
+```{r}
+# Same as above but retain only a proportion of predictors
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -188,7 +189,17 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-Other than `maximize()`, other verbs that are available are: `minimize()`, `target()`, and `constrain()`. 
+Besides `maximize()`, additional verbs that are available are: `minimize()`, `target()`, and `constrain()`. They apply in different situations:
+
+- `maximize()` when larger values are better.
+
+- `minimize()` when smaller values are better.
+
+- `target()` when a specific value of the metric is important. 
+
+- `constrain()` when a range of values is equally desirable.
+
+For examples: 
 
 ```{r}
 ames_scores_results |>
@@ -209,6 +220,8 @@ ames_scores_results |>
   ) |> 
   dplyr::select(predictor, starts_with(".d_"))
 ```
+
+## List of score objects and filter methods provided by the package
 
 A comprehensive list of score class objects included in the package:
 

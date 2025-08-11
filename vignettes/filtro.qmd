@@ -83,13 +83,13 @@ of features
 
 For a single score, built-in methods are available. 
 
-`show_best_score_*()`
+- `show_best_score_*()`
 
-`rank_best_score_*()`
+- `rank_best_score_*()`
 
 For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.
 
-`show_best_desirability_*()`
+- `show_best_desirability_*()`
 
 ## A filtering exmple for score *singular*
 
@@ -119,7 +119,6 @@ ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
 # Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
-
 
 ## A filtering example for scores *plural*
 

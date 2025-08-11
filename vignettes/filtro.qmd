@@ -137,7 +137,7 @@ class_score_list <- list(
 )
 ```
 
-Then, we fill the safe values and remove the `outcome` column.
+Then, we fill the safe value specific to each method and remove the `outcome` column.
 
 ```{r}
 # Fill safe values

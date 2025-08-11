@@ -42,7 +42,7 @@ score_imp_rf_conditional
 score_imp_rf_oblique
 ```
 
-These models are implemented in the following packages:
+These models are powered by the following packages:
 
 ```{r}
 score_imp_rf@engine

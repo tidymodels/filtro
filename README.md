@@ -150,7 +150,7 @@ ames_info_gain_reg_res@results
 #> 5 infogain 0.00365 Sale_Price Street
 ```
 
-## A filtering exmple for *singular* score
+## A filtering exmple for score *singular*
 
 ``` r
 ames_aov_pval_res@results
@@ -220,12 +220,11 @@ ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
 #> 1 aov_pval  237. Sale_Price MS_SubClass
 ```
 
-## A filtering example for *plural* scores
+## A filtering example for scores *plural*
 
 ``` r
 # Create a list
 class_score_list <- list(
-  ames_aov_pval_res,
   ames_cor_pearson_res,
   ames_imp_rf_reg_res,
   ames_info_gain_reg_res
@@ -239,14 +238,14 @@ ames_scores_results <- class_score_list |>
   # Remove outcome
   dplyr::select(-outcome)
 ames_scores_results
-#> # A tibble: 5 × 5
-#>   predictor    aov_pval cor_pearson    imp_rf infogain
-#>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>
-#> 1 MS_SubClass    237.         1     0.0144     0.266  
-#> 2 MS_Zoning      130.         1     0.0102     0.113  
-#> 3 Lot_Frontage   Inf          0.165 0.00693    0.146  
-#> 4 Lot_Area       Inf          0.255 0.0144     0.140  
-#> 5 Street           5.75       1     0.0000308  0.00365
+#> # A tibble: 5 × 4
+#>   predictor    cor_pearson    imp_rf infogain
+#>   <chr>              <dbl>     <dbl>    <dbl>
+#> 1 MS_SubClass        1     0.0144     0.266  
+#> 2 MS_Zoning          1     0.0102     0.113  
+#> 3 Lot_Frontage       0.165 0.00693    0.146  
+#> 4 Lot_Area           0.255 0.0144     0.140  
+#> 5 Street             1     0.0000308  0.00365
 ```
 
 ``` r
@@ -255,29 +254,29 @@ ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   )
-#> # A tibble: 5 × 7
-#>   predictor  aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson .d_overall
-#>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>
-#> 1 MS_SubCla…   237.         1     1.44e-2  0.266                1          1    
-#> 2 MS_Zoning    130.         1     1.02e-2  0.113                1          1    
-#> 3 Street         5.75       1     3.08e-5  0.00365              1          1    
-#> 4 Lot_Area     Inf          0.255 1.44e-2  0.140                0.255      0.255
-#> 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                0.165      0.165
+#> # A tibble: 5 × 6
+#>   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_overall
+#>   <chr>              <dbl>     <dbl>    <dbl>              <dbl>      <dbl>
+#> 1 MS_SubClass        1     0.0144     0.266                1          1    
+#> 2 MS_Zoning          1     0.0102     0.113                1          1    
+#> 3 Street             1     0.0000308  0.00365              1          1    
+#> 4 Lot_Area           0.255 0.0144     0.140                0.255      0.255
+#> 5 Lot_Frontage       0.165 0.00693    0.146                0.165      0.165
 
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
     maximize(imp_rf)
   )
-#> # A tibble: 5 × 8
-#>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
-#>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass    237.         1     0.0144     0.266                1    
-#> 2 MS_Zoning      130.         1     0.0102     0.113                1    
-#> 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255
-#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165
-#> 5 Street           5.75       1     0.0000308  0.00365              1    
-#> # ℹ 2 more variables: .d_max_imp_rf <dbl>, .d_overall <dbl>
+#> # A tibble: 5 × 7
+#>   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_max_imp_rf
+#>   <chr>              <dbl>     <dbl>    <dbl>              <dbl>         <dbl>
+#> 1 MS_SubClass        1     0.0144     0.266                1             1    
+#> 2 MS_Zoning          1     0.0102     0.113                1             0.705
+#> 3 Lot_Area           0.255 0.0144     0.140                0.255         0.994
+#> 4 Lot_Frontage       0.165 0.00693    0.146                0.165         0.479
+#> 5 Street             1     0.0000308  0.00365              1             0    
+#> # ℹ 1 more variable: .d_overall <dbl>
 
 ames_scores_results |>
   show_best_desirability_prop(
@@ -285,16 +284,15 @@ ames_scores_results |>
     maximize(imp_rf),
     maximize(infogain)
   )
-#> # A tibble: 5 × 9
-#>   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson
-#>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass    237.         1     0.0144     0.266                1    
-#> 2 MS_Zoning      130.         1     0.0102     0.113                1    
-#> 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255
-#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165
-#> 5 Street           5.75       1     0.0000308  0.00365              1    
-#> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
-#> #   .d_overall <dbl>
+#> # A tibble: 5 × 8
+#>   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_max_imp_rf
+#>   <chr>              <dbl>     <dbl>    <dbl>              <dbl>         <dbl>
+#> 1 MS_SubClass        1     0.0144     0.266                1             1    
+#> 2 MS_Zoning          1     0.0102     0.113                1             0.705
+#> 3 Lot_Area           0.255 0.0144     0.140                0.255         0.994
+#> 4 Lot_Frontage       0.165 0.00693    0.146                0.165         0.479
+#> 5 Street             1     0.0000308  0.00365              1             0    
+#> # ℹ 2 more variables: .d_max_infogain <dbl>, .d_overall <dbl>
 
 ames_scores_results |>
   show_best_desirability_prop(
@@ -303,39 +301,37 @@ ames_scores_results |>
     maximize(infogain),
     prop_terms = 0.2
   )
-#> # A tibble: 1 × 9
-#>   predictor   aov_pval cor_pearson imp_rf infogain .d_max_cor_pearson
-#>   <chr>          <dbl>       <dbl>  <dbl>    <dbl>              <dbl>
-#> 1 MS_SubClass     237.           1 0.0144    0.266                  1
-#> # ℹ 3 more variables: .d_max_imp_rf <dbl>, .d_max_infogain <dbl>,
-#> #   .d_overall <dbl>
+#> # A tibble: 1 × 8
+#>   predictor   cor_pearson imp_rf infogain .d_max_cor_pearson .d_max_imp_rf
+#>   <chr>             <dbl>  <dbl>    <dbl>              <dbl>         <dbl>
+#> 1 MS_SubClass           1 0.0144    0.266                  1             1
+#> # ℹ 2 more variables: .d_max_infogain <dbl>, .d_overall <dbl>
 
 ames_scores_results |>
   show_best_desirability_prop(
     target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
   )
-#> # A tibble: 5 × 7
-#>   predictor    aov_pval cor_pearson    imp_rf infogain .d_target_cor_pearson
-#>   <chr>           <dbl>       <dbl>     <dbl>    <dbl>                 <dbl>
-#> 1 Lot_Area       Inf          0.255 0.0144     0.140                    1.00
-#> 2 MS_SubClass    237.         1     0.0144     0.266                    0   
-#> 3 MS_Zoning      130.         1     0.0102     0.113                    0   
-#> 4 Lot_Frontage   Inf          0.165 0.00693    0.146                    0   
-#> 5 Street           5.75       1     0.0000308  0.00365                  0   
-#> # ℹ 1 more variable: .d_overall <dbl>
+#> # A tibble: 5 × 6
+#>   predictor    cor_pearson    imp_rf infogain .d_target_cor_pearson .d_overall
+#>   <chr>              <dbl>     <dbl>    <dbl>                 <dbl>      <dbl>
+#> 1 Lot_Area           0.255 0.0144     0.140                    1.00       1.00
+#> 2 MS_SubClass        1     0.0144     0.266                    0          0   
+#> 3 MS_Zoning          1     0.0102     0.113                    0          0   
+#> 4 Lot_Frontage       0.165 0.00693    0.146                    0          0   
+#> 5 Street             1     0.0000308  0.00365                  0          0
 
 ames_scores_results |>
   show_best_desirability_prop(
     constrain(cor_pearson, low = 0.2, high = 1)
   )
-#> # A tibble: 5 × 7
-#>   predictor  aov_pval cor_pearson  imp_rf infogain .d_box_cor_pearson .d_overall
-#>   <chr>         <dbl>       <dbl>   <dbl>    <dbl>              <dbl>      <dbl>
-#> 1 MS_SubCla…   237.         1     1.44e-2  0.266                    1          1
-#> 2 MS_Zoning    130.         1     1.02e-2  0.113                    1          1
-#> 3 Lot_Area     Inf          0.255 1.44e-2  0.140                    1          1
-#> 4 Street         5.75       1     3.08e-5  0.00365                  1          1
-#> 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                    0          0
+#> # A tibble: 5 × 6
+#>   predictor    cor_pearson    imp_rf infogain .d_box_cor_pearson .d_overall
+#>   <chr>              <dbl>     <dbl>    <dbl>              <dbl>      <dbl>
+#> 1 MS_SubClass        1     0.0144     0.266                    1          1
+#> 2 MS_Zoning          1     0.0102     0.113                    1          1
+#> 3 Lot_Area           0.255 0.0144     0.140                    1          1
+#> 4 Street             1     0.0000308  0.00365                  1          1
+#> 5 Lot_Frontage       0.165 0.00693    0.146                    0          0
 ```
 
 ## Contributing

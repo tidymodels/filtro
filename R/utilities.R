@@ -75,7 +75,7 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #'
 #' @param x A score class object, i.e., `score_*`.
 #'
-#' @param ... Further arguments passed to or from other methods.
+#' @param return_results A logical value indicating whether to return results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -99,15 +99,22 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' ames_aov_pval_res@results
 #'
 #' # Fill safe value
-#' ames_aov_pval_res |> fill_safe_value()
+#' ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
 #'
 #' @export
-S7::method(fill_safe_value, class_score) <- function(x) {
+S7::method(fill_safe_value, class_score) <- function(
+  x,
+  return_results = FALSE
+) {
   results <- x@results
   is_na_score <- is.na(results$score)
   results$score[is_na_score] <- x@fallback_value
   x@results <- results
-  x@results
+  if (return_results) {
+    x@results
+  } else {
+    x
+  }
 }
 
 #' @keywords internal

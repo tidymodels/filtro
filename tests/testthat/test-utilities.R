@@ -45,10 +45,12 @@ ames_aov_fstat_res <-
   fit(Sale_Price ~ ., data = ames_subset)
 
 ames_aov_pval_res@results
-ames_aov_pval_res |> fill_safe_value()
+ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
+ames_aov_pval_res |> fill_safe_value() |> show_best_score_prop(prop_terms = 0.2)
 
-ames_aov_fstat_res@results
-ames_aov_fstat_res |> fill_safe_value()
+# START HERE
+
+ames_aov_pval_res |> fill_safe_value()
 
 # Show best score based on based on proportion of predictors
 

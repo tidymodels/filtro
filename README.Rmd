@@ -131,7 +131,19 @@ ames_info_gain_reg_res <-
 ames_info_gain_reg_res@results
 ```
 
-## A filtering exmple for *singular* score
+## A filtering exmple for score *singular* 
+
+There are several methods for score *singular*: 
+
+- `show_best_score_prop()` shows best score, based on proportion of predictors.
+
+- `show_best_score_num()` shows best score, based on number of predictors.
+
+- `show_best_score_cutoff()` shows best score, based on based on cutoff value.
+
+- `show_best_score_dual()` shows best score, based on number or proportion of predictors with optional cutoff value. 
+
+For one example: 
 
 ```{r}
 ames_aov_pval_res@results
@@ -142,27 +154,22 @@ ames_aov_pval_res@results
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-```{r}
-# Show best score, based on number of predictors
-ames_aov_pval_res |> show_best_score_num(num_terms = 2)
-```
+There is an option to fill safe value first, and then show best score using various methods. 
 
 ```{r}
-# Show best score, based on based on cutoff value
-ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+# Fill safe value
+ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
+# Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-```{r}
-# Show best score, based on number or proportion of predictors with
-# optional cutoff value 
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+## A filtering example for scores *plural* 
 
-ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
-```
+There are several methods for score *plural*: 
 
-## A filtering example for *plural* scores
+- `show_best_desirability_prop()`
+
+- `show_best_desirability_num()`
 
 ```{r}
 # Create a list
@@ -182,6 +189,8 @@ ames_scores_results <- class_score_list |>
   dplyr::select(-outcome)
 ames_scores_results
 ```
+
+For one example: 
 
 ```{r}
 # Single and multi-parameter optimization using desirability functions

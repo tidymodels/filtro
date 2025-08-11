@@ -6,7 +6,7 @@
 \arguments{
 \item{x}{A score class object, i.e., \verb{score_*}.}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{return_results}{A logical value indicating whether to return results.}
 }
 \description{
 Fills in safe value for missing score. This is a \emph{singular} scoring method.
@@ -35,6 +35,6 @@ ames_aov_pval_res <-
 ames_aov_pval_res@results
 
 # Fill safe value
-ames_aov_pval_res |> fill_safe_value()
+ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
 \dontshow{\}) # examplesIf}
 }

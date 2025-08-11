@@ -150,7 +150,23 @@ ames_info_gain_reg_res@results
 #> 5 infogain 0.00365 Sale_Price Street
 ```
 
-## A filtering exmple for *singular* score
+## A filtering exmple for score *singular*
+
+There are several methods for score *singular*:
+
+- `show_best_score_prop()` shows best score, based on proportion of
+  predictors.
+
+- `show_best_score_num()` shows best score, based on number of
+  predictors.
+
+- `show_best_score_cutoff()` shows best score, based on based on cutoff
+  value.
+
+- `show_best_score_dual()` shows best score, based on number or
+  proportion of predictors with optional cutoff value.
+
+For one example:
 
 ``` r
 ames_aov_pval_res@results
@@ -173,54 +189,28 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> 1 aov_pval  237. Sale_Price MS_SubClass
 ```
 
-``` r
-# Show best score, based on number of predictors
-ames_aov_pval_res |> show_best_score_num(num_terms = 2)
-#> # A tibble: 2 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
-#> 2 aov_pval  130. Sale_Price MS_Zoning
-```
+There is an option to fill safe value first, and then show best score
+using various methods.
 
 ``` r
-# Show best score, based on based on cutoff value
-ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
-#> # A tibble: 1 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
+# Fill safe value
+ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
+# Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+#> # A tibble: 2 × 4
+#>   name     score outcome    predictor   
+#>   <chr>    <dbl> <chr>      <chr>       
+#> 1 aov_pval   Inf Sale_Price Lot_Frontage
+#> 2 aov_pval   Inf Sale_Price Lot_Area
 ```
 
-``` r
-# Show best score, based on number or proportion of predictors with
-# optional cutoff value 
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
-#> # A tibble: 2 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
-#> 2 aov_pval  130. Sale_Price MS_Zoning
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
-#> # A tibble: 1 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
+## A filtering example for scores *plural*
 
-ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-#> # A tibble: 2 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
-#> 2 aov_pval  130. Sale_Price MS_Zoning
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
-#> # A tibble: 1 × 4
-#>   name     score outcome    predictor  
-#>   <chr>    <dbl> <chr>      <chr>      
-#> 1 aov_pval  237. Sale_Price MS_SubClass
-```
+There are several methods for score *plural*:
 
-## A filtering example for *plural* scores
+- `show_best_desirability_prop()`
+
+- `show_best_desirability_num()`
 
 ``` r
 # Create a list
@@ -248,6 +238,8 @@ ames_scores_results
 #> 4 Lot_Area       Inf          0.255 0.0144     0.140  
 #> 5 Street           5.75       1     0.0000308  0.00365
 ```
+
+For one example:
 
 ``` r
 # Single and multi-parameter optimization using desirability functions

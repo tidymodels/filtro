@@ -36,13 +36,198 @@ library(dplyr)
 library(modeldata)
 ```
 
-## A score class object
+## A scoring example
+
+The {modeldata} package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable `Sale_Price` (the outcome). Since the outcome are right-skewed, we apply a log (base 10) transformation. 
 
 ```{r}
-score_aov_pval
+ames <- modeldata::ames
+ames <- ames |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# ames |> str() # uncomment to see the structure of the data
 ```
 
-Currently, the available score class objects include:
+To apply the ANOVA F-test filter, we first create a score class object to define the scoring method, and then use the `fit()` method with the standard formula to compute the scores.
+
+```{r}
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames)
+```
+
+The data frame of results can be accessed via `object@results`. 
+
+```{r}
+ames_aov_pval_res@results
+```
+
+A copule of notes here: 
+
+Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:
+
+- The predictors are numeric and the outcome is categorical, or
+
+- The predictors are categorical and the outcome is numeric.
+
+Because the outcome is numeric, any predictor that is not a factor will result in an `NA`. In case where `NA` is produced, a safe value can be used to retain the predictor, and can be accessed via `object@fallback_value`. 
+
+By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
+
+For this specific filter, i.e., `score_aov_*`, case weights are supported. 
+
+## Ranking and filtering
+
+There are two ways to rank and select a top proportion or number 
+of features
+
+For a single score, built-in methods are available. 
+
+`show_best_score_*()`
+
+`rank_best_score_*()`
+
+For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.
+
+`show_best_desirability_*()`
+
+## A filtering exmple for score *singular*
+
+```{r}
+# Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+```
+
+## A filtering example for scores *plural*
+
+To handle multiple scores, we first create multiple score class objects, and then use the `fit()` method with the standard formula to compute the scores. 
+
+```{r}
+# ANOVA raw p-value 
+natrual_units <- score_aov_pval |> dont_log_pvalues()
+ames_aov_pval_natrual_res <-
+  natrual_units |>
+  fit(Sale_Price ~ ., data = ames)
+
+# Pearson correlation
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames)
+
+# Forest importance
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames, seed = 42)
+
+# Information gain
+ames_info_gain_reg_res <-
+  score_info_gain |>
+  fit(Sale_Price ~ ., data = ames)
+```
+
+Next, we create a list to store these score class objects, including their associated metadata and scores. 
+
+```{r}
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_natrual_res, 
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+```
+
+Then, we fill the safe value specific to each method and remove the `outcome` column.
+
+```{r}
+# Fill safe values
+ames_scores_results <- class_score_list |>
+  fill_safe_values() |>
+  # Remove outcome
+  dplyr::select(-outcome)
+ames_scores_results
+```
+
+Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
+
+A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples: 
+
+```{r}
+# Single and multi-parameter optimization using desirability functions
+# Optimize correlation
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+
+# Optimize correlation and forest importance
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+
+# Optimize correlation, forest importance and information gain
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf),
+    maximize(infogain)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+```
+
+Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control the proportion of predictors to keep.
+
+```{r}
+# Same as above, but retain only a proportion of predictors
+ames_scores_results |>
+  show_best_desirability_prop(
+    maximize(cor_pearson, low = 0, high = 1),
+    maximize(imp_rf),
+    maximize(infogain),
+    prop_terms = 0.2
+  ) |>
+  dplyr::select(predictor, starts_with(".d_"))
+```
+
+Besides `maximize()`, additional verbs that are available are: `minimize()`, `target()`, and `constrain()`. They are used in different situations:
+
+- `maximize()` when larger values are better.
+
+- `minimize()` when smaller values are better.
+
+- `target()` when a specific value of the metric is important. 
+
+- `constrain()` when a range of values is equally desirable.
+
+For examples: 
+
+```{r}
+ames_scores_results |>
+  show_best_desirability_prop(
+    minimize(aov_pval, low = 0, high = 1)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+
+ames_scores_results |>
+  show_best_desirability_prop(
+    target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+
+ames_scores_results |>
+  show_best_desirability_prop(
+    constrain(cor_pearson, low = 0.2, high = 1)
+  ) |> 
+  dplyr::select(predictor, starts_with(".d_"))
+```
+
+## List of score objects and filter methods provided by the package
+
+A comprehensive list of score class objects included in the package:
 
 ```{r eval = FALSE}
 score_aov_pval
@@ -60,125 +245,20 @@ score_xtab_pval_chisq
 score_xtab_pval_fisher
 ```
 
-## A scoring example
+The filter methods for score *singular*: 
 
-The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable `Sale_Price` (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation. 
-
-```{r}
-ames <- modeldata::ames
-ames <- ames |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-# ames |> str() # uncomment to see the structure of the data
+```{r eval = FALSE}
+show_best_score_prop()
+show_best_score_num()
+show_best_score_cutoff()
+show_best_score_dual()
+rank_best_score_min()
+rank_best_score_dense()
 ```
 
-First, we create a score class object to define the scoring method, and then use the `fit()` method with the standard formula to compute the scores.
+The filter methods for scores *plural*: 
 
-The data frame of results can be accessed via `object@results`. 
-
-```{r}
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames)
-ames_aov_pval_res@results
-```
-
-Since the outcome is numeric, any predictor that is not a factor will result in `NA`. In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
-
-By default, it computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
-
-For this specific scoring method, i.e., `score_aov_*`, case weights are supported. 
-
-## A filtering exmple for *singular* score
-
-```{r}
-# Show best score, based on proportion of predictors
-ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
-```
-
-## A filtering example for *plural* scores
-
-```{r}
-# Pearson correlation
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames)
-ames_cor_pearson_res@results
-```
-
-```{r}
-# Forest importance
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames)
-ames_imp_rf_reg_res@results
-```
-
-```{r}
-# Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
-ames_info_gain_reg_res <-
-  score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames)
-ames_info_gain_reg_res@results
-```
-
-```{r}
-# Create a list
-class_score_list <- list(
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
-```
-
-```{r}
-# Fill safe values
-ames_scores_results <- class_score_list |>
-  fill_safe_values() |>
-  # Remove outcome
-  dplyr::select(-outcome)
-ames_scores_results
-```
-
-```{r}
-# Single and multi-parameter optimization using desirability functions
-ames_scores_results |>
-  show_best_desirability_prop(
-    maximize(cor_pearson, low = 0, high = 1)
-  )
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    maximize(cor_pearson, low = 0, high = 1),
-    maximize(imp_rf)
-  )
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    maximize(cor_pearson, low = 0, high = 1),
-    maximize(imp_rf),
-    maximize(infogain)
-  )
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    maximize(cor_pearson, low = 0, high = 1),
-    maximize(imp_rf),
-    maximize(infogain),
-    prop_terms = 0.2
-  )
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
-  )
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    constrain(cor_pearson, low = 0.2, high = 1)
-  )
+```{r eval = FALSE}
+show_best_desirability_prop()
+show_best_desirability_num()
 ```

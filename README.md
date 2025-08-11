@@ -73,7 +73,7 @@ library(modeldata)
 
 ``` r
 ames_subset <- modeldata::ames |>
-  # use a subset of data for demonstration
+  # Use a subset of data for demonstration
   dplyr::select(
     Sale_Price,
     MS_SubClass,

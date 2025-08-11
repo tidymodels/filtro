@@ -66,7 +66,7 @@ Since `case` is only used to indicate Train/Test, not for data analysis, it will
 
 ```{r}
 cells_subset <- modeldata::cells |> 
-  # use a small example for efficiency
+  # Use a small example for efficiency
   dplyr::slice(1:50)
 cells_subset$case <- NULL
 
@@ -77,7 +77,7 @@ First, we create a score class object to specify a {ranger} random forest, and t
 
 The data frame of results can be accessed via `object@results`. 
 ```{r}
-# specify random forest and fit score
+# Specify random forest and fit score
 cells_imp_rf_res <- score_imp_rf |>
   fit(
     class ~ .,
@@ -138,10 +138,10 @@ For the {partykit} conditional random forest, we again create a score class obje
 The data frame of results can be accessed via `object@results`. 
 
 ```{r}
-# set seed for reproducibility
+# Set seed for reproducibility
 set.seed(42)
 
-# specify conditional random forest and fit score
+# Specify conditional random forest and fit score
 cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
   fit(class ~ ., data = cells_subset, trees = 100)
 cells_imp_rf_conditional_res@results
@@ -156,10 +156,10 @@ For the {aorsf} oblique random forest, we again create a score class object to s
 The data frame of results can be accessed via `object@results`. 
 
 ```{r}
-# set seed for reproducibility
+# Set seed for reproducibility
 set.seed(42)
 
-# specify oblique random forest and fit score
+# Specify oblique random forest and fit score
 cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
   fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
 cells_imp_rf_oblique_res@results

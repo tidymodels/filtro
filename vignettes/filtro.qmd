@@ -93,12 +93,41 @@ For multiple scores, users can use API calls adapted from {desirability} for mul
 
 ## A filtering exmple for score *singular*
 
+Methods for score *singular*: 
+
+- `show_best_score_prop()` shows best score, based on proportion of predictors.
+
+- `show_best_score_num()` shows best score, based on number of predictors.
+
+- `show_best_score_cutoff()` shows best score, based on based on cutoff value.
+
+- `show_best_score_dual()` shows best score, based on number or proportion of predictors with optional cutoff value. 
+
+For examples: 
+
 ```{r}
 # Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
+We can also fill the safe value first, then apply any of the filtering methods. The following approach avoids having to call `fill_safe_value()` repeatedly for each method:
+
+```{r}
+# Fill safe value
+ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
+
+# Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+```
+
+
 ## A filtering example for scores *plural*
+
+Methods for score *plural*: 
+
+- `show_best_desirability_prop()` shows best scores, based on proportion of predictors. 
+
+- `show_best_desirability_num()` shows best scores, based on number of predictors.
 
 To handle multiple scores, we first create multiple score class objects, and then use the `fit()` method with the standard formula to compute the scores. 
 
@@ -137,7 +166,7 @@ class_score_list <- list(
 )
 ```
 
-Then, we fill the safe value specific to each method and remove the `outcome` column.
+Then, we fill the method-specific safe values with a single call to `fill_safe_value()` and then remove the `outcome` column.
 
 ```{r}
 # Fill safe values

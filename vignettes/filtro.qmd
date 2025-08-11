@@ -38,11 +38,7 @@ library(modeldata)
 
 ## A score class object
 
-```{r}
-score_aov_pval
-```
-
-Currently, the available score class objects include:
+{filtro} consists of score class objects. Currently, the available score class objects include:
 
 ```{r eval = FALSE}
 score_aov_pval
@@ -58,6 +54,12 @@ score_sym_uncert
 score_roc_auc
 score_xtab_pval_chisq
 score_xtab_pval_fisher
+```
+
+For example, a score class object consists of the following attributes:
+
+```{r}
+score_aov_pval
 ```
 
 ## A scoring example
@@ -83,11 +85,17 @@ ames_aov_pval_res <-
 ames_aov_pval_res@results
 ```
 
+ANOVA F-test filters handle cases when:
+
+- The predictors are numeric and the outcome is categorical, or
+
+- The predictors are categorical and the outcome is numeric.
+
 Since the outcome is numeric, any predictor that is not a factor will result in `NA`. In case where `NA` is produced, a safe value (can be accessed via `object@fallback_value`) can be used to retain the predictor. 
 
-By default, it computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
+By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
-For this specific scoring method, i.e., `score_aov_*`, case weights are supported. 
+For this specific filter, i.e., `score_aov_*`, case weights are supported. 
 
 ## A filtering exmple for *singular* score
 
@@ -182,3 +190,4 @@ ames_scores_results |>
     constrain(cor_pearson, low = 0.2, high = 1)
   )
 ```
+

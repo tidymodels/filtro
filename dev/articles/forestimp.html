@@ -93,7 +93,7 @@
 <span><span class="va">score_imp_rf_conditional</span></span>
 <span><span class="va">score_imp_rf_oblique</span></span></code></pre></div>
 </div>
-<p>These models are implemented in the following packages:</p>
+<p>These models are powered by the following packages:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">score_imp_rf</span><span class="op">@</span><span class="va">engine</span></span>
@@ -115,7 +115,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/cells.html" class="external-link">cells</a></span> <span class="op">|&gt;</span> </span>
-<span>  <span class="co"># use a small example for efficiency</span></span>
+<span>  <span class="co"># Use a small example for efficiency</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">cells_subset</span><span class="op">$</span><span class="va">case</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
@@ -125,7 +125,7 @@
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># specify random forest and fit score</span></span>
+<code class="sourceCode R"><span><span class="co"># Specify random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
@@ -209,10 +209,10 @@
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set seed for reproducibility</span></span>
+<code class="sourceCode R"><span><span class="co"># Set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># specify conditional random forest and fit score</span></span>
+<span><span class="co"># Specify conditional random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_conditional</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span><span class="op">@</span><span class="va">results</span></span>
@@ -238,10 +238,10 @@
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># set seed for reproducibility</span></span>
+<code class="sourceCode R"><span><span class="co"># Set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># specify oblique random forest and fit score</span></span>
+<span><span class="co"># Specify oblique random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_oblique</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span><span class="op">@</span><span class="va">results</span></span>

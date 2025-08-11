@@ -86,65 +86,28 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2"><h2 id="a-score-class-object">A score class object<a class="anchor" aria-label="anchor" href="#a-score-class-object"></a>
+<section class="level2"><h2 id="a-scoring-example">A scoring example<a class="anchor" aria-label="anchor" href="#a-scoring-example"></a>
 </h2>
+<p>The {modeldata} package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable <code>Sale_Price</code> (the outcome). Since the outcome are right-skewed, we apply a log (base 10) transformation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
-<span><span class="co">#&gt; &lt;filtro::class_score_aov&gt;</span></span>
-<span><span class="co">#&gt;  @ outcome_type  : chr [1:2] "numeric" "factor"</span></span>
-<span><span class="co">#&gt;  @ predictor_type: chr [1:2] "numeric" "factor"</span></span>
-<span><span class="co">#&gt;  @ case_weights  : logi TRUE</span></span>
-<span><span class="co">#&gt;  @ range         : num [1:2] 0 Inf</span></span>
-<span><span class="co">#&gt;  @ inclusive     : logi [1:2] FALSE FALSE</span></span>
-<span><span class="co">#&gt;  @ fallback_value: num Inf</span></span>
-<span><span class="co">#&gt;  @ score_type    : chr "aov_pval"</span></span>
-<span><span class="co">#&gt;  @ sorts         : function ()  </span></span>
-<span><span class="co">#&gt;  @ direction     : chr "maximize"</span></span>
-<span><span class="co">#&gt;  @ deterministic : logi TRUE</span></span>
-<span><span class="co">#&gt;  @ tuning        : logi FALSE</span></span>
-<span><span class="co">#&gt;  @ calculating_fn: function ()  </span></span>
-<span><span class="co">#&gt;  @ label         : chr "ANOVA p-values"</span></span>
-<span><span class="co">#&gt;  @ packages      : chr(0) </span></span>
-<span><span class="co">#&gt;  @ results       :'data.frame':  0 obs. of  0 variables</span></span>
-<span><span class="co">#&gt;  @ neg_log10     : logi TRUE</span></span></code></pre></div>
-</div>
-<p>Currently, the available score class objects include:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
-<span><span class="va">score_aov_fstat</span></span>
-<span><span class="va">score_cor_pearson</span></span>
-<span><span class="va">score_cor_spearman</span></span>
-<span><span class="va">score_imp_rf</span></span>
-<span><span class="va">score_imp_rf_conditional</span></span>
-<span><span class="va">score_imp_rf_oblique</span></span>
-<span><span class="va">score_info_gain</span></span>
-<span><span class="va">score_gain_ratio</span></span>
-<span><span class="va">score_sym_uncert</span></span>
-<span><span class="va">score_roc_auc</span></span>
-<span><span class="va">score_xtab_pval_chisq</span></span>
-<span><span class="va">score_xtab_pval_fisher</span></span></code></pre></div>
-</div>
-</section><section class="level2"><h2 id="a-scoring-example">A scoring example<a class="anchor" aria-label="anchor" href="#a-scoring-example"></a>
-</h2>
-<p>The package contains a data set used to predict housing sale price. It has 73 predictor columns and a numeric variable <code>Sale_Price</code> (the outcome). Since the outcome are right-skewed, we will apply a log (base 10) transformation.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span></span>
 <span><span class="va">ames</span> <span class="op">&lt;-</span> <span class="va">ames</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># ames |&gt; str() # uncomment to see the structure of the data</span></span></code></pre></div>
 </div>
-<p>First, we create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
-<p>The data frame of results can be accessed via <code>object@results</code>.</p>
+<p>To apply the ANOVA F-test filter, we first create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
-<span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The data frame of results can be accessed via <code>object@results</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
 <span><span class="co">#&gt;    name      score outcome    predictor   </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       </span></span>
@@ -160,13 +123,28 @@
 <span><span class="co">#&gt; 10 aov_pval  12.0  Sale_Price Lot_Config  </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-<p>Since the outcome is numeric, any predictor that is not a factor will result in <code>NA</code>. In case where <code>NA</code> is produced, a safe value (can be accessed via <code>object@fallback_value</code>) can be used to retain the predictor.</p>
-<p>By default, it computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function <code><a href="../reference/dont_log_pvalues.html">dont_log_pvalues()</a></code> is available.</p>
-<p>For this specific scoring method, i.e., <code>score_aov_*</code>, case weights are supported.</p>
-</section><section class="level2"><h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
+<p>A copule of notes here:</p>
+<p>Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:</p>
+<ul>
+<li><p>The predictors are numeric and the outcome is categorical, or</p></li>
+<li><p>The predictors are categorical and the outcome is numeric.</p></li>
+</ul>
+<p>Because the outcome is numeric, any predictor that is not a factor will result in an <code>NA</code>. In case where <code>NA</code> is produced, a safe value can be used to retain the predictor, and can be accessed via <code>object@fallback_value</code>.</p>
+<p>By default, the filter computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function <code><a href="../reference/dont_log_pvalues.html">dont_log_pvalues()</a></code> is available.</p>
+<p>For this specific filter, i.e., <code>score_aov_*</code>, case weights are supported.</p>
+</section><section class="level2"><h2 id="ranking-and-filtering">Ranking and filtering<a class="anchor" aria-label="anchor" href="#ranking-and-filtering"></a>
+</h2>
+<p>There are two ways to rank and select a top proportion or number of features</p>
+<p>For a single score, built-in methods are available.</p>
+<p><code>show_best_score_*()</code></p>
+<p><code>rank_best_score_*()</code></p>
+<p>For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.</p>
+<p><code>show_best_desirability_*()</code></p>
+</section><section class="level2"><h2 id="a-filtering-exmple-for-score-singular">A filtering exmple for score <em>singular</em>
+<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-score-singular"></a>
 </h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show best score, based on proportion of predictors</span></span>
 <span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 14 × 4</span></span>
@@ -187,238 +165,273 @@
 <span><span class="co">#&gt; 13 aov_pval 116.  Sale_Price Bsmt_Exposure </span></span>
 <span><span class="co">#&gt; 14 aov_pval 100.0 Sale_Price Garage_Cond</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="a-filtering-example-for-plural-scores">A filtering example for <em>plural</em> scores<a class="anchor" aria-label="anchor" href="#a-filtering-example-for-plural-scores"></a>
+</section><section class="level2"><h2 id="a-filtering-example-for-scores-plural">A filtering example for scores <em>plural</em>
+<a class="anchor" aria-label="anchor" href="#a-filtering-example-for-scores-plural"></a>
 </h2>
+<p>To handle multiple scores, we first create multiple score class objects, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Pearson correlation</span></span>
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># ANOVA raw p-value </span></span>
+<span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/dont_log_pvalues.html">dont_log_pvalues</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">ames_aov_pval_natrual_res</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">natrual_units</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Pearson correlation</span></span>
 <span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
-<span><span class="va">ames_cor_pearson_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
-<span><span class="co">#&gt;    name         score outcome    predictor   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       </span></span>
-<span><span class="co">#&gt;  1 cor_pearson NA     Sale_Price MS_SubClass </span></span>
-<span><span class="co">#&gt;  2 cor_pearson NA     Sale_Price MS_Zoning   </span></span>
-<span><span class="co">#&gt;  3 cor_pearson  0.165 Sale_Price Lot_Frontage</span></span>
-<span><span class="co">#&gt;  4 cor_pearson  0.255 Sale_Price Lot_Area    </span></span>
-<span><span class="co">#&gt;  5 cor_pearson NA     Sale_Price Street      </span></span>
-<span><span class="co">#&gt;  6 cor_pearson NA     Sale_Price Alley       </span></span>
-<span><span class="co">#&gt;  7 cor_pearson NA     Sale_Price Lot_Shape   </span></span>
-<span><span class="co">#&gt;  8 cor_pearson NA     Sale_Price Land_Contour</span></span>
-<span><span class="co">#&gt;  9 cor_pearson NA     Sale_Price Utilities   </span></span>
-<span><span class="co">#&gt; 10 cor_pearson NA     Sale_Price Lot_Config  </span></span>
-<span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Forest importance</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Forest importance</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
-<span><span class="va">ames_imp_rf_reg_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
-<span><span class="co">#&gt;    name           score outcome    predictor   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       </span></span>
-<span><span class="co">#&gt;  1 imp_rf 0.000471      Sale_Price MS_SubClass </span></span>
-<span><span class="co">#&gt;  2 imp_rf 0.000447      Sale_Price MS_Zoning   </span></span>
-<span><span class="co">#&gt;  3 imp_rf 0.000229      Sale_Price Lot_Frontage</span></span>
-<span><span class="co">#&gt;  4 imp_rf 0.000678      Sale_Price Lot_Area    </span></span>
-<span><span class="co">#&gt;  5 imp_rf 0.00000172    Sale_Price Street      </span></span>
-<span><span class="co">#&gt;  6 imp_rf 0.00000629    Sale_Price Alley       </span></span>
-<span><span class="co">#&gt;  7 imp_rf 0.0000782     Sale_Price Lot_Shape   </span></span>
-<span><span class="co">#&gt;  8 imp_rf 0.0000452     Sale_Price Land_Contour</span></span>
-<span><span class="co">#&gt;  9 imp_rf 0.00000000527 Sale_Price Utilities   </span></span>
-<span><span class="co">#&gt; 10 imp_rf 0.0000142     Sale_Price Lot_Config  </span></span>
-<span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Information gain</span></span>
-<span><span class="va">score_info_gain_reg</span> <span class="op">&lt;-</span> <span class="va">score_info_gain</span></span>
-<span><span class="va">score_info_gain_reg</span><span class="op">@</span><span class="va">mode</span> <span class="op">&lt;-</span> <span class="st">"regression"</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Information gain</span></span>
 <span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">score_info_gain_reg</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
-<span><span class="va">ames_info_gain_reg_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
-<span><span class="co">#&gt;    name       score outcome    predictor   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;       </span></span>
-<span><span class="co">#&gt;  1 infogain 0.266   Sale_Price MS_SubClass </span></span>
-<span><span class="co">#&gt;  2 infogain 0.113   Sale_Price MS_Zoning   </span></span>
-<span><span class="co">#&gt;  3 infogain 0.146   Sale_Price Lot_Frontage</span></span>
-<span><span class="co">#&gt;  4 infogain 0.140   Sale_Price Lot_Area    </span></span>
-<span><span class="co">#&gt;  5 infogain 0.00365 Sale_Price Street      </span></span>
-<span><span class="co">#&gt;  6 infogain 0.0254  Sale_Price Alley       </span></span>
-<span><span class="co">#&gt;  7 infogain 0.0675  Sale_Price Lot_Shape   </span></span>
-<span><span class="co">#&gt;  8 infogain 0.0212  Sale_Price Land_Contour</span></span>
-<span><span class="co">#&gt;  9 infogain 0.00165 Sale_Price Utilities   </span></span>
-<span><span class="co">#&gt; 10 infogain 0.0133  Sale_Price Lot_Config  </span></span>
-<span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
+<span>  <span class="va">score_info_gain</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
 </div>
+<p>Next, we create a list to store these score class objects, including their associated metadata and scores.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a list</span></span>
 <span><span class="va">class_score_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  <span class="va">ames_aov_pval_natrual_res</span>, </span>
 <span>  <span class="va">ames_cor_pearson_res</span>,</span>
 <span>  <span class="va">ames_imp_rf_reg_res</span>,</span>
 <span>  <span class="va">ames_info_gain_reg_res</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
+<p>Then, we fill the safe value specific to each method and remove the <code>outcome</code> column.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fill safe values</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">&lt;-</span> <span class="va">class_score_list</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fill_safe_values.html">fill_safe_values</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Remove outcome</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">outcome</span><span class="op">)</span></span>
 <span><span class="va">ames_scores_results</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
-<span><span class="co">#&gt;    predictor    cor_pearson        imp_rf infogain</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 MS_SubClass        1     0.000471       0.266  </span></span>
-<span><span class="co">#&gt;  2 MS_Zoning          1     0.000447       0.113  </span></span>
-<span><span class="co">#&gt;  3 Lot_Frontage       0.165 0.000229       0.146  </span></span>
-<span><span class="co">#&gt;  4 Lot_Area           0.255 0.000678       0.140  </span></span>
-<span><span class="co">#&gt;  5 Street             1     0.00000172     0.00365</span></span>
-<span><span class="co">#&gt;  6 Alley              1     0.00000629     0.0254 </span></span>
-<span><span class="co">#&gt;  7 Lot_Shape          1     0.0000782      0.0675 </span></span>
-<span><span class="co">#&gt;  8 Land_Contour       1     0.0000452      0.0212 </span></span>
-<span><span class="co">#&gt;  9 Utilities          1     0.00000000527  0.00165</span></span>
-<span><span class="co">#&gt; 10 Lot_Config         1     0.0000142      0.0133 </span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 5</span></span>
+<span><span class="co">#&gt;    predictor     aov_pval cor_pearson     imp_rf infogain</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 MS_SubClass  1.68e-237       1     0.000449    0.266  </span></span>
+<span><span class="co">#&gt;  2 MS_Zoning    2.75e-130       1     0.000386    0.113  </span></span>
+<span><span class="co">#&gt;  3 Lot_Frontage 1.11e- 16       0.165 0.000194    0.146  </span></span>
+<span><span class="co">#&gt;  4 Lot_Area     1.11e- 16       0.255 0.000736    0.140  </span></span>
+<span><span class="co">#&gt;  5 Street       1.77e-  6       1     0.00000263  0.00365</span></span>
+<span><span class="co">#&gt;  6 Alley        6.06e- 20       1     0.00000782  0.0254 </span></span>
+<span><span class="co">#&gt;  7 Lot_Shape    5.17e- 72       1     0.0000880   0.0675 </span></span>
+<span><span class="co">#&gt;  8 Land_Contour 3.79e- 22       1     0.0000480   0.0212 </span></span>
+<span><span class="co">#&gt;  9 Utilities    4.16e-  2       1     0           0.00165</span></span>
+<span><span class="co">#&gt; 10 Lot_Config   1.04e- 12       1     0.0000138   0.0133 </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
+<p>Analogous to <a href="https://desirability2.tidymodels.org/reference/show_best_desirability.html" class="external-link"><code>show_best_desirability()</code></a>, we can jointly optimize multiple scores.</p>
+<p>A desirability function maps values of a metric to a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math> range where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> is most desirable and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> is unacceptable. When the verb <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize()</a></code> is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
+<span><span class="co"># Optimize correlation</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
-<span><span class="co">#&gt;    predictor    cor_pearson        imp_rf infogain .d_max_cor_pearson .d_overall</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 MS_SubClass            1 0.000471       0.266                    1          1</span></span>
-<span><span class="co">#&gt;  2 MS_Zoning              1 0.000447       0.113                    1          1</span></span>
-<span><span class="co">#&gt;  3 Street                 1 0.00000172     0.00365                  1          1</span></span>
-<span><span class="co">#&gt;  4 Alley                  1 0.00000629     0.0254                   1          1</span></span>
-<span><span class="co">#&gt;  5 Lot_Shape              1 0.0000782      0.0675                   1          1</span></span>
-<span><span class="co">#&gt;  6 Land_Contour           1 0.0000452      0.0212                   1          1</span></span>
-<span><span class="co">#&gt;  7 Utilities              1 0.00000000527  0.00165                  1          1</span></span>
-<span><span class="co">#&gt;  8 Lot_Config             1 0.0000142      0.0133                   1          1</span></span>
-<span><span class="co">#&gt;  9 Land_Slope             1 0.00000301     0.00568                  1          1</span></span>
-<span><span class="co">#&gt; 10 Neighborhood           1 0.000443       0.462                    1          1</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 3</span></span>
+<span><span class="co">#&gt;    predictor    .d_max_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 MS_SubClass                   1          1</span></span>
+<span><span class="co">#&gt;  2 MS_Zoning                     1          1</span></span>
+<span><span class="co">#&gt;  3 Street                        1          1</span></span>
+<span><span class="co">#&gt;  4 Alley                         1          1</span></span>
+<span><span class="co">#&gt;  5 Lot_Shape                     1          1</span></span>
+<span><span class="co">#&gt;  6 Land_Contour                  1          1</span></span>
+<span><span class="co">#&gt;  7 Utilities                     1          1</span></span>
+<span><span class="co">#&gt;  8 Lot_Config                    1          1</span></span>
+<span><span class="co">#&gt;  9 Land_Slope                    1          1</span></span>
+<span><span class="co">#&gt; 10 Neighborhood                  1          1</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span></span>
+<span><span class="co"># Optimize correlation and forest importance</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 7</span></span>
-<span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Gr_Liv_Area          0.696 0.00443     0.384              0.696         1    </span></span>
-<span><span class="co">#&gt;  2 Year_Built           0.615 0.00356     0.327              0.615         0.805</span></span>
-<span><span class="co">#&gt;  3 Total_Bsmt_SF        0.626 0.00248     0.288              0.626         0.562</span></span>
-<span><span class="co">#&gt;  4 Garage_Type          1     0.00146     0.209              1             0.330</span></span>
-<span><span class="co">#&gt;  5 First_Flr_SF         0.603 0.00219     0.254              0.603         0.497</span></span>
-<span><span class="co">#&gt;  6 Garage_Cars          0.675 0.00187     0.327              0.675         0.424</span></span>
-<span><span class="co">#&gt;  7 Garage_Area          0.651 0.00180     0.316              0.651         0.408</span></span>
-<span><span class="co">#&gt;  8 Year_Remod_Add       0.586 0.00195     0.237              0.586         0.442</span></span>
-<span><span class="co">#&gt;  9 Foundation           1     0.000758    0.210              1             0.173</span></span>
-<span><span class="co">#&gt; 10 Full_Bath            0.577 0.00123     0.243              0.577         0.278</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 4</span></span>
+<span><span class="co">#&gt;    predictor      .d_max_cor_pearson .d_max_imp_rf .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                       &lt;dbl&gt;         &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Gr_Liv_Area                 0.696         1          0.834</span></span>
+<span><span class="co">#&gt;  2 Year_Built                  0.615         0.877      0.735</span></span>
+<span><span class="co">#&gt;  3 Total_Bsmt_SF               0.626         0.594      0.610</span></span>
+<span><span class="co">#&gt;  4 Year_Remod_Add              0.586         0.549      0.567</span></span>
+<span><span class="co">#&gt;  5 Garage_Type                 1             0.308      0.555</span></span>
+<span><span class="co">#&gt;  6 First_Flr_SF                0.603         0.474      0.534</span></span>
+<span><span class="co">#&gt;  7 Garage_Cars                 0.675         0.417      0.530</span></span>
+<span><span class="co">#&gt;  8 Garage_Area                 0.651         0.432      0.530</span></span>
+<span><span class="co">#&gt;  9 Full_Bath                   0.577         0.308      0.421</span></span>
+<span><span class="co">#&gt; 10 Foundation                  1             0.151      0.388</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
 <span></span>
+<span><span class="co"># Optimize correlation, forest importance and information gain</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 8</span></span>
-<span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Gr_Liv_Area          0.696 0.00443     0.384              0.696         1    </span></span>
-<span><span class="co">#&gt;  2 Year_Built           0.615 0.00356     0.327              0.615         0.805</span></span>
-<span><span class="co">#&gt;  3 Total_Bsmt_SF        0.626 0.00248     0.288              0.626         0.562</span></span>
-<span><span class="co">#&gt;  4 Garage_Cars          0.675 0.00187     0.327              0.675         0.424</span></span>
-<span><span class="co">#&gt;  5 Garage_Area          0.651 0.00180     0.316              0.651         0.408</span></span>
-<span><span class="co">#&gt;  6 First_Flr_SF         0.603 0.00219     0.254              0.603         0.497</span></span>
-<span><span class="co">#&gt;  7 Garage_Type          1     0.00146     0.209              1             0.330</span></span>
-<span><span class="co">#&gt;  8 Year_Remod_Add       0.586 0.00195     0.237              0.586         0.442</span></span>
-<span><span class="co">#&gt;  9 Neighborhood         1     0.000443    0.462              1             0.102</span></span>
-<span><span class="co">#&gt; 10 Full_Bath            0.577 0.00123     0.243              0.577         0.278</span></span>
-<span><span class="co">#&gt; # ℹ 63 more rows</span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
-<span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 5</span></span>
+<span><span class="co">#&gt;    predictor      .d_max_cor_pearson .d_max_imp_rf .d_max_infogain .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                       &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Gr_Liv_Area                 0.696         1               0.832      0.833</span></span>
+<span><span class="co">#&gt;  2 Year_Built                  0.615         0.877           0.709      0.726</span></span>
+<span><span class="co">#&gt;  3 Total_Bsmt_SF               0.626         0.594           0.625      0.615</span></span>
+<span><span class="co">#&gt;  4 Garage_Cars                 0.675         0.417           0.708      0.584</span></span>
+<span><span class="co">#&gt;  5 Garage_Area                 0.651         0.432           0.684      0.577</span></span>
+<span><span class="co">#&gt;  6 Year_Remod_Add              0.586         0.549           0.514      0.549</span></span>
+<span><span class="co">#&gt;  7 First_Flr_SF                0.603         0.474           0.551      0.540</span></span>
+<span><span class="co">#&gt;  8 Garage_Type                 1             0.308           0.453      0.519</span></span>
+<span><span class="co">#&gt;  9 Neighborhood                1             0.127           1          0.503</span></span>
+<span><span class="co">#&gt; 10 Full_Bath                   0.577         0.308           0.527      0.454</span></span>
+<span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
+</div>
+<p>Additionally, <code><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop()</a></code> has a argument called <code>prop_terms</code> that lets us control the proportion of predictors to keep.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Same as above, but retain only a proportion of predictors</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span>
 <span>    prop_terms <span class="op">=</span> <span class="fl">0.2</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 14 × 8</span></span>
-<span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Gr_Liv_Area          0.696 0.00443     0.384              0.696        1     </span></span>
-<span><span class="co">#&gt;  2 Year_Built           0.615 0.00356     0.327              0.615        0.805 </span></span>
-<span><span class="co">#&gt;  3 Total_Bsmt_SF        0.626 0.00248     0.288              0.626        0.562 </span></span>
-<span><span class="co">#&gt;  4 Garage_Cars          0.675 0.00187     0.327              0.675        0.424 </span></span>
-<span><span class="co">#&gt;  5 Garage_Area          0.651 0.00180     0.316              0.651        0.408 </span></span>
-<span><span class="co">#&gt;  6 First_Flr_SF         0.603 0.00219     0.254              0.603        0.497 </span></span>
-<span><span class="co">#&gt;  7 Garage_Type          1     0.00146     0.209              1            0.330 </span></span>
-<span><span class="co">#&gt;  8 Year_Remod_Add       0.586 0.00195     0.237              0.586        0.442 </span></span>
-<span><span class="co">#&gt;  9 Neighborhood         1     0.000443    0.462              1            0.102 </span></span>
-<span><span class="co">#&gt; 10 Full_Bath            0.577 0.00123     0.243              0.577        0.278 </span></span>
-<span><span class="co">#&gt; 11 Foundation           1     0.000758    0.210              1            0.173 </span></span>
-<span><span class="co">#&gt; 12 MS_SubClass          1     0.000471    0.266              1            0.108 </span></span>
-<span><span class="co">#&gt; 13 Garage_Finish        1     0.000349    0.231              1            0.0805</span></span>
-<span><span class="co">#&gt; 14 Fireplaces           0.489 0.000925    0.153              0.489        0.210 </span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 14 × 5</span></span>
+<span><span class="co">#&gt;    predictor      .d_max_cor_pearson .d_max_imp_rf .d_max_infogain .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                       &lt;dbl&gt;         &lt;dbl&gt;           &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Gr_Liv_Area                 0.696        1                0.832      0.833</span></span>
+<span><span class="co">#&gt;  2 Year_Built                  0.615        0.877            0.709      0.726</span></span>
+<span><span class="co">#&gt;  3 Total_Bsmt_SF               0.626        0.594            0.625      0.615</span></span>
+<span><span class="co">#&gt;  4 Garage_Cars                 0.675        0.417            0.708      0.584</span></span>
+<span><span class="co">#&gt;  5 Garage_Area                 0.651        0.432            0.684      0.577</span></span>
+<span><span class="co">#&gt;  6 Year_Remod_Add              0.586        0.549            0.514      0.549</span></span>
+<span><span class="co">#&gt;  7 First_Flr_SF                0.603        0.474            0.551      0.540</span></span>
+<span><span class="co">#&gt;  8 Garage_Type                 1            0.308            0.453      0.519</span></span>
+<span><span class="co">#&gt;  9 Neighborhood                1            0.127            1          0.503</span></span>
+<span><span class="co">#&gt; 10 Full_Bath                   0.577        0.308            0.527      0.454</span></span>
+<span><span class="co">#&gt; 11 Foundation                  1            0.151            0.454      0.409</span></span>
+<span><span class="co">#&gt; 12 MS_SubClass                 1            0.109            0.576      0.398</span></span>
+<span><span class="co">#&gt; 13 Garage_Finish               1            0.0837           0.501      0.347</span></span>
+<span><span class="co">#&gt; 14 Fireplaces                  0.489        0.241            0.331      0.339</span></span></code></pre></div>
+</div>
+<p>Besides <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize()</a></code>, additional verbs that are available are: <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">minimize()</a></code>, <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target()</a></code>, and <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain()</a></code>. They are used in different situations:</p>
+<ul>
+<li><p><code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize()</a></code> when larger values are better.</p></li>
+<li><p><code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">minimize()</a></code> when smaller values are better.</p></li>
+<li><p><code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target()</a></code> when a specific value of the metric is important.</p></li>
+<li><p><code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain()</a></code> when a range of values is equally desirable.</p></li>
+</ul>
+<p>For examples:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">minimize</a></span><span class="op">(</span><span class="va">aov_pval</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 3</span></span>
+<span><span class="co">#&gt;    predictor    .d_min_aov_pval .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 MS_SubClass                1          1</span></span>
+<span><span class="co">#&gt;  2 MS_Zoning                  1          1</span></span>
+<span><span class="co">#&gt;  3 Alley                      1          1</span></span>
+<span><span class="co">#&gt;  4 Lot_Shape                  1          1</span></span>
+<span><span class="co">#&gt;  5 Land_Contour               1          1</span></span>
+<span><span class="co">#&gt;  6 Neighborhood               1          1</span></span>
+<span><span class="co">#&gt;  7 Condition_1                1          1</span></span>
+<span><span class="co">#&gt;  8 Bldg_Type                  1          1</span></span>
+<span><span class="co">#&gt;  9 House_Style                1          1</span></span>
+<span><span class="co">#&gt; 10 Overall_Cond               1          1</span></span>
+<span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
-<span><span class="co">#&gt;    predictor      cor_pearson   imp_rf infogain .d_target_cor_pearson .d_overall</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;                 &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 Lot_Area             0.255 0.000678   0.140                  1.000      1.000</span></span>
-<span><span class="co">#&gt;  2 Second_Flr_SF        0.275 0.00110    0.172                  0.969      0.969</span></span>
-<span><span class="co">#&gt;  3 Bsmt_Full_Bath       0.275 0.000172   0.0392                 0.969      0.969</span></span>
-<span><span class="co">#&gt;  4 Latitude             0.286 0.000638   0.267                  0.952      0.952</span></span>
-<span><span class="co">#&gt;  5 Half_Bath            0.306 0.000285   0.0624                 0.921      0.921</span></span>
-<span><span class="co">#&gt;  6 Open_Porch_SF        0.320 0.000288   0.148                  0.899      0.899</span></span>
-<span><span class="co">#&gt;  7 Wood_Deck_SF         0.333 0.000124   0.0954                 0.879      0.879</span></span>
-<span><span class="co">#&gt;  8 Mas_Vnr_Area         0.443 0.000288   0.105                  0.709      0.709</span></span>
-<span><span class="co">#&gt;  9 Fireplaces           0.489 0.000925   0.153                  0.637      0.637</span></span>
-<span><span class="co">#&gt; 10 TotRms_AbvGrd        0.493 0.000520   0.148                  0.632      0.632</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 3</span></span>
+<span><span class="co">#&gt;    predictor      .d_target_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                          &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 Lot_Area                       1.000      1.000</span></span>
+<span><span class="co">#&gt;  2 Second_Flr_SF                  0.969      0.969</span></span>
+<span><span class="co">#&gt;  3 Bsmt_Full_Bath                 0.969      0.969</span></span>
+<span><span class="co">#&gt;  4 Latitude                       0.952      0.952</span></span>
+<span><span class="co">#&gt;  5 Half_Bath                      0.921      0.921</span></span>
+<span><span class="co">#&gt;  6 Open_Porch_SF                  0.899      0.899</span></span>
+<span><span class="co">#&gt;  7 Wood_Deck_SF                   0.879      0.879</span></span>
+<span><span class="co">#&gt;  8 Mas_Vnr_Area                   0.709      0.709</span></span>
+<span><span class="co">#&gt;  9 Fireplaces                     0.637      0.637</span></span>
+<span><span class="co">#&gt; 10 TotRms_AbvGrd                  0.632      0.632</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 73 × 6</span></span>
-<span><span class="co">#&gt;    predictor    cor_pearson        imp_rf infogain .d_box_cor_pearson .d_overall</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 MS_SubClass        1     0.000471       0.266                    1          1</span></span>
-<span><span class="co">#&gt;  2 MS_Zoning          1     0.000447       0.113                    1          1</span></span>
-<span><span class="co">#&gt;  3 Lot_Area           0.255 0.000678       0.140                    1          1</span></span>
-<span><span class="co">#&gt;  4 Street             1     0.00000172     0.00365                  1          1</span></span>
-<span><span class="co">#&gt;  5 Alley              1     0.00000629     0.0254                   1          1</span></span>
-<span><span class="co">#&gt;  6 Lot_Shape          1     0.0000782      0.0675                   1          1</span></span>
-<span><span class="co">#&gt;  7 Land_Contour       1     0.0000452      0.0212                   1          1</span></span>
-<span><span class="co">#&gt;  8 Utilities          1     0.00000000527  0.00165                  1          1</span></span>
-<span><span class="co">#&gt;  9 Lot_Config         1     0.0000142      0.0133                   1          1</span></span>
-<span><span class="co">#&gt; 10 Land_Slope         1     0.00000301     0.00568                  1          1</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 73 × 3</span></span>
+<span><span class="co">#&gt;    predictor    .d_box_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                     &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 MS_SubClass                   1          1</span></span>
+<span><span class="co">#&gt;  2 MS_Zoning                     1          1</span></span>
+<span><span class="co">#&gt;  3 Lot_Area                      1          1</span></span>
+<span><span class="co">#&gt;  4 Street                        1          1</span></span>
+<span><span class="co">#&gt;  5 Alley                         1          1</span></span>
+<span><span class="co">#&gt;  6 Lot_Shape                     1          1</span></span>
+<span><span class="co">#&gt;  7 Land_Contour                  1          1</span></span>
+<span><span class="co">#&gt;  8 Utilities                     1          1</span></span>
+<span><span class="co">#&gt;  9 Lot_Config                    1          1</span></span>
+<span><span class="co">#&gt; 10 Land_Slope                    1          1</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="list-of-score-objects-and-filter-methods-provided-by-the-package">List of score objects and filter methods provided by the package<a class="anchor" aria-label="anchor" href="#list-of-score-objects-and-filter-methods-provided-by-the-package"></a>
+</h2>
+<p>A comprehensive list of score class objects included in the package:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
+<span><span class="va">score_aov_fstat</span></span>
+<span><span class="va">score_cor_pearson</span></span>
+<span><span class="va">score_cor_spearman</span></span>
+<span><span class="va">score_imp_rf</span></span>
+<span><span class="va">score_imp_rf_conditional</span></span>
+<span><span class="va">score_imp_rf_oblique</span></span>
+<span><span class="va">score_info_gain</span></span>
+<span><span class="va">score_gain_ratio</span></span>
+<span><span class="va">score_sym_uncert</span></span>
+<span><span class="va">score_roc_auc</span></span>
+<span><span class="va">score_xtab_pval_chisq</span></span>
+<span><span class="va">score_xtab_pval_fisher</span></span></code></pre></div>
+</div>
+<p>The filter methods for score <em>singular</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/show_best_score_num.html">show_best_score_num</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/show_best_score_cutoff.html">show_best_score_cutoff</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/show_best_score_dual.html">show_best_score_dual</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/rank_best_score_min.html">rank_best_score_min</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/rank_best_score_dense.html">rank_best_score_dense</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<p>The filter methods for scores <em>plural</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/show_best_desirability_num.html">show_best_desirability_num</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

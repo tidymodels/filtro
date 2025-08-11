@@ -107,7 +107,7 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span> <span class="op">|&gt;</span></span>
-<span>  <span class="co"># use a subset of data for demonstration</span></span>
+<span>  <span class="co"># Use a subset of data for demonstration</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
 <span>    <span class="va">Sale_Price</span>,</span>
 <span>    <span class="va">MS_SubClass</span>,</span>
@@ -176,7 +176,8 @@
 <span><span class="co">#&gt; 5 infogain 0.00365 Sale_Price Street</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="a-filtering-exmple-for-singular-score">A filtering exmple for <em>singular</em> score<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-singular-score"></a>
+<h2 id="a-filtering-exmple-for-score-singular">A filtering exmple for score <em>singular</em>
+<a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-score-singular"></a>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
@@ -238,12 +239,12 @@
 <span><span class="co">#&gt; 1 aov_pval  237. Sale_Price MS_SubClass</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="a-filtering-example-for-plural-scores">A filtering example for <em>plural</em> scores<a class="anchor" aria-label="anchor" href="#a-filtering-example-for-plural-scores"></a>
+<h2 id="a-filtering-example-for-scores-plural">A filtering example for scores <em>plural</em>
+<a class="anchor" aria-label="anchor" href="#a-filtering-example-for-scores-plural"></a>
 </h2>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a list</span></span>
 <span><span class="va">class_score_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="va">ames_aov_pval_res</span>,</span>
 <span>  <span class="va">ames_cor_pearson_res</span>,</span>
 <span>  <span class="va">ames_imp_rf_reg_res</span>,</span>
 <span>  <span class="va">ames_info_gain_reg_res</span></span>
@@ -255,43 +256,43 @@
 <span>  <span class="co"># Remove outcome</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">outcome</span><span class="op">)</span></span>
 <span><span class="va">ames_scores_results</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 5</span></span>
-<span><span class="co">#&gt;   predictor    aov_pval cor_pearson    imp_rf infogain</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubClass    237.         1     0.0144     0.266  </span></span>
-<span><span class="co">#&gt; 2 MS_Zoning      130.         1     0.0102     0.113  </span></span>
-<span><span class="co">#&gt; 3 Lot_Frontage   Inf          0.165 0.00693    0.146  </span></span>
-<span><span class="co">#&gt; 4 Lot_Area       Inf          0.255 0.0144     0.140  </span></span>
-<span><span class="co">#&gt; 5 Street           5.75       1     0.0000308  0.00365</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass        1     0.0144     0.266  </span></span>
+<span><span class="co">#&gt; 2 MS_Zoning          1     0.0102     0.113  </span></span>
+<span><span class="co">#&gt; 3 Lot_Frontage       0.165 0.00693    0.146  </span></span>
+<span><span class="co">#&gt; 4 Lot_Area           0.255 0.0144     0.140  </span></span>
+<span><span class="co">#&gt; 5 Street             1     0.0000308  0.00365</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
-<span><span class="co">#&gt;   predictor  aov_pval cor_pearson  imp_rf infogain .d_max_cor_pearson .d_overall</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubCla…   237.         1     1.44e-2  0.266                1          1    </span></span>
-<span><span class="co">#&gt; 2 MS_Zoning    130.         1     1.02e-2  0.113                1          1    </span></span>
-<span><span class="co">#&gt; 3 Street         5.75       1     3.08e-5  0.00365              1          1    </span></span>
-<span><span class="co">#&gt; 4 Lot_Area     Inf          0.255 1.44e-2  0.140                0.255      0.255</span></span>
-<span><span class="co">#&gt; 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                0.165      0.165</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass        1     0.0144     0.266                1          1    </span></span>
+<span><span class="co">#&gt; 2 MS_Zoning          1     0.0102     0.113                1          1    </span></span>
+<span><span class="co">#&gt; 3 Street             1     0.0000308  0.00365              1          1    </span></span>
+<span><span class="co">#&gt; 4 Lot_Area           0.255 0.0144     0.140                0.255      0.255</span></span>
+<span><span class="co">#&gt; 5 Lot_Frontage       0.165 0.00693    0.146                0.165      0.165</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 8</span></span>
-<span><span class="co">#&gt;   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubClass    237.         1     0.0144     0.266                1    </span></span>
-<span><span class="co">#&gt; 2 MS_Zoning      130.         1     0.0102     0.113                1    </span></span>
-<span><span class="co">#&gt; 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255</span></span>
-<span><span class="co">#&gt; 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165</span></span>
-<span><span class="co">#&gt; 5 Street           5.75       1     0.0000308  0.00365              1    </span></span>
-<span><span class="co">#&gt; # ℹ 2 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass        1     0.0144     0.266                1             1    </span></span>
+<span><span class="co">#&gt; 2 MS_Zoning          1     0.0102     0.113                1             0.705</span></span>
+<span><span class="co">#&gt; 3 Lot_Area           0.255 0.0144     0.140                0.255         0.994</span></span>
+<span><span class="co">#&gt; 4 Lot_Frontage       0.165 0.00693    0.146                0.165         0.479</span></span>
+<span><span class="co">#&gt; 5 Street             1     0.0000308  0.00365              1             0    </span></span>
+<span><span class="co">#&gt; # ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
@@ -299,16 +300,15 @@
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">imp_rf</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 9</span></span>
-<span><span class="co">#&gt;   predictor    aov_pval cor_pearson    imp_rf infogain .d_max_cor_pearson</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubClass    237.         1     0.0144     0.266                1    </span></span>
-<span><span class="co">#&gt; 2 MS_Zoning      130.         1     0.0102     0.113                1    </span></span>
-<span><span class="co">#&gt; 3 Lot_Area       Inf          0.255 0.0144     0.140                0.255</span></span>
-<span><span class="co">#&gt; 4 Lot_Frontage   Inf          0.165 0.00693    0.146                0.165</span></span>
-<span><span class="co">#&gt; 5 Street           5.75       1     0.0000308  0.00365              1    </span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_max_infogain &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   .d_overall &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 8</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass        1     0.0144     0.266                1             1    </span></span>
+<span><span class="co">#&gt; 2 MS_Zoning          1     0.0102     0.113                1             0.705</span></span>
+<span><span class="co">#&gt; 3 Lot_Area           0.255 0.0144     0.140                0.255         0.994</span></span>
+<span><span class="co">#&gt; 4 Lot_Frontage       0.165 0.00693    0.146                0.165         0.479</span></span>
+<span><span class="co">#&gt; 5 Street             1     0.0000308  0.00365              1             0    </span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
@@ -317,39 +317,37 @@
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">infogain</span><span class="op">)</span>,</span>
 <span>    prop_terms <span class="op">=</span> <span class="fl">0.2</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 9</span></span>
-<span><span class="co">#&gt;   predictor   aov_pval cor_pearson imp_rf infogain .d_max_cor_pearson</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;          &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubClass     237.           1 0.0144    0.266                  1</span></span>
-<span><span class="co">#&gt; # ℹ 3 more variables: .d_max_imp_rf &lt;dbl&gt;, .d_max_infogain &lt;dbl&gt;,</span></span>
-<span><span class="co">#&gt; #   .d_overall &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # A tibble: 1 × 8</span></span>
+<span><span class="co">#&gt;   predictor   cor_pearson imp_rf infogain .d_max_cor_pearson .d_max_imp_rf</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;             &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;         &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass           1 0.0144    0.266                  1             1</span></span>
+<span><span class="co">#&gt; # ℹ 2 more variables: .d_max_infogain &lt;dbl&gt;, .d_overall &lt;dbl&gt;</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">target</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, target <span class="op">=</span> <span class="fl">0.255</span>, high <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
-<span><span class="co">#&gt;   predictor    aov_pval cor_pearson    imp_rf infogain .d_target_cor_pearson</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;           &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;                 &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Lot_Area       Inf          0.255 0.0144     0.140                    1.00</span></span>
-<span><span class="co">#&gt; 2 MS_SubClass    237.         1     0.0144     0.266                    0   </span></span>
-<span><span class="co">#&gt; 3 MS_Zoning      130.         1     0.0102     0.113                    0   </span></span>
-<span><span class="co">#&gt; 4 Lot_Frontage   Inf          0.165 0.00693    0.146                    0   </span></span>
-<span><span class="co">#&gt; 5 Street           5.75       1     0.0000308  0.00365                  0   </span></span>
-<span><span class="co">#&gt; # ℹ 1 more variable: .d_overall &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain .d_target_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;                 &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 Lot_Area           0.255 0.0144     0.140                    1.00       1.00</span></span>
+<span><span class="co">#&gt; 2 MS_SubClass        1     0.0144     0.266                    0          0   </span></span>
+<span><span class="co">#&gt; 3 MS_Zoning          1     0.0102     0.113                    0          0   </span></span>
+<span><span class="co">#&gt; 4 Lot_Frontage       0.165 0.00693    0.146                    0          0   </span></span>
+<span><span class="co">#&gt; 5 Street             1     0.0000308  0.00365                  0          0</span></span>
 <span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">constrain</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0.2</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 5 × 7</span></span>
-<span><span class="co">#&gt;   predictor  aov_pval cor_pearson  imp_rf infogain .d_box_cor_pearson .d_overall</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;         &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 MS_SubCla…   237.         1     1.44e-2  0.266                    1          1</span></span>
-<span><span class="co">#&gt; 2 MS_Zoning    130.         1     1.02e-2  0.113                    1          1</span></span>
-<span><span class="co">#&gt; 3 Lot_Area     Inf          0.255 1.44e-2  0.140                    1          1</span></span>
-<span><span class="co">#&gt; 4 Street         5.75       1     3.08e-5  0.00365                  1          1</span></span>
-<span><span class="co">#&gt; 5 Lot_Front…   Inf          0.165 6.93e-3  0.146                    0          0</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
+<span><span class="co">#&gt;   predictor    cor_pearson    imp_rf infogain .d_box_cor_pearson .d_overall</span></span>
+<span><span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;              &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt; 1 MS_SubClass        1     0.0144     0.266                    1          1</span></span>
+<span><span class="co">#&gt; 2 MS_Zoning          1     0.0102     0.113                    1          1</span></span>
+<span><span class="co">#&gt; 3 Lot_Area           0.255 0.0144     0.140                    1          1</span></span>
+<span><span class="co">#&gt; 4 Street             1     0.0000308  0.00365                  1          1</span></span>
+<span><span class="co">#&gt; 5 Lot_Frontage       0.165 0.00693    0.146                    0          0</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>

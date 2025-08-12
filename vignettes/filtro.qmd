@@ -81,21 +81,30 @@ For this specific filter, i.e., `score_aov_*`, case weights are supported.
 There are two ways to rank and select a top proportion or number 
 of features
 
-For a single score, built-in methods are available. 
+For a single score, use built-in methods:  
 
-`show_best_score_*()`
+- `show_best_score_*()`
 
-`rank_best_score_*()`
+- `rank_best_score_*()`
 
-For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.
+For multi-parameter optimization, use API calls adapted from {desirability}: 
 
-`show_best_desirability_*()`
+- `show_best_desirability_*()`
 
 ## A filtering exmple for score *singular*
+
+In `show_best_score_prop()`, there is a argument called `prop_terms` that lets us control the proportion of predictors to keep.
 
 ```{r}
 # Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+```
+
+We can also fill the safe value first, then apply any of the filtering methods. 
+
+```{r}
+# Fill safe value, then show best
+ames_aov_pval_res |> fill_safe_value() |> show_best_score_prop(prop_terms = 0.2)
 ```
 
 ## A filtering example for scores *plural*
@@ -179,7 +188,7 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control the proportion of predictors to keep.
+In `show_best_desirability_prop()`, there is a argument called `prop_terms` that lets us control the proportion of predictors to keep.
 
 ```{r}
 # Same as above, but retain only a proportion of predictors

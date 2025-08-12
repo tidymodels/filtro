@@ -44,7 +44,7 @@ score_imp_rf_oblique
 
 These models are powered by the following packages:
 
-```{r}
+```{r echo = FALSE}
 score_imp_rf@engine
 score_imp_rf_conditional@engine
 score_imp_rf_oblique@engine
@@ -188,3 +188,19 @@ cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
   fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
 cells_imp_rf_oblique_res@results
 ```
+
+## Available objects and engines
+
+The list of score class objects and their corresponding engines:
+
+```{r, echo = FALSE, message = FALSE}
+knitr::kable(
+  data.frame(
+    "object" = c("`score_imp_rf`", "`score_imp_rf`", "`score_imp_rf_conditional`", "`score_imp_rf_conditional`", "`score_imp_rf_oblique`", "`score_imp_rf_oblique`"),
+    "engine" = c("`ranger::ranger`", "`ranger::ranger`", "`partykit::cforest`", "`partykit::cforest`", "`aorsf::orsf`", "`aorsf::orsf`"),
+    "task" = rep(c("regression", "classification"), 3)
+  )
+)
+
+```
+

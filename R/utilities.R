@@ -123,7 +123,7 @@ show_best_score_prop <- S7::new_generic(
   "show_best_score_prop",
   dispatch_args = "x",
   function(x, ...) {
-    if (!S7::S7_inherits(x, class_score)) {
+    if (!S7::S7_inherits(x, filtro::class_score)) {
       cli::cli_abort(
         "{.arg x} must be a {.cls class_score}, not {.obj_type_friendly {x}}."
       )

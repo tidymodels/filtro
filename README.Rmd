@@ -37,6 +37,8 @@ of features using built-in methods and the
 supports streamlined preprocessing, either standalone or within tidymodels
 workflows such as the [recipes](https://recipes.tidymodels.org) package. 
 
+Include For a detailed introduction, please see [vignette("filtro")](https://filtro.tidymodels.org/dev/articles/filtro.html). 
+
 ## Installation
 
 Install the released version of filtro from [CRAN](https://CRAN.R-project.org) with:
@@ -133,18 +135,6 @@ ames_info_gain_reg_res@results
 
 ## A filtering exmple for score *singular* 
 
-There are several methods for score *singular*: 
-
-- `show_best_score_prop()` shows best score, based on proportion of predictors.
-
-- `show_best_score_num()` shows best score, based on number of predictors.
-
-- `show_best_score_cutoff()` shows best score, based on based on cutoff value.
-
-- `show_best_score_dual()` shows best score, based on number or proportion of predictors with optional cutoff value. 
-
-For one example: 
-
 ```{r}
 ames_aov_pval_res@results
 ```
@@ -154,22 +144,13 @@ ames_aov_pval_res@results
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-There is an option to fill safe value first, and then show best score using various methods. 
-
 ```{r}
-# Fill safe value
+# Fill safe value, then show best score 
 ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
-# Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
 ## A filtering example for scores *plural* 
-
-There are several methods for score *plural*: 
-
-- `show_best_desirability_prop()`
-
-- `show_best_desirability_num()`
 
 ```{r}
 # Create a list
@@ -188,8 +169,6 @@ ames_scores_results <- class_score_list |>
   dplyr::select(-outcome)
 ames_scores_results
 ```
-
-For one example: 
 
 ```{r}
 # Single and multi-parameter optimization using desirability functions

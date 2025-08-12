@@ -1,5 +1,11 @@
 skip()
 
+library(filtro)
+utils::data("ames_scores_results", package = "filtro")
+ames_scores_results <- ames_scores_results |>
+  dplyr::select(-outcome)
+ames_scores_results
+
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))

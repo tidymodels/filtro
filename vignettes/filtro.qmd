@@ -78,7 +78,7 @@ For this specific filter, i.e., `score_aov_*`, case weights are supported.
 
 ## Ranking and filtering
 
-There are two ways to rank and select a top proportion or number 
+There are two main ways to rank and select a top proportion or number 
 of features
 
 For a single score, use built-in methods:  

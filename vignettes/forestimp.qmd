@@ -58,7 +58,7 @@ Regarding score types:
 
 - The {aorsf} oblique random forest computes the permutation importance scores.
 
-## A scoring example - random forest 
+## A scoring example — random forest 
 
 The {modeldata} package contains a data set used to predict which cells in a high content screen were well segmented. It has 57 predictor columns and a factor variable `class` (the outcome). 
 
@@ -93,7 +93,7 @@ cells_imp_rf_res@results
 
 A copule of notes here: 
 
-The random forest filter, supports both
+The random forest filter, including all three types of random forests, 
 
 - regression tasks, and
 
@@ -107,7 +107,7 @@ For this specific filter, i.e., `score_imp_rf_*`, case weights are supported.
 
 ## Hyperparameter tuning
 
-Like {parsnip}, the argument names are harmonized. For example, to set the number of trees: `num.trees` in {ranger}, `ntree` in {partykit}, and `n_tree` in {aorsf} are all standardized to a single name, `trees`, so users only need to remember a single name. 
+Like {parsnip}, the argument names are harmonized. For example, the arguments to set the number of trees: `num.trees` in {ranger}, `ntree` in {partykit}, and `n_tree` in {aorsf} are all standardized to a single name, `trees`, so users only need to remember a single name. 
 
 The same applies to the number of variables to split at each node, `mtry`, and the minimum node size for splitting, `min_n`.
 
@@ -155,7 +155,7 @@ cells_imp_rf_res <- score_imp_rf |>
 
 The same applies to {partykit}- and {aorsf}- specific arguments. 
 
-## A scoring example - conditional random forest 
+## A scoring example — conditional random forest 
 
 For the {partykit} conditional random forest, we again create a score class object to specify the model, then use the `fit()` method to compute the importance scores.
 
@@ -173,7 +173,7 @@ cells_imp_rf_conditional_res@results
 
 Note that when a predictor’s importance score is 0, `partykit::cforest()` may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors.
 
-## An scoring example - oblique random forest 
+## An scoring example — oblique random forest 
 
 For the {aorsf} oblique random forest, we again create a score class object to specify the model, then use the `fit()` method to compute the importance scores.
 
@@ -191,14 +191,14 @@ cells_imp_rf_oblique_res@results
 
 ## Available objects and engines
 
-The list of score class objects and their corresponding engines:
+The list of score class objects for random forests and their corresponding engines:
 
 ```{r, echo = FALSE, message = FALSE}
 knitr::kable(
   data.frame(
-    "object" = c("`score_imp_rf`", "`score_imp_rf`", "`score_imp_rf_conditional`", "`score_imp_rf_conditional`", "`score_imp_rf_oblique`", "`score_imp_rf_oblique`"),
-    "engine" = c("`ranger::ranger`", "`ranger::ranger`", "`partykit::cforest`", "`partykit::cforest`", "`aorsf::orsf`", "`aorsf::orsf`"),
-    "task" = rep(c("regression", "classification"), 3)
+    "object" = c("`score_imp_rf`", "`score_imp_rf_conditional`", "`score_imp_rf_oblique`"),
+    "engine" = c("`ranger::ranger`", "`partykit::cforest`", "`aorsf::orsf`"),
+    "task" = rep(c("regression, classification"), 3)
   )
 )
 

@@ -37,7 +37,7 @@ of features using built-in methods and the
 supports streamlined preprocessing, either standalone or within tidymodels
 workflows such as the [recipes](https://recipes.tidymodels.org) package. 
 
-Include For a detailed introduction, please see [vignette("filtro")](https://filtro.tidymodels.org/dev/articles/filtro.html). 
+For a detailed introduction, please see [vignette("filtro")](https://filtro.tidymodels.org/dev/articles/filtro.html). 
 
 ## Installation
 

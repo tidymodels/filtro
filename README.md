@@ -30,7 +30,7 @@ supports streamlined preprocessing, either standalone or within
 tidymodels workflows such as the
 [recipes](https://recipes.tidymodels.org) package.
 
-Include For a detailed introduction, please see
+For a detailed introduction, please see
 [vignette(“filtro”)](https://filtro.tidymodels.org/dev/articles/filtro.html).
 
 ## Installation

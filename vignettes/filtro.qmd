@@ -236,7 +236,7 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-## List of score objects and filter methods provided by the package
+## Available score objects and filter methods 
 
 The list of score class objects included:
 

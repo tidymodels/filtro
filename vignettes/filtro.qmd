@@ -72,7 +72,7 @@ Since our focus is on feature relevance (rather than hypothesis testing), the AN
 
 Because the outcome is numeric, any predictor that is not a factor will result in an `NA`. In case where `NA` is produced, a safe value can be used to retain the predictor, and can be accessed via `object@fallback_value`. 
 
-By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
+By default, this filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
 For this specific filter, i.e., `score_aov_*`, case weights are supported. 
 
@@ -227,38 +227,20 @@ ames_scores_results |>
 
 ## List of score objects and filter methods provided by the package
 
-A comprehensive list of score class objects included in the package:
+The list of score class objects included:
 
-```{r eval = FALSE}
-score_aov_pval
-score_aov_fstat
-score_cor_pearson
-score_cor_spearman
-score_imp_rf
-score_imp_rf_conditional
-score_imp_rf_oblique
-score_info_gain
-score_gain_ratio
-score_sym_uncert
-score_roc_auc
-score_xtab_pval_chisq
-score_xtab_pval_fisher
+```{r echo = FALSE}
+grep("^score_", ls("package:filtro"), value = TRUE)
 ```
 
-The filter methods for score *singular*: 
+The list of filter methods for score *singular*: 
 
-```{r eval = FALSE}
-show_best_score_prop()
-show_best_score_num()
-show_best_score_cutoff()
-show_best_score_dual()
-rank_best_score_min()
-rank_best_score_dense()
+```{r echo = FALSE}
+grep("^show_best_score_", ls("package:filtro"), value = TRUE)
 ```
 
-The filter methods for scores *plural*: 
+The list of filter methods for scores *plural*: 
 
-```{r eval = FALSE}
-show_best_desirability_prop()
-show_best_desirability_num()
+```{r echo = FALSE}
+grep("^show_best_desirability_", ls("package:filtro"), value = TRUE)
 ```

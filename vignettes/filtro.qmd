@@ -76,24 +76,24 @@ By default, this filter computes `-log10(p_value)`, so that larger values indica
 
 For this specific filter, i.e., `score_aov_*`, case weights are supported. 
 
-## Ranking and filtering
+## Filtering and ranking
 
 There are two main ways to rank and select a top proportion or number 
-of features
+of features. 
 
-For a single score, use built-in methods:  
+To filter or rank a single score, we can use built-in methods:  
 
 - `show_best_score_*()`
 
 - `rank_best_score_*()`
 
-For multi-parameter optimization, use API calls adapted from {desirability}: 
+For multi-parameter optimization, we can use API calls adapted from {desirability}: 
 
 - `show_best_desirability_*()`
 
 ## A filtering exmple for score *singular*
 
-In `show_best_score_prop()`, there is a argument called `prop_terms` that lets us control the proportion of predictors to keep.
+The `show_best_score_prop()` function returns the best score for a single metric. The `prop_terms` argument lets us control the proportion of predictors to keep.
 
 ```{r}
 # Show best score, based on proportion of predictors
@@ -103,7 +103,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 We can also fill the safe value first, then apply any of the filtering methods. 
 
 ```{r}
-# Fill safe value, then show best
+# Fill safe value, then show best score
 ames_aov_pval_res |> fill_safe_value() |> show_best_score_prop(prop_terms = 0.2)
 ```
 
@@ -134,7 +134,7 @@ ames_info_gain_reg_res <-
   fit(Sale_Price ~ ., data = ames)
 ```
 
-Next, we create a list to store these score class objects, including their associated metadata and scores. 
+Next, we create a list to collect these score class objects, including their associated metadata and scores. 
 
 ```{r}
 # Create a list
@@ -146,7 +146,7 @@ class_score_list <- list(
 )
 ```
 
-Then, we fill the safe value specific to each method and remove the `outcome` column.
+Then, we fill the safe value specific to each method, and then remove the `outcome` column.
 
 ```{r}
 # Fill safe values
@@ -157,17 +157,19 @@ ames_scores_results <- class_score_list |>
 ames_scores_results
 ```
 
-Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
+Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), the `show_best_desirability_prop()` function allows joint optimization of multiple metrics using desirability functions. 
 
-A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples: 
+A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain.
+
+For examples: 
 
 ```{r}
-# Single and multi-parameter optimization using desirability functions
 # Optimize correlation
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   ) |> 
+  # Show predictor and desirability only
   dplyr::select(predictor, starts_with(".d_"))
 
 # Optimize correlation and forest importance

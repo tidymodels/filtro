@@ -75,7 +75,6 @@ cells_subset$case <- NULL
 
 First, we create a score class object to specify a {ranger} random forest, and then use the `fit()` method with the standard formula to compute the importance scores.
 
-The data frame of results can be accessed via `object@results`. 
 ```{r}
 # Specify random forest and fit score
 cells_imp_rf_res <- score_imp_rf |>
@@ -84,6 +83,10 @@ cells_imp_rf_res <- score_imp_rf |>
     data = cells_subset, 
     seed = 42 
   )
+```
+
+The data frame of results can be accessed via `object@results`. 
+```{r}
 cells_imp_rf_res@results
 ```
 

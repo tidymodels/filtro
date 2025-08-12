@@ -217,13 +217,9 @@ ames_aov_pval_res |> show_best_score_dual(num_terms = 2, cutoff = 130)
 #> 1 aov_pval  237. Sale_Price MS_SubClass
 ```
 
-We can also fill the safe value first, then apply any of the filtering
-methods.
-
 ``` r
-# Fill safe value
+# Fill safe value, then apply any of the filtering methods
 ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
-# Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> # A tibble: 2 × 4
 #>   name     score outcome    predictor   

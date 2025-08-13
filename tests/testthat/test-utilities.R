@@ -13,13 +13,15 @@ test_that("computations - arrange score", {
     score_aov_fstat |>
     fit(Sale_Price ~ ., data = ames_subset)
 
+  pval_res <- ames_aov_pval_res |> arrange_score()
+
+  fstat_res <- ames_aov_fstat_res |> arrange_score()
+
   # ----------------------------------------------------------------------------
 
-  pval_res <- ames_aov_pval_res |> arrange_score()
   exp_pval_res <- ames_aov_pval_res@results |>
     dplyr::arrange(dplyr::desc(score))
 
-  fstat_res <- ames_aov_fstat_res |> arrange_score()
   exp_fstat_res <- ames_aov_fstat_res@results |>
     dplyr::arrange(dplyr::desc(score))
 
@@ -38,9 +40,9 @@ test_that("computations - fill safe value", {
     score_aov_pval |>
     fit(Sale_Price ~ ., data = ames_subset)
 
-  # ----------------------------------------------------------------------------
-
   pval_res <- ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
+
+  # ----------------------------------------------------------------------------
 
   is_na_score <- is.na(ames_aov_pval_res@results$score)
   ames_aov_pval_res@results$score[
@@ -88,12 +90,12 @@ test_that("computations - show best score based on prop_terms", {
     score_aov_pval |>
     fit(Sale_Price ~ ., data = ames_subset)
 
-  # ----------------------------------------------------------------------------
-
   pval_res_1 <- ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
   pval_res_2 <- ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.4)
   pval_res_3 <- ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.6)
   pval_res_4 <- ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.8)
+
+  # ----------------------------------------------------------------------------
 
   exp_pval_res_1 <- ames_aov_pval_res@results |>
     dplyr::slice_max(score, prop = 0.2)
@@ -153,48 +155,68 @@ test_that("object creation - S7 subclass of base R's list", {
   expect_equal(class(class_score_list), "list")
 })
 
+test_that("computation - bind scores", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # anova pval
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # cor
+  ames_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # forest imp
+  set.seed(42)
+  ames_imp_rf_reg_res <-
+    score_imp_rf |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # info gain
+  ames_info_gain_reg_res <-
+    score_info_gain |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # Create a list
+  class_score_list <- list(
+    ames_aov_pval_res,
+    ames_cor_pearson_res,
+    ames_imp_rf_reg_res,
+    ames_info_gain_reg_res
+  )
+
+  res <- class_score_list |> bind_scores()
+
+  # ----------------------------------------------------------------------------
+
+  length_x <- length(class_score_list)
+  score_set <- class_score_list[[1]]@results
+  for (i in 2:length_x) {
+    score_set <- dplyr::full_join(
+      score_set,
+      class_score_list[[i]]@results,
+      by = c("name", "score", "outcome", "predictor")
+    )
+  }
+
+  score_set <- score_set |>
+    tidyr::pivot_wider(names_from = name, values_from = score)
+  exp_res <- score_set
+
+  expect_equal(res$aov_pval, exp_res$aov_pval)
+  expect_equal(res$cor_pearson, exp_res$cor_pearson)
+  expect_equal(res$imp_rf, exp_res$imp_rf)
+  expect_equal(res$infogain, exp_res$infogain)
+})
+
+
 skip()
-
-# Bind score class object, including their associated metadata and scores
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-# anova pval
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_aov_pval_res@results
-
-# cor
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
-
-# forest imp
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_imp_rf_reg_res@results
-
-# info gain
-ames_info_gain_reg_res <-
-  score_info_gain |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_info_gain_reg_res@results
-
-# Create a list
-class_score_list <- list(
-  ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
-
-# Bind scores
-class_score_list |> bind_scores()
 
 # Fill safe values
 class_score_list |> fill_safe_values()

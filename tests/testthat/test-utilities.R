@@ -27,6 +27,32 @@ test_that("computations - arrange score", {
   expect_equal(fstat_res$score, exp_fstat_res$score)
 })
 
+test_that("computations - fill safe value", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # ----------------------------------------------------------------------------
+
+  pval_res <- ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
+
+  is_na_score <- is.na(ames_aov_pval_res@results$score)
+  ames_aov_pval_res@results$score[
+    is_na_score
+  ] <- ames_aov_pval_res@fallback_value
+
+  exp_pval_res <- ames_aov_pval_res@results
+
+  expect_equal(pval_res$score, exp_pval_res$score)
+})
+
+
 skip()
 
 # Fill safe value
@@ -36,10 +62,6 @@ ames_subset <- ames_subset |>
 
 ames_aov_pval_res <-
   score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
   fit(Sale_Price ~ ., data = ames_subset)
 
 ames_aov_pval_res@results

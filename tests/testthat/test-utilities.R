@@ -110,7 +110,97 @@ test_that("computations - show best score based on prop_terms", {
   expect_equal(pval_res_4$score, exp_pval_res_4$score)
 })
 
+test_that("object creation - S7 subclass of base R's list", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  # anova pval
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_aov_pval_res@results
+
+  # cor
+  ames_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_cor_pearson_res@results
+
+  # forest imp
+  set.seed(42)
+  ames_imp_rf_reg_res <-
+    score_imp_rf |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_imp_rf_reg_res@results
+
+  # info gain
+  ames_info_gain_reg_res <-
+    score_info_gain |>
+    fit(Sale_Price ~ ., data = ames_subset)
+  ames_info_gain_reg_res@results
+
+  # Create a list
+  class_score_list <- list(
+    ames_aov_pval_res,
+    ames_cor_pearson_res,
+    ames_imp_rf_reg_res,
+    ames_info_gain_reg_res
+  )
+
+  expect_equal(class(class_score_list), "list")
+})
+
 skip()
+
+# S7 subclass for method dispatch
+
+# Bind score class object, including their associated metadata and scores
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# forest imp
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_imp_rf_reg_res@results
+
+# info gain
+ames_info_gain_reg_res <-
+  score_info_gain |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_info_gain_reg_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+# Bind scores
+class_score_list |> bind_scores()
+
+# Fill safe values
+class_score_list |> fill_safe_values()
+
 
 # Show best score based on number of predictors
 
@@ -212,52 +302,3 @@ ames_aov_pval_res |> filtro::rank_best_score_dense()
 
 ames_aov_fstat_res@results
 ames_aov_fstat_res |> filtro::rank_best_score_dense()
-
-# S7 subclass for method dispatch
-
-# Bind score class object, including their associated metadata and scores
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-# anova pval
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_aov_pval_res@results
-
-# cor
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
-
-# forest imp
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_imp_rf_reg_res@results
-
-# info gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
-ames_info_gain_reg_res <-
-  score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_info_gain_reg_res@results
-
-# Create a list
-class_score_list <- list(
-  ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
-
-# Bind scores
-class_score_list |> bind_scores()
-
-# Fill safe values
-class_score_list |> fill_safe_values()

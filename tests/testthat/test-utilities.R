@@ -272,9 +272,6 @@ test_that("computation - fill safe values", {
 
 skip()
 
-# Fill safe values
-class_score_list |> fill_safe_values()
-
 # Show best score based on number of predictors
 
 ames_subset <- helper_ames_full()

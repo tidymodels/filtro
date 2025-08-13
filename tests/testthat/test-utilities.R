@@ -1,34 +1,33 @@
+test_that("computations - arrange score", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  ames_aov_fstat_res <-
+    score_aov_fstat |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # ----------------------------------------------------------------------------
+
+  pval_res <- ames_aov_pval_res |> arrange_score()
+  exp_pval_res <- ames_aov_pval_res@results |>
+    dplyr::arrange(dplyr::desc(score))
+
+  fstat_res <- ames_aov_fstat_res |> arrange_score()
+  exp_fstat_res <- ames_aov_fstat_res@results |>
+    dplyr::arrange(dplyr::desc(score))
+
+  expect_equal(pval_res$score, exp_pval_res$score)
+  expect_equal(fstat_res$score, exp_fstat_res$score)
+})
+
 skip()
-
-ames_scores_results |>
-  show_best_desirability_prop(
-    maximize(cor_pearson, low = 0, high = 1),
-    maximize(imp_rf),
-    maximize(infogain),
-    prop_terms = 0.2
-  ) |>
-  dplyr::select(starts_with(".d_"))
-
-
-# Arrange score
-
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> arrange_score()
-
-ames_aov_fstat_res@results
-ames_aov_fstat_res |> arrange_score()
 
 # Fill safe value
 ames_subset <- helper_ames()

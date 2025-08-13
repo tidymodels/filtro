@@ -155,8 +155,6 @@ test_that("object creation - S7 subclass of base R's list", {
 
 skip()
 
-# S7 subclass for method dispatch
-
 # Bind score class object, including their associated metadata and scores
 ames_subset <- helper_ames()
 ames_subset <- ames_subset |>
@@ -200,7 +198,6 @@ class_score_list |> bind_scores()
 
 # Fill safe values
 class_score_list |> fill_safe_values()
-
 
 # Show best score based on number of predictors
 

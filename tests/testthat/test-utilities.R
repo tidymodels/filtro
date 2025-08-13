@@ -1,6 +1,5 @@
 skip()
 
-
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),

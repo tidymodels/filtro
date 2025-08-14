@@ -1,120 +1,98 @@
-skip()
+test_that("good results - based on prop", {
+  skip_if_not_installed("desirability2")
+  library(desirability2) # Otherwise Error in `compute_desirability_scores(res, mtr = mtr)`
 
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
+  ames_scores_results <- helper_ames_res()
 
-# ANOVA p-value
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_aov_pval_res@results
+  des_1 <- ames_scores_results |>
+    show_best_desirability_prop(
+      maximize(cor_pearson, low = 0, high = 1),
+      maximize(imp_rf),
+      maximize(infogain)
+    )
 
-# Pearson correlation
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_cor_pearson_res@results
+  # ----------------------------------------------------------------------------
 
-# Forest importance
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_imp_rf_reg_res@results
+  mtr <- des_1
+  d_cor_pearson_1 <- desirability2::d_max(mtr$cor_pearson, low = 0, high = 1)
+  d_imp_rf_1 <- desirability2::d_max(
+    mtr$imp_rf,
+    low = min(mtr$imp_rf),
+    high = max(mtr$imp_rf)
+  )
+  d_infogain_1 <- desirability2::d_max(
+    mtr$infogain,
+    low = min(mtr$infogain),
+    high = max(mtr$infogain)
+  )
 
-# Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
+  expect_equal(des_1$.d_max_cor_pearson, d_cor_pearson_1)
+  expect_equal(des_1$.d_max_imp_rf, d_imp_rf_1)
+  expect_equal(des_1$.d_max_infogain, d_infogain_1)
 
-ames_info_gain_reg_res <-
-  score_info_gain_reg |>
-  fit(Sale_Price ~ ., data = ames_subset)
-ames_info_gain_reg_res@results
+  expect_named(
+    des_1,
+    c(
+      "predictor",
+      "aov_pval",
+      "cor_pearson",
+      "imp_rf",
+      "infogain",
+      ".d_max_cor_pearson",
+      ".d_max_imp_rf",
+      ".d_max_infogain",
+      ".d_overall"
+    )
+  )
+})
 
-# Create a list
-class_score_list <- list(
-  ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
+test_that("good results - based on num", {
+  skip_if_not_installed("desirability2")
+  library(desirability2) # Otherwise Error in `compute_desirability_scores(res, mtr = mtr)`
 
-# Fill safe values
-ames_scores_results <- class_score_list |>
-  filtro::fill_safe_values() |>
-  # TODO Write a helper at current line to transform scores if needed,
-  # e.g., abs(cor_*), max(roc_auc, 1 - roc_auc)
-  # TODO Remove the next line after removing outcome from score-*.R
-  dplyr::select(-outcome)
-ames_scores_results
+  ames_scores_results <- helper_ames_res()
 
-# show_best_desirability_prop
-# TODO Default prop_terms = 1. Can change later.
+  des_1 <- ames_scores_results |>
+    show_best_desirability_num(
+      maximize(cor_pearson, low = 0, high = 1),
+      maximize(imp_rf),
+      maximize(infogain)
+    )
 
-library(desirability2)
+  # ----------------------------------------------------------------------------
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1)
-)
+  mtr <- des_1
+  d_cor_pearson_1 <- desirability2::d_max(mtr$cor_pearson, low = 0, high = 1)
+  d_imp_rf_1 <- desirability2::d_max(
+    mtr$imp_rf,
+    low = min(mtr$imp_rf),
+    high = max(mtr$imp_rf)
+  )
+  d_infogain_1 <- desirability2::d_max(
+    mtr$infogain,
+    low = min(mtr$infogain),
+    high = max(mtr$infogain)
+  )
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
+  expect_equal(des_1$.d_max_cor_pearson, d_cor_pearson_1)
+  expect_equal(des_1$.d_max_imp_rf, d_imp_rf_1)
+  expect_equal(des_1$.d_max_infogain, d_infogain_1)
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain)
-)
+  expect_named(
+    des_1,
+    c(
+      "predictor",
+      "aov_pval",
+      "cor_pearson",
+      "imp_rf",
+      "infogain",
+      ".d_max_cor_pearson",
+      ".d_max_imp_rf",
+      ".d_max_infogain",
+      ".d_overall"
+    )
+  )
+})
 
-show_best_desirability_prop(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain),
-  prop_terms = 0.2
-)
-
-show_best_desirability_prop(
-  ames_scores_results,
-  target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
-)
-
-show_best_desirability_prop(
-  ames_scores_results,
-  constrain(cor_pearson, low = 0.2, high = 1)
-)
-
-# show_best_desirability_num
-# TODO Default num_terms = 5. Can change later.
-
-show_best_desirability_num(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1)
-)
-
-show_best_desirability_num(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf)
-)
-
-show_best_desirability_num(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain)
-)
-
-show_best_desirability_num(
-  ames_scores_results,
-  maximize(cor_pearson, low = 0, high = 1),
-  maximize(imp_rf),
-  maximize(infogain),
-  num_terms = 2
-)
+# TODO Test missing data
+# TODO Test bad results

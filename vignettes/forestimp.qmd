@@ -10,7 +10,8 @@ knitr:
     comment: '#>'
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -19,11 +20,16 @@ knitr::opts_chunk$set(
 
 > ⚠️ **work-in-progress**
 
-```{r, start, include = FALSE}
+```{r}
+#| label: start
+#| include: false
+
 library(filtro)
 library(dplyr)
 library(modeldata)
 ```
+
+We'll need to load a few packages: 
 
 ```{r}
 #| label: setup
@@ -32,11 +38,12 @@ library(dplyr)
 library(modeldata)
 ```
 
-## A score class object
+## Score class objects
 
-Predictor importance can be assessed using three different random forest models via the following objects:
+Predictor importance can be assessed using three different random forest models. They can be accessed via the following score class objects:
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 score_imp_rf
 score_imp_rf_conditional
 score_imp_rf_oblique
@@ -45,6 +52,7 @@ score_imp_rf_oblique
 These models are powered by the following packages:
 
 ```{r}
+#| echo: false
 score_imp_rf@engine
 score_imp_rf_conditional@engine
 score_imp_rf_oblique@engine
@@ -56,9 +64,9 @@ Regarding score types:
 
 - The {partykit} conditional random forest computes the conditional importance scores.
 
-- The {aorsf} oblique computes the permutation importance scores.
+- The {aorsf} oblique random forest computes the permutation importance scores.
 
-## A random forest scoring example
+## A scoring example — random forest 
 
 The {modeldata} package contains a data set used to predict which cells in a high content screen were well segmented. It has 57 predictor columns and a factor variable `class` (the outcome). 
 
@@ -70,12 +78,11 @@ cells_subset <- modeldata::cells |>
   dplyr::slice(1:50)
 cells_subset$case <- NULL
 
-# cells_subset |> str() # uncomment to see the structure of the data
+# cells_subset |> str() # Uncomment to see the structure of the data
 ```
 
 First, we create a score class object to specify a {ranger} random forest, and then use the `fit()` method with the standard formula to compute the importance scores.
 
-The data frame of results can be accessed via `object@results`. 
 ```{r}
 # Specify random forest and fit score
 cells_imp_rf_res <- score_imp_rf |>
@@ -84,28 +91,51 @@ cells_imp_rf_res <- score_imp_rf |>
     data = cells_subset, 
     seed = 42 
   )
+```
+
+The data frame of results can be accessed via `object@results`. 
+
+```{r}
 cells_imp_rf_res@results
 ```
 
-Like {parsnip}, the argument names are harmonized. For example, to set the number of trees: `num.trees` in {ranger}, `ntree` in {partykit}, and `n_tree` in {aorsf} are all standardized to a single name, `trees`, so users only need to remember a single name. The same applies to the number of variables to split at each node, `mtry`, and the minimum node size for splitting, `min_n`.
+A copule of notes here: 
+
+The random forest filter, including all three types of random forests, 
+
+- regression tasks, and
+
+- classificaiton tasks.
+
+In case where `NA` is produced, a safe value can be used to retain the predictor, and can be accessed via `object@fallback_value`. 
+
+Larger values indicate more important predictors. 
+
+For this specific filter, i.e., `score_imp_rf_*`, case weights are supported. 
+
+## Hyperparameter tuning
+
+Like {parsnip}, the argument names are harmonized. For example, the arguments to set the number of trees: `num.trees` in {ranger}, `ntree` in {partykit}, and `n_tree` in {aorsf} are all standardized to a single name, `trees`, so users only need to remember a single name. 
+
+The same applies to the number of variables to split at each node, `mtry`, and the minimum node size for splitting, `min_n`.
 
 ```{r}
+#| eval: false
 # Set hyperparameters
 cells_imp_rf_res <- score_imp_rf |>
   fit(
     class ~ .,
     data = cells_subset,     
-    trees = 100,
+    trees = 100, 
     mtry = 2,
-    min_n = 1, 
-    seed = 42 
+    min_n = 1
   )
-cells_imp_rf_res@results
 ```
 
-However, there is one argument name specific to {ranger}. For reproducibility, instead of using the standard `set.seed()` method, users must use the `seed` argument.
+However, there is one argument name specific to {ranger}. For reproducibility, instead of using the standard `set.seed()` method, we would use the `seed` argument.
 
-```{r eval = FALSE}
+```{r}
+#| eval: false
 cells_imp_rf_res <- score_imp_rf |>
   fit(
     class ~ .,
@@ -113,13 +143,16 @@ cells_imp_rf_res <- score_imp_rf |>
     trees = 100,
     mtry = 2,
     min_n = 1, 
-    seed = 42 # set seed for reproducibility
+    seed = 42 # Set seed for reproducibility
   )
 ```
 
-If users use the argument names from {ranger}, that’s fine too. We have handled the necessary adjustments automatically. The following code chunk can be used to obtain the same fitted score: 
+## Seamless argument support
 
-```{r eval = FALSE}
+If users use {ranger} argument names, intentionally or not, it still works. We have handled the necessary adjustments. The following code chunk can be used to obtain a fitted score: 
+
+```{r}
+#| eval: false
 cells_imp_rf_res <- score_imp_rf |>
   fit(
     class ~ .,
@@ -131,7 +164,9 @@ cells_imp_rf_res <- score_imp_rf |>
   )
 ```
 
-## A conditional random forest scoring example
+The same applies to {partykit}- and {aorsf}- specific arguments. 
+
+## A scoring example — conditional random forest 
 
 For the {partykit} conditional random forest, we again create a score class object to specify the model, then use the `fit()` method to compute the importance scores.
 
@@ -147,9 +182,9 @@ cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
 cells_imp_rf_conditional_res@results
 ```
 
-Note that when a predictor’s importance score is 0, `partykit::cforest()` may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors, and we have handled this automatically.
+Note that when a predictor’s importance score is 0, `partykit::cforest()` may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors.
 
-## An oblique random forest scoring example
+## An scoring example — oblique random forest 
 
 For the {aorsf} oblique random forest, we again create a score class object to specify the model, then use the `fit()` method to compute the importance scores.
 
@@ -164,3 +199,21 @@ cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
   fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
 cells_imp_rf_oblique_res@results
 ```
+
+## Available objects and engines
+
+The list of score class objects for random forests, their corresponding engines and supported tasks:
+
+```{r}
+#| echo: false
+#| message: false
+knitr::kable(
+  data.frame(
+    "object" = c("`score_imp_rf`", "`score_imp_rf_conditional`", "`score_imp_rf_oblique`"),
+    "engine" = c("`ranger::ranger`", "`partykit::cforest`", "`aorsf::orsf`"),
+    "task" = rep(c("regression, classification"), 3)
+  )
+)
+
+```
+

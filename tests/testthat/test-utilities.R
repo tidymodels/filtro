@@ -112,7 +112,7 @@ test_that("computations - show best score based on prop_terms", {
   expect_equal(pval_res_4$score, exp_pval_res_4$score)
 
   # ----------------------------------------------------------------------------
-  # TODO slice_min
+  # TODO direction == "minimize"
 })
 
 test_that("computations - show best score based on num_terms", {
@@ -142,8 +142,9 @@ test_that("computations - show best score based on num_terms", {
   expect_equal(pval_res_1$score, exp_pval_res_1$score)
   expect_equal(pval_res_2$score, exp_pval_res_2$score)
   expect_equal(pval_res_3$score, exp_pval_res_3$score)
+
   # ----------------------------------------------------------------------------
-  # TODO slice_min
+  # TODO direction == "minimize"
 })
 
 test_that("computations - show best score based on cutoff", {
@@ -169,6 +170,9 @@ test_that("computations - show best score based on cutoff", {
 
   expect_equal(pval_res_1$score, exp_pval_res_1$score)
   expect_equal(pval_res_2$score, exp_pval_res_2$score)
+
+  # ----------------------------------------------------------------------------
+  # TODO direction == "minimize"
 })
 
 test_that("object creation - S7 subclass of base R's list", {

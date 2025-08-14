@@ -78,7 +78,7 @@ cells_subset <- modeldata::cells |>
   dplyr::slice(1:50)
 cells_subset$case <- NULL
 
-# cells_subset |> str() # uncomment to see the structure of the data
+# cells_subset |> str() # Uncomment to see the structure of the data
 ```
 
 First, we create a score class object to specify a {ranger} random forest, and then use the `fit()` method with the standard formula to compute the importance scores.
@@ -202,7 +202,7 @@ cells_imp_rf_oblique_res@results
 
 ## Available objects and engines
 
-The list of score class objects for random forests and their corresponding engines:
+The list of score class objects for random forests, their corresponding engines and supported tasks:
 
 ```{r}
 #| echo: false

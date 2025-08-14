@@ -110,6 +110,40 @@ test_that("computations - show best score based on prop_terms", {
   expect_equal(pval_res_2$score, exp_pval_res_2$score)
   expect_equal(pval_res_3$score, exp_pval_res_3$score)
   expect_equal(pval_res_4$score, exp_pval_res_4$score)
+
+  # ----------------------------------------------------------------------------
+  # TODO slice_min
+})
+
+test_that("computations - show best score based on num_terms", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res_1 <- ames_aov_pval_res |> show_best_score_num(num_terms = 2)
+  pval_res_2 <- ames_aov_pval_res |> show_best_score_num(num_terms = 3)
+  pval_res_3 <- ames_aov_pval_res |> show_best_score_num(num_terms = 4)
+
+  # ----------------------------------------------------------------------------
+
+  exp_pval_res_1 <- ames_aov_pval_res@results |>
+    dplyr::slice_max(score, n = 2)
+  exp_pval_res_2 <- ames_aov_pval_res@results |>
+    dplyr::slice_max(score, n = 3)
+  exp_pval_res_3 <- ames_aov_pval_res@results |>
+    dplyr::slice_max(score, n = 4)
+
+  expect_equal(pval_res_1$score, exp_pval_res_1$score)
+  expect_equal(pval_res_2$score, exp_pval_res_2$score)
+  expect_equal(pval_res_3$score, exp_pval_res_3$score)
+  # ----------------------------------------------------------------------------
+  # TODO slice_min
 })
 
 test_that("object creation - S7 subclass of base R's list", {
@@ -271,26 +305,6 @@ test_that("computation - fill safe values", {
 })
 
 skip()
-
-# Show best score based on number of predictors
-
-ames_subset <- helper_ames_full()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> show_best_score_num(num_terms = 2)
-
-ames_aov_fstat_res@results
-ames_aov_fstat_res |> show_best_score_num(num_terms = 2)
 
 # Show best score based on cutoff value
 

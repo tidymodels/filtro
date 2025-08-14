@@ -175,6 +175,94 @@ test_that("computations - show best score based on cutoff", {
   # TODO direction == "minimize"
 })
 
+test_that("computations - show best score based on cutoff", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res_1 <- ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
+  pval_res_2 <- ames_aov_pval_res |> show_best_score_cutoff(cutoff = 94.5)
+
+  # ----------------------------------------------------------------------------
+
+  exp_pval_res_1 <- ames_aov_pval_res@results |>
+    dplyr::filter(score >= 130)
+  exp_pval_res_2 <- ames_aov_pval_res@results |>
+    dplyr::filter(score >= 94.5)
+
+  expect_equal(pval_res_1$score, exp_pval_res_1$score)
+  expect_equal(pval_res_2$score, exp_pval_res_2$score)
+})
+
+test_that("computations - show best score dual method", {
+  skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res_1 <- ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
+
+  pval_res_2 <- ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
+
+  # ----------------------------------------------------------------------------
+
+  exp_pval_res_1 <- ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.5)
+
+  exp_pval_res_2 <- ames_aov_pval_res |> show_best_score_num(num_terms = 2)
+
+  expect_equal(pval_res_1$score, exp_pval_res_1$score)
+  expect_equal(pval_res_2$score, exp_pval_res_2$score)
+
+  # ----------------------------------------------------------------------------
+  # prop_terms used with cutoff
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res_3 <- ames_aov_pval_res |>
+    show_best_score_dual(prop_terms = 0.5, cutoff = 130)
+
+  # ----------------------------------------------------------------------------
+
+  ames_aov_pval_res@results <- ames_aov_pval_res |>
+    show_best_score_prop(prop_terms = 0.5)
+  exp_pval_res_3 <- ames_aov_pval_res |>
+    show_best_score_cutoff(cutoff = 130)
+
+  expect_equal(pval_res_3$score, exp_pval_res_3$score)
+
+  # ----------------------------------------------------------------------------
+  # num_terms used with cutoff
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res_4 <- ames_aov_pval_res |>
+    show_best_score_dual(num_terms = 2, cutoff = 130)
+
+  # ----------------------------------------------------------------------------
+
+  ames_aov_pval_res@results <- ames_aov_pval_res |>
+    show_best_score_num(num_terms = 2)
+  exp_pval_res_4 <- ames_aov_pval_res |>
+    show_best_score_cutoff(cutoff = 130)
+
+  expect_equal(pval_res_4$score, exp_pval_res_4$score)
+})
+
 test_that("object creation - S7 subclass of base R's list", {
   skip_if_not_installed("modeldata")
 
@@ -334,29 +422,6 @@ test_that("computation - fill safe values", {
 })
 
 skip()
-
-# Show best score based on proportion of predictors with
-# optional cutoff value
-
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
 
 # Rank score based on min_rank()
 ames_subset <- helper_ames()

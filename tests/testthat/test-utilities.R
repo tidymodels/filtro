@@ -472,3 +472,5 @@ test_that("computation - fill safe values", {
   expect_equal(res$imp_rf, exp_res$imp_rf)
   expect_equal(res$infogain, exp_res$infogain)
 })
+
+# TODO Some tests are not exhaustive and can be improved

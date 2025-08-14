@@ -78,15 +78,16 @@
     <blockquote>
 <p>⚠️ <strong>work-in-progress</strong></p>
 </blockquote>
+<p>We’ll need to load a few packages:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/filtro" class="external-link">filtro</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://modeldata.tidymodels.org" class="external-link">modeldata</a></span><span class="op">)</span></span></code></pre></div>
 </div>
-<section class="level2"><h2 id="a-score-class-object">A score class object<a class="anchor" aria-label="anchor" href="#a-score-class-object"></a>
+<section class="level2"><h2 id="score-class-objects">Score class objects<a class="anchor" aria-label="anchor" href="#score-class-objects"></a>
 </h2>
-<p>Predictor importance can be assessed using three different random forest models via the following objects:</p>
+<p>Predictor importance can be assessed using three different random forest models. They can be accessed via the following score class objects:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">score_imp_rf</span></span>
@@ -95,20 +96,16 @@
 </div>
 <p>These models are powered by the following packages:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">score_imp_rf</span><span class="op">@</span><span class="va">engine</span></span>
-<span><span class="co">#&gt; [1] "ranger"</span></span>
-<span><span class="va">score_imp_rf_conditional</span><span class="op">@</span><span class="va">engine</span></span>
+<pre><code><span><span class="co">#&gt; [1] "ranger"</span></span>
 <span><span class="co">#&gt; [1] "partykit"</span></span>
-<span><span class="va">score_imp_rf_oblique</span><span class="op">@</span><span class="va">engine</span></span>
-<span><span class="co">#&gt; [1] "aorsf"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "aorsf"</span></span></code></pre>
 </div>
 <p>Regarding score types:</p>
 <ul>
 <li><p>The {ranger} random forest computes the importance scores.</p></li>
 <li><p>The {partykit} conditional random forest computes the conditional importance scores.</p></li>
-<li><p>The {aorsf} oblique computes the permutation importance scores.</p></li>
-</ul></section><section class="level2"><h2 id="a-random-forest-scoring-example">A random forest scoring example<a class="anchor" aria-label="anchor" href="#a-random-forest-scoring-example"></a>
+<li><p>The {aorsf} oblique random forest computes the permutation importance scores.</p></li>
+</ul></section><section class="level2"><h2 id="a-scoring-example-random-forest">A scoring example — random forest<a class="anchor" aria-label="anchor" href="#a-scoring-example-random-forest"></a>
 </h2>
 <p>The {modeldata} package contains a data set used to predict which cells in a high content screen were well segmented. It has 57 predictor columns and a factor variable <code>class</code> (the outcome).</p>
 <p>Since <code>case</code> is only used to indicate Train/Test, not for data analysis, it will be set to <code>NULL</code>. Furthermore, for efficiency, we will use a small sample of 50 from the original 2019 observations.</p>
@@ -119,10 +116,9 @@
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
 <span><span class="va">cells_subset</span><span class="op">$</span><span class="va">case</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
 <span></span>
-<span><span class="co"># cells_subset |&gt; str() # uncomment to see the structure of the data</span></span></code></pre></div>
+<span><span class="co"># cells_subset |&gt; str() # Uncomment to see the structure of the data</span></span></code></pre></div>
 </div>
 <p>First, we create a score class object to specify a {ranger} random forest, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the importance scores.</p>
-<p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify random forest and fit score</span></span>
@@ -131,8 +127,12 @@
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>, </span>
 <span>    seed <span class="op">=</span> <span class="fl">42</span> </span>
-<span>  <span class="op">)</span></span>
-<span><span class="va">cells_imp_rf_res</span><span class="op">@</span><span class="va">results</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
+</div>
+<p>The data frame of results can be accessed via <code>object@results</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name       score outcome predictor                   </span></span>
 <span><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
@@ -148,38 +148,34 @@
 <span><span class="co">#&gt; 10 imp_rf -0.000265 class   diff_inten_density_ch_3     </span></span>
 <span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
 </div>
-<p>Like {parsnip}, the argument names are harmonized. For example, to set the number of trees: <code>num.trees</code> in {ranger}, <code>ntree</code> in {partykit}, and <code>n_tree</code> in {aorsf} are all standardized to a single name, <code>trees</code>, so users only need to remember a single name. The same applies to the number of variables to split at each node, <code>mtry</code>, and the minimum node size for splitting, <code>min_n</code>.</p>
+<p>A copule of notes here:</p>
+<p>The random forest filter, including all three types of random forests,</p>
+<ul>
+<li><p>regression tasks, and</p></li>
+<li><p>classificaiton tasks.</p></li>
+</ul>
+<p>In case where <code>NA</code> is produced, a safe value can be used to retain the predictor, and can be accessed via <code>object@fallback_value</code>.</p>
+<p>Larger values indicate more important predictors.</p>
+<p>For this specific filter, i.e., <code>score_imp_rf_*</code>, case weights are supported.</p>
+</section><section class="level2"><h2 id="hyperparameter-tuning">Hyperparameter tuning<a class="anchor" aria-label="anchor" href="#hyperparameter-tuning"></a>
+</h2>
+<p>Like {parsnip}, the argument names are harmonized. For example, the arguments to set the number of trees: <code>num.trees</code> in {ranger}, <code>ntree</code> in {partykit}, and <code>n_tree</code> in {aorsf} are all standardized to a single name, <code>trees</code>, so users only need to remember a single name.</p>
+<p>The same applies to the number of variables to split at each node, <code>mtry</code>, and the minimum node size for splitting, <code>min_n</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set hyperparameters</span></span>
 <span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>,     </span>
-<span>    trees <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>    trees <span class="op">=</span> <span class="fl">100</span>, </span>
 <span>    mtry <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    min_n <span class="op">=</span> <span class="fl">1</span>, </span>
-<span>    seed <span class="op">=</span> <span class="fl">42</span> </span>
-<span>  <span class="op">)</span></span>
-<span><span class="va">cells_imp_rf_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
-<span><span class="co">#&gt;    name       score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
-<span><span class="co">#&gt;  1 imp_rf -0.00159  class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt;  2 imp_rf  0.00261  class   area_ch_1                   </span></span>
-<span><span class="co">#&gt;  3 imp_rf  0.0100   class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt;  4 imp_rf -0.000803 class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt;  5 imp_rf  0.000801 class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt;  6 imp_rf  0.000823 class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt;  7 imp_rf  0.00410  class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt;  8 imp_rf  0.00577  class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt;  9 imp_rf  0.00255  class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; 10 imp_rf -0.00263  class   diff_inten_density_ch_3     </span></span>
-<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
+<span>    min_n <span class="op">=</span> <span class="fl">1</span></span>
+<span>  <span class="op">)</span></span></code></pre></div>
 </div>
-<p>However, there is one argument name specific to {ranger}. For reproducibility, instead of using the standard <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> method, users must use the <code>seed</code> argument.</p>
+<p>However, there is one argument name specific to {ranger}. For reproducibility, instead of using the standard <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> method, we would use the <code>seed</code> argument.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
@@ -187,12 +183,14 @@
 <span>    trees <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>    mtry <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>    min_n <span class="op">=</span> <span class="fl">1</span>, </span>
-<span>    seed <span class="op">=</span> <span class="fl">42</span> <span class="co"># set seed for reproducibility</span></span>
+<span>    seed <span class="op">=</span> <span class="fl">42</span> <span class="co"># Set seed for reproducibility</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
-<p>If users use the argument names from {ranger}, that’s fine too. We have handled the necessary adjustments automatically. The following code chunk can be used to obtain the same fitted score:</p>
+</section><section class="level2"><h2 id="seamless-argument-support">Seamless argument support<a class="anchor" aria-label="anchor" href="#seamless-argument-support"></a>
+</h2>
+<p>If users use {ranger} argument names, intentionally or not, it still works. We have handled the necessary adjustments. The following code chunk can be used to obtain a fitted score:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
@@ -203,12 +201,13 @@
 <span>    seed <span class="op">=</span> <span class="fl">42</span> </span>
 <span>  <span class="op">)</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="a-conditional-random-forest-scoring-example">A conditional random forest scoring example<a class="anchor" aria-label="anchor" href="#a-conditional-random-forest-scoring-example"></a>
+<p>The same applies to {partykit}- and {aorsf}- specific arguments.</p>
+</section><section class="level2"><h2 id="a-scoring-example-conditional-random-forest">A scoring example — conditional random forest<a class="anchor" aria-label="anchor" href="#a-scoring-example-conditional-random-forest"></a>
 </h2>
 <p>For the {partykit} conditional random forest, we again create a score class object to specify the model, then use the <code><a href="../reference/fit.html">fit()</a></code> method to compute the importance scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
@@ -231,13 +230,13 @@
 <span><span class="co">#&gt; 10 imp_rf_conditional  0.0688 class   diff_inten_density_ch_3     </span></span>
 <span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
 </div>
-<p>Note that when a predictor’s importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors, and we have handled this automatically.</p>
-</section><section class="level2"><h2 id="an-oblique-random-forest-scoring-example">An oblique random forest scoring example<a class="anchor" aria-label="anchor" href="#an-oblique-random-forest-scoring-example"></a>
+<p>Note that when a predictor’s importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors.</p>
+</section><section class="level2"><h2 id="an-scoring-example-oblique-random-forest">An scoring example — oblique random forest<a class="anchor" aria-label="anchor" href="#an-scoring-example-oblique-random-forest"></a>
 </h2>
 <p>For the {aorsf} oblique random forest, we again create a score class object to specify the model, then use the <code><a href="../reference/fit.html">fit()</a></code> method to compute the importance scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span></span>
@@ -259,6 +258,42 @@
 <span><span class="co">#&gt;  9 imp_rf_oblique  0.00526  class   diff_inten_density_ch_1     </span></span>
 <span><span class="co">#&gt; 10 imp_rf_oblique  0.00284  class   diff_inten_density_ch_3     </span></span>
 <span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="available-objects-and-engines">Available objects and engines<a class="anchor" aria-label="anchor" href="#available-objects-and-engines"></a>
+</h2>
+<p>The list of score class objects for random forests, their corresponding engines and supported tasks:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table caption-top">
+<colgroup>
+<col style="width: 36%">
+<col style="width: 27%">
+<col style="width: 36%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">object</th>
+<th style="text-align: left;">engine</th>
+<th style="text-align: left;">task</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>score_imp_rf</code></td>
+<td style="text-align: left;"><code><a href="http://imbs-hl.github.io/ranger/reference/ranger.html" class="external-link">ranger::ranger</a></code></td>
+<td style="text-align: left;">regression, classification</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>score_imp_rf_conditional</code></td>
+<td style="text-align: left;"><code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest</a></code></td>
+<td style="text-align: left;">regression, classification</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>score_imp_rf_oblique</code></td>
+<td style="text-align: left;"><code><a href="https://docs.ropensci.org/aorsf/reference/orsf.html" class="external-link">aorsf::orsf</a></code></td>
+<td style="text-align: left;">regression, classification</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -30,6 +30,9 @@ supports streamlined preprocessing, either standalone or within
 tidymodels workflows such as the
 [recipes](https://recipes.tidymodels.org) package.
 
+For a detailed introduction, please see
+[vignette(“filtro”)](https://filtro.tidymodels.org/dev/articles/filtro.html).
+
 ## Installation
 
 Install the released version of filtro from
@@ -152,22 +155,6 @@ ames_info_gain_reg_res@results
 
 ## A filtering exmple for score *singular*
 
-There are several methods for score *singular*:
-
-- `show_best_score_prop()` shows best score, based on proportion of
-  predictors.
-
-- `show_best_score_num()` shows best score, based on number of
-  predictors.
-
-- `show_best_score_cutoff()` shows best score, based on based on cutoff
-  value.
-
-- `show_best_score_dual()` shows best score, based on number or
-  proportion of predictors with optional cutoff value.
-
-For one example:
-
 ``` r
 ames_aov_pval_res@results
 #> # A tibble: 5 × 4
@@ -189,13 +176,9 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> 1 aov_pval  237. Sale_Price MS_SubClass
 ```
 
-There is an option to fill safe value first, and then show best score
-using various methods.
-
 ``` r
-# Fill safe value
+# Fill safe value, then show best score 
 ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
-# Show best score, based on proportion of predictors
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> # A tibble: 2 × 4
 #>   name     score outcome    predictor   
@@ -205,13 +188,6 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
 ## A filtering example for scores *plural*
-
-There are several methods for score *plural*:
-
-- `show_best_desirability_prop()`
-
-
-- `show_best_desirability_num()`
 
 ``` r
 # Create a list
@@ -238,8 +214,6 @@ ames_scores_results
 #> 4 Lot_Area           0.255 0.0144     0.140  
 #> 5 Street             1     0.0000308  0.00365
 ```
-
-For one example:
 
 ``` r
 # Single and multi-parameter optimization using desirability functions
@@ -307,11 +281,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 6
 #>   predictor    cor_pearson    imp_rf infogain .d_target_cor_pearson .d_overall
 #>   <chr>              <dbl>     <dbl>    <dbl>                 <dbl>      <dbl>
-#> 1 Lot_Area           0.255 0.0144     0.140                    1.00       1.00
-#> 2 MS_SubClass        1     0.0144     0.266                    0          0   
-#> 3 MS_Zoning          1     0.0102     0.113                    0          0   
-#> 4 Lot_Frontage       0.165 0.00693    0.146                    0          0   
-#> 5 Street             1     0.0000308  0.00365                  0          0
+#> 1 Lot_Area           0.255 0.0144     0.140                   1.000      1.000
+#> 2 MS_SubClass        1     0.0144     0.266                   0          0    
+#> 3 MS_Zoning          1     0.0102     0.113                   0          0    
+#> 4 Lot_Frontage       0.165 0.00693    0.146                   0          0    
+#> 5 Street             1     0.0000308  0.00365                 0          0
 
 ames_scores_results |>
   show_best_desirability_prop(

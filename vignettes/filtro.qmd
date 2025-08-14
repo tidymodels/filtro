@@ -19,14 +19,17 @@ knitr::opts_chunk$set(
 
 > ⚠️ **work-in-progress**
 
-This document demonstrates some basic uses of filtro. 
-
-```{r, start, include = FALSE}
+```{r}
+#| label: start
+#| include: false
 library(filtro)
 library(desirability2)
 library(dplyr)
 library(modeldata)
 ```
+
+This document demonstrates some basic uses of filtro. We'll need to load a few packages: 
+
 
 ```{r}
 #| label: setup
@@ -62,7 +65,7 @@ The data frame of results can be accessed via `object@results`.
 ames_aov_pval_res@results
 ```
 
-A copule of notes here: 
+A couple of notes here: 
 
 Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:
 
@@ -72,26 +75,28 @@ Since our focus is on feature relevance (rather than hypothesis testing), the AN
 
 Because the outcome is numeric, any predictor that is not a factor will result in an `NA`. In case where `NA` is produced, a safe value can be used to retain the predictor, and can be accessed via `object@fallback_value`. 
 
-By default, the filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
+By default, this filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
-For this specific filter, i.e., `score_aov_*`, case weights are supported. 
+For this specific filter, i.e., `score_aov_*`, case weights are supported. For other filters, you can check the property  `object@case_weights` to see if they can use case weights.
 
-## Ranking and filtering
+## Filtering and ranking
 
-There are two ways to rank and select a top proportion or number 
-of features
+There are two main ways to rank and select a top proportion or number 
+of features. 
 
-For a single score, built-in methods are available. 
+To filter or rank a single score, we can use built-in methods:  
 
-`show_best_score_*()`
+- `show_best_score_*()`
 
-`rank_best_score_*()`
+- `rank_best_score_*()`
 
-For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.
+For multi-parameter optimization, we can use API calls adapted from {desirability}: 
 
-`show_best_desirability_*()`
+- `show_best_desirability_*()`
 
 ## A filtering exmple for score *singular*
+
+The `show_best_score_prop()` function returns the best score for a single metric. The `prop_terms` argument lets us control the proportion of predictors to keep.
 
 ```{r}
 # Show best score, based on proportion of predictors
@@ -125,7 +130,7 @@ ames_info_gain_reg_res <-
   fit(Sale_Price ~ ., data = ames)
 ```
 
-Next, we create a list to store these score class objects, including their associated metadata and scores. 
+Next, we create a list to collect these score class objects, including their associated metadata and scores. 
 
 ```{r}
 # Create a list
@@ -137,7 +142,7 @@ class_score_list <- list(
 )
 ```
 
-Then, we fill the safe value specific to each method and remove the `outcome` column.
+Then, we fill the safe value specific to each method, and then remove the `outcome` column.
 
 ```{r}
 # Fill safe values
@@ -148,17 +153,19 @@ ames_scores_results <- class_score_list |>
 ames_scores_results
 ```
 
-Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), we can jointly optimize multiple scores. 
+Analogous to [`show_best_desirability()`](https://desirability2.tidymodels.org/reference/show_best_desirability.html), the `show_best_desirability_prop()` function allows joint optimization of multiple metrics using desirability functions. 
 
-A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples: 
+A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is most desirable and $0$ is unacceptable. When the verb `maximize()` is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain.
+
+For examples: 
 
 ```{r}
-# Single and multi-parameter optimization using desirability functions
-# Optimize correlation
+# Optimize correlation alone
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   ) |> 
+  # Show predictor and desirability only
   dplyr::select(predictor, starts_with(".d_"))
 
 # Optimize correlation and forest importance
@@ -179,7 +186,7 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-Additionally, `show_best_desirability_prop()` has a argument called `prop_terms` that lets us control the proportion of predictors to keep.
+In `show_best_desirability_prop()`, there is a argument called `prop_terms` that lets us control the proportion of predictors to keep.
 
 ```{r}
 # Same as above, but retain only a proportion of predictors
@@ -225,40 +232,25 @@ ames_scores_results |>
   dplyr::select(predictor, starts_with(".d_"))
 ```
 
-## List of score objects and filter methods provided by the package
+## Available score objects and filter methods 
 
-A comprehensive list of score class objects included in the package:
+The list of score class objects included:
 
-```{r eval = FALSE}
-score_aov_pval
-score_aov_fstat
-score_cor_pearson
-score_cor_spearman
-score_imp_rf
-score_imp_rf_conditional
-score_imp_rf_oblique
-score_info_gain
-score_gain_ratio
-score_sym_uncert
-score_roc_auc
-score_xtab_pval_chisq
-score_xtab_pval_fisher
+```{r}
+#| echo: false
+grep("^score_", ls("package:filtro"), value = TRUE)
 ```
 
-The filter methods for score *singular*: 
+The list of filter methods for score *singular*: 
 
-```{r eval = FALSE}
-show_best_score_prop()
-show_best_score_num()
-show_best_score_cutoff()
-show_best_score_dual()
-rank_best_score_min()
-rank_best_score_dense()
+```{r}
+#| echo: false
+grep("^show_best_score_", ls("package:filtro"), value = TRUE)
 ```
 
-The filter methods for scores *plural*: 
+The list of filter methods for scores *plural*: 
 
-```{r eval = FALSE}
-show_best_desirability_prop()
-show_best_desirability_num()
+```{r}
+#| echo: false
+grep("^show_best_desirability_", ls("package:filtro"), value = TRUE)
 ```

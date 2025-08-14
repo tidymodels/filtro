@@ -78,7 +78,7 @@
     <blockquote>
 <p>⚠️ <strong>work-in-progress</strong></p>
 </blockquote>
-<p>This document demonstrates some basic uses of filtro.</p>
+<p>This document demonstrates some basic uses of filtro. We’ll need to load a few packages:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidymodels/filtro" class="external-link">filtro</a></span><span class="op">)</span></span>
@@ -123,26 +123,30 @@
 <span><span class="co">#&gt; 10 aov_pval  12.0  Sale_Price Lot_Config  </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-<p>A copule of notes here:</p>
+<p>A couple of notes here:</p>
 <p>Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:</p>
 <ul>
 <li><p>The predictors are numeric and the outcome is categorical, or</p></li>
 <li><p>The predictors are categorical and the outcome is numeric.</p></li>
 </ul>
 <p>Because the outcome is numeric, any predictor that is not a factor will result in an <code>NA</code>. In case where <code>NA</code> is produced, a safe value can be used to retain the predictor, and can be accessed via <code>object@fallback_value</code>.</p>
-<p>By default, the filter computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function <code><a href="../reference/dont_log_pvalues.html">dont_log_pvalues()</a></code> is available.</p>
-<p>For this specific filter, i.e., <code>score_aov_*</code>, case weights are supported.</p>
-</section><section class="level2"><h2 id="ranking-and-filtering">Ranking and filtering<a class="anchor" aria-label="anchor" href="#ranking-and-filtering"></a>
+<p>By default, this filter computes <code>-log10(p_value)</code>, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function <code><a href="../reference/dont_log_pvalues.html">dont_log_pvalues()</a></code> is available.</p>
+<p>For this specific filter, i.e., <code>score_aov_*</code>, case weights are supported. For other filters, you can check the property <code>object@case_weights</code> to see if they can use case weights.</p>
+</section><section class="level2"><h2 id="filtering-and-ranking">Filtering and ranking<a class="anchor" aria-label="anchor" href="#filtering-and-ranking"></a>
 </h2>
-<p>There are two ways to rank and select a top proportion or number of features</p>
-<p>For a single score, built-in methods are available.</p>
-<p><code>show_best_score_*()</code></p>
-<p><code>rank_best_score_*()</code></p>
-<p>For multiple scores, users can use API calls adapted from {desirability} for multi-parameter optimization.</p>
-<p><code>show_best_desirability_*()</code></p>
-</section><section class="level2"><h2 id="a-filtering-exmple-for-score-singular">A filtering exmple for score <em>singular</em>
+<p>There are two main ways to rank and select a top proportion or number of features.</p>
+<p>To filter or rank a single score, we can use built-in methods:</p>
+<ul>
+<li><p><code>show_best_score_*()</code></p></li>
+<li><p><code>rank_best_score_*()</code></p></li>
+</ul>
+<p>For multi-parameter optimization, we can use API calls adapted from {desirability}:</p>
+<ul>
+<li><code>show_best_desirability_*()</code></li>
+</ul></section><section class="level2"><h2 id="a-filtering-exmple-for-score-singular">A filtering exmple for score <em>singular</em>
 <a class="anchor" aria-label="anchor" href="#a-filtering-exmple-for-score-singular"></a>
 </h2>
+<p>The <code><a href="../reference/show_best_score_prop.html">show_best_score_prop()</a></code> function returns the best score for a single metric. The <code>prop_terms</code> argument lets us control the proportion of predictors to keep.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Show best score, based on proportion of predictors</span></span>
@@ -192,7 +196,7 @@
 <span>  <span class="va">score_info_gain</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Next, we create a list to store these score class objects, including their associated metadata and scores.</p>
+<p>Next, we create a list to collect these score class objects, including their associated metadata and scores.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create a list</span></span>
@@ -203,7 +207,7 @@
 <span>  <span class="va">ames_info_gain_reg_res</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Then, we fill the safe value specific to each method and remove the <code>outcome</code> column.</p>
+<p>Then, we fill the safe value specific to each method, and then remove the <code>outcome</code> column.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Fill safe values</span></span>
@@ -227,16 +231,17 @@
 <span><span class="co">#&gt; 10 Lot_Config   1.04e- 12       1     0.0000138   0.0133 </span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-<p>Analogous to <a href="https://desirability2.tidymodels.org/reference/show_best_desirability.html" class="external-link"><code>show_best_desirability()</code></a>, we can jointly optimize multiple scores.</p>
-<p>A desirability function maps values of a metric to a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math> range where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> is most desirable and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> is unacceptable. When the verb <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize()</a></code> is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain. For examples:</p>
+<p>Analogous to <a href="https://desirability2.tidymodels.org/reference/show_best_desirability.html" class="external-link"><code>show_best_desirability()</code></a>, the <code><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop()</a></code> function allows joint optimization of multiple metrics using desirability functions.</p>
+<p>A desirability function maps values of a metric to a <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">[</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="true" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">[0, 1]</annotation></semantics></math> range where <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math> is most desirable and <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>0</mn><annotation encoding="application/x-tex">0</annotation></semantics></math> is unacceptable. When the verb <code><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize()</a></code> is used, it means larger values are better. This is the case for Pearson correlation, forest importance, and information gain.</p>
+<p>For examples:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Single and multi-parameter optimization using desirability functions</span></span>
-<span><span class="co"># Optimize correlation</span></span>
+<code class="sourceCode R"><span><span class="co"># Optimize correlation alone</span></span>
 <span><span class="va">ames_scores_results</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://desirability2.tidymodels.org/reference/aliases.html" class="external-link">maximize</a></span><span class="op">(</span><span class="va">cor_pearson</span>, low <span class="op">=</span> <span class="fl">0</span>, high <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># Show predictor and desirability only</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">predictor</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">".d_"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 73 × 3</span></span>
 <span><span class="co">#&gt;    predictor    .d_max_cor_pearson .d_overall</span></span>
@@ -298,7 +303,7 @@
 <span><span class="co">#&gt; 10 Full_Bath                   0.577         0.308           0.527      0.454</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-<p>Additionally, <code><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop()</a></code> has a argument called <code>prop_terms</code> that lets us control the proportion of predictors to keep.</p>
+<p>In <code><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop()</a></code>, there is a argument called <code>prop_terms</code> that lets us control the proportion of predictors to keep.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Same as above, but retain only a proportion of predictors</span></span>
@@ -398,40 +403,26 @@
 <span><span class="co">#&gt; 10 Land_Slope                    1          1</span></span>
 <span><span class="co">#&gt; # ℹ 63 more rows</span></span></code></pre></div>
 </div>
-</section><section class="level2"><h2 id="list-of-score-objects-and-filter-methods-provided-by-the-package">List of score objects and filter methods provided by the package<a class="anchor" aria-label="anchor" href="#list-of-score-objects-and-filter-methods-provided-by-the-package"></a>
+</section><section class="level2"><h2 id="available-score-objects-and-filter-methods">Available score objects and filter methods<a class="anchor" aria-label="anchor" href="#available-score-objects-and-filter-methods"></a>
 </h2>
-<p>A comprehensive list of score class objects included in the package:</p>
+<p>The list of score class objects included:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">score_aov_pval</span></span>
-<span><span class="va">score_aov_fstat</span></span>
-<span><span class="va">score_cor_pearson</span></span>
-<span><span class="va">score_cor_spearman</span></span>
-<span><span class="va">score_imp_rf</span></span>
-<span><span class="va">score_imp_rf_conditional</span></span>
-<span><span class="va">score_imp_rf_oblique</span></span>
-<span><span class="va">score_info_gain</span></span>
-<span><span class="va">score_gain_ratio</span></span>
-<span><span class="va">score_sym_uncert</span></span>
-<span><span class="va">score_roc_auc</span></span>
-<span><span class="va">score_xtab_pval_chisq</span></span>
-<span><span class="va">score_xtab_pval_fisher</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt;  [1] "score_aov_fstat"          "score_aov_pval"</span></span>
+<span><span class="co">#&gt;  [3] "score_cor_pearson"        "score_cor_spearman"</span></span>
+<span><span class="co">#&gt;  [5] "score_gain_ratio"         "score_imp_rf"</span></span>
+<span><span class="co">#&gt;  [7] "score_imp_rf_conditional" "score_imp_rf_oblique"</span></span>
+<span><span class="co">#&gt;  [9] "score_info_gain"          "score_roc_auc"</span></span>
+<span><span class="co">#&gt; [11] "score_sym_uncert"         "score_xtab_pval_chisq"</span></span>
+<span><span class="co">#&gt; [13] "score_xtab_pval_fisher"</span></span></code></pre>
 </div>
-<p>The filter methods for score <em>singular</em>:</p>
+<p>The list of filter methods for score <em>singular</em>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/show_best_score_prop.html">show_best_score_prop</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/show_best_score_num.html">show_best_score_num</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/show_best_score_cutoff.html">show_best_score_cutoff</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/show_best_score_dual.html">show_best_score_dual</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/rank_best_score_min.html">rank_best_score_min</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/rank_best_score_dense.html">rank_best_score_dense</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; [1] "show_best_score_cutoff" "show_best_score_dual"   "show_best_score_num"</span></span>
+<span><span class="co">#&gt; [4] "show_best_score_prop"</span></span></code></pre>
 </div>
-<p>The filter methods for scores <em>plural</em>:</p>
+<p>The list of filter methods for scores <em>plural</em>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/show_best_desirability_num.html">show_best_desirability_num</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">#&gt; [1] "show_best_desirability_num"  "show_best_desirability_prop"</span></span></code></pre>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

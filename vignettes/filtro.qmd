@@ -246,18 +246,20 @@ ames_scores_results |>
 The list of score class objects included:
 
 ```{r}
-#| label: false
+#| echo: false
 grep("^score_", ls("package:filtro"), value = TRUE)
 ```
 
 The list of filter methods for score *singular*: 
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 grep("^show_best_score_", ls("package:filtro"), value = TRUE)
 ```
 
 The list of filter methods for scores *plural*: 
 
-```{r echo = FALSE}
+```{r}
+#| echo: false
 grep("^show_best_desirability_", ls("package:filtro"), value = TRUE)
 ```

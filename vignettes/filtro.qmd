@@ -19,14 +19,17 @@ knitr::opts_chunk$set(
 
 > ⚠️ **work-in-progress**
 
-This document demonstrates some basic uses of filtro. 
-
-```{r, start, include = FALSE}
+```{r}
+#| label: start
+#| include: false
 library(filtro)
 library(desirability2)
 library(dplyr)
 library(modeldata)
 ```
+
+This document demonstrates some basic uses of filtro. We'll need to load a few packages: 
+
 
 ```{r}
 #| label: setup
@@ -62,7 +65,7 @@ The data frame of results can be accessed via `object@results`.
 ames_aov_pval_res@results
 ```
 
-A copule of notes here: 
+A couple of notes here: 
 
 Since our focus is on feature relevance (rather than hypothesis testing), the ANOVA F-test filter handles both cases when:
 
@@ -74,7 +77,7 @@ Because the outcome is numeric, any predictor that is not a factor will result i
 
 By default, this filter computes `-log10(p_value)`, so that larger values indicate more important predictors. If users prefer raw p-values, a helper function `dont_log_pvalues()` is available. 
 
-For this specific filter, i.e., `score_aov_*`, case weights are supported. 
+For this specific filter, i.e., `score_aov_*`, case weights are supported. For other filters, you can check the property  `object@case_weights` to see if they can use case weights.
 
 ## Filtering and ranking
 
@@ -166,7 +169,7 @@ A desirability function maps values of a metric to a $[0, 1]$ range where $1$ is
 For examples: 
 
 ```{r}
-# Optimize correlation
+# Optimize correlation alone
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
@@ -242,7 +245,8 @@ ames_scores_results |>
 
 The list of score class objects included:
 
-```{r echo = FALSE}
+```{r}
+#| label: false
 grep("^score_", ls("package:filtro"), value = TRUE)
 ```
 

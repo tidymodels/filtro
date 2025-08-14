@@ -263,6 +263,58 @@ test_that("computations - show best score dual method", {
   expect_equal(pval_res_4$score, exp_pval_res_4$score)
 })
 
+test_that("computations - ranking method with gaps", {
+  skip_if_not_installed("modeldata")
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  ames_aov_fstat_res <-
+    score_aov_fstat |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res <- ames_aov_pval_res |> filtro::rank_best_score_min()
+
+  fstat_res <- ames_aov_fstat_res |> filtro::rank_best_score_min()
+
+  # ----------------------------------------------------------------------------
+
+  exp_pval_res <- ames_aov_pval_res@results |>
+    dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+  exp_fstat_res <- ames_aov_fstat_res@results |>
+    dplyr::mutate(rank = dplyr::min_rank((dplyr::desc(score))))
+
+  expect_equal(pval_res$score, exp_pval_res$score)
+  expect_equal(fstat_res$score, exp_fstat_res$score)
+})
+
+test_that("computations - ranking method without gaps", {
+  skip_if_not_installed("modeldata")
+
+  ames_aov_pval_res <-
+    score_aov_pval |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  ames_aov_fstat_res <-
+    score_aov_fstat |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  pval_res <- ames_aov_pval_res |> filtro::rank_best_score_dense()
+
+  fstat_res <- ames_aov_fstat_res |> filtro::rank_best_score_dense()
+
+  # ----------------------------------------------------------------------------
+
+  exp_pval_res <- ames_aov_pval_res@results |>
+    dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+  exp_fstat_res <- ames_aov_fstat_res@results |>
+    dplyr::mutate(rank = dplyr::dense_rank((dplyr::desc(score))))
+
+  expect_equal(pval_res$score, exp_pval_res$score)
+  expect_equal(fstat_res$score, exp_fstat_res$score)
+})
+
 test_that("object creation - S7 subclass of base R's list", {
   skip_if_not_installed("modeldata")
 
@@ -420,43 +472,3 @@ test_that("computation - fill safe values", {
   expect_equal(res$imp_rf, exp_res$imp_rf)
   expect_equal(res$infogain, exp_res$infogain)
 })
-
-skip()
-
-# Rank score based on min_rank()
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> filtro::rank_best_score_min()
-
-ames_aov_fstat_res@results
-ames_aov_fstat_res |> filtro::rank_best_score_min()
-
-# Rank score based on dense_rank()
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_fstat_res <-
-  score_aov_fstat |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-ames_aov_pval_res@results
-ames_aov_pval_res |> filtro::rank_best_score_dense()
-
-ames_aov_fstat_res@results
-ames_aov_fstat_res |> filtro::rank_best_score_dense()

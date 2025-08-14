@@ -103,15 +103,6 @@ The `show_best_score_prop()` function returns the best score for a single metric
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-We can also fill the safe value first, then apply any of the filtering methods. 
-
-```{r}
-# Fill safe value, then show best score
-# ames_aov_pval_res |> fill_safe_value() |> show_best_score_prop(prop_terms = 0.2)
-ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
-ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
-```
-
 ## A filtering example for scores *plural*
 
 To handle multiple scores, we first create multiple score class objects, and then use the `fit()` method with the standard formula to compute the scores. 

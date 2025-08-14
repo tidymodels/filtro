@@ -266,6 +266,10 @@ test_that("computations - show best score dual method", {
 test_that("computations - ranking method with gaps", {
   skip_if_not_installed("modeldata")
 
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
+
   ames_aov_pval_res <-
     score_aov_pval |>
     fit(Sale_Price ~ ., data = ames_subset)
@@ -291,6 +295,10 @@ test_that("computations - ranking method with gaps", {
 
 test_that("computations - ranking method without gaps", {
   skip_if_not_installed("modeldata")
+
+  ames_subset <- helper_ames()
+  ames_subset <- ames_subset |>
+    dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   ames_aov_pval_res <-
     score_aov_pval |>

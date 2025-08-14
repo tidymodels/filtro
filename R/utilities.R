@@ -463,7 +463,7 @@ S7::method(rank_best_score_min, class_score) <- function(
 
 # ------------------------------------------------------------------------------
 #' Rank score based on `dplyr::dense_rank()`, where tied values receive the
-#' same rank and ranks are with gaps *(singular)*
+#' same rank and ranks are without gaps *(singular)*
 #'
 #' @param x A score class object, i.e., `score_*`.
 #'

@@ -72,7 +72,9 @@ Currently, the implemented filters include:
 
 ## A scoring example
 
-```{r, start, include = FALSE}
+```{r}
+#| label: start
+#| include: false
 library(filtro)
 library(desirability2)
 library(dplyr)

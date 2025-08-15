@@ -52,11 +52,8 @@ ames_imp_rf_reg_res <-
 ames_imp_rf_reg_res@results
 
 # Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
 ames_info_gain_reg_res <-
-  score_info_gain_reg |>
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_reg_res@results
 

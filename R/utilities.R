@@ -618,11 +618,8 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' ames_imp_rf_reg_res@results
 #'
 #' # Information gain
-#' score_info_gain_reg <- score_info_gain
-#' score_info_gain_reg@mode <- "regression"
-#'
 #' ames_info_gain_reg_res <-
-#'   score_info_gain_reg |>
+#'   score_info_gain |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_info_gain_reg_res@results
 #'
@@ -714,11 +711,8 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' ames_imp_rf_reg_res@results
 #'
 #' # Information gain
-#' score_info_gain_reg <- score_info_gain
-#' score_info_gain_reg@mode <- "regression"
-#'
 #' ames_info_gain_reg_res <-
-#'   score_info_gain_reg |>
+#'   score_info_gain |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_info_gain_reg_res@results
 #'

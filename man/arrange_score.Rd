@@ -4,12 +4,15 @@
 \alias{arrange_score}
 \title{Arrange score}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 
 \item{target}{A numeric value specifying the target value. The default
 of \code{NULL} indicates that there is no target value.}
+}
+\value{
+A tibble of score results.
 }
 \description{
 Arrange score

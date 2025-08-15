@@ -8,6 +8,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of scores results.
+}
 \description{
 Binds multiple score class objects (e.g., \verb{score_*}), including their associated metadata and scores.
 See \code{\link[=fill_safe_values]{fill_safe_values()}} for binding with safe-value handling.
@@ -49,11 +52,8 @@ ames_imp_rf_reg_res <-
 ames_imp_rf_reg_res@results
 
 # Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
 ames_info_gain_reg_res <-
-  score_info_gain_reg |>
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_reg_res@results
 

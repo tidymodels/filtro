@@ -8,11 +8,40 @@ same rank and ranks are with gaps \emph{(singular)}}
 rank_best_score_min(x, ...)
 }
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
+}
+\value{
+A tibble of score results.
 }
 \description{
 Rank score based on \code{dplyr::min_rank()}, where tied values receive the
 same rank and ranks are with gaps \emph{(singular)}
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# Rank score
+ames_aov_pval_res |> rank_best_score_min()
+\dontshow{\}) # examplesIf}
 }

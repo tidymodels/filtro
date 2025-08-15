@@ -5,7 +5,7 @@
 \title{Show best score, based on number or proportion of predictors with
 optional cutoff value \emph{(singular)}}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 
@@ -16,6 +16,9 @@ of predictors to consider.}
 of predictors to consider.}
 
 \item{cutoff}{A numeric value specifying the cutoff value.}
+}
+\value{
+A tibble of score results.
 }
 \description{
 Show best score, based on number or proportion of predictors with
@@ -43,10 +46,11 @@ ames_aov_pval_res <-
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
 
+# Show best score
 ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
 ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 
 ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+ames_aov_pval_res |> show_best_score_dual(num_terms = 2, cutoff = 130)
 \dontshow{\}) # examplesIf}
 }

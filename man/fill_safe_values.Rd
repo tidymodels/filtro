@@ -8,6 +8,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of scores results.
+}
 \description{
 Wraps \code{\link[=bind_scores]{bind_scores()}}, and fills in safe values for missing scores.
 This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.
@@ -49,11 +52,8 @@ ames_imp_rf_reg_res <-
 ames_imp_rf_reg_res@results
 
 # Information gain
-score_info_gain_reg <- score_info_gain
-score_info_gain_reg@mode <- "regression"
-
 ames_info_gain_reg_res <-
-  score_info_gain_reg |>
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
 ames_info_gain_reg_res@results
 

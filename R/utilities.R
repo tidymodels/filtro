@@ -19,11 +19,13 @@ arrange_score <- S7::new_generic(
 #'
 #' @name arrange_score
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param target A numeric value specifying the target value. The default
 #' of `NULL` indicates that there is no target value.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -73,9 +75,11 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #'
 #' @name fill_safe_value
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param return_results A logical value indicating whether to return results.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -138,11 +142,13 @@ show_best_score_prop <- S7::new_generic(
 #'
 #' @name show_best_score_prop
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
 #' of predictors to consider.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -165,6 +171,7 @@ show_best_score_prop <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #'
 #' @export
@@ -210,11 +217,13 @@ show_best_score_num <- S7::new_generic(
 #'
 #' @name show_best_score_num
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param num_terms An integer value specifying the number
 #' of predictors to consider.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -237,6 +246,7 @@ show_best_score_num <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 #'
 #' @export
@@ -281,12 +291,14 @@ show_best_score_cutoff <- S7::new_generic(
 #'
 #' @name show_best_score_cutoff
 #'
-#' @param x A score class object.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param cutoff A numeric value specifying the cutoff value.
 #' @param target A numeric value specifying the target value. The default
 #' of `NULL` indicates that there is no target value.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -309,6 +321,7 @@ show_best_score_cutoff <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 #'
 #' @export
@@ -354,7 +367,7 @@ show_best_score_dual <- S7::new_generic(
 #'
 #' @name show_best_score_dual
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
@@ -362,6 +375,8 @@ show_best_score_dual <- S7::new_generic(
 #' @param num_terms An integer value specifying the number
 #' of predictors to consider.
 #' @param cutoff A numeric value specifying the cutoff value.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -384,11 +399,12 @@ show_best_score_dual <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
 #' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 #'
 #' ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-#' ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+#' ames_aov_pval_res |> show_best_score_dual(num_terms = 2, cutoff = 130)
 #'
 #' @export
 S7::method(show_best_score_dual, class_score) <- function(
@@ -423,9 +439,35 @@ S7::method(show_best_score_dual, class_score) <- function(
 #' Rank score based on `dplyr::min_rank()`, where tied values receive the
 #' same rank and ranks are with gaps *(singular)*
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
+#'
+#' @return A tibble of score results.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Rank score
+#' ames_aov_pval_res |> rank_best_score_min()
 #'
 #' @export
 rank_best_score_min <- S7::new_generic(
@@ -465,9 +507,35 @@ S7::method(rank_best_score_min, class_score) <- function(
 #' Rank score based on `dplyr::dense_rank()`, where tied values receive the
 #' same rank and ranks are without gaps *(singular)*
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
+#'
+#' @return A tibble of score results.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Rank score
+#' ames_aov_pval_res |> rank_best_score_dense()
 #'
 #' @export
 rank_best_score_dense <- S7::new_generic(
@@ -504,10 +572,46 @@ S7::method(rank_best_score_dense, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Construct an S7 subclass of base R's `list` for Method Dispatch
+#' S7 subclass of base R's `list` for method dispatch
 #'
 #' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
 #' [bind_scores()] and [fill_safe_values()].
+#'
+#' @return A list of S7 objects.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # ANOVA p-value
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Pearson correlation
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res
+#' )
 #'
 #' @export
 class_score_list <- S7::new_S3_class("list")
@@ -527,6 +631,8 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' @param x A list.
 #'
 #' @param ... Further arguments passed to or from other methods.
+#'
+#' @return A tibble of scores results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -564,11 +670,8 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' ames_imp_rf_reg_res@results
 #'
 #' # Information gain
-#' score_info_gain_reg <- score_info_gain
-#' score_info_gain_reg@mode <- "regression"
-#'
 #' ames_info_gain_reg_res <-
-#'   score_info_gain_reg |>
+#'   score_info_gain |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_info_gain_reg_res@results
 #'
@@ -582,6 +685,7 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #'
 #' # Bind scores
 #' class_score_list |> bind_scores()
+#'
 #' @export
 S7::method(bind_scores, class_score_list) <- function(x) {
   length_x <- length(x)
@@ -622,6 +726,8 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @return A tibble of scores results.
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
@@ -658,11 +764,8 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' ames_imp_rf_reg_res@results
 #'
 #' # Information gain
-#' score_info_gain_reg <- score_info_gain
-#' score_info_gain_reg@mode <- "regression"
-#'
 #' ames_info_gain_reg_res <-
-#'   score_info_gain_reg |>
+#'   score_info_gain |>
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_info_gain_reg_res@results
 #'
@@ -690,10 +793,7 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
   score_set
 }
 
-# TODO fill_safe_value()
 # TODO Drop outcome column
-# TODO rank_desirability_score_*
-# TODO filter_desirability_score_*
 
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods
@@ -719,23 +819,6 @@ dont_log_pvalues <- function(x) {
   x@neg_log10 <- FALSE
   x
 }
-
-# ------------------------------------------------------------------------------
-# Used with cross tab methods
-
-# #' Enable the adjusted p-values, using the Benjamini-Hochberg (BH) procedure
-# #'
-# #' @name enable_adj_pvalues
-# #'
-# #' @param x A score class object.
-# #'
-# #' @return The modified score class object with `adjustment` set to `BH`.
-# #'
-# #' @export
-# enable_adj_pvalues <- function(x) {
-#   x@adjustment <- "BH"
-#   x
-# }
 
 # ------------------------------------------------------------------------------
 # Used with ROC AUC methods

@@ -5,10 +5,12 @@
 \alias{ames_scores_results}
 \title{Ames exampled score results}
 \value{
-A tibble
+\item{ames_scores_results}{a tibble}
 }
 \description{
-Ames exampled score results
+This data an ames exampled score results for, used
+for \code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}} as a demonstration,
+and created by examples in \code{\link[=fill_safe_values]{fill_safe_values()}}.
 }
 \examples{
 data(ames_scores_results)

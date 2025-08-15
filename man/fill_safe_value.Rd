@@ -4,9 +4,12 @@
 \alias{fill_safe_value}
 \title{Fill safe value \emph{(singular)}}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{return_results}{A logical value indicating whether to return results.}
+}
+\value{
+A tibble of score results.
 }
 \description{
 Fills in safe value for missing score. This is a \emph{singular} scoring method.

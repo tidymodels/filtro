@@ -4,12 +4,15 @@
 \alias{show_best_score_prop}
 \title{Show best score, based on proportion of predictors \emph{(singular)}}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 
 \item{prop_terms}{A numeric value specifying the proportion
 of predictors to consider.}
+}
+\value{
+A tibble of score results.
 }
 \description{
 Show best score, based on proportion of predictors \emph{(singular)}
@@ -36,6 +39,7 @@ ames_aov_pval_res <-
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
 
+# Show best score
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 \dontshow{\}) # examplesIf}
 }

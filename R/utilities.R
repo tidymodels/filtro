@@ -404,7 +404,7 @@ show_best_score_dual <- S7::new_generic(
 #' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 #'
 #' ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-#' ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+#' ames_aov_pval_res |> show_best_score_dual(num_terms = 2, cutoff = 130)
 #'
 #' @export
 S7::method(show_best_score_dual, class_score) <- function(

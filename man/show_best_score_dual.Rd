@@ -51,6 +51,6 @@ ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
 ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 
 ames_aov_pval_res |> show_best_score_dual(num_terms = 2)
-ames_aov_pval_res |> show_best_score_dual(prop_terms = 2, cutoff = 130)
+ames_aov_pval_res |> show_best_score_dual(num_terms = 2, cutoff = 130)
 \dontshow{\}) # examplesIf}
 }

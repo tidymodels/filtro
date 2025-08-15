@@ -685,6 +685,7 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #'
 #' # Bind scores
 #' class_score_list |> bind_scores()
+#'
 #' @export
 S7::method(bind_scores, class_score_list) <- function(x) {
   length_x <- length(x)

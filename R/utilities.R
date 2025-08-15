@@ -171,6 +171,7 @@ show_best_score_prop <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #'
 #' @export
@@ -245,6 +246,7 @@ show_best_score_num <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_num(num_terms = 2)
 #'
 #' @export
@@ -319,6 +321,7 @@ show_best_score_cutoff <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 #'
 #' @export
@@ -396,6 +399,7 @@ show_best_score_dual <- S7::new_generic(
 #'   fit(Sale_Price ~ ., data = ames_subset)
 #' ames_aov_pval_res@results
 #'
+#' # Show best score
 #' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5)
 #' ames_aov_pval_res |> show_best_score_dual(prop_terms = 0.5, cutoff = 130)
 #'

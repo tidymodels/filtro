@@ -41,6 +41,7 @@ ames_aov_pval_res <-
   fit(Sale_Price ~ ., data = ames_subset)
 ames_aov_pval_res@results
 
+# Show best score
 ames_aov_pval_res |> show_best_score_cutoff(cutoff = 130)
 \dontshow{\}) # examplesIf}
 }

@@ -82,7 +82,7 @@ titanic_xtab_pval_chisq_res <- score_xtab_pval_chisq |>
   fit(Survived ~ ., data = titanic_subset)
 titanic_xtab_pval_chisq_res@results
 
-# Chi-squared test with adjusted p-values
+# Chi-squared test adjusted p-values
 titanic_xtab_pval_chisq_p_adj_res <- score_xtab_pval_chisq |>
   fit(Survived ~ ., data = titanic_subset, adjustment = "BH")
 

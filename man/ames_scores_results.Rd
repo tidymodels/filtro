@@ -12,4 +12,5 @@ Ames exampled score results
 }
 \examples{
 data(ames_scores_results)
+ames_scores_results
 }

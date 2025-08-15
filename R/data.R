@@ -6,4 +6,5 @@
 #' @return A tibble
 #' @examples
 #' data(ames_scores_results)
+#' ames_scores_results
 NULL

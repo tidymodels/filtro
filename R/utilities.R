@@ -768,23 +768,6 @@ dont_log_pvalues <- function(x) {
 }
 
 # ------------------------------------------------------------------------------
-# Used with cross tab methods
-
-# #' Enable the adjusted p-values, using the Benjamini-Hochberg (BH) procedure
-# #'
-# #' @name enable_adj_pvalues
-# #'
-# #' @param x A score class object.
-# #'
-# #' @return The modified score class object with `adjustment` set to `BH`.
-# #'
-# #' @export
-# enable_adj_pvalues <- function(x) {
-#   x@adjustment <- "BH"
-#   x
-# }
-
-# ------------------------------------------------------------------------------
 # Used with ROC AUC methods
 
 flip_if_needed_roc_auc <- function(predictor, outcome) {

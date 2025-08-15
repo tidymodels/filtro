@@ -504,10 +504,44 @@ S7::method(rank_best_score_dense, class_score) <- function(
 }
 
 # ------------------------------------------------------------------------------
-#' Construct an S7 subclass of base R's `list` for Method Dispatch
+#' S7 subclass of base R's `list` for method dispatch
 #'
 #' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
 #' [bind_scores()] and [fill_safe_values()].
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' # ANOVA p-value
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Pearson correlation
+#' ames_cor_pearson_res <-
+#'   score_cor_pearson |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_cor_pearson_res@results
+#'
+#' # Create a list
+#' class_score_list <- list(
+#'   ames_aov_pval_res,
+#'   ames_cor_pearson_res
+#' )
 #'
 #' @export
 class_score_list <- S7::new_S3_class("list")

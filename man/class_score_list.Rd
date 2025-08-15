@@ -3,7 +3,7 @@
 \docType{data}
 \name{class_score_list}
 \alias{class_score_list}
-\title{Construct an S7 subclass of base R's \code{list} for Method Dispatch}
+\title{S7 subclass of base R's \code{list} for method dispatch}
 \format{
 An object of class \code{S7_S3_class} of length 3.
 }
@@ -13,5 +13,41 @@ class_score_list
 \description{
 \code{class_score_list} is an S7 subclass of S3 base R's \code{list}, used for method dispatch in
 \code{\link[=bind_scores]{bind_scores()}} and \code{\link[=fill_safe_values]{fill_safe_values()}}.
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+
+library(dplyr)
+
+ames_subset <- modeldata::ames |>
+  dplyr::select(
+    Sale_Price,
+    MS_SubClass,
+    MS_Zoning,
+    Lot_Frontage,
+    Lot_Area,
+    Street
+  )
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# ANOVA p-value
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_aov_pval_res@results
+
+# Pearson correlation
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+ames_cor_pearson_res@results
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res
+)
+\dontshow{\}) # examplesIf}
 }
 \keyword{datasets}

@@ -17,6 +17,9 @@ of predictors to consider.}
 
 \item{cutoff}{A numeric value specifying the cutoff value.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Show best score, based on number or proportion of predictors with
 optional cutoff value \emph{(singular)}

@@ -11,6 +11,9 @@
 \item{prop_terms}{A numeric value specifying the proportion
 of predictors to consider.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Show best score, based on proportion of predictors \emph{(singular)}
 }

@@ -10,6 +10,9 @@ An object of class \code{S7_S3_class} of length 3.
 \usage{
 class_score_list
 }
+\value{
+A list of S7 objects.
+}
 \description{
 \code{class_score_list} is an S7 subclass of S3 base R's \code{list}, used for method dispatch in
 \code{\link[=bind_scores]{bind_scores()}} and \code{\link[=fill_safe_values]{fill_safe_values()}}.

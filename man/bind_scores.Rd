@@ -8,6 +8,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of scores results.
+}
 \description{
 Binds multiple score class objects (e.g., \verb{score_*}), including their associated metadata and scores.
 See \code{\link[=fill_safe_values]{fill_safe_values()}} for binding with safe-value handling.

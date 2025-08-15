@@ -25,6 +25,8 @@ arrange_score <- S7::new_generic(
 #' @param target A numeric value specifying the target value. The default
 #' of `NULL` indicates that there is no target value.
 #'
+#' @return A tibble of score results.
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
@@ -76,6 +78,8 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' @param x A score class object, i.e., `score_*`.
 #'
 #' @param return_results A logical value indicating whether to return results.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -143,6 +147,8 @@ show_best_score_prop <- S7::new_generic(
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
 #' of predictors to consider.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -216,6 +222,8 @@ show_best_score_num <- S7::new_generic(
 #' @param num_terms An integer value specifying the number
 #' of predictors to consider.
 #'
+#' @return A tibble of score results.
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
@@ -287,6 +295,8 @@ show_best_score_cutoff <- S7::new_generic(
 #' @param cutoff A numeric value specifying the cutoff value.
 #' @param target A numeric value specifying the target value. The default
 #' of `NULL` indicates that there is no target value.
+#'
+#' @return A tibble of score results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -363,6 +373,8 @@ show_best_score_dual <- S7::new_generic(
 #' of predictors to consider.
 #' @param cutoff A numeric value specifying the cutoff value.
 #'
+#' @return A tibble of score results.
+#'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
 #' library(dplyr)
@@ -427,6 +439,8 @@ S7::method(show_best_score_dual, class_score) <- function(
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @return A tibble of score results.
+#'
 #' @export
 rank_best_score_min <- S7::new_generic(
   "rank_best_score_min",
@@ -469,6 +483,8 @@ S7::method(rank_best_score_min, class_score) <- function(
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
+#' @return A tibble of score results.
+#'
 #' @export
 rank_best_score_dense <- S7::new_generic(
   "rank_best_score_dense",
@@ -508,6 +524,8 @@ S7::method(rank_best_score_dense, class_score) <- function(
 #'
 #' `class_score_list` is an S7 subclass of S3 base R's `list`, used for method dispatch in
 #' [bind_scores()] and [fill_safe_values()].
+#'
+#' @return A list of S7 objects.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -561,6 +579,8 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' @param x A list.
 #'
 #' @param ... Further arguments passed to or from other methods.
+#'
+#' @return A tibble of scores results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'
@@ -655,6 +675,8 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' @param x A list.
 #'
 #' @param ... Further arguments passed to or from other methods.
+#'
+#' @return A tibble of scores results.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #'

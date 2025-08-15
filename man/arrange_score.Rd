@@ -11,6 +11,9 @@
 \item{target}{A numeric value specifying the target value. The default
 of \code{NULL} indicates that there is no target value.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Arrange score
 }

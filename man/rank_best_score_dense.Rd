@@ -12,6 +12,9 @@ rank_best_score_dense(x, ...)
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Rank score based on \code{dplyr::dense_rank()}, where tied values receive the
 same rank and ranks are without gaps \emph{(singular)}

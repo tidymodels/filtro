@@ -12,6 +12,9 @@ rank_best_score_min(x, ...)
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Rank score based on \code{dplyr::min_rank()}, where tied values receive the
 same rank and ranks are with gaps \emph{(singular)}

@@ -8,6 +8,9 @@
 
 \item{return_results}{A logical value indicating whether to return results.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Fills in safe value for missing score. This is a \emph{singular} scoring method.
 See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scoring method.

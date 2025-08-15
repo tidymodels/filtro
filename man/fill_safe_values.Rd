@@ -8,6 +8,9 @@
 
 \item{...}{Further arguments passed to or from other methods.}
 }
+\value{
+A tibble of scores results.
+}
 \description{
 Wraps \code{\link[=bind_scores]{bind_scores()}}, and fills in safe values for missing scores.
 This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.

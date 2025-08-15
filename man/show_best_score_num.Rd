@@ -11,6 +11,9 @@
 \item{num_terms}{An integer value specifying the number
 of predictors to consider.}
 }
+\value{
+A tibble of score results.
+}
 \description{
 Show best score, based on number of predictors \emph{(singular)}
 }

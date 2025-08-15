@@ -217,6 +217,7 @@ ames_scores_results
 
 ``` r
 # Single and multi-parameter optimization using desirability functions
+# Optimize correlation alone
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
@@ -230,6 +231,7 @@ ames_scores_results |>
 #> 4 Lot_Area           0.255 0.0144     0.140                0.255      0.255
 #> 5 Lot_Frontage       0.165 0.00693    0.146                0.165      0.165
 
+# Optimize correlation and forest importance
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -245,6 +247,7 @@ ames_scores_results |>
 #> 5 Street             1     0.0000308  0.00365              1             0    
 #> # ℹ 1 more variable: .d_overall <dbl>
 
+# Optimize correlation, forest importance and information gain
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -261,6 +264,7 @@ ames_scores_results |>
 #> 5 Street             1     0.0000308  0.00365              1             0    
 #> # ℹ 2 more variables: .d_max_infogain <dbl>, .d_overall <dbl>
 
+# Same as above, but retain only a proportion of predictors
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -274,6 +278,7 @@ ames_scores_results |>
 #> 1 MS_SubClass           1 0.0144    0.266                  1             1
 #> # ℹ 2 more variables: .d_max_infogain <dbl>, .d_overall <dbl>
 
+# Optimize toward a target
 ames_scores_results |>
   show_best_desirability_prop(
     target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
@@ -281,12 +286,13 @@ ames_scores_results |>
 #> # A tibble: 5 × 6
 #>   predictor    cor_pearson    imp_rf infogain .d_target_cor_pearson .d_overall
 #>   <chr>              <dbl>     <dbl>    <dbl>                 <dbl>      <dbl>
-#> 1 Lot_Area           0.255 0.0144     0.140                   1.000      1.000
-#> 2 MS_SubClass        1     0.0144     0.266                   0          0    
-#> 3 MS_Zoning          1     0.0102     0.113                   0          0    
-#> 4 Lot_Frontage       0.165 0.00693    0.146                   0          0    
-#> 5 Street             1     0.0000308  0.00365                 0          0
+#> 1 Lot_Area           0.255 0.0144     0.140                    1.00       1.00
+#> 2 MS_SubClass        1     0.0144     0.266                    0          0   
+#> 3 MS_Zoning          1     0.0102     0.113                    0          0   
+#> 4 Lot_Frontage       0.165 0.00693    0.146                    0          0   
+#> 5 Street             1     0.0000308  0.00365                  0          0
 
+# Optimize with box constraints
 ames_scores_results |>
   show_best_desirability_prop(
     constrain(cor_pearson, low = 0.2, high = 1)

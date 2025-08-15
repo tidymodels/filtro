@@ -70,7 +70,7 @@ Currently, the implemented filters include:
 
 6. Cross tabulation (Chi-squared test and Fisher's exact test) 
 
-## A scoring example
+## Scoring examples
 
 ```{r}
 #| label: start
@@ -135,7 +135,7 @@ ames_info_gain_reg_res <-
 ames_info_gain_reg_res@results
 ```
 
-## A filtering exmple for score *singular* 
+## Filtering exmples for score *singular* 
 
 ```{r}
 ames_aov_pval_res@results
@@ -152,7 +152,7 @@ ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-## A filtering example for scores *plural* 
+## Filtering examples for scores *plural* 
 
 ```{r}
 # Create a list
@@ -174,17 +174,20 @@ ames_scores_results
 
 ```{r}
 # Single and multi-parameter optimization using desirability functions
+# Optimize correlation alone
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1)
   )
 
+# Optimize correlation and forest importance
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
     maximize(imp_rf)
   )
 
+# Optimize correlation, forest importance and information gain
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -192,6 +195,7 @@ ames_scores_results |>
     maximize(infogain)
   )
 
+# Same as above, but retain only a proportion of predictors
 ames_scores_results |>
   show_best_desirability_prop(
     maximize(cor_pearson, low = 0, high = 1),
@@ -200,11 +204,13 @@ ames_scores_results |>
     prop_terms = 0.2
   )
 
+# Optimize toward a target
 ames_scores_results |>
   show_best_desirability_prop(
     target(cor_pearson, low = 0.2, target = 0.255, high = 0.9)
   )
 
+# Optimize with box constraints
 ames_scores_results |>
   show_best_desirability_prop(
     constrain(cor_pearson, low = 0.2, high = 1)

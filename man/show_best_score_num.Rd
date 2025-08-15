@@ -4,7 +4,7 @@
 \alias{show_best_score_num}
 \title{Show best score, based on number of predictors \emph{(singular)}}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 

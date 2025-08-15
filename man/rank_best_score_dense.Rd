@@ -8,7 +8,7 @@ same rank and ranks are without gaps \emph{(singular)}}
 rank_best_score_dense(x, ...)
 }
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 }

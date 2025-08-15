@@ -5,7 +5,7 @@
 \title{Show best score, based on number or proportion of predictors with
 optional cutoff value \emph{(singular)}}
 \arguments{
-\item{x}{A score class object, i.e., \verb{score_*}.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 

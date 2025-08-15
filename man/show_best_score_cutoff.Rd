@@ -4,7 +4,7 @@
 \alias{show_best_score_cutoff}
 \title{Show best score, based on based on cutoff value \emph{(singular)}}
 \arguments{
-\item{x}{A score class object.}
+\item{x}{A score class object (e.g., \code{score_cor_pearson}).}
 
 \item{...}{Further arguments passed to or from other methods.}
 

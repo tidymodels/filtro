@@ -19,7 +19,7 @@ arrange_score <- S7::new_generic(
 #'
 #' @name arrange_score
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param target A numeric value specifying the target value. The default
@@ -75,7 +75,7 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #'
 #' @name fill_safe_value
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param return_results A logical value indicating whether to return results.
 #'
@@ -142,7 +142,7 @@ show_best_score_prop <- S7::new_generic(
 #'
 #' @name show_best_score_prop
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
@@ -216,7 +216,7 @@ show_best_score_num <- S7::new_generic(
 #'
 #' @name show_best_score_num
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param num_terms An integer value specifying the number
@@ -289,7 +289,7 @@ show_best_score_cutoff <- S7::new_generic(
 #'
 #' @name show_best_score_cutoff
 #'
-#' @param x A score class object.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param cutoff A numeric value specifying the cutoff value.
@@ -364,7 +364,7 @@ show_best_score_dual <- S7::new_generic(
 #'
 #' @name show_best_score_dual
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #' @param prop_terms A numeric value specifying the proportion
@@ -435,7 +435,7 @@ S7::method(show_best_score_dual, class_score) <- function(
 #' Rank score based on `dplyr::min_rank()`, where tied values receive the
 #' same rank and ranks are with gaps *(singular)*
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -479,7 +479,7 @@ S7::method(rank_best_score_min, class_score) <- function(
 #' Rank score based on `dplyr::dense_rank()`, where tied values receive the
 #' same rank and ranks are without gaps *(singular)*
 #'
-#' @param x A score class object, i.e., `score_*`.
+#' @param x A score class object (e.g., `score_cor_pearson`).
 #'
 #' @param ... Further arguments passed to or from other methods.
 #'
@@ -740,10 +740,7 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
   score_set
 }
 
-# TODO fill_safe_value()
 # TODO Drop outcome column
-# TODO rank_desirability_score_*
-# TODO filter_desirability_score_*
 
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods

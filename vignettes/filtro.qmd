@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 ```{r}
 #| label: start
 #| include: false
+library(pak)
 pak::pak("tidymodels/filtro")
 library(filtro)
 library(desirability2)

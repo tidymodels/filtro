@@ -445,6 +445,30 @@ S7::method(show_best_score_dual, class_score) <- function(
 #'
 #' @return A tibble of score results.
 #'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Rank score
+#' ames_aov_pval_res |> rank_best_score_min()
+#'
 #' @export
 rank_best_score_min <- S7::new_generic(
   "rank_best_score_min",
@@ -488,6 +512,30 @@ S7::method(rank_best_score_min, class_score) <- function(
 #' @param ... Further arguments passed to or from other methods.
 #'
 #' @return A tibble of score results.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#'
+#' library(dplyr)
+#'
+#' ames_subset <- modeldata::ames |>
+#'   dplyr::select(
+#'     Sale_Price,
+#'     MS_SubClass,
+#'     MS_Zoning,
+#'     Lot_Frontage,
+#'     Lot_Area,
+#'     Street
+#'   )
+#' ames_subset <- ames_subset |>
+#'   dplyr::mutate(Sale_Price = log10(Sale_Price))
+#'
+#' ames_aov_pval_res <-
+#'   score_aov_pval |>
+#'   fit(Sale_Price ~ ., data = ames_subset)
+#' ames_aov_pval_res@results
+#'
+#' # Rank score
+#' ames_aov_pval_res |> rank_best_score_dense()
 #'
 #' @export
 rank_best_score_dense <- S7::new_generic(

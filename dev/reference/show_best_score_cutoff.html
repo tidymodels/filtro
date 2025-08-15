@@ -50,7 +50,7 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A score class object.</p></dd>
+<dd><p>A score class object (e.g., <code>score_cor_pearson</code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -66,6 +66,10 @@
 of <code>NULL</code> indicates that there is no target value.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A tibble of score results.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -97,6 +101,7 @@ of <code>NULL</code> indicates that there is no target value.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Area    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> aov_pval   5.75 Sale_Price Street      </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show best score</span></span></span>
 <span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">show_best_score_cutoff</span><span class="op">(</span>cutoff <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name     score outcome    predictor  </span>

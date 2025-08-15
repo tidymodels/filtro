@@ -57,14 +57,60 @@ same rank and ranks are without gaps <em>(singular)</em></p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A score class object, i.e., <code>score_*</code>.</p></dd>
+<dd><p>A score class object (e.g., <code>score_cor_pearson</code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further arguments passed to or from other methods.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A tibble of score results.</p>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ames.html" class="external-link">ames</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">Sale_Price</span>,</span></span>
+<span class="r-in"><span>    <span class="va">MS_SubClass</span>,</span></span>
+<span class="r-in"><span>    <span class="va">MS_Zoning</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Lot_Frontage</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Lot_Area</span>,</span></span>
+<span class="r-in"><span>    <span class="va">Street</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_subset</span> <span class="op">&lt;-</span> <span class="va">ames_subset</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>Sale_Price <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">Sale_Price</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span></span>
+<span class="r-in"><span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name      score outcome    predictor   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> aov_pval 237.   Sale_Price MS_SubClass </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> aov_pval 130.   Sale_Price MS_Zoning   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Frontage</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Area    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> aov_pval   5.75 Sale_Price Street      </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Rank score</span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">rank_best_score_dense</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 5 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   name      score outcome    predictor     rank</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> aov_pval 237.   Sale_Price MS_SubClass      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> aov_pval 130.   Sale_Price MS_Zoning        2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Frontage    <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Area        <span style="color: #BB0000;">NA</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> aov_pval   5.75 Sale_Price Street           3</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

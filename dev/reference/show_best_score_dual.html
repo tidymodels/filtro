@@ -53,7 +53,7 @@ optional cutoff value <em>(singular)</em></p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A score class object, i.e., <code>score_*</code>.</p></dd>
+<dd><p>A score class object (e.g., <code>score_cor_pearson</code>).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -74,6 +74,10 @@ of predictors to consider.</p></dd>
 <dd><p>A numeric value specifying the cutoff value.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A tibble of score results.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
@@ -105,6 +109,7 @@ of predictors to consider.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span> aov_pval  <span style="color: #BB0000;">NA</span>    Sale_Price Lot_Area    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span> aov_pval   5.75 Sale_Price Street      </span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Show best score</span></span></span>
 <span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">show_best_score_dual</span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name     score outcome    predictor  </span>
@@ -123,7 +128,7 @@ of predictors to consider.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> aov_pval  237. Sale_Price MS_SubClass</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> aov_pval  130. Sale_Price MS_Zoning  </span>
-<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">show_best_score_dual</span><span class="op">(</span>prop_terms <span class="op">=</span> <span class="fl">2</span>, cutoff <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ames_aov_pval_res</span> <span class="op">|&gt;</span> <span class="fu">show_best_score_dual</span><span class="op">(</span>num_terms <span class="op">=</span> <span class="fl">2</span>, cutoff <span class="op">=</span> <span class="fl">130</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   name     score outcome    predictor  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      </span>

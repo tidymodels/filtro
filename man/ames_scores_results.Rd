@@ -8,7 +8,7 @@
 \item{ames_scores_results}{a tibble}
 }
 \description{
-This data an exampled score results for ames. Used
+This data an ames exampled score results for, used
 for \code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}} as a demonstration,
 and created by examples in \code{\link[=fill_safe_values]{fill_safe_values()}}.
 }

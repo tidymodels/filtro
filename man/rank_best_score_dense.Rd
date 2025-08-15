@@ -3,7 +3,7 @@
 \name{rank_best_score_dense}
 \alias{rank_best_score_dense}
 \title{Rank score based on \code{dplyr::dense_rank()}, where tied values receive the
-same rank and ranks are with gaps \emph{(singular)}}
+same rank and ranks are without gaps \emph{(singular)}}
 \usage{
 rank_best_score_dense(x, ...)
 }
@@ -14,5 +14,5 @@ rank_best_score_dense(x, ...)
 }
 \description{
 Rank score based on \code{dplyr::dense_rank()}, where tied values receive the
-same rank and ranks are with gaps \emph{(singular)}
+same rank and ranks are without gaps \emph{(singular)}
 }

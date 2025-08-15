@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
 ```{r}
 #| label: start
 #| include: false
+pak::pak("tidymodels/filtro")
 library(filtro)
 library(desirability2)
 library(dplyr)
@@ -29,7 +30,6 @@ library(modeldata)
 ```
 
 This document demonstrates some basic uses of filtro. We'll need to load a few packages: 
-
 
 ```{r}
 #| label: setup

@@ -1,6 +1,6 @@
 #' Ames exampled score results
 #'
-#' This data an exampled score results for ames. Used
+#' This data an ames exampled score results for, used
 #' for [show_best_desirability_prop()] as a demonstration,
 #' and created by examples in [fill_safe_values()].
 #'

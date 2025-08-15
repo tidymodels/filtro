@@ -30,7 +30,6 @@ library(modeldata)
 
 This document demonstrates some basic uses of filtro. We'll need to load a few packages: 
 
-
 ```{r}
 #| label: setup
 library(filtro)
@@ -100,6 +99,15 @@ The `show_best_score_prop()` function returns the best score for a single metric
 
 ```{r}
 # Show best score, based on proportion of predictors
+ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
+```
+
+We can also fill the safe value first, then apply any of the filtering methods. 
+
+```{r}
+# Fill safe value, then show best score
+# ames_aov_pval_res |> fill_safe_value() |> show_best_score_prop(prop_terms = 0.2)
+ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 

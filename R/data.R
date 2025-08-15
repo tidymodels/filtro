@@ -1,14 +1,14 @@
 #' Ames exampled score results
 #'
-#' This data an exampled score results for ames. See
-#' [show_best_desirability_prop()] for how it is used
-#' for demonstration, and see [fill_safe_values()]
-#' for how it is created.
+#' This data an exampled score results for ames. Used
+#' for [show_best_desirability_prop()] as a demonstration,
+#' and created by examples in [fill_safe_values()].
 #'
 #' @name ames_scores_results
 #' @aliases ames_scores_results
 #' @docType data
-#' @return A data frame of exampled score results.
+#' @return \item{ames_scores_results}{a tibble}
+#'
 #' @examples
 #' data(ames_scores_results)
 NULL

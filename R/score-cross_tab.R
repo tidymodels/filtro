@@ -79,6 +79,10 @@ class_score_xtab <- S7::new_class(
 #'   fit(Survived ~ ., data = titanic_subset)
 #' titanic_xtab_pval_chisq_res@results
 #'
+#' # Chi-squared test adjusted p-values
+#' titanic_xtab_pval_chisq_p_adj_res <- score_xtab_pval_chisq |>
+#'   fit(Survived ~ ., data = titanic_subset, adjustment = "BH")
+#'
 #' # Fisher's exact test
 #' titanic_xtab_pval_fisher_res <- score_xtab_pval_fisher |>
 #'   fit(Survived ~ ., data = titanic_subset)

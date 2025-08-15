@@ -65,7 +65,7 @@ Currently, the implemented filters include:
 
 6.  Cross tabulation (Chi-squared test and Fisher’s exact test)
 
-## A scoring example
+## Scoring examples
 
 ``` r
 library(filtro)
@@ -153,7 +153,7 @@ ames_info_gain_reg_res@results
 #> 5 infogain 0.00365 Sale_Price Street
 ```
 
-## A filtering exmple for score *singular*
+## Filtering exmples for score *singular*
 
 ``` r
 ames_aov_pval_res@results
@@ -187,7 +187,7 @@ ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 #> 2 aov_pval   Inf Sale_Price Lot_Area
 ```
 
-## A filtering example for scores *plural*
+## Filtering examples for scores *plural*
 
 ``` r
 # Create a list

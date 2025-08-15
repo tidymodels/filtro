@@ -70,7 +70,7 @@ Currently, the implemented filters include:
 
 6. Cross tabulation (Chi-squared test and Fisher's exact test) 
 
-## A scoring example
+## Scoring examples
 
 ```{r}
 #| label: start
@@ -135,7 +135,7 @@ ames_info_gain_reg_res <-
 ames_info_gain_reg_res@results
 ```
 
-## A filtering exmple for score *singular* 
+## Filtering exmples for score *singular* 
 
 ```{r}
 ames_aov_pval_res@results
@@ -152,7 +152,7 @@ ames_aov_pval_res <- ames_aov_pval_res |> fill_safe_value()
 ames_aov_pval_res |> show_best_score_prop(prop_terms = 0.2)
 ```
 
-## A filtering example for scores *plural* 
+## Filtering examples for scores *plural* 
 
 ```{r}
 # Create a list

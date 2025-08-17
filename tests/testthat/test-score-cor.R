@@ -310,3 +310,12 @@ test_that("Spearman correlation filters - adding missing values and case weights
     error = TRUE
   )
 })
+
+test_that("fit() works when the generic is available", {
+  # See issue 161
+
+  sim_filter_1 <- score_cor_pearson |> fit(mpg ~ ., data = mtcars)
+  suppressPackageStartupMessages(library(generics))
+  sim_filter_2 <- score_cor_pearson |> fit(mpg ~ ., data = mtcars)
+  expect_equal(sim_filter_1@results, sim_filter_2@results)
+})

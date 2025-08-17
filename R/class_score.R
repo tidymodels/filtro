@@ -52,14 +52,6 @@ class_score <- S7::new_class(
 # ------------------------------------------------------------------------------
 # Methods
 
-#' An api mimicking `generics::required_pkgs()` to return the `packages` property
-#'
-#' A generic for determine which packages are required for operation.
-#' @param x A score class object (e.g., `score_cor_pearson`).
-#' @param ... Further arguments passed to or from other methods.
-#' @export
-required_pkgs <- S7::new_generic("required_pkgs", "x")
-
 #' @keywords internal
 #' @export
 S7::method(required_pkgs, class_score) <- function(x, ...) {
@@ -67,18 +59,4 @@ S7::method(required_pkgs, class_score) <- function(x, ...) {
   sort(unique(c("filtro", x@packages)))
 }
 
-# An api mimicking `generics::fit()` to estimate the statistics
-#'
-#' A generic for fitting score objects.
-#'
-#' @param object A score class object (e.g., `score_cor_pearson`).
-#' @param ... Further arguments passed to or from other methods.
-#' @details
-#'
-#' For information `fit()` methods for specific score objects, see the "Details"
-#' section (and the "Estimating the scores" subsection) for the score object
-#' (e.g., `?score_cor_pearson`). There may be other arguments to fit methods
-#' that are not documented here.
-#'
-#' @export
-fit <- S7::new_generic("fit", dispatch_args = "object")
+

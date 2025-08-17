@@ -8,6 +8,14 @@
 ## usethis namespace: end
 NULL
 
+#' @importFrom generics fit
+#' @export
+generics::fit
+
+#' @importFrom generics required_pkgs
+#' @export
+generics::required_pkgs
+
 # enable usage of <S7_object>@name in package code
 #' @rawNamespace if (getRversion() < "4.3.0") importFrom("S7", "@")
 NULL

@@ -37,7 +37,7 @@ class_score <- S7::new_class(
     deterministic = S7::class_logical,
     # Does the method have tuning parameters?
     tuning = S7::class_logical,
-    # What function is used to estimate the values from data?
+    # What function, if any, is used to estimate the values from data?
     calculating_fn = S7::class_function,
     # What label to use when printing?
     label = S7::class_character,

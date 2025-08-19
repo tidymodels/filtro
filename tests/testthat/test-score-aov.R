@@ -57,11 +57,6 @@ test_that("computations - class outcome", {
   expect_equal(cell_pval_natrual_res@range, c(0.0, 1.0))
   expect_equal(cell_pval_natrual_res@inclusive, rep(TRUE, 2))
   expect_equal(cell_pval_natrual_res@fallback_value, .Machine$double.neg.eps)
-  expect_equal(
-    cell_pval_natrual_res@sorts,
-    function(x) x,
-    ignore_function_env = TRUE
-  )
   expect_equal(cell_pval_natrual_res@direction, "minimize")
 })
 
@@ -115,11 +110,6 @@ test_that("computations - numeric outcome", {
   expect_equal(perm_pval_natrual_res@range, c(0.0, 1.0))
   expect_equal(perm_pval_natrual_res@inclusive, rep(TRUE, 2))
   expect_equal(perm_pval_natrual_res@fallback_value, .Machine$double.neg.eps)
-  expect_equal(
-    perm_pval_natrual_res@sorts,
-    function(x) x,
-    ignore_function_env = TRUE
-  )
   expect_equal(perm_pval_natrual_res@direction, "minimize")
 })
 

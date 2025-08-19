@@ -175,7 +175,6 @@ S7::method(fit, class_score_xtab) <- function(
     object@range <- c(0.0, 1.0)
     object@inclusive <- rep(TRUE, 2)
     object@fallback_value <- .Machine$double.neg.eps
-    object@sorts <- function(x) x
     object@direction <- "minimize"
   }
 

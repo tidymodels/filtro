@@ -62,7 +62,7 @@ of Variance techniques.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An S7 object. The primary property of interest is in <code>results</code>. This
-is a data frame of results that is populated by the <code><a href="fit.html">fit()</a></code> method and has
+is a data frame of results that is populated by the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method and has
 columns:</p><ul><li><p><code>name</code>: The name of the score (e.g., <code>aov_fstat</code> or <code>aov_pval</code>).</p></li>
 <li><p><code>score</code>: The estimates for each predictor.</p></li>
 <li><p><code>outcome</code>: The name of the outcome column.</p></li>
@@ -83,7 +83,7 @@ with more important predictors.</p><div class="section">
 
 <p>In <span class="pkg">filtro</span>, the <code>score_*</code> objects define a scoring method (e.g., data
 input requirements, package dependencies, etc). To compute the scores for
-a specific data set, the <code><a href="fit.html">fit()</a></code> method is used. The main arguments for
+a specific data set, the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method is used. The main arguments for
 these functions are:</p>
 <dl><dt><code>object</code></dt>
 <dd><p>A score class object (e.g., <code>score_aov_pval</code>).</p></dd>
@@ -129,7 +129,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span><span class="co"># ANOVA p-value</span></span></span>
 <span class="r-in"><span><span class="va">cell_p_val_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cell_p_val_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 56 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name       score outcome predictor                   </span>
@@ -150,7 +150,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu"><a href="dont_log_pvalues.html">dont_log_pvalues</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cell_pval_natrual_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">natrual_units</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cell_pval_natrual_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 56 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name        score outcome predictor                   </span>
@@ -170,7 +170,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span><span class="co"># ANOVA t/F-statistic</span></span></span>
 <span class="r-in"><span><span class="va">cell_t_stat_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_fstat</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cell_data</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cell_t_stat_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 56 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name          score outcome predictor                   </span>
@@ -202,7 +202,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">perm_p_val_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">permeability</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">permeability</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">permeability</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">permeability</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">perm_p_val_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 50 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name      score outcome      predictor   </span>
@@ -228,7 +228,7 @@ silently, and a missing value is given for the score.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">perm_t_stat_res</span> <span class="op">&lt;-</span></span></span>
 <span class="r-in"><span>  <span class="va">score_aov_fstat</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="fit.html">fit</a></span><span class="op">(</span><span class="va">permeability</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">permeability</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">permeability</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">permeability</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">perm_t_stat_res</span><span class="op">@</span><span class="va">results</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 50 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name       score outcome      predictor   </span>

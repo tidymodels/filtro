@@ -97,12 +97,12 @@
 <span></span>
 <span><span class="co"># ames |&gt; str() # uncomment to see the structure of the data</span></span></code></pre></div>
 </div>
-<p>To apply the ANOVA F-test filter, we first create a score class object to define the scoring method, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
+<p>To apply the ANOVA F-test filter, we first create a score class object to define the scoring method, and then use the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method with the standard formula to compute the scores.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
@@ -172,29 +172,29 @@
 </section><section class="level2"><h2 id="a-filtering-example-for-scores-plural">A filtering example for scores <em>plural</em>
 <a class="anchor" aria-label="anchor" href="#a-filtering-example-for-scores-plural"></a>
 </h2>
-<p>To handle multiple scores, we first create multiple score class objects, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the scores.</p>
+<p>To handle multiple scores, we first create multiple score class objects, and then use the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method with the standard formula to compute the scores.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ANOVA raw p-value </span></span>
 <span><span class="va">natrual_units</span> <span class="op">&lt;-</span> <span class="va">score_aov_pval</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/dont_log_pvalues.html">dont_log_pvalues</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">ames_aov_pval_natrual_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">natrual_units</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Pearson correlation</span></span>
 <span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Forest importance</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Information gain</span></span>
 <span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_info_gain</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames</span><span class="op">)</span></span></code></pre></div>
 </div>
 <p>Next, we create a list to collect these score class objects, including their associated metadata and scores.</p>
 <div class="cell">

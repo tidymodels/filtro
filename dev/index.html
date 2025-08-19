@@ -123,7 +123,7 @@
 <code class="sourceCode R"><span><span class="co"># ANOVA p-value</span></span>
 <span><span class="va">ames_aov_pval_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_aov_pval</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
 <span><span class="va">ames_aov_pval_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   name      score outcome    predictor   </span></span>
@@ -137,7 +137,7 @@
 <code class="sourceCode R"><span><span class="co"># Pearson correlation</span></span>
 <span><span class="va">ames_cor_pearson_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_cor_pearson</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
 <span><span class="va">ames_cor_pearson_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   name         score outcome    predictor   </span></span>
@@ -151,7 +151,7 @@
 <code class="sourceCode R"><span><span class="co"># Forest importance</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span>, seed <span class="op">=</span> <span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">ames_imp_rf_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   name       score outcome    predictor   </span></span>
@@ -165,7 +165,7 @@
 <code class="sourceCode R"><span><span class="co"># Information gain</span></span>
 <span><span class="va">ames_info_gain_reg_res</span> <span class="op">&lt;-</span></span>
 <span>  <span class="va">score_info_gain</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/fit.html">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">Sale_Price</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">ames_subset</span><span class="op">)</span></span>
 <span><span class="va">ames_info_gain_reg_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   name       score outcome    predictor   </span></span>

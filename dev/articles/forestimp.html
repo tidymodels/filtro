@@ -118,12 +118,12 @@
 <span></span>
 <span><span class="co"># cells_subset |&gt; str() # Uncomment to see the structure of the data</span></span></code></pre></div>
 </div>
-<p>First, we create a score class object to specify a {ranger} random forest, and then use the <code><a href="../reference/fit.html">fit()</a></code> method with the standard formula to compute the importance scores.</p>
+<p>First, we create a score class object to specify a {ranger} random forest, and then use the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method with the standard formula to compute the importance scores.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Specify random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>, </span>
 <span>    seed <span class="op">=</span> <span class="fl">42</span> </span>
@@ -165,7 +165,7 @@
 <div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Set hyperparameters</span></span>
 <span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>,     </span>
 <span>    trees <span class="op">=</span> <span class="fl">100</span>, </span>
@@ -177,7 +177,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>,     </span>
 <span>    trees <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -192,7 +192,7 @@
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cells_imp_rf_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span></span>
 <span>    <span class="va">class</span> <span class="op">~</span> <span class="va">.</span>,</span>
 <span>    data <span class="op">=</span> <span class="va">cells_subset</span>,     </span>
 <span>    num.trees <span class="op">=</span> <span class="fl">100</span>,</span>
@@ -204,7 +204,7 @@
 <p>The same applies to {partykit}- and {aorsf}- specific arguments.</p>
 </section><section class="level2"><h2 id="a-scoring-example-conditional-random-forest">A scoring example — conditional random forest<a class="anchor" aria-label="anchor" href="#a-scoring-example-conditional-random-forest"></a>
 </h2>
-<p>For the {partykit} conditional random forest, we again create a score class object to specify the model, then use the <code><a href="../reference/fit.html">fit()</a></code> method to compute the importance scores.</p>
+<p>For the {partykit} conditional random forest, we again create a score class object to specify the model, then use the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method to compute the importance scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
@@ -213,7 +213,7 @@
 <span></span>
 <span><span class="co"># Specify conditional random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_conditional</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name                 score outcome predictor                   </span></span>
@@ -233,7 +233,7 @@
 <p>Note that when a predictor’s importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors.</p>
 </section><section class="level2"><h2 id="an-scoring-example-oblique-random-forest">An scoring example — oblique random forest<a class="anchor" aria-label="anchor" href="#an-scoring-example-oblique-random-forest"></a>
 </h2>
-<p>For the {aorsf} oblique random forest, we again create a score class object to specify the model, then use the <code><a href="../reference/fit.html">fit()</a></code> method to compute the importance scores.</p>
+<p>For the {aorsf} oblique random forest, we again create a score class object to specify the model, then use the <code><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit()</a></code> method to compute the importance scores.</p>
 <p>The data frame of results can be accessed via <code>object@results</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
@@ -242,7 +242,7 @@
 <span></span>
 <span><span class="co"># Specify oblique random forest and fit score</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_oblique</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="../reference/fit.html">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
 <span><span class="co">#&gt;    name               score outcome predictor                   </span></span>

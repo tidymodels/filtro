@@ -22,6 +22,7 @@ Imports:
     cli,
     desirability2 (>= 0.0.1.9000),
     dplyr,
+    generics,
     pROC,
     purrr,
     rlang (>= 1.1.0),

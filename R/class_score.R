@@ -29,8 +29,6 @@ class_score <- S7::new_class(
     fallback_value = S7::class_numeric,
     # What is the column name that will be used for the statistic values?
     score_type = S7::class_character,
-    # (Not used) How should the values be sorted (from most- to least-important)?
-    sorts = S7::class_function,
     # What direction of values indicates the most important values?
     direction = S7::class_character,
     # Does the fitting process use random numbers?
@@ -60,5 +58,3 @@ S7::method(required_pkgs, class_score) <- function(x, ...) {
   # Always include the parent package along with the method's dependencies
   sort(unique(c("filtro", x@packages)))
 }
-
-

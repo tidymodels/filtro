@@ -312,7 +312,7 @@ test_that("Spearman correlation filters - adding missing values and case weights
 })
 
 test_that("fit() works when the generic is available", {
-  # See issue 161
+  # https://github.com/tidymodels/filtro/pull/161
 
   sim_filter_1 <- score_cor_pearson |> fit(mpg ~ ., data = mtcars)
   suppressPackageStartupMessages(library(generics))

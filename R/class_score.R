@@ -8,10 +8,12 @@
 class_score <- S7::new_class(
   "class_score",
   properties = list(
+    # What types of outcome can the method handle?
     outcome_type = S7::new_property(
       S7::class_character,
       default = c("numeric", "factor")
     ),
+    # What types of predictor can the method handle?
     predictor_type = S7::new_property(
       S7::class_character,
       default = c("numeric", "factor")
@@ -27,7 +29,7 @@ class_score <- S7::new_class(
     fallback_value = S7::class_numeric,
     # What is the column name that will be used for the statistic values?
     score_type = S7::class_character,
-    # How should the values be sorted (from most- to least-important)?
+    # (Not used) How should the values be sorted (from most- to least-important)?
     sorts = S7::class_function,
     # What direction of values indicates the most important values?
     direction = S7::class_character,
@@ -35,13 +37,13 @@ class_score <- S7::new_class(
     deterministic = S7::class_logical,
     # Does the method have tuning parameters?
     tuning = S7::class_logical,
-    # What function is used to estimate the values from data?
+    # What function, if any, is used to estimate the values from data?
     calculating_fn = S7::class_function,
     # What label to use when printing?
     label = S7::class_character,
     # What packages, if any, are required to train the method?
     packages = S7::class_character,
-    # A slot for the results once the method is estimates?
+    # A slot for the results once the method is fitted.
     results = S7::new_property(
       S7::class_data.frame,
       default = quote(data.frame())

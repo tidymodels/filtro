@@ -6,6 +6,8 @@
 \alias{filtro-package}
 \title{filtro: Feature Selection Using Supervised Filter-Based Methods}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Tidy tools to apply filter-based supervised feature selection methods. These methods score and rank feature relevance using metrics such as p-values, correlation, and importance scores (Kuhn and Johnson (2019) \doi{10.1201/9781315108230}).
 }
 \seealso{

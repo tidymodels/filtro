@@ -29,7 +29,8 @@ Imports:
     S7,
     stats,
     tibble,
-    tidyr
+    tidyr,
+    vctrs
 Suggests: 
     aorsf,
     FSelectorRcpp,

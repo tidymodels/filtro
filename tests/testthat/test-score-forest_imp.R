@@ -441,3 +441,22 @@ test_that("computations - required packages", {
 })
 
 # TODO Test more after we add validators
+
+
+test_that("zero-variance predictors", {
+  expect_equal(
+    filtro:::find_zero_variance_cols(modeldata::leaf_id_flavia),
+    "outlying_contour"
+  )
+  expect_equal(
+    filtro:::find_zero_variance_cols(mtcars),
+    character(0)
+  )
+  expect_snapshot(
+    filtro:::find_zero_variance_cols(data.frame(y = rep(1, 5), x = 1:5)),
+    error = TRUE
+  )
+
+})
+
+

@@ -886,3 +886,14 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
   # extra class(es) and attributes
   as.numeric(weights)
 }
+
+find_zero_variance_cols <- function(data) {
+  is_zv <- map_lgl(data, \(x) vctrs::vec_unique_count(x) == 1L)
+  if (is_zv[1]) {
+    cli::cli_abort(
+      "The outcome column {.val {names(is_zv)[1]}} has zero variance and
+      cannot be used.",
+      call = NULL)
+  }
+  names(is_zv)[is_zv]
+}

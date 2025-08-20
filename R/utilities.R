@@ -689,11 +689,14 @@ bind_scores <- S7::new_generic("bind_scores", dispatch_args = "x")
 #' @export
 S7::method(bind_scores, class_score_list) <- function(x) {
   length_x <- length(x)
-  if (length_x < 2) {
-    score_set <- x[[1]]@results
-  } else {
+  if (length_x == 0) {
+    cli::cli_abort(
+      "{.arg x} must contain at least one element"
+    )
+  }
+  score_set <- x[[1]]@results
+  if (length_x > 1) {
     # TODO Check for identical score object, e.g., list(score_obj_aov, score_obj_aov)
-    score_set <- x[[1]]@results
     for (i in 2:length_x) {
       score_set <- dplyr::full_join(
         score_set,

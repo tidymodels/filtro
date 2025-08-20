@@ -438,9 +438,9 @@ test_that("computation - bind scores", {
     ames_cor_pearson_res
   )
 
-  res <- class_score_list |> bind_scores()
+  res_single <- class_score_list |> bind_scores()
 
-  expect_named(res, c("outcome", "predictor", "cor_pearson"))
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
 })
 
 test_that("computation - fill safe values", {
@@ -510,9 +510,9 @@ test_that("computation - fill safe values", {
     ames_cor_pearson_res
   )
 
-  res <- class_score_list |> fill_safe_values()
+  res_single <- class_score_list |> fill_safe_values()
 
-  expect_named(res, c("outcome", "predictor", "cor_pearson"))
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
 })
 
 # TODO Some tests are not exhaustive and can be improved

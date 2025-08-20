@@ -187,6 +187,17 @@ S7::method(fit, class_score_imp_rf) <- function(
   ...
 ) {
   analysis_data <- process_all_data(formula, data = data)
+
+  # check for zero-variance columns and remove them
+  zv_names <- find_zero_variance_cols(analysis_data)
+  if (length(zv_names) > 0) {
+    analysis_data <- dplyr::select(analysis_data, -all_of(!!zv_names))
+    zv_vec <- rep(0.0, length(zv_names))
+    names(zv_vec) <- zv_names
+  } else {
+    zv_vec <- double(0)
+  }
+
   predictors <- names(analysis_data)[-1]
   outcome <- names(analysis_data)[1]
   case_weights <- convert_weights(case_weights, nrow(analysis_data))
@@ -234,16 +245,12 @@ S7::method(fit, class_score_imp_rf) <- function(
 
   if (inherits(imp, "try-error")) {
     cli::cli_warn("Random forest importance calucations errored with: {imp}")
-    score <- rep(NA_real_, length(predictors))
-  } else {
-    score <- imp[predictors]
-    score[is.na(score)] <- 0
+    imp <- rep(NA_real_, length(predictors))
   }
 
+  imp <- c(imp, zv_vec)
 
-  score <- stats::setNames(score, nm = predictors) # TODO Confirm this is the right approach
-
-  res <- named_vec_to_tibble(score, object@score_type, outcome)
+  res <- named_vec_to_tibble(imp, object@score_type, outcome)
 
   object@results <- res
   object

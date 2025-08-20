@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   filtro: filtro.html
   forestimp: forestimp.html
-last_built: 2025-08-19T22:41Z
+last_built: 2025-08-20T00:07Z
 urls:
   reference: https://filtro.tidymodels.org/reference
   article: https://filtro.tidymodels.org/articles

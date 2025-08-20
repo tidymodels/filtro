@@ -424,6 +424,23 @@ test_that("computation - bind scores", {
   expect_equal(res$cor_pearson, exp_res$cor_pearson)
   expect_equal(res$imp_rf, exp_res$imp_rf)
   expect_equal(res$infogain, exp_res$infogain)
+
+  # ----------------------------------------------------------------------------
+  # Single score
+
+  # cor
+  ames_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # Create a list
+  class_score_list <- list(
+    ames_cor_pearson_res
+  )
+
+  res_single <- class_score_list |> bind_scores()
+
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
 })
 
 test_that("computation - fill safe values", {
@@ -479,6 +496,23 @@ test_that("computation - fill safe values", {
   expect_equal(res$cor_pearson, exp_res$cor_pearson)
   expect_equal(res$imp_rf, exp_res$imp_rf)
   expect_equal(res$infogain, exp_res$infogain)
+
+  # ----------------------------------------------------------------------------
+  # Single score
+
+  # cor
+  ames_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(Sale_Price ~ ., data = ames_subset)
+
+  # Create a list
+  class_score_list <- list(
+    ames_cor_pearson_res
+  )
+
+  res_single <- class_score_list |> fill_safe_values()
+
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
 })
 
 # TODO Some tests are not exhaustive and can be improved

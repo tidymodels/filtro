@@ -233,11 +233,14 @@ S7::method(fit, class_score_imp_rf) <- function(
   }
 
   if (inherits(imp, "try-error")) {
-    imp <- NA_real_
+    cli::cli_warn("Random forest importance calucations errored with: {imp}")
+    score <- rep(NA_real_, length(predictors))
+  } else {
+    score <- imp[predictors]
+    score[is.na(score)] <- 0
   }
 
-  score <- imp[predictors]
-  score[is.na(score)] <- 0
+
   score <- stats::setNames(score, nm = predictors) # TODO Confirm this is the right approach
 
   res <- named_vec_to_tibble(score, object@score_type, outcome)
@@ -423,3 +426,4 @@ convert_rf_args <- function(args, method) {
 update_defaults <- function(args, defaults = list()) {
   purrr::list_modify(defaults, !!!args)
 }
+

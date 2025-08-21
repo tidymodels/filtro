@@ -215,20 +215,20 @@
 <span><span class="va">cells_imp_rf_conditional_res</span> <span class="op">&lt;-</span> <span class="va">score_imp_rf_conditional</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_conditional_res</span><span class="op">@</span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
-<span><span class="co">#&gt;    name                 score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
-<span><span class="co">#&gt;  1 imp_rf_conditional -0.0306 class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt;  2 imp_rf_conditional  0.178  class   area_ch_1                   </span></span>
-<span><span class="co">#&gt;  3 imp_rf_conditional  0.158  class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt;  4 imp_rf_conditional  0.132  class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt;  5 imp_rf_conditional  0      class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt;  6 imp_rf_conditional  0      class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt;  7 imp_rf_conditional  0.0927 class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt;  8 imp_rf_conditional  0.963  class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt;  9 imp_rf_conditional -0.0842 class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; 10 imp_rf_conditional  0.0688 class   diff_inten_density_ch_3     </span></span>
-<span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # A tibble: 40 × 4</span></span>
+<span><span class="co">#&gt;    name                  score outcome predictor                   </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;                 &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
+<span><span class="co">#&gt;  1 imp_rf_conditional -0.0306  class   angle_ch_1                  </span></span>
+<span><span class="co">#&gt;  2 imp_rf_conditional  0.178   class   area_ch_1                   </span></span>
+<span><span class="co">#&gt;  3 imp_rf_conditional  0.158   class   avg_inten_ch_1              </span></span>
+<span><span class="co">#&gt;  4 imp_rf_conditional  0.132   class   avg_inten_ch_2              </span></span>
+<span><span class="co">#&gt;  5 imp_rf_conditional  0.0927  class   convex_hull_area_ratio_ch_1 </span></span>
+<span><span class="co">#&gt;  6 imp_rf_conditional  0.963   class   convex_hull_perim_ratio_ch_1</span></span>
+<span><span class="co">#&gt;  7 imp_rf_conditional -0.0842  class   diff_inten_density_ch_1     </span></span>
+<span><span class="co">#&gt;  8 imp_rf_conditional  0.0688  class   diff_inten_density_ch_3     </span></span>
+<span><span class="co">#&gt;  9 imp_rf_conditional  0.147   class   entropy_inten_ch_1          </span></span>
+<span><span class="co">#&gt; 10 imp_rf_conditional  0.00105 class   entropy_inten_ch_3          </span></span>
+<span><span class="co">#&gt; # ℹ 30 more rows</span></span></code></pre></div>
 </div>
 <p>Note that when a predictor’s importance score is 0, <code><a href="https://rdrr.io/pkg/partykit/man/cforest.html" class="external-link">partykit::cforest()</a></code> may exclude its name from the output. In such cases, a score of 0 is assigned to the missing predictors.</p>
 </section><section class="level2"><h2 id="an-scoring-example-oblique-random-forest">An scoring example — oblique random forest<a class="anchor" aria-label="anchor" href="#an-scoring-example-oblique-random-forest"></a>
@@ -245,18 +245,18 @@
 <span>  <span class="fu"><a href="https://generics.r-lib.org/reference/fit.html" class="external-link">fit</a></span><span class="op">(</span><span class="va">class</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">cells_subset</span>, trees <span class="op">=</span> <span class="fl">100</span>, mtry <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">cells_imp_rf_oblique_res</span><span class="op">@</span><span class="va">results</span></span>
 <span><span class="co">#&gt; # A tibble: 56 × 4</span></span>
-<span><span class="co">#&gt;    name               score outcome predictor                   </span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                       </span></span>
-<span><span class="co">#&gt;  1 imp_rf_oblique -0.00140  class   angle_ch_1                  </span></span>
-<span><span class="co">#&gt;  2 imp_rf_oblique  0.00334  class   area_ch_1                   </span></span>
-<span><span class="co">#&gt;  3 imp_rf_oblique  0.00344  class   avg_inten_ch_1              </span></span>
-<span><span class="co">#&gt;  4 imp_rf_oblique  0.00516  class   avg_inten_ch_2              </span></span>
-<span><span class="co">#&gt;  5 imp_rf_oblique -0.00135  class   avg_inten_ch_3              </span></span>
-<span><span class="co">#&gt;  6 imp_rf_oblique -0.000552 class   avg_inten_ch_4              </span></span>
-<span><span class="co">#&gt;  7 imp_rf_oblique  0.00159  class   convex_hull_area_ratio_ch_1 </span></span>
-<span><span class="co">#&gt;  8 imp_rf_oblique  0.00406  class   convex_hull_perim_ratio_ch_1</span></span>
-<span><span class="co">#&gt;  9 imp_rf_oblique  0.00526  class   diff_inten_density_ch_1     </span></span>
-<span><span class="co">#&gt; 10 imp_rf_oblique  0.00284  class   diff_inten_density_ch_3     </span></span>
+<span><span class="co">#&gt;    name             score outcome predictor              </span></span>
+<span><span class="co">#&gt;    &lt;chr&gt;            &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;                  </span></span>
+<span><span class="co">#&gt;  1 imp_rf_oblique 0.0193  class   fiber_width_ch_1       </span></span>
+<span><span class="co">#&gt;  2 imp_rf_oblique 0.0141  class   inten_cooc_entropy_ch_3</span></span>
+<span><span class="co">#&gt;  3 imp_rf_oblique 0.0130  class   shape_p_2_a_ch_1       </span></span>
+<span><span class="co">#&gt;  4 imp_rf_oblique 0.0110  class   shape_bfr_ch_1         </span></span>
+<span><span class="co">#&gt;  5 imp_rf_oblique 0.00765 class   fiber_length_ch_1      </span></span>
+<span><span class="co">#&gt;  6 imp_rf_oblique 0.00592 class   shape_lwr_ch_1         </span></span>
+<span><span class="co">#&gt;  7 imp_rf_oblique 0.00526 class   diff_inten_density_ch_1</span></span>
+<span><span class="co">#&gt;  8 imp_rf_oblique 0.00516 class   avg_inten_ch_2         </span></span>
+<span><span class="co">#&gt;  9 imp_rf_oblique 0.00454 class   spot_fiber_count_ch_3  </span></span>
+<span><span class="co">#&gt; 10 imp_rf_oblique 0.00436 class   eq_circ_diam_ch_1      </span></span>
 <span><span class="co">#&gt; # ℹ 46 more rows</span></span></code></pre></div>
 </div>
 </section><section class="level2"><h2 id="available-objects-and-engines">Available objects and engines<a class="anchor" aria-label="anchor" href="#available-objects-and-engines"></a>

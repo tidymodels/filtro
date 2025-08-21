@@ -485,7 +485,6 @@ test_that("computations - regression task via aorsf - zero variance predictors",
     imp_aorsf_merge$raw,
     tolerance = 0.1
   )
-
 })
 
 # TODO computations - wrong variable types
@@ -497,7 +496,6 @@ test_that("computations - required packages", {
 })
 
 # TODO Test more after we add validators
-
 
 test_that("zero-variance predictors", {
   expect_equal(
@@ -516,7 +514,4 @@ test_that("zero-variance predictors", {
     filtro:::find_zero_variance_cols(data.frame(y = 1:5, x = rep(1, 5))),
     error = TRUE
   )
-
 })
-
-

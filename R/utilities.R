@@ -894,13 +894,15 @@ find_zero_variance_cols <- function(data) {
     cli::cli_abort(
       "The outcome column {.val {names(is_zv)[1]}} has zero variance and
       cannot be used.",
-      call = NULL)
+      call = NULL
+    )
   }
 
   if (all(is_zv[-1])) {
     cli::cli_abort(
       "All of the predictors have zero variance and cannot be used.",
-      call = NULL)
+      call = NULL
+    )
   }
 
   names(is_zv)[is_zv]

@@ -433,4 +433,3 @@ convert_rf_args <- function(args, method) {
 update_defaults <- function(args, defaults = list()) {
   purrr::list_modify(defaults, !!!args)
 }
-

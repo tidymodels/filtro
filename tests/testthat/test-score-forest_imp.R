@@ -513,7 +513,7 @@ test_that("zero-variance predictors", {
     error = TRUE
   )
   expect_snapshot(
-    filtro:::find_zero_variance_cols(data.frame(y = rep(1, 5), x = rep(1, 5))),
+    filtro:::find_zero_variance_cols(data.frame(y = 1:5, x = rep(1, 5))),
     error = TRUE
   )
 

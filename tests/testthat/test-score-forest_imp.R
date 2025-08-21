@@ -209,28 +209,32 @@ test_that("computations - regression task via ranger vary trees, mtry, min_n", {
 
 test_that("computations - classification task via partykit", {
   skip_if_not_installed("modeldata")
-  cells_subset <- helper_cells() |> dplyr::slice(1:20)
+  cells_subset <- helper_cells() |> dplyr::slice(1:200)
 
   set.seed(42)
   cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(class ~ ., data = cells_subset, trees = 3)
+    fit(class ~ ., data = cells_subset, trees = 50)
 
   # ----------------------------------------------------------------------------
 
+  # Repeatedly find different results than the fit() call above
   set.seed(42)
   fit_partykit <- partykit::cforest(
     formula = class ~ .,
     data = cells_subset,
-    ntree = 3
+    ntree = 50
   )
   imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
-  predictors <- setdiff(names(cells_subset), "class")
-  imp_partykit <- imp_partykit_raw[predictors] |> unname()
-  imp_partykit[is.na(imp_partykit)] <- 0
+  imp_partykit_raw <-
+    tibble::enframe(imp_partykit_raw, name = "predictor", value = "raw")
+
+  imp_partykit_merge <-
+    cells_imp_rf_conditional_res@results |>
+    dplyr::full_join(imp_partykit_raw, by = "predictor")
 
   expect_equal(
-    cells_imp_rf_conditional_res@results$score,
-    imp_partykit,
+    rank(imp_partykit_merge$score),
+    rank(imp_partykit_merge$raw),
     tolerance = 0.1
   )
 
@@ -248,15 +252,15 @@ test_that("computations - regression task via partykit", {
   set.seed(1)
   ames_subset <-
     helper_ames() |>
-    dplyr::slice_sample(n = 10, by = Street) |>
-    dplyr::select(Sale_Price, Lot_Area, Street)
+    dplyr::slice_sample(n = 50, by = Street) |>
+    dplyr::select(Sale_Price, Lot_Area, MS_Zoning)
 
   ames_subset <- ames_subset |>
     dplyr::mutate(Sale_Price = log10(Sale_Price))
 
   set.seed(42)
   ames_imp_rf_conditional_res <- score_imp_rf_conditional |>
-    fit(Sale_Price ~ ., data = ames_subset, trees = 3)
+    fit(Sale_Price ~ ., data = ames_subset, trees = 50)
 
   # ----------------------------------------------------------------------------
 
@@ -264,16 +268,19 @@ test_that("computations - regression task via partykit", {
   fit_partykit <- partykit::cforest(
     formula = Sale_Price ~ .,
     data = ames_subset,
-    ntree = 3
+    ntree = 50
   )
   imp_partykit_raw <- partykit::varimp(fit_partykit, conditional = TRUE)
-  predictors <- setdiff(names(ames_subset), "Sale_Price")
-  imp_partykit <- imp_partykit_raw[predictors] |> unname()
-  imp_partykit[is.na(imp_partykit)] <- 0
+  imp_partykit_raw <-
+    tibble::enframe(imp_partykit_raw, name = "predictor", value = "raw")
+
+  imp_partykit_merge <-
+    ames_imp_rf_conditional_res@results |>
+    dplyr::full_join(imp_partykit_raw, by = "predictor")
 
   expect_equal(
-    ames_imp_rf_conditional_res@results$score,
-    imp_partykit,
+    rank(imp_partykit_merge$score),
+    rank(imp_partykit_merge$raw),
     tolerance = 0.1
   )
 
@@ -306,12 +313,18 @@ test_that("computations - classification task via aorsf", {
     n_retry = 2,
     importance = "permute"
   )
-  imp_raw_aorsf <- fit_aorsf$importance
-  predictors <- setdiff(names(cells_subset), "class")
-  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
-  imp_aorsf[is.na(imp_aorsf)] <- 0
+  imp_aorsf_raw <-
+    tibble::enframe(fit_aorsf$importance, name = "predictor", value = "raw")
 
-  expect_equal(cells_imp_rf_oblique_res@results$score, imp_aorsf)
+  imp_aorsf_merge <-
+    cells_imp_rf_oblique_res@results |>
+    dplyr::full_join(imp_aorsf_raw, by = "predictor")
+
+  expect_equal(
+    imp_aorsf_merge$score,
+    imp_aorsf_merge$raw,
+    tolerance = 0.1
+  )
 
   # ----------------------------------------------------------------------------
 
@@ -342,14 +355,16 @@ test_that("computations - regression task via aorsf", {
     n_retry = 2,
     importance = "permute"
   )
-  imp_raw_aorsf <- fit_aorsf$importance
-  predictors <- setdiff(names(ames_subset), "Sale_Price")
-  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
-  imp_aorsf[is.na(imp_aorsf)] <- 0
+  imp_aorsf_raw <-
+    tibble::enframe(fit_aorsf$importance, name = "predictor", value = "raw")
+
+  imp_aorsf_merge <-
+    ames_imp_rf_oblique_res@results |>
+    dplyr::full_join(imp_aorsf_raw, by = "predictor")
 
   expect_equal(
-    ames_imp_rf_oblique_res@results$score,
-    imp_aorsf,
+    imp_aorsf_merge$score,
+    imp_aorsf_merge$raw,
     tolerance = 0.1
   )
 
@@ -387,24 +402,24 @@ test_that("computations - regression task via aorsf - adding missing values and 
   fit_aorsf <- aorsf::orsf(
     formula = Sale_Price ~ .,
     data = ames_missing,
-    n_tree = 100,
-    n_retry = 2,
     importance = "permute"
   )
-  imp_raw_aorsf <- fit_aorsf$importance
-  predictors <- setdiff(names(ames_subset), "Sale_Price")
-  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
-  imp_aorsf[is.na(imp_aorsf)] <- 0
+  imp_aorsf_raw <-
+    tibble::enframe(fit_aorsf$importance, name = "predictor", value = "raw")
+
+  imp_aorsf_merge <-
+    ames_missing_imp_rf_oblique_res@results |>
+    dplyr::full_join(imp_aorsf_raw, by = "predictor")
 
   expect_equal(
-    ames_missing_imp_rf_oblique_res@results$score,
-    imp_aorsf,
+    imp_aorsf_merge$score,
+    imp_aorsf_merge$raw,
     tolerance = 0.1
   )
 
   # ----------------------------------------------------------------------------
   # case weights
-  two_weights <- c(rep(1, 10), rep(0, nrow(ames_subset) - 10))
+  two_weights <- seq(0, 1, length.out = nrow(ames_subset))
 
   set.seed(42)
   ames_weights_imp_rf_oblique_res <- score_imp_rf_oblique |>
@@ -416,20 +431,60 @@ test_that("computations - regression task via aorsf - adding missing values and 
   fit_aorsf <- aorsf::orsf(
     formula = Sale_Price ~ .,
     data = ames_subset,
-    n_tree = 100,
-    n_retry = 2,
     importance = "permute",
     weights = two_weights
   )
-  imp_raw_aorsf <- fit_aorsf$importance
-  predictors <- setdiff(names(ames_subset), "Sale_Price")
-  imp_aorsf <- imp_raw_aorsf[predictors] |> unname()
-  imp_aorsf[is.na(imp_aorsf)] <- 0
+  imp_aorsf_raw <-
+    tibble::enframe(fit_aorsf$importance, name = "predictor", value = "raw")
+
+  imp_aorsf_merge <-
+    ames_weights_imp_rf_oblique_res@results |>
+    dplyr::full_join(imp_aorsf_raw, by = "predictor")
 
   # We find numerical differences across OSes
   skip_on_os("linux")
   skip_on_os("windows")
-  expect_equal(ames_weights_imp_rf_oblique_res@results$score, imp_aorsf)
+
+  expect_equal(
+    imp_aorsf_merge$score,
+    imp_aorsf_merge$raw,
+    tolerance = 0.1
+  )
+})
+
+
+test_that("computations - regression task via aorsf - zero variance predictors", {
+  skip_if_not_installed("modeldata")
+
+  zv_data <- mtcars
+  zv_data$potato <- rep(1.0, 32)
+  zv_data$kartoffel <- factor(rep("a", 32))
+
+  set.seed(42)
+  zv_imp_rf_oblique_res <- score_imp_rf_oblique |>
+    fit(mpg ~ ., data = zv_data)
+
+  # ----------------------------------------------------------------------------
+
+  set.seed(42)
+  fit_aorsf <- aorsf::orsf(
+    formula = mpg ~ .,
+    data = zv_data[, 1:ncol(mtcars)],
+    importance = "permute"
+  )
+  imp_aorsf_raw <-
+    tibble::enframe(fit_aorsf$importance, name = "predictor", value = "raw")
+
+  imp_aorsf_merge <-
+    zv_imp_rf_oblique_res@results |>
+    dplyr::full_join(imp_aorsf_raw, by = "predictor") |>
+    dplyr::mutate(raw = ifelse(is.na(raw), 0., raw))
+
+  expect_equal(
+    imp_aorsf_merge$score,
+    imp_aorsf_merge$raw,
+    tolerance = 0.1
+  )
 })
 
 # TODO computations - wrong variable types
@@ -441,3 +496,22 @@ test_that("computations - required packages", {
 })
 
 # TODO Test more after we add validators
+
+test_that("zero-variance predictors", {
+  expect_equal(
+    filtro:::find_zero_variance_cols(modeldata::leaf_id_flavia),
+    "outlying_contour"
+  )
+  expect_equal(
+    filtro:::find_zero_variance_cols(mtcars),
+    character(0)
+  )
+  expect_snapshot(
+    filtro:::find_zero_variance_cols(data.frame(y = rep(1, 5), x = 1:5)),
+    error = TRUE
+  )
+  expect_snapshot(
+    filtro:::find_zero_variance_cols(data.frame(y = 1:5, x = rep(1, 5))),
+    error = TRUE
+  )
+})

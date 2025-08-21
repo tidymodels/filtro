@@ -794,6 +794,33 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
   score_set
 }
 
+# ------------------------------------------------------------------------------
+#' @keywords internal
+#' @export
+transform_score <- S7::new_generic("transform_score", dispatch_args = "x")
+
+#' Transform score *(plural)*
+#'
+#' @name transform_score
+#'
+#' @param x A tibble or data frame returned by [fill_safe_values()].
+#'
+#' @param trans A named list of functions.
+#'
+#' @return A tibble of scores results.
+#'
+#' @export
+S7::method(transform_score, S7::class_data.frame) <- function(
+  x,
+  trans = list()
+) {
+  x_cols <- dplyr::setdiff(names(x), c("outcome", "predictor"))
+  for (nm in names(trans)) {
+    x[[nm]] <- trans[[nm]](x[[nm]])
+  }
+  x
+}
+
 # TODO Drop outcome column
 
 # ------------------------------------------------------------------------------

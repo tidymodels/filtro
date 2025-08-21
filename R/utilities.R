@@ -887,6 +887,7 @@ convert_weights <- function(weights, num_rows, call = rlang::caller_env()) {
   as.numeric(weights)
 }
 
+# The first column is assumed to be the outcome
 find_zero_variance_cols <- function(data) {
   is_zv <- purrr::map_lgl(data, \(x) vctrs::vec_unique_count(x) == 1L)
   if (is_zv[1]) {

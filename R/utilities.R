@@ -799,7 +799,7 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
 #' @export
 transform_score <- S7::new_generic("transform_score", dispatch_args = "x")
 
-#' Transform score *(plural)*
+#' Transform score or scores *(plural)*
 #'
 #' @name transform_score
 #'

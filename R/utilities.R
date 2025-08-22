@@ -108,7 +108,8 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' @export
 S7::method(fill_safe_value, class_score) <- function(
   x,
-  return_results = FALSE
+  return_results = FALSE,
+  transform = TRUE
 ) {
   results <- x@results
   is_na_score <- is.na(results$score)
@@ -782,7 +783,7 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' class_score_list |> fill_safe_values()
 #'
 #' @export
-S7::method(fill_safe_values, class_score_list) <- function(x) {
+S7::method(fill_safe_values, class_score_list) <- function(x, transform = TRUE) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
@@ -790,6 +791,10 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
     fallback_val <- x[[i]]@fallback_value
     is_na_score <- is.na(score_set[[method_name]])
     score_set[[method_name]][is_na_score] <- fallback_val
+    if (transform) {
+      # stuff
+      score_set[[method_name]] <- x[[i]]@transform(score_set[[method_name]])
+    }
   }
   score_set
 }
@@ -907,3 +912,8 @@ find_zero_variance_cols <- function(data) {
 
   names(is_zv)[is_zv]
 }
+
+
+
+filtro_abs_trans <- function(object, data) {abs(data)}
+

@@ -782,7 +782,10 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' class_score_list |> fill_safe_values()
 #'
 #' @export
-S7::method(fill_safe_values, class_score_list) <- function(x) {
+S7::method(fill_safe_values, class_score_list) <- function(
+  x,
+  transform = FALSE
+) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
@@ -791,7 +794,7 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
     is_na_score <- is.na(score_set[[method_name]])
     score_set[[method_name]][is_na_score] <- fallback_val
 
-    if (x[[i]]@transform == TRUE && !is.null(x[[i]]@transform_fn)) {
+    if (transform && !is.null(x[[i]]@transform_fn)) {
       score_set[[method_name]] <- x[[i]]@transform_fn(score_set[[method_name]])
     }
   }

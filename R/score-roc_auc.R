@@ -107,6 +107,7 @@ score_roc_auc <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "roc_auc",
+    transform = FALSE,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

@@ -29,8 +29,10 @@ class_score <- S7::new_class(
     fallback_value = S7::class_numeric,
     # What is the column name that will be used for the statistic values?
     score_type = S7::class_character,
+    # Should the values be transformed?
+    transform = S7::class_logical,
     # How should the values be transformed?
-    transform = S7::class_function,
+    transform_fn = S7::class_function,
     # What direction of values indicates the most important values?
     direction = S7::class_character,
     # Does the fitting process use random numbers?

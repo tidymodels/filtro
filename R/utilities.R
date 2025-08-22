@@ -790,6 +790,10 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
     fallback_val <- x[[i]]@fallback_value
     is_na_score <- is.na(score_set[[method_name]])
     score_set[[method_name]][is_na_score] <- fallback_val
+
+    if (x[[i]]@transform == TRUE && !is.null(x[[i]]@transform_fn)) {
+      score_set[[method_name]] <- x[[i]]@transform_fn(score_set[[method_name]])
+    }
   }
   score_set
 }

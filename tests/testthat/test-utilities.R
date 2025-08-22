@@ -516,3 +516,52 @@ test_that("computation - fill safe values", {
 })
 
 # TODO Some tests are not exhaustive and can be improved
+
+skip()
+
+helper_ames <- function() {
+  data <- modeldata::ames |>
+    dplyr::select(
+      Sale_Price,
+      MS_SubClass,
+      MS_Zoning,
+      Lot_Frontage,
+      Lot_Area,
+      Street
+    )
+  data
+}
+ames_subset <- helper_ames()
+ames_subset <- ames_subset |>
+  dplyr::mutate(Sale_Price = log10(Sale_Price))
+
+# anova pval
+ames_aov_pval_res <-
+  score_aov_pval |>
+  fit(Sale_Price ~ ., data = ames_subset)
+
+# cor
+ames_cor_pearson_res <-
+  score_cor_pearson |>
+  fit(Sale_Price ~ ., data = ames_subset)
+
+# forest imp
+set.seed(42)
+ames_imp_rf_reg_res <-
+  score_imp_rf |>
+  fit(Sale_Price ~ ., data = ames_subset)
+
+# info gain
+ames_info_gain_reg_res <-
+  score_info_gain |>
+  fit(Sale_Price ~ ., data = ames_subset)
+
+# Create a list
+class_score_list <- list(
+  ames_aov_pval_res,
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
+)
+
+res <- class_score_list |> fill_safe_values()

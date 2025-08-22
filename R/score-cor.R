@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------------------
+# Used for transformation # MOVE IT FROM UTILITIES.R OTHERWISE WONT LOAD ALL; WILL DEAL WITH LATER
+
+#' @keywords internal
+#' @export
+filtro_abs_trans <- function(x) {
+  abs(x)
+}
+
 #' @rdname class_score
 #' @include class_score.R
 #' @keywords internal
@@ -82,6 +91,8 @@ score_cor_pearson <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "cor_pearson",
+    transform = FALSE,
+    transform_fn = filtro_abs_trans,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
@@ -99,6 +110,7 @@ score_cor_spearman <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "cor_spearman",
+    transform = FALSE,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

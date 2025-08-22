@@ -1,3 +1,12 @@
+# ------------------------------------------------------------------------------
+# Used for transformation # MOVE IT FROM UTILITIES.R OTHERWISE WONT LOAD ALL; WILL DEAL WITH LATER
+
+#' @keywords internal
+#' @export
+filtro_neg_trans <- function(x) {
+  -1 * x # TODO Put abs(x) back
+}
+
 #' @rdname class_score
 #' @include class_score.R
 #' @keywords internal
@@ -126,7 +135,7 @@ score_aov_pval <-
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,
     score_type = "aov_pval",
-    transform_fn = function(x) x,
+    transform_fn = filtro_neg_trans, #function(x) x,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
@@ -144,7 +153,7 @@ score_aov_fstat <-
     inclusive = c(FALSE, FALSE),
     fallback_value = Inf,
     score_type = "aov_fstat",
-    transform_fn = function(x) x,
+    transform_fn = filtro_neg_trans, # function(x) x,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

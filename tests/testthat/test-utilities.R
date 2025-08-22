@@ -518,7 +518,10 @@ test_that("computation - fill safe values", {
 # TODO Some tests are not exhaustive and can be improved
 
 skip()
-
+setwd("/Users/franceslin/GitHub/filtro")
+devtools::load_all()
+library(filtro)
+library(modeldata)
 helper_ames <- function() {
   data <- modeldata::ames |>
     dplyr::select(
@@ -559,9 +562,9 @@ ames_info_gain_reg_res <-
 # Create a list
 class_score_list <- list(
   ames_aov_pval_res,
-  ames_cor_pearson_res #,
-  #ames_imp_rf_reg_res,
-  #ames_info_gain_reg_res
+  ames_cor_pearson_res,
+  ames_imp_rf_reg_res,
+  ames_info_gain_reg_res
 )
 
 class_score_list |> fill_safe_values()

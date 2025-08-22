@@ -4,7 +4,7 @@
 #' @keywords internal
 #' @export
 filtro_abs_trans <- function(x) {
-  abs(x)
+  -1 * x # TODO Put abs(x) back
 }
 
 #' @rdname class_score
@@ -109,6 +109,7 @@ score_cor_spearman <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "cor_spearman",
+    transform_fn = filtro_abs_trans,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

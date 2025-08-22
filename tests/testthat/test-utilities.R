@@ -559,9 +559,11 @@ ames_info_gain_reg_res <-
 # Create a list
 class_score_list <- list(
   ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
+  ames_cor_pearson_res #,
+  #ames_imp_rf_reg_res,
+  #ames_info_gain_reg_res
 )
 
-res <- class_score_list |> fill_safe_values()
+class_score_list |> fill_safe_values()
+
+class_score_list |> fill_safe_values(transform = TRUE)

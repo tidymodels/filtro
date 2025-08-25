@@ -70,10 +70,14 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 
 #' Fill safe value *(singular)*
 #'
-#' Fills in safe value for missing score. This is a *singular* scoring method.
-#' See [fill_safe_values()] for *plural* scoring method.
+#' Fills in safe value for missing score, with an option to apply transformation.
+#' This is a *singular* scoring method. See [fill_safe_values()] for *plural* scoring method.
 #'
 #' @name fill_safe_value
+#'
+#' @details
+#' If `transform = TRUE`, by default, all score objects use the identity transformation, except the
+#' correlation score object, which uses the absolute transformation.
 #'
 #' @param x A score class object (e.g., `score_cor_pearson`).
 #'
@@ -105,15 +109,25 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' # Fill safe value
 #' ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
 #'
+#' # Fill safe value, option to transform
+#' ames_aov_pval_res |> fill_safe_value(return_results = TRUE, transform = TRUE)
+#'
 #' @export
 S7::method(fill_safe_value, class_score) <- function(
   x,
-  return_results = FALSE
+  return_results = FALSE,
+  transform = FALSE
 ) {
   results <- x@results
   is_na_score <- is.na(results$score)
   results$score[is_na_score] <- x@fallback_value
+
+  if (transform && !is.null(x@transform_fn)) {
+    results$score <- x@transform_fn(results$score)
+  }
+
   x@results <- results
+
   if (return_results) {
     x@results
   } else {
@@ -718,10 +732,14 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 
 #' Fill safe values *(plural)*
 #'
-#' Wraps [bind_scores()], and fills in safe values for missing scores.
+#' Wraps [bind_scores()], and fills in safe values for missing scores, with an option to apply transformation.
 #' This is a *plural* scoring method. See [fill_safe_value()] for *singular* scoring method.
 #'
 #' @name fill_safe_values
+#'
+#' @details
+#' If `transform = TRUE`, by default, all score objects use the identity transformation, except the
+#' correlation score object, which uses the absolute transformation.
 #'
 #' @param x A list.
 #'
@@ -781,8 +799,14 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #' # Fill safe values
 #' class_score_list |> fill_safe_values()
 #'
+#' # Fill safe value, option to transform
+#' class_score_list |> fill_safe_values(transform = TRUE)
+#'
 #' @export
-S7::method(fill_safe_values, class_score_list) <- function(x) {
+S7::method(fill_safe_values, class_score_list) <- function(
+  x,
+  transform = FALSE
+) {
   # TODO Max was saying maybe we can fill safe value as we merge in (PR #33)
   score_set <- bind_scores(x)
   for (i in 1:length(x)) {
@@ -790,11 +814,22 @@ S7::method(fill_safe_values, class_score_list) <- function(x) {
     fallback_val <- x[[i]]@fallback_value
     is_na_score <- is.na(score_set[[method_name]])
     score_set[[method_name]][is_na_score] <- fallback_val
+
+    if (transform && !is.null(x[[i]]@transform_fn)) {
+      score_set[[method_name]] <- x[[i]]@transform_fn(score_set[[method_name]])
+    }
   }
   score_set
 }
 
 # TODO Drop outcome column
+
+# ------------------------------------------------------------------------------
+# Used for transformation for fill safe value and fill safe values
+
+filtro_abs_trans <- function(x) {
+  abs(x)
+}
 
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods

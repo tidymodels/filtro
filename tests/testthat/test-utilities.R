@@ -518,9 +518,7 @@ test_that("computation - fill safe values", {
 # TODO Some tests are not exhaustive and can be improved
 
 skip()
-setwd("/Users/franceslin/GitHub/filtro")
-devtools::load_all()
-library(filtro)
+
 library(modeldata)
 helper_ames <- function() {
   data <- modeldata::ames |>

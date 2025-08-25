@@ -804,6 +804,13 @@ S7::method(fill_safe_values, class_score_list) <- function(
 # TODO Drop outcome column
 
 # ------------------------------------------------------------------------------
+# Used for transformation
+
+filtro_abs_trans <- function(x) {
+  -1 * x # TODO Put abs(x) back
+}
+
+# ------------------------------------------------------------------------------
 # Used with ANOVA methods
 
 flip_if_needed_aov <- function(predictor, outcome) {

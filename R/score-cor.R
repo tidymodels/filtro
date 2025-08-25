@@ -1,12 +1,3 @@
-# ------------------------------------------------------------------------------
-# Used for transformation # MOVE IT FROM UTILITIES.R OTHERWISE WONT LOAD ALL; WILL DEAL WITH LATER
-
-#' @keywords internal
-#' @export
-filtro_abs_trans <- function(x) {
-  -1 * x # TODO Put abs(x) back
-}
-
 #' @rdname class_score
 #' @include class_score.R
 #' @keywords internal
@@ -24,6 +15,7 @@ class_score_cor <- S7::new_class(
 #' correlation coefficient.
 #'
 #' @name score_cor_pearson
+#' @include utilities.R
 #'
 #' @family class score metrics
 #' @details

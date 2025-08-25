@@ -79,6 +79,73 @@ test_that("computations - fill safe value", {
   expect_equal(pval_res_fill_2$score, exp_pval_res_2$score)
 })
 
+test_that("computations - fill safe value adding transformation", {
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  res <- mtcars_cor_pearson_res |> fill_safe_value(return_results = TRUE)
+
+  res_transform <- mtcars_cor_pearson_res |>
+    fill_safe_value(return_results = TRUE, transform = TRUE)
+
+  # ----------------------------------------------------------------------------
+
+  is_na_score <- is.na(mtcars_cor_pearson_res@results$score)
+  mtcars_cor_pearson_res@results$score[
+    is_na_score
+  ] <- mtcars_cor_pearson_res@fallback_value
+
+  exp_res <- mtcars_cor_pearson_res@results
+
+  expect_equal(res$score, exp_res$score)
+  expect_equal(res_transform$score, abs(exp_res$score))
+
+  # ----------------------------------------------------------------------------
+  # used with show best score based on prop_terms
+
+  res_fill_1 <- mtcars_cor_pearson_res |>
+    fill_safe_value() |>
+    show_best_score_prop(prop_terms = 0.2)
+
+  res_fill_2 <- mtcars_cor_pearson_res |>
+    fill_safe_value() |>
+    show_best_score_prop(prop_terms = 0.8)
+
+  res_fill_transform_1 <- mtcars_cor_pearson_res |>
+    fill_safe_value(transform = TRUE) |>
+    show_best_score_prop(prop_terms = 0.2)
+
+  res_fill_transform_2 <- mtcars_cor_pearson_res |>
+    fill_safe_value(transform = TRUE) |>
+    show_best_score_prop(prop_terms = 0.8)
+
+  is_na_score <- is.na(mtcars_cor_pearson_res@results$score)
+  mtcars_cor_pearson_res@results$score[
+    is_na_score
+  ] <- mtcars_cor_pearson_res@fallback_value
+
+  exp_res_1 <- mtcars_cor_pearson_res@results |>
+    dplyr::slice_max(score, prop = 0.2)
+
+  exp_res_2 <- mtcars_cor_pearson_res@results |>
+    dplyr::slice_max(score, prop = 0.8)
+
+  exp_res_transform_1 <- mtcars_cor_pearson_res@results |>
+    dplyr::mutate(score = abs(score)) |>
+    dplyr::slice_max(score, prop = 0.2)
+
+  exp_res_transform_2 <- mtcars_cor_pearson_res@results |>
+    dplyr::mutate(score = abs(score)) |>
+    dplyr::slice_max(score, prop = 0.8)
+
+  expect_equal(res_fill_1$score, exp_res_1$score)
+  expect_equal(res_fill_2$score, exp_res_2$score)
+
+  expect_equal(res_fill_transform_1$score, exp_res_transform_1$score)
+  expect_equal(res_fill_transform_2$score, exp_res_transform_2$score)
+})
+
 test_that("computations - show best score based on prop_terms", {
   skip_if_not_installed("modeldata")
 

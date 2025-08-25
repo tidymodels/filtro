@@ -108,12 +108,19 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #' @export
 S7::method(fill_safe_value, class_score) <- function(
   x,
-  return_results = FALSE
+  return_results = FALSE,
+  transform = FALSE
 ) {
   results <- x@results
   is_na_score <- is.na(results$score)
   results$score[is_na_score] <- x@fallback_value
+
+  if (transform && !is.null(x@transform_fn)) {
+    results$score <- x@transform_fn(results$score)
+  }
+
   x@results <- results
+
   if (return_results) {
     x@results
   } else {

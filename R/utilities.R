@@ -804,10 +804,10 @@ S7::method(fill_safe_values, class_score_list) <- function(
 # TODO Drop outcome column
 
 # ------------------------------------------------------------------------------
-# Used for transformation
+# Used for transformation for fill safe value and fill safe values
 
 filtro_abs_trans <- function(x) {
-  -1 * x # TODO Put abs(x) back
+  abs(x)
 }
 
 # ------------------------------------------------------------------------------

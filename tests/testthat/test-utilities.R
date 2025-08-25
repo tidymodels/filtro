@@ -515,56 +515,64 @@ test_that("computation - fill safe values", {
   expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
 })
 
+test_that("computation - fill safe values adding transformation", {
+  skip_if_not_installed("modeldata")
+
+  # anova pval
+  mtcars_aov_pval_res <-
+    score_aov_pval |>
+    fit(mpg ~ ., data = mtcars)
+
+  # cor
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  # Create a list
+  class_score_list <- list(
+    mtcars_aov_pval_res,
+    mtcars_cor_pearson_res
+  )
+
+  res <- class_score_list |> fill_safe_values()
+
+  res_transform <- class_score_list |> fill_safe_values(transform = TRUE)
+
+  # ----------------------------------------------------------------------------
+
+  score_set <- bind_scores(class_score_list)
+  for (i in 1:length(class_score_list)) {
+    method_name <- class_score_list[[i]]@score_type
+    fallback_val <- class_score_list[[i]]@fallback_value
+    is_na_score <- is.na(score_set[[method_name]])
+    score_set[[method_name]][is_na_score] <- fallback_val
+  }
+  exp_res <- score_set
+
+  expect_equal(res$aov_pval, exp_res$aov_pval)
+  expect_equal(res$cor_pearson, exp_res$cor_pearson)
+
+  expect_equal(res_transform$aov_pval, exp_res$aov_pval)
+  expect_equal(res_transform$cor_pearson, abs(exp_res$cor_pearson))
+
+  # ----------------------------------------------------------------------------
+  # Single score
+
+  # cor
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  # Create a list
+  class_score_list <- list(
+    mtcars_cor_pearson_res
+  )
+
+  res_single <- class_score_list |> fill_safe_values()
+  res_single_transform <- class_score_list |> fill_safe_values(transform = TRUE)
+
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
+  expect_named(res_single_transform, c("outcome", "predictor", "cor_pearson"))
+})
+
 # TODO Some tests are not exhaustive and can be improved
-
-skip()
-
-library(modeldata)
-helper_ames <- function() {
-  data <- modeldata::ames |>
-    dplyr::select(
-      Sale_Price,
-      MS_SubClass,
-      MS_Zoning,
-      Lot_Frontage,
-      Lot_Area,
-      Street
-    )
-  data
-}
-ames_subset <- helper_ames()
-ames_subset <- ames_subset |>
-  dplyr::mutate(Sale_Price = log10(Sale_Price))
-
-# anova pval
-ames_aov_pval_res <-
-  score_aov_pval |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# cor
-ames_cor_pearson_res <-
-  score_cor_pearson |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# forest imp
-set.seed(42)
-ames_imp_rf_reg_res <-
-  score_imp_rf |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# info gain
-ames_info_gain_reg_res <-
-  score_info_gain |>
-  fit(Sale_Price ~ ., data = ames_subset)
-
-# Create a list
-class_score_list <- list(
-  ames_aov_pval_res,
-  ames_cor_pearson_res,
-  ames_imp_rf_reg_res,
-  ames_info_gain_reg_res
-)
-
-class_score_list |> fill_safe_values()
-
-class_score_list |> fill_safe_values(transform = TRUE)

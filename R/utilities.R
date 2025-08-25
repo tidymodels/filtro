@@ -70,10 +70,14 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 
 #' Fill safe value *(singular)*
 #'
-#' Fills in safe value for missing score. This is a *singular* scoring method.
-#' See [fill_safe_values()] for *plural* scoring method.
+#' Fills in safe value for missing score, with an option to apply transformation.
+#' This is a *singular* scoring method. See [fill_safe_values()] for *plural* scoring method.
 #'
 #' @name fill_safe_value
+#'
+#' @details
+#' If `transform = TRUE`, by default, all score objects use the identity transformation, except the
+#' correlation score object, which uses the absolute transformation.
 #'
 #' @param x A score class object (e.g., `score_cor_pearson`).
 #'
@@ -104,6 +108,9 @@ fill_safe_value <- S7::new_generic("fill_safe_value", dispatch_args = "x")
 #'
 #' # Fill safe value
 #' ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
+#'
+#' # Fill safe value, option to transform
+#' ames_aov_pval_res |> fill_safe_value(return_results = TRUE, transform = TRUE)
 #'
 #' @export
 S7::method(fill_safe_value, class_score) <- function(
@@ -725,10 +732,14 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 
 #' Fill safe values *(plural)*
 #'
-#' Wraps [bind_scores()], and fills in safe values for missing scores.
+#' Wraps [bind_scores()], and fills in safe values for missing scores, with an option to apply transformation.
 #' This is a *plural* scoring method. See [fill_safe_value()] for *singular* scoring method.
 #'
 #' @name fill_safe_values
+#'
+#' @details
+#' If `transform = TRUE`, by default, all score objects use the identity transformation, except the
+#' correlation score object, which uses the absolute transformation.
 #'
 #' @param x A list.
 #'
@@ -787,6 +798,9 @@ fill_safe_values <- S7::new_generic("fill_safe_values", dispatch_args = "x")
 #'
 #' # Fill safe values
 #' class_score_list |> fill_safe_values()
+#'
+#' # Fill safe value, option to transform
+#' class_score_list |> fill_safe_values(transform = TRUE)
 #'
 #' @export
 S7::method(fill_safe_values, class_score_list) <- function(

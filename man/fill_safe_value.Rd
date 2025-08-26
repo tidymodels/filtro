@@ -12,8 +12,12 @@
 A tibble of score results.
 }
 \description{
-Fills in safe value for missing score. This is a \emph{singular} scoring method.
-See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scoring method.
+Fills in safe value for missing score, with an option to apply transformation.
+This is a \emph{singular} scoring method. See \code{\link[=fill_safe_values]{fill_safe_values()}} for \emph{plural} scoring method.
+}
+\details{
+If \code{transform = TRUE}, by default, all score objects use the identity transformation, except the
+correlation score object, which uses the absolute transformation.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -39,5 +43,8 @@ ames_aov_pval_res@results
 
 # Fill safe value
 ames_aov_pval_res |> fill_safe_value(return_results = TRUE)
+
+# Fill safe value, option to transform
+ames_aov_pval_res |> fill_safe_value(return_results = TRUE, transform = TRUE)
 \dontshow{\}) # examplesIf}
 }

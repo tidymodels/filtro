@@ -12,8 +12,12 @@
 A tibble of scores results.
 }
 \description{
-Wraps \code{\link[=bind_scores]{bind_scores()}}, and fills in safe values for missing scores.
+Wraps \code{\link[=bind_scores]{bind_scores()}}, and fills in safe values for missing scores, with an option to apply transformation.
 This is a \emph{plural} scoring method. See \code{\link[=fill_safe_value]{fill_safe_value()}} for \emph{singular} scoring method.
+}
+\details{
+If \code{transform = TRUE}, by default, all score objects use the identity transformation, except the
+correlation score object, which uses the absolute transformation.
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
@@ -67,5 +71,8 @@ class_score_list <- list(
 
 # Fill safe values
 class_score_list |> fill_safe_values()
+
+# Fill safe value, option to transform
+class_score_list |> fill_safe_values(transform = TRUE)
 \dontshow{\}) # examplesIf}
 }

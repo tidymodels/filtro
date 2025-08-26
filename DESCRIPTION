@@ -59,12 +59,12 @@ Collate:
     'import-standalone-types-check.R'
     'misc.R'
     'score-aov.R'
+    'utilities.R'
     'score-cor.R'
     'score-cross_tab.R'
     'score-forest_imp.R'
     'score-info_gain.R'
     'score-roc_auc.R'
-    'utilities.R'
     'zzz.R'
 LazyData: true
 VignetteBuilder: quarto, knitr

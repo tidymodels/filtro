@@ -1,4 +1,4 @@
-# filtro (development version)
+# filtro 0.2.0
 
 # filtro 0.2.0
 

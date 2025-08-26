@@ -79,6 +79,73 @@ test_that("computations - fill safe value", {
   expect_equal(pval_res_fill_2$score, exp_pval_res_2$score)
 })
 
+test_that("computations - fill safe value adding transformation", {
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  res <- mtcars_cor_pearson_res |> fill_safe_value(return_results = TRUE)
+
+  res_transform <- mtcars_cor_pearson_res |>
+    fill_safe_value(return_results = TRUE, transform = TRUE)
+
+  # ----------------------------------------------------------------------------
+
+  is_na_score <- is.na(mtcars_cor_pearson_res@results$score)
+  mtcars_cor_pearson_res@results$score[
+    is_na_score
+  ] <- mtcars_cor_pearson_res@fallback_value
+
+  exp_res <- mtcars_cor_pearson_res@results
+
+  expect_equal(res$score, exp_res$score)
+  expect_equal(res_transform$score, abs(exp_res$score))
+
+  # ----------------------------------------------------------------------------
+  # used with show best score based on prop_terms
+
+  res_fill_1 <- mtcars_cor_pearson_res |>
+    fill_safe_value() |>
+    show_best_score_prop(prop_terms = 0.2)
+
+  res_fill_2 <- mtcars_cor_pearson_res |>
+    fill_safe_value() |>
+    show_best_score_prop(prop_terms = 0.8)
+
+  res_fill_transform_1 <- mtcars_cor_pearson_res |>
+    fill_safe_value(transform = TRUE) |>
+    show_best_score_prop(prop_terms = 0.2)
+
+  res_fill_transform_2 <- mtcars_cor_pearson_res |>
+    fill_safe_value(transform = TRUE) |>
+    show_best_score_prop(prop_terms = 0.8)
+
+  is_na_score <- is.na(mtcars_cor_pearson_res@results$score)
+  mtcars_cor_pearson_res@results$score[
+    is_na_score
+  ] <- mtcars_cor_pearson_res@fallback_value
+
+  exp_res_1 <- mtcars_cor_pearson_res@results |>
+    dplyr::slice_max(score, prop = 0.2)
+
+  exp_res_2 <- mtcars_cor_pearson_res@results |>
+    dplyr::slice_max(score, prop = 0.8)
+
+  exp_res_transform_1 <- mtcars_cor_pearson_res@results |>
+    dplyr::mutate(score = abs(score)) |>
+    dplyr::slice_max(score, prop = 0.2)
+
+  exp_res_transform_2 <- mtcars_cor_pearson_res@results |>
+    dplyr::mutate(score = abs(score)) |>
+    dplyr::slice_max(score, prop = 0.8)
+
+  expect_equal(res_fill_1$score, exp_res_1$score)
+  expect_equal(res_fill_2$score, exp_res_2$score)
+
+  expect_equal(res_fill_transform_1$score, exp_res_transform_1$score)
+  expect_equal(res_fill_transform_2$score, exp_res_transform_2$score)
+})
+
 test_that("computations - show best score based on prop_terms", {
   skip_if_not_installed("modeldata")
 
@@ -513,6 +580,66 @@ test_that("computation - fill safe values", {
   res_single <- class_score_list |> fill_safe_values()
 
   expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
+})
+
+test_that("computation - fill safe values adding transformation", {
+  skip_if_not_installed("modeldata")
+
+  # anova pval
+  mtcars_aov_pval_res <-
+    score_aov_pval |>
+    fit(mpg ~ ., data = mtcars)
+
+  # cor
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  # Create a list
+  class_score_list <- list(
+    mtcars_aov_pval_res,
+    mtcars_cor_pearson_res
+  )
+
+  res <- class_score_list |> fill_safe_values()
+
+  res_transform <- class_score_list |> fill_safe_values(transform = TRUE)
+
+  # ----------------------------------------------------------------------------
+
+  score_set <- bind_scores(class_score_list)
+  for (i in 1:length(class_score_list)) {
+    method_name <- class_score_list[[i]]@score_type
+    fallback_val <- class_score_list[[i]]@fallback_value
+    is_na_score <- is.na(score_set[[method_name]])
+    score_set[[method_name]][is_na_score] <- fallback_val
+  }
+  exp_res <- score_set
+
+  expect_equal(res$aov_pval, exp_res$aov_pval)
+  expect_equal(res$cor_pearson, exp_res$cor_pearson)
+
+  expect_equal(res_transform$aov_pval, exp_res$aov_pval)
+  expect_equal(res_transform$cor_pearson, abs(exp_res$cor_pearson))
+
+  # ----------------------------------------------------------------------------
+  # Single score
+
+  # cor
+  mtcars_cor_pearson_res <-
+    score_cor_pearson |>
+    fit(mpg ~ ., data = mtcars)
+
+  # Create a list
+  class_score_list <- list(
+    mtcars_cor_pearson_res
+  )
+
+  res_single <- class_score_list |> fill_safe_values()
+  res_single_transform <- class_score_list |> fill_safe_values(transform = TRUE)
+
+  expect_named(res_single, c("outcome", "predictor", "cor_pearson"))
+  expect_named(res_single_transform, c("outcome", "predictor", "cor_pearson"))
 })
 
 # TODO Some tests are not exhaustive and can be improved

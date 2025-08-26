@@ -15,6 +15,7 @@ class_score_cor <- S7::new_class(
 #' correlation coefficient.
 #'
 #' @name score_cor_pearson
+#' @include utilities.R
 #'
 #' @family class score metrics
 #' @details
@@ -82,6 +83,7 @@ score_cor_pearson <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "cor_pearson",
+    transform_fn = filtro_abs_trans,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,
@@ -99,6 +101,7 @@ score_cor_spearman <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "cor_spearman",
+    transform_fn = filtro_abs_trans,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

@@ -103,7 +103,7 @@ score_roc_auc <-
   class_score_roc_auc(
     outcome_type = c("numeric", "factor"),
     predictor_type = c("numeric", "factor"),
-    case_weights = TRUE, # TODO
+    case_weights = FALSE, # TODO
     range = c(0, 1),
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,

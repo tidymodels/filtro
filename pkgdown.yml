@@ -1,8 +1,10 @@
 pandoc: 3.1.11
 pkgdown: 2.1.3
 pkgdown_sha: ~
-articles: {}
-last_built: 2025-08-04T16:55Z
+articles:
+  filtro: filtro.html
+  forestimp: forestimp.html
+last_built: 2025-08-26T23:06Z
 urls:
   reference: https://filtro.tidymodels.org/reference
   article: https://filtro.tidymodels.org/articles

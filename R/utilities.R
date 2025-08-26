@@ -831,6 +831,10 @@ filtro_abs_trans <- function(x) {
   abs(x)
 }
 
+filtro_pmax_trans <- function(x) {
+  pmax(x, 1 - x)
+}
+
 # ------------------------------------------------------------------------------
 # Used with ANOVA methods
 

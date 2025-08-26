@@ -14,6 +14,7 @@ class_score_roc_auc <- S7::new_class(
 #' The area under the ROC curves can be used to measure predictor importance.
 #'
 #' @name score_roc_auc
+#' @include utilities.R
 #' @family class score metrics
 #' @details
 #' This objects are used when either:
@@ -107,7 +108,7 @@ score_roc_auc <-
     inclusive = c(TRUE, TRUE),
     fallback_value = 1,
     score_type = "roc_auc",
-    transform_fn = function(x) x,
+    transform_fn = filtro_pmax_trans,
     direction = "maximize",
     deterministic = TRUE,
     tuning = FALSE,

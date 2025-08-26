@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">filtro</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.1.0.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.2.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,12 +35,20 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/tidymodels/filtro/blob/v0.1.0.9000/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/tidymodels/filtro/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="filtro-development-version">filtro (development version)<a class="anchor" aria-label="anchor" href="#filtro-development-version"></a></h2>
 </div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="filtro-020">filtro 0.2.0<a class="anchor" aria-label="anchor" href="#filtro-020"></a></h2><p class="text-muted">CRAN release: 2025-08-26</p>
+<ul><li><p>Added five new scoring methods: correlation, random forest feature importance, information gain, area under the ROC curve, and cross tabulation filters.</p></li>
+<li><p>Transitioned from S3 to S7 and refactored S7 for improved clarity, maintainability, and performance.</p></li>
+<li><p>Added multiple new functions to support ranking of single score. <code><a href="../reference/show_best_score_prop.html">show_best_score_prop()</a></code>, <code><a href="../reference/show_best_score_num.html">show_best_score_num()</a></code>, <code><a href="../reference/show_best_score_cutoff.html">show_best_score_cutoff()</a></code>, <code><a href="../reference/show_best_score_dual.html">show_best_score_dual()</a></code>, <code><a href="../reference/rank_best_score_min.html">rank_best_score_min()</a></code> and <code><a href="../reference/rank_best_score_dense.html">rank_best_score_dense()</a></code> can be used to select and rank single score.</p></li>
+<li><p>Added two new functions to support ranking of multiple scores. <code><a href="../reference/show_best_desirability_prop.html">show_best_desirability_prop()</a></code> and <code><a href="../reference/show_best_desirability_num.html">show_best_desirability_num()</a></code> can be used for multiparameter optimization via desirability functions.</p></li>
+<li><p>Added multiple utility functions to support handling of both single and multiple scores: <code><a href="../reference/arrange_score.html">arrange_score()</a></code>, <code><a href="../reference/fill_safe_value.html">fill_safe_value()</a></code>, <code><a href="../reference/bind_scores.html">bind_scores()</a></code>, and <code><a href="../reference/fill_safe_values.html">fill_safe_values()</a></code>.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="filtro-010">filtro 0.1.0<a class="anchor" aria-label="anchor" href="#filtro-010"></a></h2><p class="text-muted">CRAN release: 2025-07-18</p>
 <ul><li>Initial CRAN submission.</li>

@@ -201,7 +201,7 @@ get_info_gain <- function(object, data, outcome) {
       x = X,
       y = y,
       type = object@score_type,
-      equal = object@mode == "regression" # Set = TRUE for numeric outcome
+      equal = object@mode == "regression" # Set equal = TRUE for numeric outcome
     ),
     silent = TRUE
   )

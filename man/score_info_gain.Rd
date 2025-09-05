@@ -118,13 +118,10 @@ ames_subset <- modeldata::ames |>
 ames_subset <- ames_subset |>
   dplyr::mutate(Sale_Price = log10(Sale_Price))
 
-regression_task <- score_info_gain
-regression_task@mode <- "regression"
-
-ames_info_gain_regression_task_res <-
-  regression_task |>
+ames_info_gain_res <-
+  score_info_gain |>
   fit(Sale_Price ~ ., data = ames_subset)
-ames_info_gain_regression_task_res@results
+ames_info_gain_res@results
 \dontshow{\}) # examplesIf}
 }
 \seealso{

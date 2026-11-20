@@ -11,12 +11,12 @@ class_score <- S7::new_class(
     # What types of outcome can the method handle?
     outcome_type = S7::new_property(
       S7::class_character,
-      default = c("numeric", "factor")
+      default = quote(c("numeric", "factor"))
     ),
     # What types of predictor can the method handle?
     predictor_type = S7::new_property(
       S7::class_character,
-      default = c("numeric", "factor")
+      default = quote(c("numeric", "factor"))
     ),
     # Does the method accept case weights?
     case_weights = S7::class_logical,

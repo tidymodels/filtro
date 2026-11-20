@@ -14,8 +14,6 @@ status](https://www.r-pkg.org/badges/version/filtro)](https://CRAN.R-project.org
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-> ⚠️ **filtro is under active development; breaking changes may occur.**
-
 ## Overview
 
 filtro is tidy tools to apply filter-based supervised feature selection

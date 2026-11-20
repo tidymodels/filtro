@@ -1,7 +1,5 @@
 # Scoring via random forests
 
-> ⚠️ **work-in-progress**
-
 We’ll need to load a few packages:
 
 ``` r

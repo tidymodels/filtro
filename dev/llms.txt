@@ -1,7 +1,5 @@
 # filtro
 
-> ⚠️ **filtro is under active development; breaking changes may occur.**
-
 ## Overview
 
 filtro is tidy tools to apply filter-based supervised feature selection

@@ -1,7 +1,5 @@
 # Introduction to filtro
 
-> ⚠️ **work-in-progress**
-
 This document demonstrates some basic uses of filtro. We’ll need to load
 a few packages:
 

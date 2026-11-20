@@ -1,0 +1,259 @@
+# Scoring via random forests
+
+> ⚠️ **work-in-progress**
+
+We’ll need to load a few packages:
+
+``` r
+
+library(filtro)
+library(dplyr)
+library(modeldata)
+```
+
+## Score class objects
+
+Predictor importance can be assessed using three different random forest
+models. They can be accessed via the following score class objects:
+
+``` r
+
+score_imp_rf
+score_imp_rf_conditional
+score_imp_rf_oblique
+```
+
+These models are powered by the following packages:
+
+    #> [1] "ranger"
+    #> [1] "partykit"
+    #> [1] "aorsf"
+
+Regarding score types:
+
+- The {ranger} random forest computes the importance scores.
+
+- The {partykit} conditional random forest computes the conditional
+  importance scores.
+
+- The {aorsf} oblique random forest computes the permutation importance
+  scores.
+
+## A scoring example — random forest
+
+The {modeldata} package contains a data set used to predict which cells
+in a high content screen were well segmented. It has 57 predictor
+columns and a factor variable `class` (the outcome).
+
+Since `case` is only used to indicate Train/Test, not for data analysis,
+it will be set to `NULL`. Furthermore, for efficiency, we will use a
+small sample of 50 from the original 2019 observations.
+
+``` r
+
+cells_subset <- modeldata::cells |> 
+  # Use a small example for efficiency
+  dplyr::slice(1:50)
+cells_subset$case <- NULL
+
+# cells_subset |> str() # Uncomment to see the structure of the data
+```
+
+First, we create a score class object to specify a {ranger} random
+forest, and then use the
+[`fit()`](https://generics.r-lib.org/reference/fit.html) method with the
+standard formula to compute the importance scores.
+
+``` r
+
+# Specify random forest and fit score
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset, 
+    seed = 42 
+  )
+```
+
+The data frame of results can be accessed via `object@results`.
+
+``` r
+
+cells_imp_rf_res@results
+#> # A tibble: 56 × 4
+#>    name       score outcome predictor                   
+#>    <chr>      <dbl> <chr>   <chr>                       
+#>  1 imp_rf -0.000441 class   angle_ch_1                  
+#>  2 imp_rf  0.00114  class   area_ch_1                   
+#>  3 imp_rf  0.00428  class   avg_inten_ch_1              
+#>  4 imp_rf  0.00663  class   avg_inten_ch_2              
+#>  5 imp_rf -0.000641 class   avg_inten_ch_3              
+#>  6 imp_rf  0.00199  class   avg_inten_ch_4              
+#>  7 imp_rf  0.00769  class   convex_hull_area_ratio_ch_1 
+#>  8 imp_rf  0.000719 class   convex_hull_perim_ratio_ch_1
+#>  9 imp_rf  0.000438 class   diff_inten_density_ch_1     
+#> 10 imp_rf -0.000265 class   diff_inten_density_ch_3     
+#> # ℹ 46 more rows
+```
+
+A copule of notes here:
+
+The random forest filter, including all three types of random forests,
+
+- regression tasks, and
+
+- classificaiton tasks.
+
+In case where `NA` is produced, a safe value can be used to retain the
+predictor, and can be accessed via `object@fallback_value`.
+
+Larger values indicate more important predictors.
+
+For this specific filter, i.e., `score_imp_rf_*`, case weights are
+supported.
+
+## Hyperparameter tuning
+
+Like {parsnip}, the argument names are harmonized. For example, the
+arguments to set the number of trees: `num.trees` in {ranger}, `ntree`
+in {partykit}, and `n_tree` in {aorsf} are all standardized to a single
+name, `trees`, so users only need to remember a single name.
+
+The same applies to the number of variables to split at each node,
+`mtry`, and the minimum node size for splitting, `min_n`.
+
+``` r
+
+# Set hyperparameters
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset,     
+    trees = 100, 
+    mtry = 2,
+    min_n = 1
+  )
+```
+
+However, there is one argument name specific to {ranger}. For
+reproducibility, instead of using the standard
+[`set.seed()`](https://rdrr.io/r/base/Random.html) method, we would use
+the `seed` argument.
+
+``` r
+
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset,     
+    trees = 100,
+    mtry = 2,
+    min_n = 1, 
+    seed = 42 # Set seed for reproducibility
+  )
+```
+
+## Seamless argument support
+
+If users use {ranger} argument names, intentionally or not, it still
+works. We have handled the necessary adjustments. The following code
+chunk can be used to obtain a fitted score:
+
+``` r
+
+cells_imp_rf_res <- score_imp_rf |>
+  fit(
+    class ~ .,
+    data = cells_subset,     
+    num.trees = 100,
+    mtry = 2,
+    min.node.size = 1, 
+    seed = 42 
+  )
+```
+
+The same applies to {partykit}- and {aorsf}- specific arguments.
+
+## A scoring example — conditional random forest
+
+For the {partykit} conditional random forest, we again create a score
+class object to specify the model, then use the
+[`fit()`](https://generics.r-lib.org/reference/fit.html) method to
+compute the importance scores.
+
+The data frame of results can be accessed via `object@results`.
+
+``` r
+
+# Set seed for reproducibility
+set.seed(42)
+
+# Specify conditional random forest and fit score
+cells_imp_rf_conditional_res <- score_imp_rf_conditional |>
+  fit(class ~ ., data = cells_subset, trees = 100)
+cells_imp_rf_conditional_res@results
+#> # A tibble: 40 × 4
+#>    name                  score outcome predictor                   
+#>    <chr>                 <dbl> <chr>   <chr>                       
+#>  1 imp_rf_conditional -0.0306  class   angle_ch_1                  
+#>  2 imp_rf_conditional  0.178   class   area_ch_1                   
+#>  3 imp_rf_conditional  0.158   class   avg_inten_ch_1              
+#>  4 imp_rf_conditional  0.132   class   avg_inten_ch_2              
+#>  5 imp_rf_conditional  0.0927  class   convex_hull_area_ratio_ch_1 
+#>  6 imp_rf_conditional  0.963   class   convex_hull_perim_ratio_ch_1
+#>  7 imp_rf_conditional -0.0842  class   diff_inten_density_ch_1     
+#>  8 imp_rf_conditional  0.0688  class   diff_inten_density_ch_3     
+#>  9 imp_rf_conditional  0.147   class   entropy_inten_ch_1          
+#> 10 imp_rf_conditional  0.00105 class   entropy_inten_ch_3          
+#> # ℹ 30 more rows
+```
+
+Note that when a predictor’s importance score is 0,
+[`partykit::cforest()`](https://rdrr.io/pkg/partykit/man/cforest.html)
+may exclude its name from the output. In such cases, a score of 0 is
+assigned to the missing predictors.
+
+## An scoring example — oblique random forest
+
+For the {aorsf} oblique random forest, we again create a score class
+object to specify the model, then use the
+[`fit()`](https://generics.r-lib.org/reference/fit.html) method to
+compute the importance scores.
+
+The data frame of results can be accessed via `object@results`.
+
+``` r
+
+# Set seed for reproducibility
+set.seed(42)
+
+# Specify oblique random forest and fit score
+cells_imp_rf_oblique_res <- score_imp_rf_oblique |>
+  fit(class ~ ., data = cells_subset, trees = 100, mtry = 2)
+cells_imp_rf_oblique_res@results
+#> # A tibble: 56 × 4
+#>    name             score outcome predictor              
+#>    <chr>            <dbl> <chr>   <chr>                  
+#>  1 imp_rf_oblique 0.0193  class   fiber_width_ch_1       
+#>  2 imp_rf_oblique 0.0141  class   inten_cooc_entropy_ch_3
+#>  3 imp_rf_oblique 0.0130  class   shape_p_2_a_ch_1       
+#>  4 imp_rf_oblique 0.0110  class   shape_bfr_ch_1         
+#>  5 imp_rf_oblique 0.00765 class   fiber_length_ch_1      
+#>  6 imp_rf_oblique 0.00592 class   shape_lwr_ch_1         
+#>  7 imp_rf_oblique 0.00526 class   diff_inten_density_ch_1
+#>  8 imp_rf_oblique 0.00516 class   avg_inten_ch_2         
+#>  9 imp_rf_oblique 0.00454 class   spot_fiber_count_ch_3  
+#> 10 imp_rf_oblique 0.00436 class   eq_circ_diam_ch_1      
+#> # ℹ 46 more rows
+```
+
+## Available objects and engines
+
+The list of score class objects for random forests, their corresponding
+engines and supported tasks:
+
+| object | engine | task |
+|:---|:---|:---|
+| `score_imp_rf` | [`ranger::ranger`](http://imbs-hl.github.io/ranger/reference/ranger.md) | regression, classification |
+| `score_imp_rf_conditional` | [`partykit::cforest`](https://rdrr.io/pkg/partykit/man/cforest.html) | regression, classification |
+| `score_imp_rf_oblique` | [`aorsf::orsf`](https://docs.ropensci.org/aorsf/reference/orsf.html) | regression, classification |

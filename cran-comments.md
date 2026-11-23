@@ -6,4 +6,4 @@ This is a patch release that fixes the errors and the Rd `\usage` note reported 
 
 ## Reverse dependencies
 
-filtro has one reverse dependency, important. I checked it with revdepcheck and found no new problems.
+filtro has one reverse dependency, important. TODO: run revdepcheck and report the result here.

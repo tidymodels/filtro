@@ -30,7 +30,7 @@ See \code{\link[=show_best_score_num]{show_best_score_num()}} for \emph{singular
 See \code{\link[=show_best_desirability_prop]{show_best_desirability_prop()}} for details.
 }
 \examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
 
 library(desirability2)
 library(dplyr)

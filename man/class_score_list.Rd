@@ -5,7 +5,7 @@
 \alias{class_score_list}
 \title{S7 subclass of base R's \code{list} for method dispatch}
 \format{
-An object of class \code{S7_S3_class} of length 3.
+An object of class \code{S7_S3_class} of length 6.
 }
 \usage{
 class_score_list
@@ -18,7 +18,7 @@ A list of S7 objects.
 \code{\link[=bind_scores]{bind_scores()}} and \code{\link[=fill_safe_values]{fill_safe_values()}}.
 }
 \examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
 
 library(dplyr)
 

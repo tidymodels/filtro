@@ -20,7 +20,7 @@ If \code{transform = TRUE}, by default, all score objects use the identity trans
 correlation score object, which uses the absolute transformation.
 }
 \examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
 
 library(dplyr)
 

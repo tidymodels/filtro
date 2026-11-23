@@ -67,7 +67,7 @@ In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.
 }
 \examples{
-\dontshow{if (rlang::is_installed(c("titanic", "modeldata"))) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed(c("titanic", "modeldata"))) withAutoprint(\{ # examplesIf}
 # Binary factor example
 
 library(titanic)

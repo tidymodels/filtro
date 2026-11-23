@@ -284,11 +284,11 @@ ames_scores_results |>
 #> # A tibble: 5 × 6
 #>   predictor    cor_pearson    imp_rf infogain .d_target_cor_pearson .d_overall
 #>   <chr>              <dbl>     <dbl>    <dbl>                 <dbl>      <dbl>
-#> 1 Lot_Area           0.255 0.0144     0.140                    1.00       1.00
-#> 2 MS_SubClass        1     0.0144     0.266                    0          0   
-#> 3 MS_Zoning          1     0.0102     0.113                    0          0   
-#> 4 Lot_Frontage       0.165 0.00693    0.146                    0          0   
-#> 5 Street             1     0.0000308  0.00365                  0          0
+#> 1 Lot_Area           0.255 0.0144     0.140                   1.000      1.000
+#> 2 MS_SubClass        1     0.0144     0.266                   0          0    
+#> 3 MS_Zoning          1     0.0102     0.113                   0          0    
+#> 4 Lot_Frontage       0.165 0.00693    0.146                   0          0    
+#> 5 Street             1     0.0000308  0.00365                 0          0
 
 # Optimize with box constraints
 ames_scores_results |>

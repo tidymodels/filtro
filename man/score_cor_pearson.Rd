@@ -64,7 +64,7 @@ In cases where the underlying computations fail, the scoring proceeds
 silently, and a missing value is given for the score.
 }
 \examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
 library(dplyr)
 
 ames <- modeldata::ames

@@ -16,7 +16,7 @@ Binds multiple score class objects (e.g., \verb{score_*}), including their assoc
 See \code{\link[=fill_safe_values]{fill_safe_values()}} for binding with safe-value handling.
 }
 \examples{
-\dontshow{if (rlang::is_installed("modeldata")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
 
 library(dplyr)
 

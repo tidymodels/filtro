@@ -1,6 +1,10 @@
-# filtro (development version)
+# filtro 0.2.1
 
-* Updates for compatibility with S7 > 0.2.2.
+* Scoring generics work again with the development version of S7
+  (S7 > 0.2.2) (#183).
+
+* Package documentation and vignettes no longer carry development or
+  work-in-progress warnings (#184).
 
 # filtro 0.2.0
 

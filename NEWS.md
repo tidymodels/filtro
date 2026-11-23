@@ -1,8 +1,10 @@
-# filtro 0.2.2
-
 # filtro 0.2.1
 
-* Updates for compatibility with S7 > 0.2.2.
+* Updates for compatibility with S7 > 0.2.2, restoring the scoring generics when used with the development version of S7 (#183).
+
+* Removed development and work-in-progress warnings from the package documentation and vignettes (#184).
+
+* Added the "Supported By Posit" badge to the package website (#181).
 
 # filtro 0.2.0
 

@@ -1,4 +1,6 @@
-# filtro (development version)
+# filtro 0.2.2
+
+# filtro 0.2.1
 
 * Updates for compatibility with S7 > 0.2.2.
 
